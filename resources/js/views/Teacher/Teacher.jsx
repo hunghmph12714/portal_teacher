@@ -27,8 +27,9 @@ class Teacher extends React.Component{
         open_create: false,
         open_edit: false,
         data: [],
-        anchorElOptionTeacher: false,
-        selectedTeacher: []
+        selectedTeacher: [],
+        selectedRow: '',
+        dialogType: '',
       }
   }
   getTeacher = () => {
@@ -58,36 +59,52 @@ class Teacher extends React.Component{
   }
   //ADD TEACHER
   handleCloseDialogCreate = () => {
-    this.setState({ open_create: false })
+    this.setState({ open_create: false, selectedTeacher: [] })
   }
   handleOpenDialogCreate = () => {
-    this.setState({ open_create : true })
+    this.setState({ open_create : true, dialogType : 'create' })
   }
-  updateTable = (newTeacher) => {
-    let teacher = {}
+  updateTable = (teacher) => {
+    if(this.state.dialogType == 'create'){
+      this.setState(prevState => {
+        const data = [...prevState.data]
+        data.push(teacher)
+        return {...prevState, data}
+      })
+    }
+    if(this.state.dialogType == 'edit'){
+      const rowId = this.state.selectedTeacher.tableData.id
+      this.setState(prevState => {
+        const data = [...prevState.data]
+        data[rowId] = teacher
+        return {...prevState, data}
+      })
+    }
   }
 
-  handleCloseDialogEdit = () => {
-    this.setState({ open_edit : false })
-  }
   //EDIT TEACHER
   handleOpenEditDialog = (data) => {
-    console.log("abc: " + data.tableData.id)
     this.setState({ 
-      open_edit : true,
-      selectedTeacher: data
+      open_create : true,
+      dialogType: 'edit',
+      selectedTeacher: data,
     })
   }
-  handleCloseEditDialog = () => {
-    this.setState({ open_edit: false,  selectedTeacher: [] })
-  }
-  handleClickOptionTeacher = event => {
-    this.setState({ anchorElOptionTeacher: event.currentTarget });
-  };
 
-  handleCloseOptionTeacher = () => {
-      this.setState({ anchorElOptionTeacher: null });
-  };
+  handleResignTeacher = (id, rowId) => {
+    axios.post(baseUrl + '/teacher/resign', {id: id})
+      .then(response => { 
+        this.setState(prevState => {
+          const data = [...prevState.data]
+          data.splice(rowId, 1);
+          return {...prevState, data}
+        })
+        this.notification('Đã kết thúc hợp đồng', 'success')
+      })
+      .catch(err => {
+        console.log('Ket thuc hop dong bug: '+ err)
+      })
+  }
   componentDidMount(){ 
     this.getTeacher()
   }
@@ -158,8 +175,11 @@ class Teacher extends React.Component{
                                   </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Dừng hợp đồng" arrow>
-                                  <IconButton onClick={() => this.handleClickOpenConfirm('tắt', rowData.id)}>
-                                    <BlockOutlinedIcon fontSize='medium' />
+                                  <IconButton onClick={() => {
+                                    if (window.confirm('Kết thúc hợp đồng với giáo viên ? Giáo viên sẽ được đưa vào thư mục ẩn (Có thể phục hồi)')) 
+                                      this.handleResignTeacher(rowData.id, rowData.tableData.id)}
+                                  }>
+                                  <BlockOutlinedIcon fontSize='medium' />
                                   </IconButton>
                                 </Tooltip>                                
                             </div>
@@ -225,11 +245,13 @@ class Teacher extends React.Component{
                     ]}
                    
               />
-              <DialogCreate open={this.state.open_create} handleCloseDialog={this.handleCloseDialogCreate} updateTable = {this.updateTable}/>
-              <DialogEdit 
-                open = {this.state.open_edit} 
-                handleCloseDialog={this.handleCloseDialogEdit} 
+              <DialogCreate 
+                open={this.state.open_create} 
+                handleCloseDialog={this.handleCloseDialogCreate} 
+                updateTable = {this.updateTable}
+                notification = {this.notification}
                 teacher={this.state.selectedTeacher}
+                dialogType = {this.state.dialogType}
               />
           </div>
       )

@@ -26,9 +26,32 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Icofont from "react-icofont";
+import NumberFormat from 'react-number-format';
 
 import axios from 'axios'
+
 const baseUrl = window.Laravel.baseUrl;
+function NumberFormatCustom(props) {
+    const { inputRef, onChange, name, ...other } = props;
+
+    return (
+        <NumberFormat
+            {...other}
+            getInputRef={inputRef}
+            onValueChange={values => {
+                onChange({
+                target: {
+                    name: name,
+                    value: values.value,
+                },
+                });
+            }}
+            thousandSeparator
+            isNumericString
+            prefix="đ"
+        />
+    );
+}
 export default class BaseSalary extends React.Component{
     constructor(props){
         super(props)
@@ -37,10 +60,23 @@ export default class BaseSalary extends React.Component{
                 { title: 'Môn học', field: 'domain' },
                 { title: 'Lớp', field: 'grade' },
                 { title: 'Cấp độ', field: 'level' },
-                { title: 'Lương tối thiểu', field: 'salary' },
+                { title: 'Lương tối thiểu', field: 'salary', type: "currency", 
+                  currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
+                  editComponent : props => (
+                      
+                      <TextField
+                        value={props.value}
+                        onChange={e => props.onChange(e.target.value)}
+                        name = "c"
+                        InputProps={{
+                            inputComponent: NumberFormatCustom,
+                        }}
+                        />
+                  )},
                 { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },               
               ],
             data: [],
+            c: 10000,
         }
     }
     successNotification = (successMessage) => {
@@ -56,7 +92,7 @@ export default class BaseSalary extends React.Component{
             duration: 3000
           }
         })
-      }
+    }
     errorNotification = (errorMessage) => {
         store.addNotification({
           title: 'Có lỗi',
@@ -70,7 +106,8 @@ export default class BaseSalary extends React.Component{
             duration: 3000
           }
         })
-      }
+    }
+
     getBaseSalary = () =>{
         axios.get(window.Laravel.baseUrl + "/get-base-salary")
             .then(response => {
@@ -130,6 +167,11 @@ export default class BaseSalary extends React.Component{
                 this.props.errorNotification('Có lỗi')
                 console.log('delete Center bug: ' + err)
             })
+    }
+    onChange = e => {
+        this.setState({
+            [e.target.name] : e.target.value
+        })
     }
     render(){
         return(

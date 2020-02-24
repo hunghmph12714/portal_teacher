@@ -18,7 +18,7 @@ import { Profile, SidebarNav, UpgradePlan } from './components';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
-    width: 240,
+    width: 200,
     [theme.breakpoints.up('lg')]: {
       marginTop: 64,
       height: 'calc(100% - 64px)'

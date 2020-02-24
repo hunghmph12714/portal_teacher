@@ -4,6 +4,7 @@ import './DialogCreate.scss';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Select from "react-select";
 
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -12,7 +13,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Divider from '@material-ui/core/Divider';
 
-import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -21,9 +21,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+const baseUrl = window.Laravel.baseUrl
 
 function NumberFormatCustom(props) {
-    const { inputRef, onChange, ...other } = props;
+    const { inputRef, onChange, name, ...other } = props;
   
     return (
       <NumberFormat
@@ -32,35 +33,33 @@ function NumberFormatCustom(props) {
         onValueChange={values => {
           onChange({
             target: {
+              name: name,
               value: values.value,
             },
           });
         }}
         thousandSeparator
         isNumericString
-        prefix="$"
       />
     );
   }
   
-NumberFormatCustom.propTypes = {
-    inputRef: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-};
+
 export default class DialogCreate extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
+            id: "",
             name:  "",
             email:  '',
             phone:  '',
             school: '',
             domain:  '',
-            tncn: 0,
+            //Thuế
+            tncn: '',
+            insurance: '',
+            //Loại hợp đồng
             hdType: '',
-            salary_percent: 0,
-            salary_per_hour: 0,
-            salary_min : 0,
             hdTypes: [
                 {
                     value: 'Cơ hữu',
@@ -70,15 +69,94 @@ export default class DialogCreate extends React.Component {
                     value: 'Hợp tác',
                     label: 'Hợp tác',
                 },
-            ]
+            ],
+            //Lương
+            salary_percent: 0,
+            salary_per_hour: 0,
+            base_salaries : [],
+            base_salary: '',
+            
         }  
     }
-    
+    UNSAFE_componentWillReceiveProps(nextProps){
+        const bs = this.state.base_salaries.filter(s => {
+            return s.value == nextProps.teacher.basic_salary_id
+        })
+        const contract = {value: nextProps.teacher.contract, label : nextProps.teacher.contract}
+        this.setState({
+            id : nextProps.teacher.id,
+            name: nextProps.teacher.name,
+            email: nextProps.teacher.email,
+            phone: nextProps.teacher.phone,
+            school: nextProps.teacher.school,
+            domain: nextProps.teacher.domain,
+
+            tncn: nextProps.teacher.personal_tax,
+            insurance: nextProps.teacher.insurance,
+            salary_percent: nextProps.teacher.percent_salary,
+            salary_per_hour: nextProps.teacher.salary_per_hour,
+            base_salary : bs[0],
+            hdType : contract,
+        })
+    }
+    componentDidMount () {
+        this.getBaseSalary()
+    }
+    getBaseSalary = () =>{
+        axios.get(window.Laravel.baseUrl + "/get-base-salary")
+            .then(response => {
+                var formatter = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                });
+                let data = []
+                data = response.data.map(salary => {
+                    return {
+                        value: salary.id, label: salary.domain+" "+salary.level+" "+ salary.grade+" - "+ formatter.format(salary.salary)
+                    }
+                })
+                this.setState({
+                    base_salaries: data
+                })
+            })
+            .catch(err => {
+                console.log('center bug: ' + err)
+            })
+    }
     onChange = e => {
         this.setState({
             [e.target.name] : e.target.value
         })
     };
+    handleBaseSalaryChange = (base_salary)=> {
+        this.setState({ base_salary: base_salary })
+    }
+    
+    handleCreateNewTeacher = () => {
+        let url = baseUrl + "/teacher/create"
+        let data =  this.state;
+        axios.post(url, data)
+            .then(response => {
+                this.props.updateTable(response.data);
+                this.props.notification('Tạo giáo viên thành công','success')
+                this.props.handleCloseDialog();
+            })
+            .catch(err => {
+                console.log('teacher create bug: ' + err)
+            })
+    }
+    handleEditTeacher = () => {
+        let url = baseUrl + "/teacher/edit"
+        axios.post(url, this.state)
+            .then(response => {
+                this.props.updateTable(response.data)
+                this.props.notification('Đã lưu thay đổi','success')
+                this.props.handleCloseDialog();
+            })
+            .catch(err => {
+                this.props.notification('Có lỗi xảy ra','error')
+            })
+    }
     render(){
         return (
             <div>
@@ -90,7 +168,9 @@ export default class DialogCreate extends React.Component {
                     maxWidth='lg'
                     open={this.props.open} onClose={this.props.handleCloseDialog} aria-labelledby="form-dialog-title"
                 >
-                    <DialogTitle id="form-dialog-title"><h4>Thêm giáo viên</h4></DialogTitle>
+                    <DialogTitle id="form-dialog-title">{
+                        this.props.dialogType == "create" ? (<h4>Thêm giáo viên</h4>):(<h4>Sửa giáo viên</h4>)
+                    }</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Vui lòng điền đầy đủ thông tin giáo viên
@@ -106,7 +186,7 @@ export default class DialogCreate extends React.Component {
                                     lg={6}
                                 >
                                     <h5>Thông tin giáo viên</h5>                                       
-                                    <TextField id="standard-basic" label="Họ tên" 
+                                    <TextField  label="Họ tên" 
                                         id="name"
                                         required
                                         variant="outlined"
@@ -118,7 +198,7 @@ export default class DialogCreate extends React.Component {
                                         name = 'name'
                                         onChange = {this.onChange}
                                     />           
-                                    <TextField id="standard-basic" label="Email" 
+                                    <TextField  label="Email" 
                                         variant="outlined"
                                         size="small"
                                         type="email"
@@ -129,7 +209,7 @@ export default class DialogCreate extends React.Component {
                                         value = {this.state.email}
                                         onChange = {this.onChange}
                                     />    
-                                    <TextField id="standard-basic" label="Số điện thoại" 
+                                    <TextField  label="Số điện thoại" 
                                         variant="outlined"
                                         size="small"
                                         fullWidth
@@ -140,7 +220,7 @@ export default class DialogCreate extends React.Component {
                                         value = {this.state.phone}
                                         onChange = {this.onChange}
                                     />  
-                                    <TextField id="standard-basic" label="Nơi công tác" 
+                                    <TextField  label="Nơi công tác" 
                                         variant="outlined"
                                         size="small"
                                         fullWidth
@@ -150,7 +230,7 @@ export default class DialogCreate extends React.Component {
                                         value = {this.state.school}
                                         onChange = {this.onChange}
                                     />  
-                                    <TextField id="standard-basic" label="Bộ môn" 
+                                    <TextField  label="Bộ môn" 
                                         variant="outlined"
                                         required
                                         size="small"
@@ -196,8 +276,8 @@ export default class DialogCreate extends React.Component {
                                         <InputLabel htmlFor="outlined-adornment-amount">Tỷ lệ lương</InputLabel>
                                         <OutlinedInput
                                             type= 'number'
-                                            max = '100'
-                                            id="outlined-adornment-amount"
+                                            inputProps={{ min: "0", max: "100" }}
+                                            
                                             value={this.state.salary_percent}
                                             name = "salary_percent"
                                             onChange={this.onChange}
@@ -205,14 +285,13 @@ export default class DialogCreate extends React.Component {
                                             labelWidth={75}
                                             
                                         />
-                                        <FormHelperText id="standard-weight-helper-text">Tỷ lệ lương giáo viên / ca học</FormHelperText>
+                                    <FormHelperText >Tỷ lệ lương giáo viên / ca học</FormHelperText>
                                     </FormControl> 
 
                                     <FormControl fullWidth variant="outlined" margin="dense">
                                         <InputLabel htmlFor="outlined-adornment-amount">Lương theo giờ</InputLabel>
                                         <OutlinedInput
-                                            type= 'number'
-                                            id="outlined-adornment-amount"
+                                            
                                             value={this.state.salary_per_hour}
                                             name = "salary_per_hour"
                                             onChange={this.onChange}
@@ -222,17 +301,26 @@ export default class DialogCreate extends React.Component {
                                         >
                                             
                                         </OutlinedInput>
-                                        <FormHelperText id="standard-weight-helper-text">Lương giáo viên / 1 giờ dạy</FormHelperText>
+                                        <FormHelperText >Lương giáo viên / 1 giờ dạy</FormHelperText>
                                     </FormControl>        
-                                    
+                                    <FormControl variant="outlined" className="base_salary" fullWidth  margin="dense">
+                                        <Select
+                                            value={this.state.base_salary}
+                                            onChange={this.handleBaseSalaryChange}
+                                            options={this.state.base_salaries}
+                                            placeholder="Lương cơ bản"
+                                        />
+                                        <FormHelperText >Lương cơ bản theo lớp/trình độ</FormHelperText>
+
+                                    </FormControl>
+
                                     <Divider variant="middle" className="divider" />
                                     <h5>Áp dụng thuế</h5> 
                                     <FormControl fullWidth variant="outlined" margin="dense">
                                         <InputLabel htmlFor="outlined-adornment-amount">Thuế thu nhập cá nhân</InputLabel>
                                         <OutlinedInput
                                             type= 'number'
-                                            max = '100'
-                                            id="outlined-adornment-amount"
+                                            inputProps={{ min: "0", max: "100" }}                                            
                                             value={this.state.tncn}
                                             name = "tncn"
                                             onChange={this.onChange}
@@ -240,6 +328,19 @@ export default class DialogCreate extends React.Component {
                                             labelWidth={150}
                                             helperText=""
                                         />
+                                    </FormControl>
+                                    <FormControl fullWidth variant="outlined" margin="dense">
+                                        <InputLabel htmlFor="outlined-adornment-amount">Bảo hiểm</InputLabel>
+                                        <OutlinedInput
+                                            value={this.state.insurance}
+                                            name = "insurance"
+                                            onChange={this.onChange}
+                                            startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                            labelWidth={70}
+                                            inputComponent = {NumberFormatCustom}                                           
+                                        />
+                                        <FormHelperText>Bảo hiểm trên 1 tháng</FormHelperText>
+
                                     </FormControl>
                                 </Grid>
                             </Grid>
@@ -249,14 +350,21 @@ export default class DialogCreate extends React.Component {
                         <Button onClick={this.props.handleCloseDialog} color="primary">
                             Hủy bỏ
                         </Button>
-                        <Button onClick={this.props.handleCloseDialog} color="primary" id="btn-save">
-                            Lưu thay đổi
-                        </Button>
+                        {
+                            (this.props.dialogType == 'create') ? (
+                                <Button onClick={this.handleCreateNewTeacher} color="primary" id="btn-save">
+                                    Tạo mới giáo viên
+                                </Button>
+                            ) : (
+                                <Button onClick={this.handleEditTeacher} color="primary" id="btn-save">
+                                    Lưu thay đổi
+                                </Button>
+                            )
+                        }
+                        
                     </DialogActions>
                 </Dialog>
                 </div>
           );
     }
-
-  
 }
