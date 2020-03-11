@@ -17,7 +17,9 @@ import {
   NotFound as NotFoundView,
   CenterList as CenterListView,
   TeacherList as TeacherListView,
-  BaseSalary as BaseSalary
+  BaseSalary as BaseSalary,
+  Room as Room,
+  Courses as Courses,
 } from './views';
 
 const Routes = (props) => {
@@ -33,11 +35,24 @@ const Routes = (props) => {
         from="/home"
         to="/dashboard"
       />
+
       <ProtectedRouteWithLayout
         component={DashboardView}
         exact
         layout={MainLayout}
         path="/dashboard"
+      />
+      <ProtectedRouteWithLayout
+        component={Room}
+        exact
+        layout={MainLayout}
+        path="/rooms"
+      />
+      <ProtectedRouteWithLayout
+        component={Courses}
+        exact
+        layout={MainLayout}
+        path="/courses"
       />
       <ProtectedRouteWithLayout
         component={CenterListView}

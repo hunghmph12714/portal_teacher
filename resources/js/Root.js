@@ -4,6 +4,8 @@ import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Chart } from 'react-chartjs-2';
 import { ThemeProvider } from '@material-ui/styles';
+// import { Provider as StoreProvider } from 'react-redux';
+// import { configureStore } from './store';
 import validate from 'validate.js';
 
 import { chartjs } from './helpers';
@@ -14,6 +16,7 @@ import validators from './common/validators';
 import Routes from './Routes';
 
 const browserHistory = createBrowserHistory();
+// const store = configureStore();
 
 Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
   draw: chartjs.draw
@@ -33,10 +36,10 @@ export default class Root extends Component {
     render() {
         return (
           <ThemeProvider theme={theme}>
-            <Router history={browserHistory}>
-              <Routes />
-            </Router>
-          </ThemeProvider>
+              <Router history={browserHistory}>
+                <Routes />
+              </Router>
+            </ThemeProvider>
         );
       }
 }

@@ -34,7 +34,7 @@ const Topbar = props => {
       .then(response => {
         auth.logout()
         // const res = response.data
-        location.reload();
+        location.href = "https://center.vietelite.edu.vn/login"
 
       })
       .catch(err => {console.log('sign out bug: ' + err)})

@@ -4,10 +4,15 @@ import React, { forwardRef } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
-import { List, ListItem, Button, colors } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
+import { makeStyles, withStyles } from '@material-ui/styles';
+import { List, ListItem, Button, colors, Collapse, ListItemIcon, ListItemText  } from '@material-ui/core';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// const useStyles = makeStyles(theme => ({
+  
+// }));
+const styles = theme => ({
   root: {},
   item: {
     display: 'flex',
@@ -16,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     color: colors.blueGrey[800],
-    padding: '10px 8px',
+    padding: '6px 5px',
     justifyContent: 'flex-start',
     textTransform: 'none',
     letterSpacing: 0,
@@ -25,11 +30,12 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     color: theme.palette.icon,
-    width: 24,
-    height: 24,
+    width: 18,
+    height: 18,
     display: 'flex',
     alignItems: 'center',
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(3)
+
   },
   active: {
     color: theme.palette.primary.main,
@@ -38,8 +44,7 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.primary.main
     }
   }
-}));
-
+})
 const CustomRouterLink = forwardRef((props, ref) => (
   <div
     ref={ref}
@@ -49,35 +54,123 @@ const CustomRouterLink = forwardRef((props, ref) => (
   </div>
 ));
 
-const SidebarNav = props => {
-  const { pages, className, ...rest } = props;
+class SidebarNav extends React.Component {
 
-  const classes = useStyles();
+  constructor( props ){
+    super(props)
+    this.state = {
 
-  return (
-    <List
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      {pages.map(page => (
-        <ListItem
-          className={classes.item}
-          disableGutters
-          key={page.title}
-        >
-          <Button
-            activeClassName={classes.active}
-            className={classes.button}
-            component={CustomRouterLink}
-            to={page.href}
+    }
+  }
+
+  handleClick = (item) => {
+    this.setState( prevState => {
+      return { [item] : !prevState[ item ]}
+    })
+  }
+
+  handler = children => {
+    const { classes } = this.props
+    const { state } = this
+    return children.map( subOption => {
+      if(!subOption.children){
+        return (
+          <ListItem
+            className={classes.item}
+            disableGutters
+            key={subOption.title}
           >
-            <div className={classes.icon}>{page.icon}</div>
-            {page.title}
-          </Button>
-        </ListItem>
-      ))}
-    </List>
-  );
+            <Button
+              activeClassName={classes.active}
+              className={classes.button}
+              component={CustomRouterLink}
+              to={subOption.href}
+            >
+              <div className={classes.icon}>{subOption.icon}</div>
+              {subOption.title}
+            </Button>
+          </ListItem>
+        )
+      }
+      else{
+        return(
+          <div key = {subOption.title}>
+            <ListItem
+              className={classes.item}
+              disableGutters
+              key={subOption.title}
+              onClick = {() => this.handleClick( subOption.title )}
+            >
+              <Button
+                activeClassName={""}
+                className={classes.button}
+                component={CustomRouterLink}
+                to={subOption.href}
+              >
+                <div className={classes.icon}>{subOption.icon}</div>
+                {subOption.title}
+                { ! state[ subOption.title ] ? 
+                  <ExpandLessIcon /> :
+                  <ExpandMoreIcon />
+                }
+              </Button>
+            </ListItem>
+            <Collapse in={ state[subOption.title] } timeout="auto" unmountOnExit>
+              {this.handler( subOption.children )}
+            </Collapse>
+          </div>
+          
+        )
+      }
+    })
+  }
+  // const classes = useStyles();
+  render() {
+    const { classes, pages } = this.props
+    return (
+      <List className = {classes.root}>
+        { this.handler( pages ) }
+      </List>
+    )
+  }
+  // return (
+  //   <List
+  //     {...rest}
+  //     className={clsx(classes.root, className)}
+  //   >
+  //     {pages.map(page => (
+  //       (page.nested) ? (
+  //         <Collapse in={1} timeout="auto" unmountOnExit>
+  //           <List component="div" disablePadding>
+  //             <ListItem button className={classes.nested}>
+  //               <ListItemIcon>
+  //                 <StarBorderIcon />
+  //               </ListItemIcon>
+  //               <ListItemText primary="Starred" />
+  //             </ListItem>
+  //           </List>
+  //         </Collapse>
+  //       ):(
+  //         <ListItem
+  //           className={classes.item}
+  //           disableGutters
+  //           key={page.title}
+  //         >
+  //           <Button
+  //             activeClassName={classes.active}
+  //             className={classes.button}
+  //             component={CustomRouterLink}
+  //             to={page.href}
+  //           >
+  //             <div className={classes.icon}>{page.icon}</div>
+  //             {page.title}
+  //           </Button>
+  //         </ListItem>
+  //       )
+  //     )
+  //     )}
+  //   </List>
+  // );
 };
 
 SidebarNav.propTypes = {
@@ -85,4 +178,4 @@ SidebarNav.propTypes = {
   pages: PropTypes.array.isRequired
 };
 
-export default SidebarNav;
+export default withStyles(styles)(SidebarNav);

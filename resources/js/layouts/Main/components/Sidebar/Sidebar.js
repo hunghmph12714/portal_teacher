@@ -14,7 +14,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 
-import { Profile, SidebarNav, UpgradePlan } from './components';
+import { Profile, SidebarNav } from './components';
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -29,13 +29,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    padding: theme.spacing(2)
+    padding: theme.spacing(1)
   },
   divider: {
-    margin: theme.spacing(2, 0)
+    margin: theme.spacing(1, 0)
   },
   nav: {
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(1)
   }
 }));
 
@@ -48,22 +48,42 @@ const Sidebar = props => {
     {
       title: 'Dashboard',
       href: '/dashboard',
-      icon: <DashboardIcon />
+      icon: <DashboardIcon />,      
     },
     {
-      title: 'Cơ sở',
-      href: '/centers',
-      icon: <AccountBalanceIcon />
+      title: 'Đào tạo',
+      href: '#',
+      icon: <AccountBalanceIcon />,
+      children: [
+        {
+          title: 'Cơ sở',
+          href: '/centers',
+        },
+        {
+          title: 'Phòng học',
+          href: '/rooms',
+        },
+        {
+          title: 'Khóa học',
+          href: '/courses',
+        },
+      ]
     },
     {
-      title: 'Giáo viên',
-      href: '/teachers',
-      icon: <PeopleIcon />
-    },
-    {
-      title: 'Lương tối thiểu',
-      href: '/base-salary',
-      icon: <AttachMoneyIcon />
+      title: 'Nhận sự',
+      href: '#',
+      icon: <PeopleIcon />,
+      children: [
+        {
+          title: 'Giáo viên',
+          href: '/teachers',
+        },
+        {
+          title: 'Lương tối thiểu',
+          href: '/base-salary',
+        }
+
+      ]
     },
     {
       title: 'Users',
@@ -114,12 +134,14 @@ const Sidebar = props => {
         {...rest}
         className={clsx(classes.root, className)}
       >
-        <Profile />
-        <Divider className={classes.divider} />
         <SidebarNav
           className={classes.nav}
           pages={pages}
         />
+        <Divider className={classes.divider} />
+        <Profile />
+        
+        
         
       </div>
     </Drawer>

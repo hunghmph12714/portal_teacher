@@ -60,6 +60,24 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
 
+    //ROOM MANAGEMENT
+    Route::get('/rooms', function(){
+        return view('welcome');
+    });
+    Route::get('/get-rooms','ClassController@getRoom');
+    Route::post('/room/create', 'ClassController@createRoom');
+    Route::post('/room/edit', 'ClassController@editRoom');
+    Route::post('/room/delete', 'ClassController@deleteRoom');
+    //Courese MANAGEMENT
+    Route::get('/courses', function(){
+        return view('welcome');
+    });
+    Route::get('/get-courses','ClassController@getCourse');
+    Route::post('/course/create', 'ClassController@createCourse');
+    Route::post('/course/edit', 'ClassController@editCourse');
+    Route::post('/course/delete', 'ClassController@deleteCourse');
+
+
     Route::post('/base-salary/create', 'TeacherController@createBaseSalary');
     Route::post('/base-salary/edit', 'TeacherController@editBaseSalary');
     Route::post('/base-salary/delete', 'TeacherController@deleteBaseSalary');

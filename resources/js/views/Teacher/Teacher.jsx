@@ -171,7 +171,7 @@ class Teacher extends React.Component{
                                 {/* {rowData.tableData.id} */}
                                 <Tooltip title="Chỉnh sửa" arrow>
                                   <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                                    <EditOutlinedIcon fontSize='medium' />
+                                    <EditOutlinedIcon fontSize='inherit' />
                                   </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Dừng hợp đồng" arrow>
@@ -179,7 +179,7 @@ class Teacher extends React.Component{
                                     if (window.confirm('Kết thúc hợp đồng với giáo viên ? Giáo viên sẽ được đưa vào thư mục ẩn (Có thể phục hồi)')) 
                                       this.handleResignTeacher(rowData.id, rowData.tableData.id)}
                                   }>
-                                  <BlockOutlinedIcon fontSize='medium' />
+                                  <BlockOutlinedIcon fontSize='inherit' />
                                   </IconButton>
                                 </Tooltip>                                
                             </div>

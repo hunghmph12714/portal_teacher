@@ -11,3 +11,5 @@ export { default as UserList } from './UserList';
 export {default as CenterList} from './Center';
 export {default as TeacherList} from './Teacher';
 export { default as BaseSalary } from './BaseSalary';
+export { default as Room } from './Room';
+export { default as Courses } from './Courses';
