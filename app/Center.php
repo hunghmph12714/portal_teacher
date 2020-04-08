@@ -9,4 +9,12 @@ class Center extends Model
     //
     protected $fillable = ['id','name','address','phone','email'];
     public $table = 'center';
+
+    
+    public function entrances(){
+        return $this->hasMany('App\Entrance');
+    }
+    public function classes(){
+        return $this->hasMany('App\Classes');
+    }
 }

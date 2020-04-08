@@ -40,10 +40,10 @@ function NumberFormatCustom(props) {
             getInputRef={inputRef}
             onValueChange={values => {
                 onChange({
-                target: {
-                    name: name,
-                    value: values.value,
-                },
+                    target: {
+                        name: name,
+                        value: values.value,
+                    },
                 });
             }}
             thousandSeparator

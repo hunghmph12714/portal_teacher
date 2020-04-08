@@ -11,7 +11,25 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('public/css/app.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+        <style>
+            /* width */
+            ::-webkit-scrollbar {
+            width: 0.25rem;
+            }
 
+            /* Track */
+            ::-webkit-scrollbar-track {
+                border-radius: 2px;
+                background: ;
+            }
+            
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+                background: #6649b8; 
+                border-radius: 2px;
+            }
+
+            
         </style>
         <script type="text/javascript">
             window.Laravel = {!! json_encode([
@@ -22,6 +40,6 @@
     </head>
     <body>
         <div id="root"></div>
-    <script type="text/javascript" src="{{ asset('public/js/app.js') }}?{{ time() }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/app.js') }}"></script>
     </body>
 </html>

@@ -1,0 +1,39 @@
+#form-dialog-title{
+    padding-bottom:0px !important; 
+}
+.paper{
+    padding: 2px;
+    text-align : center;
+    color: blue;
+    
+}
+#btn-save{
+    font-weight: 600;
+}
+
+.divider {
+    margin: 5px 0px !important;
+}
+.select-input {
+    z-index: 1000 !important;
+    position: static !important;
+  }
+.date-time{
+    margin-top: 7px;
+}
+.input-time{
+    div{
+        padding-right: 0px;
+    }
+    input{
+        padding-top:10px;
+        padding-bottom: 10px;
+    }
+    width:100%;
+}
+.divider-class{
+    margin: 14px 0px !important;
+}
+#session{
+    float : right;
+}

@@ -34,8 +34,10 @@ const styles = theme => ({
     height: 18,
     display: 'flex',
     alignItems: 'center',
-    marginRight: theme.spacing(3)
-
+    marginRight: theme.spacing(2)
+  },
+  expandArrow: {
+    marginLeft: 'auto',
   },
   active: {
     color: theme.palette.primary.main,
@@ -110,8 +112,8 @@ class SidebarNav extends React.Component {
                 <div className={classes.icon}>{subOption.icon}</div>
                 {subOption.title}
                 { ! state[ subOption.title ] ? 
-                  <ExpandLessIcon /> :
-                  <ExpandMoreIcon />
+                  <ExpandLessIcon className={classes.expandArrow}/> :
+                  <ExpandMoreIcon className={classes.expandArrow}/>
                 }
               </Button>
             </ListItem>
@@ -133,44 +135,7 @@ class SidebarNav extends React.Component {
       </List>
     )
   }
-  // return (
-  //   <List
-  //     {...rest}
-  //     className={clsx(classes.root, className)}
-  //   >
-  //     {pages.map(page => (
-  //       (page.nested) ? (
-  //         <Collapse in={1} timeout="auto" unmountOnExit>
-  //           <List component="div" disablePadding>
-  //             <ListItem button className={classes.nested}>
-  //               <ListItemIcon>
-  //                 <StarBorderIcon />
-  //               </ListItemIcon>
-  //               <ListItemText primary="Starred" />
-  //             </ListItem>
-  //           </List>
-  //         </Collapse>
-  //       ):(
-  //         <ListItem
-  //           className={classes.item}
-  //           disableGutters
-  //           key={page.title}
-  //         >
-  //           <Button
-  //             activeClassName={classes.active}
-  //             className={classes.button}
-  //             component={CustomRouterLink}
-  //             to={page.href}
-  //           >
-  //             <div className={classes.icon}>{page.icon}</div>
-  //             {page.title}
-  //           </Button>
-  //         </ListItem>
-  //       )
-  //     )
-  //     )}
-  //   </List>
-  // );
+
 };
 
 SidebarNav.propTypes = {

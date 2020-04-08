@@ -13,6 +13,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 
 import { Profile, SidebarNav } from './components';
 
@@ -67,6 +68,10 @@ const Sidebar = props => {
           title: 'Khóa học',
           href: '/courses',
         },
+        {
+          title: 'Lớp học',
+          href: '/classes'
+        }
       ]
     },
     {
@@ -86,9 +91,15 @@ const Sidebar = props => {
       ]
     },
     {
-      title: 'Users',
-      href: '/users',
-      icon: <PeopleIcon />
+      title: 'Công tác học sinh',
+      href: '#',
+      icon: <AssignmentIndIcon />,
+      children: [
+        {
+          title: 'Đăng ký ghi danh',
+          href: '/entrance/create',
+        }
+      ]
     },
     {
       title: 'Products',
@@ -116,9 +127,24 @@ const Sidebar = props => {
       icon: <AccountBoxIcon />
     },
     {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
+      title: 'Cài đặt',
+      href: '#',
+      icon: <SettingsIcon />,
+      children: [
+        {
+          title: 'Cấu hình quan hệ',
+          href: '/settings/relationship',
+        },
+        {
+          title: 'Cấu hình quy trình',
+          href: '/settings/step'
+        },
+        {
+          title: 'Cấu hình trạng thái',
+          href: '/settings/status'
+        }
+
+      ]
     }
   ];
 

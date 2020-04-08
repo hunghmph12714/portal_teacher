@@ -22,11 +22,32 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Icofont from "react-icofont";
+import NumberFormat from 'react-number-format';
 
 import axios from 'axios'
 
 const baseUrl = window.Laravel.baseUrl;
+function NumberFormatCustom(props) {
+    const { inputRef, onChange, name, ...other } = props;
 
+    return (
+        <NumberFormat
+            {...other}
+            getInputRef={inputRef}
+            onValueChange={values => {
+                onChange({
+                    target: {
+                        name: name,
+                        value: values.value,
+                    },
+                });
+            }}
+            thousandSeparator
+            isNumericString
+            prefix="đ"
+        />
+    );
+}
 export default class Courses extends React.Component{
     constructor(props){
         super(props)
@@ -35,8 +56,22 @@ export default class Courses extends React.Component{
                 { title: 'Tên khóa học', field: 'name' },
                 { title: 'Khối', field: 'grade' },
                 { title: 'Tài liệu', field: 'document'},         
-                { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },               
-              ],
+                { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },      
+                { title: 'Học phí/ca', field: 'fee', type: "currency", 
+                    currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
+                    editComponent : props => (                        
+                        <TextField
+                        value={props.value}
+                        onChange={e => props.onChange(e.target.value)}
+                        name = "c"
+                        InputProps={{
+                            inputComponent: NumberFormatCustom,
+                        }}
+                        />
+                )},
+                { title: 'Số buổi/tuần', field: 'class_per_week' },
+                { title: 'Số ca/buổi', field: 'session_per_class' }
+            ],
             data: [],
             c: 10000,
             centers: {}

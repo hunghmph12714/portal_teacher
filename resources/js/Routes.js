@@ -20,6 +20,11 @@ import {
   BaseSalary as BaseSalary,
   Room as Room,
   Courses as Courses,
+  Classes,
+  Relationship,
+  Step,
+  Status, 
+  CreateEntrance,
 } from './views';
 
 const Routes = (props) => {
@@ -47,6 +52,12 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/rooms"
+      />
+      <ProtectedRouteWithLayout 
+        component = { Classes }
+        exact
+        layout = { MainLayout }
+        path = "/classes"
       />
       <ProtectedRouteWithLayout
         component={Courses}
@@ -108,7 +119,24 @@ const Routes = (props) => {
         layout={MainLayout}
         path="/settings"
       />
-      
+      <ProtectedRouteWithLayout
+        component={Relationship}
+        exact
+        layout={MainLayout}
+        path="/settings/relationship"
+      />
+      <ProtectedRouteWithLayout
+        component={Step}
+        exact
+        layout={MainLayout}
+        path="/settings/step"
+      />
+      <ProtectedRouteWithLayout
+        component={Status}
+        exact
+        layout={MainLayout}
+        path="/settings/status"
+      />
       <RouteWithLayout
         component={SignInView}
         exact
@@ -120,6 +148,12 @@ const Routes = (props) => {
         exact
         layout={MinimalLayout}
         path="/not-found"
+      />
+      <ProtectedRouteWithLayout 
+        component = {CreateEntrance}
+        exact
+        layout={MainLayout}
+        path="/entrance/create"
       />
       <Redirect to="/not-found" />
     </Switch>
