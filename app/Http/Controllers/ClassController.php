@@ -124,7 +124,7 @@ class ClassController extends Controller
 
         $result = Classes::where('classes.id', $class->id)->
                         select('classes.id as id','classes.name as name','code',
-                        'center.name as center','concat("courses.name", "courses.grade")  as course',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->

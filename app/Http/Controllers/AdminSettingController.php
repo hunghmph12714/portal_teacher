@@ -97,7 +97,7 @@ class AdminSettingController extends Controller
             $step->type = $request['type'];
             $step->order = $request['order'];
             $step->duration = $request['duration'];
-            $step->document = $request['document'];
+            $step->document = ($request['document'])? $request['document'] : null;
             $step->name = $request['name'];
             $step->save();
         }

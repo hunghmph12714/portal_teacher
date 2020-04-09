@@ -177,7 +177,6 @@ export default class CreateEntrance extends React.Component {
         //     parent_alt_phone: '',
         //     parent_note: '',
             
-        //     relationships: [],
         //     selected_relationship: '',
 
         //     entrance_center: '',
@@ -187,9 +186,7 @@ export default class CreateEntrance extends React.Component {
 
         // }
         this.state = {
-            //Options
             schools: [],
-            //State
             student_name: {__isNew__: true, label: "Trần Trịnh C", value:"Trần Trịnh C"},
             student_dob: new Date(),
             student_school:  {__isNew__: true, label: "THPT Chuyên Hà Nội - Amsterdam (01005612)", value:3142},
@@ -206,11 +203,10 @@ export default class CreateEntrance extends React.Component {
             parent_alt_phone: '0985951181',
             parent_note: '',
             
-            relationships: [],
             selected_relationship: {color: "#9900ef", label: "Cocc", value: 4},
 
-            entrance_center: {label: "CS1: VietElite1 Đỗ Quanggg", value: 1},
-            entrance_courses: [{label: "Toán Nâng Cao9", value: 2}, {label: "Văn5", value: 5}],
+            entrance_center: {label: "CS1: VietElite Đỗ Quang (67)", value: 2},
+            entrance_courses: [{label: "Toán Chuyên9", value: 1}, {label: "Lý Chuyên9", value: 2}],
             entrance_date: new Date(),
             entrance_note: '',           
 
@@ -222,7 +218,6 @@ export default class CreateEntrance extends React.Component {
         // });
     }
     componentDidMount(){
-        this.getRelationship();
     }
     findSchools = (inputValue) => {
         return axios.get(baseUrl + '/school/find/' + inputValue)
@@ -233,18 +228,7 @@ export default class CreateEntrance extends React.Component {
                 console.log('get schools bug' + err.response.data)
             })
     }
-    getRelationship = () => {
-        axios.get(baseUrl + '/relationship/get')
-            .then(response => {
-                let r = response.data.map(relationship => {
-                    return {label: relationship.name, value: relationship.id, color: (relationship.color)?relationship.color:"#000000"}
-                })
-                this.setState({relationships:r})
-            })
-            .catch(err => {
-                console.log('get relationship error : ' + err.response.data)
-        })
-    }
+    
     handleChange = (newValue , event)=> {
         this.setState({
             [event.name]: newValue
