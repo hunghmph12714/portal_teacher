@@ -1,6 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +14,6 @@ use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
-});
-Route::get('/password', function(){
-    $pass = Str::random(8);;
-    echo $pass ."<br>";
-    echo Hash::make('abc123123');
 });
 //LOG IN
 Route::get('/login', function () {
