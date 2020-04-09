@@ -1,0 +1,21 @@
+.notification-container-bottom-right{
+    bottom: 12% !important;
+    right: 18% !important;
+}
+.notification-container-mobile-bottom{
+    left: 0px !important;
+    bottom: 13% !important;
+}
+.root{
+    .detail{
+        display: flex;
+        .avatar{
+            margin-left: auto;
+            height: 110px;
+            width: 100px;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+    }  
+    
+}
