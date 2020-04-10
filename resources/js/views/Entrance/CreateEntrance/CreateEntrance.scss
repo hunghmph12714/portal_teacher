@@ -43,5 +43,16 @@
       float: right;
       margin-top: 40px;
     }
+    .search-card{
+      .MuiCardContent-root{
+        padding: 12px;
+      }
+      .search-grid{
+        margin-top: 0px;
+      }
+      :hover{
+        background: #deebff;
+      }
+    }
     
 }

@@ -15,6 +15,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+// Route::get('/importdb', 'ClassController@importDB');
 //LOG IN
 Route::get('/login', function () {
     return view('welcome');
@@ -127,6 +128,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/entrance/create', 'EntranceController@createEntrance');
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
+    Route::get('/student/find/{key}' , 'StudentController@findStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
 });

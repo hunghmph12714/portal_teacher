@@ -147,17 +147,71 @@ class ClassController extends Controller
     public function importDB(){
         $row = 1;
         $mg = [];
-        if (($handle = fopen(public_path()."/css/thpt.csv", "r")) !== FALSE) {
+        if (($handle = fopen(public_path()."/css/maugiao.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
                 $num = count($data);
                 for ($c=0; $c < $num; $c++) {
-                    $input = ['type' => 'THPT', 'name' => $data[$c]];
-                    array_push($mg, $input);
+                    $input = ['type' => 'MG', 'name' => $data[$c]];
+                    $checkSchool = Schools::where('name', $data[$c])->first();
+                    if(!$checkSchool){
+                        array_push($mg, $input);
+                    }  
+                    else{
+                        echo "aa". "<br>";
+                    }                  
                 }
             }
             fclose($handle);
         }
         $mg = Schools::insert($mg);
+        $mg = [];
+        if (($handle = fopen(public_path()."/css/tieuhoc.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
+                $num = count($data);
+                for ($c=0; $c < $num; $c++) {
+                    $input = ['type' => 'TH', 'name' => $data[$c]];
+                    $checkSchool = Schools::where('name', $data[$c])->first();
+                    if(!$checkSchool){
+                        array_push($mg, $input);
+                    }                    
+                }
+            }
+            fclose($handle);
+        }
+        $mg = Schools::insert($mg);
+        $mg = [];
+        if (($handle = fopen(public_path()."/css/thcs.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
+                $num = count($data);
+                for ($c=0; $c < $num; $c++) {
+                    $input = ['type' => 'THCS', 'name' => $data[$c]];
+                    $checkSchool = Schools::where('name', $data[$c])->first();
+                    if(!$checkSchool){
+                        array_push($mg, $input);
+                    }                    
+                }
+            }
+            fclose($handle);
+        }
+        $mg = Schools::insert($mg);
+        $mg = [];
+        if (($handle = fopen(public_path()."/css/thpt.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
+                $num = count($data);
+                for ($c=0; $c < $num; $c++) {
+                    $input = ['type' => 'THPT', 'name' => $data[$c]];
+                    $checkSchool = Schools::where('name', $data[$c])->first();
+                    if(!$checkSchool){
+                        array_push($mg, $input);
+                    }                    
+                }
+            }
+            fclose($handle);
+        }
+        $mg = Schools::insert($mg);
+        
+        
+        
     }
     public function getSchool(){
         $schools = Schools::all()->toArray();

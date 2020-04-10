@@ -1,43 +1,34 @@
 import React , { useState, useEffect } from 'react';
 import axios from 'axios';
 import _ from "lodash";
-import chroma from 'chroma-js';
+import { throttle } from "lodash";
 
+import chroma from 'chroma-js';
 import './CreateEntrance.scss';
 import { Grid , Paper} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Select from "react-select";
+import Select , { components }  from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import {
-  KeyboardTimePicker,
   KeyboardDatePicker,
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Divider from '@material-ui/core/Divider';
 import SaveIcon from '@material-ui/icons/Save';
 
 import NumberFormat from 'react-number-format';
+import { StudentSearch } from '../../../components'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-const colourOptions = [];
 const baseUrl = window.Laravel.baseUrl
+
 const dot = (color = '#ccc') => ({
     alignItems: 'center',
     display: 'flex',
@@ -130,6 +121,12 @@ const CenterSelect = React.memo(props => {
             onChange={props.handleChange}
         />)
 })
+const CustomOption = props => {
+    const { data, innerRef, innerProps } = props;
+    return data.custom ? (
+        <StudentSearch eref={innerRef} innerProps={innerProps} data={data}/>           
+    ) : <components.Option {...props} />
+  };
 const CourseSelect = React.memo(props => {
     const [courses, setCourses] = useState([])
     useEffect(() => {
@@ -196,7 +193,7 @@ export default class CreateEntrance extends React.Component {
             student_phone: '0985951181',
 
             parent_name: {__isNew__: true, label: "Trần Trịnh A", value:"Trần Trịnh A"},
-            parent_alt_name: {__isNew__: true, label: "Trần Trịnh B", value:"Trần Trịnh B"},
+            parent_alt_name: '',
             parent_email: 'tranthanhuet@gmail.com',
             parent_alt_email: 'tranthanhuet@gmail.com',
             parent_phone: '0985951181',
@@ -211,11 +208,19 @@ export default class CreateEntrance extends React.Component {
             entrance_note: '',           
 
         }
-        // const wait = 1000; // milliseconds
-        // const loadOptions = inputValue => this.findSchools(inputValue);
-        // this.debouncedLoadOptions = _.debounce(loadOptions, wait, {
-        //     leading: false
-        // });
+        const wait = 1000; // milliseconds
+        const loadOptions = (type, inputValue) => {
+            if(type == 'student'){
+                return this.findStudents(inputValue)
+            }
+            if(type == 'school'){
+                return this.findSchools(inputValue)
+            }
+            if(type == 'parent'){
+                
+            }
+        };        
+        this.debouncedLoadOptions = throttle(loadOptions, wait)
     }
     componentDidMount(){
     }
@@ -228,7 +233,49 @@ export default class CreateEntrance extends React.Component {
                 console.log('get schools bug' + err.response.data)
             })
     }
+    findStudents = (inputValue) => {
+        return axios.get(baseUrl + '/student/find/' + inputValue)
+            .then(response => {
+                return response.data.map(student => {
+                    student.value = student.sid
+                    student.label = student.s_name
+                    student.custom = 1
+                    return student
+                })
+            })
+            .catch(err => {
+                console.log('find student bug: ' + err.response.data)
+            })
+    }
+    handleStudentChange = (newValue) => {
+        if(newValue.__isNew__){
+            this.setState({
+                student_name: newValue
+            }) 
+        }
+        else{
+            this.setState({
+                student_name: {__isNew__: false, value: newValue.value, label: newValue.label},
+                student_dob: new Date(newValue.dob),
+                student_school: {label: newValue.school, value: newValue.school},
+                student_email: newValue.s_email,
+                student_phone: newValue.s_phone,
+                student_gender: newValue.gender,
+                student_grade: newValue.grade,
     
+                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.p_name},
+                parent_phone: newValue.p_phone,
+                parent_email: newValue.p_email,
+                parent_alt_name: newValue.alt_fullname,
+                parent_alt_email: newValue.alt_email,
+                parent_alt_phone: newValue.alt_phone,
+    
+                selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
+                parent_note : newValue.note,
+            }) 
+        }
+        
+    }
     handleChange = (newValue , event)=> {
         this.setState({
             [event.name]: newValue
@@ -242,6 +289,11 @@ export default class CreateEntrance extends React.Component {
     };
     promptTextCreator = (value) => {
         return 'Tạo mới '+value
+    }
+    checkValidCreate = (inputValue, selectValue, selectOptions) => {
+        if(inputValue == "" || !isNaN(inputValue)){
+            return false
+        }else return true
     }
     onChange = e => {
         this.setState({
@@ -276,15 +328,18 @@ export default class CreateEntrance extends React.Component {
                         <h5 className="title-header">Thông tin học sinh</h5> 
                         <Grid container spacing={3} className="container-grid">                
                             <Grid item md={12} lg={4} sm={12} xs={12}>
-                                <CreatableSelect
+                                <AsyncCreatableSelect
+                                    components={{ Option: CustomOption }}
+                                    cacheOptions
+                                    loadOptions={inputValue => this.debouncedLoadOptions('student',inputValue)}
                                     autosize={true}
                                     isClearable
-                                    placeholder={'Họ tên học sinh'}
+                                    placeholder={'Họ tên học sinh (tìm theo tên HS hoặc SĐT PH)'}
                                     name="student_name"
                                     value={this.state.student_name}
-                                    onChange={this.handleChange}
-                                    options={colourOptions}
+                                    onChange={this.handleStudentChange}
                                     formatCreateLabel={this.promptTextCreator}
+                                    isValidNewOption = {this.checkValidCreate}
                                     className="input-text"
                                 />
                                 <Grid container spacing={2}>
@@ -321,7 +376,7 @@ export default class CreateEntrance extends React.Component {
                                 <AsyncCreatableSelect 
                                     cacheOptions
                                     autosize={true}
-                                    loadOptions={inputValue => this.findSchools(inputValue)}
+                                    loadOptions={inputValue => this.debouncedLoadOptions('school',inputValue)}
                                     placeholder={'Trường học'}
                                     onChange={this.handleChange}
                                     name="student_school"
@@ -379,21 +434,20 @@ export default class CreateEntrance extends React.Component {
                                     value={this.state.parent_name}
                                     placeholder={'Tên phụ huynh (liên hệ chính)'}
                                     onChange={this.handleChange}
-                                    options={colourOptions}
                                     formatCreateLabel={this.promptTextCreator}
                                     className="input-text"
                                 />
-                                <CreatableSelect
-                                    autosize={true}
-                                    isClearable
-                                    placeholder={'Tên phụ huynh 2'}
-                                    name="parent_alt_name"
-                                    value={this.state.parent_alt_name}
-                                    onChange={this.handleChange}
-                                    options={colourOptions}
-                                    formatCreateLabel={this.promptTextCreator}
-                                    className="input-text"
-                                />
+                                <TextField  label="Tên phụ huynh 2" 
+                                    className = "input-text"
+                                    variant="outlined"
+                                    size="small"
+                                    type="text"
+                                    fullWidth
+                                    margin = "dense"
+                                    name = 'parent_alt_name'
+                                    value = {this.state.parent_alt_name}
+                                    onChange = {this.onChange}
+                                /> 
                                 <RelationshipOptions 
                                     selected_relationship={this.state.selected_relationship}
                                     handleChange={this.handleChange}

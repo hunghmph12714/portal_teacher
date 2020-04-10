@@ -70,7 +70,7 @@ class EntranceController extends Controller
             $p['phone'] = $request['parent_phone'];
             $p['email'] = $request['parent_email'];
             $p['note'] = $request['parent_note'];
-            $p['alt_fullname'] = $request['parent_alt_name']['value'];
+            $p['alt_fullname'] = $request['parent_alt_name'];
             $p['alt_email'] = $request['parent_alt_email'];
             $p['alt_phone'] = $request['parent_alt_phone'];
             $parent = Parents::create($p);
