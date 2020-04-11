@@ -153,21 +153,7 @@ const CourseSelect = React.memo(props => {
 export default class CreateEntrance extends React.Component {
     
     constructor(props){
-        super(props)
-        // this.state = {
-        //     //Options
-        //     schools: [],
-        //     //State
-            
-            
-        //     selected_relationship: '',
-
-        //     entrance_center: '',
-        //     entrance_courses: [],
-        //     entrance_date: null,
-        //     entrance_note: '',           
-
-        // }
+        super(props)        
         this.state = {
             schools: [],
             student_name: '',
@@ -215,21 +201,7 @@ export default class CreateEntrance extends React.Component {
             .catch(err => {
                 console.log('get schools bug' + err.response.data)
             })
-    }
-    findStudents = (inputValue) => {
-        return axios.get(baseUrl + '/student/find/' + inputValue)
-            .then(response => {
-                return response.data.map(student => {
-                    student.value = student.sid
-                    student.label = student.s_name
-                    student.custom = 1
-                    return student
-                })
-            })
-            .catch(err => {
-                console.log('find student bug: ' + err.response.data)
-            })
-    }
+    }   
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
             this.setState({
@@ -284,12 +256,6 @@ export default class CreateEntrance extends React.Component {
         this.setState({
             [event.name]: newValue
         })    
-    };
-    handleInputChange = (inputValue, actionMeta) => {
-        console.group('Input Changed');
-        console.log(inputValue);
-        console.log(`action: ${actionMeta.action}`);
-        console.groupEnd();
     };
     promptTextCreator = (value) => {
         return 'Tạo mới '+value
