@@ -25,7 +25,7 @@ import Divider from '@material-ui/core/Divider';
 import SaveIcon from '@material-ui/icons/Save';
 
 import NumberFormat from 'react-number-format';
-import { StudentSearch } from '../../../components'
+import { StudentSearch, ParentSearch } from '../../../components'
 
 const baseUrl = window.Laravel.baseUrl
 
@@ -121,12 +121,12 @@ const CenterSelect = React.memo(props => {
             onChange={props.handleChange}
         />)
 })
-const CustomOption = props => {
-    const { data, innerRef, innerProps } = props;
-    return data.custom ? (
-        <StudentSearch eref={innerRef} innerProps={innerProps} data={data}/>           
-    ) : <components.Option {...props} />
-  };
+// const CustomOption = props => {
+//     const { data, innerRef, innerProps } = props;
+//     return data.custom ? (
+//         <StudentSearch eref={innerRef} innerProps={innerProps} data={data}/>           
+//     ) : <components.Option {...props} />
+//   };
 const CourseSelect = React.memo(props => {
     const [courses, setCourses] = useState([])
     useEffect(() => {
@@ -158,21 +158,7 @@ export default class CreateEntrance extends React.Component {
         //     //Options
         //     schools: [],
         //     //State
-        //     student_name: '',
-        //     student_dob: new Date(),
-        //     student_school: {},
-        //     student_grade: '',
-        //     student_gender: 'Khác',
-        //     student_email: '',
-        //     student_phone: '',
-
-        //     parent_name: '',
-        //     parent_alt_name: '',
-        //     parent_email: '',
-        //     parent_alt_email: '',
-        //     parent_phone: '',
-        //     parent_alt_phone: '',
-        //     parent_note: '',
+            
             
         //     selected_relationship: '',
 
@@ -184,23 +170,23 @@ export default class CreateEntrance extends React.Component {
         // }
         this.state = {
             schools: [],
-            student_name: {__isNew__: true, label: "Trần Trịnh C", value:"Trần Trịnh C"},
+            student_name: '',
             student_dob: new Date(),
-            student_school:  {__isNew__: true, label: "THPT Chuyên Hà Nội - Amsterdam (01005612)", value:3142},
-            student_grade: '12P2',
+            student_school: '',
+            student_grade: '',
             student_gender: 'Khác',
-            student_email: 'tranthanhuet@gmail.com',
-            student_phone: '0985951181',
+            student_email: '',
+            student_phone: '',
 
-            parent_name: {__isNew__: true, label: "Trần Trịnh A", value:"Trần Trịnh A"},
+            parent_name: '',
             parent_alt_name: '',
-            parent_email: 'tranthanhuet@gmail.com',
-            parent_alt_email: 'tranthanhuet@gmail.com',
-            parent_phone: '0985951181',
-            parent_alt_phone: '0985951181',
+            parent_email: '',
+            parent_alt_email: '',
+            parent_phone: '',
+            parent_alt_phone: '',
             parent_note: '',
             
-            selected_relationship: {color: "#9900ef", label: "Cocc", value: 4},
+            selected_relationship: '',
 
             entrance_center: {label: "CS1: VietElite Đỗ Quang (67)", value: 2},
             entrance_courses: [{label: "Toán Chuyên9", value: 1}, {label: "Lý Chuyên9", value: 2}],
@@ -209,10 +195,7 @@ export default class CreateEntrance extends React.Component {
 
         }
         const wait = 1000; // milliseconds
-        const loadOptions = (type, inputValue) => {
-            if(type == 'student'){
-                return this.findStudents(inputValue)
-            }
+        const loadOptions = (type, inputValue) => {            
             if(type == 'school'){
                 return this.findSchools(inputValue)
             }
@@ -248,7 +231,7 @@ export default class CreateEntrance extends React.Component {
             })
     }
     handleStudentChange = (newValue) => {
-        if(newValue.__isNew__){
+        if(!newValue || newValue.__isNew__){
             this.setState({
                 student_name: newValue
             }) 
@@ -271,10 +254,31 @@ export default class CreateEntrance extends React.Component {
                 parent_alt_phone: newValue.alt_phone,
     
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
-                parent_note : newValue.note,
+                parent_note : (newValue.note)?newValue.note:'',
             }) 
         }
         
+    }
+    handleParentChange = (newValue) => {
+        // console.log(newValue)
+        if(!newValue ||newValue.__isNew__){
+            this.setState({
+                parent_name: newValue
+            }) 
+        }
+        else{
+            this.setState({                
+                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.fullname},
+                parent_phone: newValue.phone,
+                parent_email: newValue.email,
+                parent_alt_name: newValue.alt_fullname,
+                parent_alt_email: newValue.alt_email,
+                parent_alt_phone: newValue.alt_phone,
+    
+                selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
+                parent_note : (newValue.note)?newValue.note:'',
+            }) 
+        }
     }
     handleChange = (newValue , event)=> {
         this.setState({
@@ -328,19 +332,9 @@ export default class CreateEntrance extends React.Component {
                         <h5 className="title-header">Thông tin học sinh</h5> 
                         <Grid container spacing={3} className="container-grid">                
                             <Grid item md={12} lg={4} sm={12} xs={12}>
-                                <AsyncCreatableSelect
-                                    components={{ Option: CustomOption }}
-                                    cacheOptions
-                                    loadOptions={inputValue => this.debouncedLoadOptions('student',inputValue)}
-                                    autosize={true}
-                                    isClearable
-                                    placeholder={'Họ tên học sinh (tìm theo tên HS hoặc SĐT PH)'}
-                                    name="student_name"
-                                    value={this.state.student_name}
-                                    onChange={this.handleStudentChange}
-                                    formatCreateLabel={this.promptTextCreator}
-                                    isValidNewOption = {this.checkValidCreate}
-                                    className="input-text"
+                                <StudentSearch
+                                    student_name={this.state.student_name}
+                                    handleStudentChange={this.handleStudentChange}
                                 />
                                 <Grid container spacing={2}>
                                     <Grid item md={6}>
@@ -427,16 +421,11 @@ export default class CreateEntrance extends React.Component {
                         <h5 className="title-header">Thông tin phụ huynh</h5> 
                         <Grid container spacing={3} className="container-grid">                
                             <Grid item md={12} lg={4} sm={12} xs={12}>
-                                <CreatableSelect
-                                    autosize={true}
-                                    isClearable
-                                    name="parent_name"
-                                    value={this.state.parent_name}
-                                    placeholder={'Tên phụ huynh (liên hệ chính)'}
-                                    onChange={this.handleChange}
-                                    formatCreateLabel={this.promptTextCreator}
-                                    className="input-text"
+                                <ParentSearch
+                                    parent_name = {this.state.parent_name}
+                                    handleParentChange = {this.handleParentChange}
                                 />
+                                
                                 <TextField  label="Tên phụ huynh 2" 
                                     className = "input-text"
                                     variant="outlined"

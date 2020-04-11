@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/student/find/{key}' , 'StudentController@findStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
+    Route::get('/parent/find/{key}', 'ParentController@findParent');
 });
 
 // Auth::routes();
