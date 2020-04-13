@@ -247,7 +247,7 @@ export default class CreateEntrance extends React.Component {
                 parent_alt_email: newValue.alt_email,
                 parent_alt_phone: newValue.alt_phone,
     
-                selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
+                selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
                 parent_note : (newValue.note)?newValue.note:'',
             }) 
         }
@@ -345,7 +345,7 @@ export default class CreateEntrance extends React.Component {
                                     className="input-text"    
                                 />
 
-                                <TextField  label="Lớp học" 
+                                <TextField  label="Lớp học"  
                                     className = "input-text"
                                     variant="outlined"
                                     size="small"

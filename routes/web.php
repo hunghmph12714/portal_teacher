@@ -126,6 +126,8 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::post('/entrance/create', 'EntranceController@createEntrance');
+    Route::post('/entrance', 'EntranceController@getEntrance');
+    Route::get('/getentrance/{step}', 'EntranceController@getEntranceByStep');
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudent');

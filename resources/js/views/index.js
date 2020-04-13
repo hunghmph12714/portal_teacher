@@ -18,4 +18,4 @@ export { default as Relationship } from './Relationship';
 export { default as Step } from './Step';
 export { default as Status } from './Status';
 export { Entrance } from './Entrance';
-export { CreateEntrance } from './Entrance';
+export { CreateEntrance, ViewEntrance } from './Entrance';

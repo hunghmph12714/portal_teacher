@@ -3,7 +3,7 @@ import './Relationship.scss'
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
-
+import StarRatings from 'react-star-ratings';
 import {
     Grid,
     Menu,
@@ -60,6 +60,29 @@ export default class Relationship extends React.Component{
             columns: [
                 { title: '#', field: 'id' , editable: 'never' },
                 { title: 'Tên quan hệ', field: 'name' },
+                { title: 'Mức độ ưu tiên', field: 'weight',
+                  editComponent : props => (
+                    <StarRatings
+                        rating={props.value}
+                        starRatedColor="blue"
+                        changeRating={(newValue) => props.onChange(newValue)}
+                        numberOfStars={5}
+                        starDimension={25}
+                        starSpacing={5}
+                        name='rating'
+                    />
+                  ),
+                  render : rowData => (
+                    <StarRatings
+                        rating={rowData.weight}
+                        starRatedColor="blue"
+                        numberOfStars={rowData.weight}
+                        starDimension={20}
+                        starSpacing={3}
+                        name='rating'
+                        starRatedColor={rowData.color}
+                    />
+                  ) },
                 { title: 'Số lượng KH', field: 'count' , editable: 'never' },
                 { title: 'Màu thẻ', field: 'color', 
                   editComponent : props => (

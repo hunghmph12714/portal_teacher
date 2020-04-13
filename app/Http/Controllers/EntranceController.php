@@ -107,4 +107,39 @@ class EntranceController extends Controller
         return response()->json('ok');
 
     }
+
+    protected function getEntrance(Request $request){
+        $rules = [
+            'center_id' => 'required',
+            'course_id' => 'required',
+            'step_id' => 'required',
+            'user_id' => 'required',
+            'student_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+
+        // Filter by only step
+        $step_id = $request->step_id;
+        if($step_id == -1){
+            //Get all entrance
+            $entrances = Entrance::all();
+            return response()->json($entrances);
+        }
+        // $entrances = Entrance::where('step_id', $request->step)
+
+    }
+    protected function getEntranceByStep($step){
+        if($step == -1){
+            $entrances = Entrance::Select(
+                'entrances.id as eid','test_time','test_answers','test_score','test_note','entrances.note as enote','priority',
+                'entrances.created_at as created_at', 'students.id as sid', 'students.fullname as sname','students.dob as dob',
+                'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname',
+                'relationships.color as color','courses.name as course','center.name as center','steps.name as step','status.name as status'
+            )->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
+             ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
+             ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')->orderBy('priority','desc')->get();
+            
+            return response()->json($entrances);
+        }
+    }
 }

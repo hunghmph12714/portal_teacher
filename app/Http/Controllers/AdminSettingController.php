@@ -39,6 +39,7 @@ class AdminSettingController extends Controller
         if($relationship){
             $relationship->name = $request->newData['name'];
             $relationship->color = $request->newData['color'];
+            $relationship->weight = $request->newData['weight'];
             $relationship->save();
         }
         else{

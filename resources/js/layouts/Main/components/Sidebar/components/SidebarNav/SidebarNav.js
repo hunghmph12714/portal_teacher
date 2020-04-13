@@ -77,21 +77,23 @@ class SidebarNav extends React.Component {
     return children.map( subOption => {
       if(!subOption.children){
         return (
-          <ListItem
-            className={classes.item}
-            disableGutters
-            key={subOption.title}
-          >
-            <Button
-              activeClassName={classes.active}
-              className={classes.button}
-              component={CustomRouterLink}
-              to={subOption.href}
+          <div key = {subOption.title}>
+              <ListItem
+              className={classes.item}
+              disableGutters
+              key={subOption.title}
             >
-              <div className={classes.icon}>{subOption.icon}</div>
-              {subOption.title}
-            </Button>
-          </ListItem>
+              <Button
+                activeClassName={classes.active}
+                className={classes.button}
+                component={CustomRouterLink}
+                to={subOption.href}
+              >
+                <div className={classes.icon}>{subOption.icon}</div>
+                {subOption.title}
+              </Button>
+            </ListItem>
+          </div>
         )
       }
       else{

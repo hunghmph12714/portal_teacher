@@ -24,7 +24,7 @@ import {
   Relationship,
   Step,
   Status, 
-  CreateEntrance,
+  CreateEntrance, ViewEntrance,
 } from './views';
 
 const Routes = (props) => {
@@ -154,6 +154,18 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/entrance/create"
+      />
+      <ProtectedRouteWithLayout 
+        component = {ViewEntrance}
+        exact
+        layout={MainLayout}
+        path="/entrance/list"
+      />
+      <ProtectedRouteWithLayout 
+        component = {ViewEntrance}
+        exact
+        layout={MainLayout}
+        path="/entrance"
       />
       <Redirect to="/not-found" />
     </Switch>
