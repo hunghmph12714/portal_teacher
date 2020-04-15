@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import './ViewEntrance.scss'
 // import { DialogCreate } from './components';
 import {
@@ -25,6 +25,10 @@ import axios from 'axios';
 import {format, subDays } from 'date-fns';
 import Chip from '@material-ui/core/Chip';
 import orange from '@material-ui/core/colors/orange';
+import yellow from '@material-ui/core/colors/yellow';
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepButton from "@material-ui/core/StepButton";
 
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
@@ -38,9 +42,13 @@ export default class ViewEntrance extends React.Component{
         this.state = {
             open_edit: false,
             data: [],
+            activeStep: 0,
+            steps: [],
         }
     }
-    componentDidMount() {
+   
+    componentDidMount() {      
+      this.getStep();
       this.getEntrance();
     }
     getEntrance = () => {
@@ -51,6 +59,20 @@ export default class ViewEntrance extends React.Component{
           })
         })
     }
+    getStep = () =>{
+      axios.post(window.Laravel.baseUrl + "/step/get", {type: 'Quy trình đầu vào'})
+          .then(response => {
+              this.setState({
+                  steps: response.data
+              })
+          })
+          .catch(err => {
+              console.log('step bug: ' + err)
+          })
+  }
+    handleStep = step => () => {
+      this.setState({activeStep : step})
+    };
     notification = (message, type) => {
         store.addNotification({
           title: (type == "success") ? 'Thành công' : 'Có lỗi',
@@ -67,341 +89,307 @@ export default class ViewEntrance extends React.Component{
       }
     render(){
         return(
+          <React.Fragment>  
             <div className="root-entrance">
-                <ReactNotification />
-                <MaterialTable
-                  title="Danh sách ghi danh"
-                  data={this.state.data}
-                  options={{
-                      pageSize: 10,
-                      grouping: true,
-                      filtering: true,
-                      exportButton: true,
-                      rowStyle: rowData => {
-                        let today = new Date()
-                        let test_time = rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t))                          
-                        if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
-                          return {backgroundColor: '#FFFF00',}
-                        }
-                        if(rowData.priority >= 2){
-                          return {backgroundColor: orange[100],}
-                        }
-                        if(rowData.priority >= 3){
-                          return {backgroundColor: orange[200],}
-                        }
-                        if(rowData.priority >= 4){
-                          return {backgroundColor: orange[300],}
-                        }
-                        return {padding: '0px',}
-                      },
-                      filterCellStyle: {
-                        paddingLeft: '0px'
-                      }
-                  }}
-                  onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                  actions={[                       
-                      {
-                          icon: () => <AddBoxIcon />,
-                          tooltip: 'Thêm mới ghi danh',
-                          isFreeAction: true,
-                          text: 'Thêm ghi danh',
-                          onClick: (event) => {
-                            //   this.handleOpenDialogCreate()
-                          },
-                      },
-                  ]}
-                  localization={{
-                      body: {
-                          emptyDataSourceMessage: 'Không tìm thấy ghi danh hoặc sever gặp lỗi'
-                      },
-                      toolbar: {
-                          searchTooltip: 'Tìm kiếm',
-                          searchPlaceholder: 'Tìm kiếm',
-                          nRowsSelected: '{0} hàng được chọn'
-                      },
-                      pagination: {
-                          labelRowsSelect: 'dòng',
-                          labelDisplayedRows: ' {from}-{to} của {count}',
-                          firstTooltip: 'Trang đầu tiên',
-                          previousTooltip: 'Trang trước',
-                          nextTooltip: 'Trang tiếp theo',
-                          lastTooltip: 'Trang cuối cùng'
-                      },
-                      grouping: {
-                        placeholder: 'Kéo tên cột vào đây để nhóm'
-                      }
-                  }}
-                  columns={[
-                    {
-                      title: "",
-                      field: "action",
-                      filtering: false,
-                      disableClick: true,
-                      sorting: false,
-                      headerStyle: {
-                          padding: '0px',
-                          width: '90px',
-                      },
-                      cellStyle: {
-                          width: '90px',
-                          padding: '0px',
-                      },
-                      render: rowData => (
-                          <div style = {{display: 'block'}}>
-                              {/* {rowData.tableData.id} */}
-                              <Tooltip title="Chỉnh sửa" arrow>
-                                <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                                  <EditOutlinedIcon fontSize='inherit' />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Xóa ghi danh" arrow>
-                                <IconButton onClick={() => {
-                                  if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                    this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                                  }>
-                                <DeleteForeverIcon fontSize='inherit' />
-                                </IconButton>
-                              </Tooltip>                                
-                          </div>
-                      )
-                    },
-                  //Học sinh
-                    {
-                      title: "Học sinh",
-                      field: "sname",
-                      headerStyle: {
-                          padding: '0px',
-                          fontWeight: '600',
-                      },
-                      cellStyle: {
-                          padding: '0px',
-                      },
-                      render: rowData => {
-                        return (                                
-                          <Typography variant="body2" component="p">                                    
-                              <b>{rowData.sname}</b>
-                              <br /> {rowData.dob}
-                          </Typography>
-                          
-                        )
-                      },
-                      
-                      renderGroup: (sname, groupData) => (
-                        <Chip variant="outlined" label={sname} size="small" />      
-                      )
-                    },
-                  //Phụ huynh
-                    {
-                      title: "Phụ huynh",
-                      field: "pname",
-                      headerStyle: {
-                          padding: '0px',
-                          fontWeight: '600',
-                      },
-                      cellStyle: {
-                          padding: '3px 0px',
-                      },
-                      render: rowData => 
-                        (                              
-                          <Typography variant="body2" component="p">
-                              <b>{rowData.pname}</b> 
-                              <br />{rowData.phone} 
-                              <br />{rowData.pemail}
-                          </Typography>                              
-                        ),
-                      renderGroup: (pname, groupData) => (
-                        <Chip variant="outlined" label={pname} size="small" />       
-                      )
-
-                    },
-                  //Quan hệ
-                    {
-                      title: "Quan hệ",
-                      field: "rname",
-                      headerStyle: {
-                          padding: '0px',
-                          width: '120px',
-                          fontWeight: '600',
-                      },
-                      cellStyle: {
-                          padding: '0px',
-                          width: '120px',
-                      },
-                      render: rowData => {
-                        return (                              
-                          <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
-                        )
-                      },
-                      renderGroup: (rname, groupData) => (                            
-                        <Chip variant="outlined" label={rname} size="small" />
-                      )                
-                    },
-                  //Trung tâm
-                    {
-                      title: "Cơ sở",
-                      field: "center",         
-                      headerStyle: {
-                          padding: '0px',
-                          width: '90px',
-                          fontWeight: '600',
-                      },  
-                      cellStyle: {
-                          padding: '0px 8px 0px 0px',
-                          width: '90px',
-                      },
-                      render: rowData => {
-                        let brief = rowData.center.split(':')[0]
-                        return (
-                          <Tooltip title={rowData.center}>
-                            <Chip variant="outlined" label={brief} size="small" />
-                          </Tooltip> 
-                        )
-                      },
-                      renderGroup: (center, groupData) => (                            
-                        <Chip variant="outlined" label={center} size="small" />
-                      )  
-                    },
-                  // Khóa học
-                    {
-                        title: "Khóa học",
-                        field: "course",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                    },                  
-                  //Lịch KTDV
-                    {
-                      title: "Lịch KTDV",
-                      field: "test_time",
-                      headerStyle: {
-                          padding: '0px',
-                          fontWeight: '600',
-                      },
-                      cellStyle: {
-                          padding: '0px',
-                      },                            
-                    },
-                  //
-                    {
-                    title: "Bài làm",
-                    field: "test_answers",                        
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                        
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                  },
-                  {
-                    title: "Số điểm",
-                    field: "test_score",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                  },
-                  {
-                    title: "Nhận xét",
-                    field: "test_note",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                  },
-                  {
-                    title: "Trạng thái",
-                    field: "status",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                  },
-                  
-                ]}
-                detailPanel={rowData => {
-                  let configs = JSON.parse(rowData.config)
-                  if(!configs){
-                    return( <span> Chưa cài đặt lịch học </span>)
-                  }
-                  // console.log(configs)
-                  let c = configs.map(config => {
-                    let conf = {date: '', from: '', to: '', teacher: '',room: ''}
-                    conf.date = config.date.label
-                    conf.teacher = config.teacher.label
-                    conf.room = config.room.label
-                    conf.time = format(new Date(config.from*1000), 'H:mm') + " - " + format(new Date(config.to * 1000), 'H:mm')
-                    return conf
-                  })
-                  console.log(c)
+              <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
+                {this.state.steps.map((step, index) => {
+                  // const stepProps = {};
+                  // const buttonProps = {};
+                  // if (isStepOptional(index)) {
+                  //   buttonProps.optional = (
+                  //     <Typography variant="caption">Optional</Typography>
+                  //   );
+                  // }
+                  // if (isStepSkipped(index)) {
+                  //   stepProps.completed = false;
+                  // }
                   return (
-                    <Grid container  id="class-detail">
-                      <Grid item md={12} lg={6} id="timetable">
-                        <MaterialTable 
-                          title= {"Lịch học lớp" + rowData.code}
-                          options = {{
-                            paging: false,
-                            search: false
-                          }}
-                          data= {c}
-                          columns={[
-                            {
-                              title: "Ngày học",
-                              field: "date",
-                              headerStyle: {
-                                fontWeight: '600',                                    
-                              },
-                              
-                            },
-                            {
-                              title: "Giờ học",
-                              field: "time",
-                              headerStyle: {
-                                fontWeight: '600',                                    
-                              },
-                            },
-                            {
-                              title: "Giáo viên",
-                              field: "teacher",
-                              headerStyle: {
-                                fontWeight: '600',                                    
-                              },
-                            },
-                            {
-                              title: "Phòng học",
-                              field: "room",
-                              headerStyle: {
-                                fontWeight: '600',                                    
-                              },
-                            }
-
-                          ]}
-                        />
-                      </Grid>
-                      <Grid item md={12} lg={6} id="actions">
-                      </Grid>
-                      
-                    </Grid>
+                    <Step key={step.name}>
+                      <StepButton
+                        onClick={this.handleStep(index)}
+                        // completed={isStepComplete(index)}
+                      >
+                        {step.name}
+                      </StepButton>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+            </div>
+            <div className="root-entrance">
+              <ReactNotification />
+              <MaterialTable
+                title="Danh sách ghi danh"
+                data={this.state.data}
+                options={{
+                    pageSize: 10,
+                    grouping: true,
+                    filtering: true,
+                    exportButton: true,
+                    rowStyle: rowData => {
+                      let today = new Date()
+                      let test_time = rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t))                          
+                      if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
+                        return {backgroundColor: yellow[200],}
+                      }
+                      if(rowData.priority >= 2){
+                        return {backgroundColor: orange[100],}
+                      }
+                      if(rowData.priority >= 3){
+                        return {backgroundColor: orange[200],}
+                      }
+                      if(rowData.priority >= 4){
+                        return {backgroundColor: orange[300],}
+                      }
+                      return {padding: '0px',}
+                    },
+                    filterCellStyle: {
+                      paddingLeft: '0px'
+                    }
+                }}
+                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                actions={[                       
+                    {
+                        icon: () => <AddBoxIcon />,
+                        tooltip: 'Thêm mới ghi danh',
+                        isFreeAction: true,
+                        text: 'Thêm ghi danh',
+                        onClick: (event) => {
+                          //   this.handleOpenDialogCreate()
+                        },
+                    },
+                ]}
+                localization={{
+                    body: {
+                        emptyDataSourceMessage: 'Không tìm thấy ghi danh hoặc sever gặp lỗi'
+                    },
+                    toolbar: {
+                        searchTooltip: 'Tìm kiếm',
+                        searchPlaceholder: 'Tìm kiếm',
+                        nRowsSelected: '{0} hàng được chọn'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'dòng',
+                        labelDisplayedRows: ' {from}-{to} của {count}',
+                        firstTooltip: 'Trang đầu tiên',
+                        previousTooltip: 'Trang trước',
+                        nextTooltip: 'Trang tiếp theo',
+                        lastTooltip: 'Trang cuối cùng'
+                    },
+                    grouping: {
+                      placeholder: 'Kéo tên cột vào đây để nhóm'
+                    }
+                }}
+                columns={[
+                  {
+                    title: "",
+                    field: "action",
+                    filtering: false,
+                    disableClick: true,
+                    sorting: false,
+                    headerStyle: {
+                        padding: '0px',
+                        width: '90px',
+                    },
+                    cellStyle: {
+                        width: '90px',
+                        padding: '0px',
+                    },
+                    render: rowData => (
+                        <div style = {{display: 'block'}}>
+                            {/* {rowData.tableData.id} */}
+                            <Tooltip title="Chỉnh sửa" arrow>
+                              <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                                <EditOutlinedIcon fontSize='inherit' />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xóa ghi danh" arrow>
+                              <IconButton onClick={() => {
+                                if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                                  this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                }>
+                              <DeleteForeverIcon fontSize='inherit' />
+                              </IconButton>
+                            </Tooltip>                                
+                        </div>
+                    )
+                  },
+                //Học sinh
+                  {
+                    title: "Học sinh",
+                    field: "sname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                    render: rowData => {
+                      return (                                
+                        <Typography variant="body2" component="p">                                    
+                            <b>{rowData.sname}</b>
+                            <br /> {rowData.dob}
+                        </Typography>
+                        
+                      )
+                    },
                     
-                  )
-                  
+                    renderGroup: (sname, groupData) => (
+                      <Chip variant="outlined" label={sname} size="small" />      
+                    )
+                  },
+                //Phụ huynh
+                  {
+                    title: "Phụ huynh",
+                    field: "pname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '3px 0px',
+                    },
+                    render: rowData => 
+                      (                              
+                        <Typography variant="body2" component="p">
+                            <b>{rowData.pname}</b> 
+                            <br />{rowData.phone} 
+                            <br />{rowData.pemail}
+                        </Typography>                              
+                      ),
+                    renderGroup: (pname, groupData) => (
+                      <Chip variant="outlined" label={pname} size="small" />       
+                    )
+
+                  },
+                //Quan hệ
+                  {
+                    title: "Quan hệ",
+                    field: "rname",
+                    headerStyle: {
+                        padding: '0px',
+                        width: '120px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '120px',
+                    },
+                    render: rowData => {
+                      return (                              
+                        <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
+                      )
+                    },
+                    renderGroup: (rname, groupData) => (                            
+                      <Chip variant="outlined" label={rname} size="small" />
+                    )                
+                  },
+                //Trung tâm
+                  {
+                    title: "Cơ sở",
+                    field: "center",         
+                    headerStyle: {
+                        padding: '0px',
+                        width: '90px',
+                        fontWeight: '600',
+                    },  
+                    cellStyle: {
+                        padding: '0px 8px 0px 0px',
+                        width: '90px',
+                    },
+                    render: rowData => {
+                      let brief = rowData.center.split(':')[0]
+                      return (
+                        <Tooltip title={rowData.center}>
+                          <Chip variant="outlined" label={brief} size="small" />
+                        </Tooltip> 
+                      )
+                    },
+                    renderGroup: (center, groupData) => (                            
+                      <Chip variant="outlined" label={center} size="small" />
+                    )  
+                  },
+                // Khóa học
+                  {
+                      title: "Khóa học",
+                      field: "course",
+                      headerStyle: {
+                          padding: '0px',
+                          fontWeight: '600',
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                  },                  
+                //Lịch KTDV
+                  {
+                    title: "Lịch KTDV",
+                    field: "test_time",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },                            
+                  },
+                //
+                  {
+                  title: "Bài làm",
+                  field: "test_answers",                        
+                  headerStyle: {
+                      padding: '0px',
+                      fontWeight: '600',
+                      
+                  },
+                  cellStyle: {
+                      padding: '0px',
+                  },
+                },
+                {
+                  title: "Số điểm",
+                  field: "test_score",
+                  headerStyle: {
+                      padding: '0px',
+                      fontWeight: '600',
+                  },
+                  cellStyle: {
+                      padding: '0px',
+                  },
+                },
+                {
+                  title: "Nhận xét",
+                  field: "test_note",
+                  headerStyle: {
+                      padding: '0px',
+                      fontWeight: '600',
+                  },
+                  cellStyle: {
+                      padding: '0px',
+                  },
+                },
+                {
+                  title: "Trạng thái",
+                  field: "status",
+                  headerStyle: {
+                      padding: '0px',
+                      fontWeight: '600',
+                  },
+                  cellStyle: {
+                      padding: '0px',
+                  },
+                },
+                
+              ]}
+              detailPanel={rowData => {
+                return (
+                  <div> {rowData.step} </div>
+                )
+                
                 }}
                      
-                />
+              />
                 {/* <DialogCreate 
                   open={this.state.open_create} 
                   handleCloseDialog={this.handleCloseDialogCreate}
@@ -411,6 +399,8 @@ export default class ViewEntrance extends React.Component{
                   dialogType = {this.state.dialogType}
                 /> */}
             </div>
+        
+          </React.Fragment>
         )
     }
 }

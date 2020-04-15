@@ -106,7 +106,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/settings/step', function(){
         return view('welcome');
     });
-    Route::get('/step/get', 'AdminSettingController@getStep'); 
+    Route::post('/step/get', 'AdminSettingController@getStep'); 
     Route::post('/step/create', 'AdminSettingController@createStep');
     Route::post('/step/edit', 'AdminSettingController@editStep');
     Route::post('/step/delete', 'AdminSettingController@deleteStep');

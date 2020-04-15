@@ -66,9 +66,9 @@ export default class Relationship extends React.Component{
                         rating={props.value}
                         starRatedColor="blue"
                         changeRating={(newValue) => props.onChange(newValue)}
-                        numberOfStars={5}
-                        starDimension={25}
-                        starSpacing={5}
+                        numberOfStars="5"
+                        starDimension="25px"
+                        starSpacing="5"
                         name='rating'
                     />
                   ),
@@ -77,8 +77,8 @@ export default class Relationship extends React.Component{
                         rating={rowData.weight}
                         starRatedColor="blue"
                         numberOfStars={rowData.weight}
-                        starDimension={20}
-                        starSpacing={3}
+                        starDimension="20px"
+                        starSpacing="3"
                         name='rating'
                         starRatedColor={rowData.color}
                     />

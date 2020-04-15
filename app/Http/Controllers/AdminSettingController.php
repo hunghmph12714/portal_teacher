@@ -66,9 +66,16 @@ class AdminSettingController extends Controller
         return response()->json(200);
     }
     //Setting Step
-    protected function getStep(){
-        $steps = Step::orderBy('type','asc')->orderBy('order','asc')->get()->toArray();
-        return response()->json($steps);
+    protected function getStep(Request $request){
+        if($request->type == -1){
+            $steps = Step::orderBy('type','asc')->orderBy('order','asc')->get()->toArray();
+            return response()->json($steps);
+        }
+        else{
+            $steps = Step::where('type', $request->type)->orderBy('order','asc')->get()->toArray();
+            return response()->json($steps);
+        }
+        
     }
     protected function createStep(Request $request){
         $rules = [

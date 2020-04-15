@@ -135,7 +135,7 @@ export default class Step extends React.Component{
     }
 
     getStep = () =>{
-        axios.get(window.Laravel.baseUrl + "/step/get")
+        axios.post(window.Laravel.baseUrl + "/step/get", {type: -1})
             .then(response => {
                 this.setState({
                     data: response.data

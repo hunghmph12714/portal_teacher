@@ -92,7 +92,7 @@ const Sidebar = props => {
     },
     {
       title: 'Công tác học sinh',
-      href: '/entrance/',
+      href: '#',
       icon: <AssignmentIndIcon />,
       children: [
         {

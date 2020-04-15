@@ -161,12 +161,7 @@ const Routes = (props) => {
         layout={MainLayout}
         path="/entrance/list"
       />
-      <ProtectedRouteWithLayout 
-        component = {ViewEntrance}
-        exact
-        layout={MainLayout}
-        path="/entrance"
-      />
+      
       <Redirect to="/not-found" />
     </Switch>
   );
