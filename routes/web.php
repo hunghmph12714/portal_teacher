@@ -125,6 +125,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/entrance/create', function(){
         return view('welcome');
     });
+    Route::get('/entrance/list', function(){
+        return view('welcome');
+    });
     Route::post('/entrance/create', 'EntranceController@createEntrance');
     Route::post('/entrance', 'EntranceController@getEntrance');
     Route::get('/getentrance/{step}', 'EntranceController@getEntranceByStep');
