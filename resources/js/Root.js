@@ -14,6 +14,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
+import { SnackbarProvider } from 'notistack';
 
 const browserHistory = createBrowserHistory();
 // const store = configureStore();
@@ -36,10 +37,15 @@ export default class Root extends Component {
     render() {
         return (
           <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3} anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+            }}>
               <Router history={browserHistory}>
                 <Routes />
               </Router>
-            </ThemeProvider>
+            </SnackbarProvider>              
+          </ThemeProvider>
         );
       }
 }

@@ -55,7 +55,12 @@ class EntranceController extends Controller
             'entrance_center' => 'required',
         ];
         $messages = [
-            'required' => 'Vui lòng điền đủ các trường (*)'
+            'student_name.required' => 'Vui lòng điền tên học sinh',
+            'parent_name.required' => 'Vui lòng điền tên phụ huynh',
+            'parent_email.required' => 'Vui lòng điền email phụ huynh',
+            'parent_email.email' => 'Email không hợp lệ',
+            'parent_phone.required' => 'Vui lòng điền số điện thoại phụ huynh',
+            'entrance_center.required' => 'Vui lòng chọn cơ sở đăng ký',
         ];
         $this->validate($request, $rules, $messages);
         $request = $request->toArray();
