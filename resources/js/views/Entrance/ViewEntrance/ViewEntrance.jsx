@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import './ViewEntrance.scss'
 // import { DialogCreate } from './components';
+import { EditEntrance } from '../EditEntrance';
 import {
     Menu,
     MenuItem,
@@ -10,19 +11,14 @@ import {
 import { Grid } from '@material-ui/core';
 
 import MaterialTable from "material-table";
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import axios from 'axios';
-import {format, subDays } from 'date-fns';
 import Chip from '@material-ui/core/Chip';
 import orange from '@material-ui/core/colors/orange';
 import yellow from '@material-ui/core/colors/yellow';
@@ -44,6 +40,7 @@ export default class ViewEntrance extends React.Component{
             data: [],
             activeStep: 0,
             steps: [],
+            selectedEntrance: '',
         }
     }
    
@@ -69,40 +66,29 @@ export default class ViewEntrance extends React.Component{
           .catch(err => {
               console.log('step bug: ' + err)
           })
-  }
+    }
     handleStep = step => () => {
       this.setState({activeStep : step})
     };
-    notification = (message, type) => {
-        store.addNotification({
-          title: (type == "success") ? 'Thành công' : 'Có lỗi',
-          message: message,
-          type: type,                         // 'default', 'success', 'info', 'warning'
-          container: 'bottom-right',                // where to position the notifications
-          animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-          animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-          width: 300,
-          dismiss: {
-            duration: 3000
-          }
-        })
-      }
+    handleOpenEditDialog = (rowData) => {
+      this.setState({
+        open_edit: true,
+        selectedEntrance: rowData
+      })
+      console.log(rowData)
+    }
+    handleCloseDialogCreate = () => {
+      this.setState({open_edit : false, selectedEntrance : ''})
+    }
+    updateTable = ( entrance ) => {
+
+    }
     render(){
         return(
           <React.Fragment>  
             <div className="root-entrance">
               <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
-                {this.state.steps.map((step, index) => {
-                  // const stepProps = {};
-                  // const buttonProps = {};
-                  // if (isStepOptional(index)) {
-                  //   buttonProps.optional = (
-                  //     <Typography variant="caption">Optional</Typography>
-                  //   );
-                  // }
-                  // if (isStepSkipped(index)) {
-                  //   stepProps.completed = false;
-                  // }
+                {this.state.steps.map((step, index) => {                  
                   return (
                     <Step key={step.name}>
                       <StepButton
@@ -390,14 +376,12 @@ export default class ViewEntrance extends React.Component{
                 }}
                      
               />
-                {/* <DialogCreate 
-                  open={this.state.open_create} 
-                  handleCloseDialog={this.handleCloseDialogCreate}
-                  updateTable = {this.updateTable}
-                  notification = {this.notification}
-                  class={this.state.selectedClass}
-                  dialogType = {this.state.dialogType}
-                /> */}
+              <EditEntrance 
+                open={this.state.open_edit} 
+                handleCloseDialog={this.handleCloseDialogCreate}
+                updateTable = {this.updateTable}
+                entrance={this.state.selectedEntrance}
+              />
             </div>
         
           </React.Fragment>

@@ -141,9 +141,7 @@ class CreateEntrance extends React.Component {
                 
             })
     }
-    handleOnClose = () => {
-        this.setState({message: '', open: false})
-    }
+    
     render(){        
         return(
             <div  className="root-create-entrance">      

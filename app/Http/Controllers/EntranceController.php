@@ -137,10 +137,11 @@ class EntranceController extends Controller
     protected function getEntranceByStep($step){
         if($step == -1){
             $entrances = Entrance::Select(
-                'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority',
-                'entrances.created_at as created_at', 'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),
-                'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname',
-                'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'center.name as center','steps.name as step','status.name as status'
+                'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at',
+                'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
+                'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
+                'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
+                'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id'
             )->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
              ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
              ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')
