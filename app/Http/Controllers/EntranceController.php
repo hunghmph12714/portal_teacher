@@ -135,20 +135,99 @@ class EntranceController extends Controller
 
     }
     protected function getEntranceByStep($step){
+        // $sig = ($step == -1)? '!=' : '=';
+        $sig = '=';
         if($step == -1){
-            $entrances = Entrance::Select(
-                'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at',
-                'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
-                'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
-                'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
-                'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id'
-            )->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
-             ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
-             ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')
-             ->orderBy('priority','desc')->get();
-            
-            
-            return response()->json($entrances);
+            $step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first()->id;
+        }
+        $entrances = Entrance::Select(
+            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at',
+            'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
+            'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
+            'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
+            'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id'
+        )->where('entrances.step_id', $sig, $step)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
+         ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
+         ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')->orderBy('entrances.status_id','asc')
+         ->orderBy('priority','desc')->get();
+        return response()->json($entrances);
+    }
+    protected function editEntrance(Request $request){
+        $rules = ['student_id' => 'required', 'entrance_id' => 'required', 'parent_id' => 'required'];
+        $this->validate($request, $rules);
+
+        //Edit Student and Parent
+        if($request->student_changed){
+            $student = Student::find($request->student_id);
+            if($student){
+                $student->relationship_id = $request->selected_relationship['value'];
+                $student->fullname = $request->student_name['label'];
+                $student->school = $request->student_school['label'];
+                $student->grade = $request->student_grade;
+                $student->email = $request->student_email;
+                $student->phone = $request->student_phone;
+                $student->dob = ($request->student_dob) ? date('Y-m-d', $request->student_dob) : null;
+                $student->gender = $request->student_gender;
+                $student->save();
+            }
+        }
+        if($request->parent_changed){
+            $p = Parent::find($request->parent_id);
+            if($p){
+                $p->relationship_id = $request->selected_relationship['value'];
+                $p->fullname = $request->parent_name['label'];
+                $p->phone = $request->parent_phone;
+                $p->email = $request->parent_email;
+                $p->note = $request->parent_note;
+                $p->alt_fullname = $request->parent_alt_name;
+                $p->alt_email = $request->parent_alt_email;
+                $p->alt_phone = $request->parent_alt_phone;
+                $p->save();
+            }
+        }
+        //Edit Entrance
+        if($request->entrance_changed){
+            $e = Entrance::find($request->entrance_id);
+            if($e){
+                $e->center_id = $request->entrance_center['value'];
+                $e->course_id = $request->entrance_courses['value'];
+                $e->test_time = ($request->entrance_date) ? date('Y-m-d', $request->entrance_date) : null;
+                $e->note = $request->entrance_note;
+                $e->status_id = $request->entrance_status['value'];
+                //Check step changed
+                if($e->step_id != $request->entrance_step['value']){
+                    $e->step_updated_at = date('Y-m-d H:i:s');
+                    $e->step_id = $request->entrance_step['value'];
+                }
+                $e->test_score = $request->test_score;
+                $e->test_note = $request->test_note;   
+                $e->save();            
+            }
+        }       
+        
+    }   
+    protected function uploadTest(Request $request){
+        $rules = ['entrance_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->entrance_id);
+        $answers = '';
+        if($entrance){
+            for($i = 0 ; $i < $request->count; $i++ ){
+                if($request->has('image'.$i)){
+                    $ans = $request->file('image'.$i);
+                    $name = $entrance->id."_answer".$i."_".time();
+                    $ans->move(public_path(). "/images/answers/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/images/answers/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0){
+                        $answers = $path;
+                    }else{
+                        $answers = $answers.",".$path;
+                    } 
+                }
+            }
+            $entrance->test_answers = $answers;
+            $entrance->save();
         }
     }
 }

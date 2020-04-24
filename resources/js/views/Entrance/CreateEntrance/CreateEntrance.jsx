@@ -36,6 +36,7 @@ class CreateEntrance extends React.Component {
 
             entrance_center: {label: "CS1: VietElite Đỗ Quang (67)", value: 2},
             entrance_courses: [{label: "Toán Chuyên9", value: 1}, {label: "Lý Chuyên9", value: 2}],
+            entrance_multi_course: true,
             entrance_date: new Date(),
             entrance_note: '',           
 
@@ -115,7 +116,10 @@ class CreateEntrance extends React.Component {
    
         axios.post(baseUrl + '/entrance/create', data)
             .then(response => {
-
+                this.props.enqueueSnackbar('Tạo ghi danh thành công', { 
+                    variant: 'success',
+                });
+                setTimeout(this.props.history.push('/entrance/list'), 1000)
             })
             .catch(err => {
                 this.setState({

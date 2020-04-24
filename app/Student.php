@@ -13,4 +13,11 @@ class Student extends Model
     public function parents(){
         return $this->belongsTo('App\Parents');
     }
+    public function classes(){
+        return $this->belongsToMany('App\Classes','student_class','student_id','class_id');
+    }
+    public function sessions(){
+        return $this->belingsToMany('App\Session','student_session','student_id','session_id');
+    }
+
 }

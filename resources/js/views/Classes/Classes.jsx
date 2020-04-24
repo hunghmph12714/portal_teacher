@@ -1,6 +1,6 @@
 import React from 'react'
 import './Classes.scss';
-import { DialogCreate } from './components';
+import { DialogCreate, CreateSession } from './components';
 import {
     Menu,
     MenuItem,
@@ -8,13 +8,15 @@ import {
     Tooltip,
   } from "@material-ui/core";
 import { Grid } from '@material-ui/core';
+import { withSnackbar } from 'notistack';
 
 import MaterialTable from "material-table";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import Button from '@material-ui/core/Button';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
@@ -26,7 +28,7 @@ import {format, subDays } from 'date-fns';
 
 const baseUrl = window.Laravel.baseUrl;
 //1
-export default class Classes extends React.Component{
+class Classes extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -36,11 +38,14 @@ export default class Classes extends React.Component{
           selectedClass: [],
           selectedRow: '',
           dialogType: '',
+          openCreateSession: false,
+
         }
     }
     getClass = () => {
       axios.get(window.Laravel.baseUrl + "/class/get/-1/-1")
-          .then(response => {                
+          .then(response => {    
+                         
               this.setState({
                   data: response.data
               })
@@ -48,20 +53,6 @@ export default class Classes extends React.Component{
           .catch(err => {
               console.log('class get bug: ' + err)
           })
-    }
-    notification = (message, type) => {
-      store.addNotification({
-        title: (type == "success") ? 'Thành công' : 'Có lỗi',
-        message: message,
-        type: type,                         // 'default', 'success', 'info', 'warning'
-        container: 'bottom-right',                // where to position the notifications
-        animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-        animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-        width: 300,
-        dismiss: {
-          duration: 3000
-        }
-      })
     }
     //ADD CLASSES
     handleCloseDialogCreate = () => {
@@ -96,7 +87,33 @@ export default class Classes extends React.Component{
         selectedClass: data,
       })
     }
-  
+    //Create Session
+    handleOpenCreateSession = (rowData) => {
+      this.setState({
+        openCreateSession : true,
+        selectedClass: rowData
+      })
+    }
+    handleCloseCreateSession = () => {
+      this.setState({
+        openCreateSession: false,
+        selectedClass: []
+      })
+    }
+    handleCreateSession = (from_date, to_date, class_id) => {
+      let data = {class_id: class_id, from_date: from_date.getTime()/1000, to_date: to_date.getTime()/1000}
+      // console.log(data)
+      axios.post(baseUrl+'/session/create', data)
+        .then(response => {
+          this.handelCloseCreateSession
+          this.props.enqueueSnackbar('Thêm thành công '+ response.data+' ca học', { 
+            variant: 'success',
+          });
+        })
+        .catch(err => {
+          console.log(err.response.data)
+        })
+    }
     handleDeactivateClass = (id, rowId) => {
       console.log(id)
       axios.post(baseUrl + '/class/delete', {id: id})
@@ -176,10 +193,10 @@ export default class Classes extends React.Component{
                           sorting: false,
                           headerStyle: {
                               padding: '0px',
-                              width: '130px',
+                              width: '90px',
                           },
                           cellStyle: {
-                              width: '130px',
+                              width: '90px',
                               padding: '0px',
                           },
                           render: rowData => (
@@ -190,12 +207,9 @@ export default class Classes extends React.Component{
                                       <EditOutlinedIcon fontSize='inherit' />
                                     </IconButton>
                                   </Tooltip>
-                                  <Tooltip title="Xóa lớp học" arrow>
-                                    <IconButton onClick={() => {
-                                      if (window.confirm('Bạn có chắc muốn xóa lớp học này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                                      }>
-                                    <DeleteForeverIcon fontSize='inherit' />
+                                  <Tooltip title="Thêm ca học" arrow>
+                                    <IconButton onClick={() => {this.handleOpenCreateSession(rowData)}}>
+                                      <PlaylistAddIcon fontSize='inherit' />
                                     </IconButton>
                                   </Tooltip>                                
                               </div>
@@ -286,10 +300,9 @@ export default class Classes extends React.Component{
                         conf.time = format(new Date(config.from*1000), 'H:mm') + " - " + format(new Date(config.to * 1000), 'H:mm')
                         return conf
                       })
-                      console.log(c)
                       return (
-                        <Grid container  id="class-detail">
-                          <Grid item md={12} lg={6} id="timetable">
+                        <Grid container  id="class-detail" spacing={3}>
+                          <Grid item md={12} lg={4} id="timetable">
                             <MaterialTable 
                               title= {"Lịch học lớp" + rowData.code}
                               options = {{
@@ -331,7 +344,8 @@ export default class Classes extends React.Component{
                               ]}
                             />
                           </Grid>
-                          <Grid item md={12} lg={6} id="actions">
+                          <Grid item md={12} lg={4} id="actions">
+                            
                           </Grid>
                           
                         </Grid>
@@ -340,6 +354,12 @@ export default class Classes extends React.Component{
                       
                     }}
                      
+                />
+                <CreateSession
+                  open={this.state.openCreateSession}
+                  handleClose={this.handleCloseCreateSession}
+                  selectedClass = {this.state.selectedClass}
+                  handleCreateSession= {this.handleCreateSession}
                 />
                 <DialogCreate 
                   open={this.state.open_create} 
@@ -353,3 +373,4 @@ export default class Classes extends React.Component{
         )
     }
 }
+export default withSnackbar(Classes)

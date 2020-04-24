@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use DB;
 use App\Room;
+use App\Session;
 use App\Course;
 use App\Classes;
 use Carbon\Carbon;
@@ -106,8 +107,18 @@ class ClassController extends Controller
                         'student_number','open_date','classes.active as status',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->
-                        leftJoin('courses','classes.course_id','courses.id')->get()->toArray();
-        return response()->json($result);
+                        leftJoin('courses','classes.course_id','courses.id')->get();
+        $classes = $result->toArray();
+        foreach($result as $key => $class){
+            $last_session = $class->sessions->last();            
+            if($last_session){
+                $classes[$key]['last_session'] = $last_session->date;
+            }
+            else{
+                $classes[$key]['last_session'] = '';
+            }
+        }
+        return response()->json($classes);
     }
     protected function createClass(Request $request){
         $rules = [

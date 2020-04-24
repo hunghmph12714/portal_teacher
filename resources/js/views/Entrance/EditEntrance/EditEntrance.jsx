@@ -13,8 +13,10 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { withSnackbar } from 'notistack';
 
-import { StudentForm, ParentForm, EntranceForm } from '../components';
+import { StudentForm, ParentForm, EntranceForm, TestForm, StatusForm } from '../components';
+import axios from 'axios';
 
 const baseUrl = window.Laravel.baseUrl
 // function dmyToMdy (str){
@@ -29,6 +31,7 @@ class EditEntrance extends React.Component {
     constructor(props){
         super(props)
         this.state = {
+            student_id: '',
             student_name: '',
             student_dob: new Date(),
             student_school: '',
@@ -36,21 +39,34 @@ class EditEntrance extends React.Component {
             student_gender: 'Khác',
             student_email: '',
             student_phone: '',
+            student_changed: false,
 
+            parent_id: '',
             parent_name: '',
             parent_alt_name: '',
             parent_email: '',
             parent_alt_email: '',
             parent_phone: '',
             parent_alt_phone: '',
-            parent_note: '',
-            
+            parent_note: '',            
             selected_relationship: '',
+            parent_changed: false,
 
+            entrance_id: '',
             entrance_center: [],
             entrance_courses: [],
+            entrance_multi_course: false,
             entrance_date: new Date(),
-            entrance_note: '',  
+            entrance_note: '', 
+            entrance_step: [],
+            entrance_status: [],
+            
+            test_answers: [],
+            answers_changed : false,
+            test_user: '',
+            test_score: '',
+            test_note: '',
+            entrance_changed: true,
         }
     }
     UNSAFE_componentWillReceiveProps(nextProps){
@@ -62,15 +78,17 @@ class EditEntrance extends React.Component {
             let test_time_arr = nextProps.entrance.test_time.split('/')
             test_time = (test_time_arr.length > 2) ? test_time_arr[1] + '/' + test_time_arr[0] + '/' + test_time_arr[2] : null
         }
-        this.setState({
+        this.setState({            
+            student_id: nextProps.entrance.sid,
             student_name: {__isNew__: false, label: nextProps.entrance.sname, value: nextProps.entrance.sid},
             student_dob: new Date(dob_str),
-            student_school: nextProps.entrance.school,
+            student_school: {label: nextProps.entrance.school, value: nextProps.entrance.school},
             student_grade: nextProps.entrance.grade,
             student_gender: nextProps.entrance.gender,
             student_email: nextProps.entrance.semail,
             student_phone: nextProps.entrance.sphone,
 
+            parent_id: nextProps.entrance.pid,
             parent_name: {__isNew__: false, label: nextProps.entrance.pname, value: nextProps.entrance.pid},
             parent_alt_name: nextProps.entrance.alt_pname,
             parent_email: nextProps.entrance.pemail,
@@ -78,18 +96,26 @@ class EditEntrance extends React.Component {
             parent_phone: nextProps.entrance.phone,
             parent_alt_phone: nextProps.entrance.alt_phone,
             parent_note: nextProps.entrance.pnote,
-            selected_relationship: {__isNew__: false, label: nextProps.entrance.rname, value: nextProps.entrance.rid},
+            selected_relationship: {__isNew__: false, label: nextProps.entrance.rname, value: nextProps.entrance.rid, color: nextProps.entrance.color},
 
+            entrance_id: nextProps.entrance.eid,
             entrance_center: { label: nextProps.entrance.center, value: nextProps.entrance.center_id},
             entrance_courses: {label: nextProps.entrance.course, value: nextProps.entrance.course_id},
             entrance_date: new Date(test_time),
-            entrance_note: nextProps.entrance.enote,  
+            entrance_note: (nextProps.entrance.enote)?nextProps.entrance.enote:'',  
+            entrance_step: { label: nextProps.entrance.step, value: nextProps.entrance.step_id },
+            entrance_status: { label: nextProps.entrance.status, value: nextProps.entrance.status_id},
+
+            test_answers: (nextProps.entrance.test_answers)?nextProps.entrance.test_answers:[],
+            test_score: nextProps.entrance.test_score,
+            test_note: nextProps.entrance.test_note,            
         })
     }
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
             this.setState({
-                student_name: newValue
+                student_name: newValue,
+                student_changed: true
             }) 
         }
         else{
@@ -111,9 +137,9 @@ class EditEntrance extends React.Component {
     
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
                 parent_note : (newValue.note)?newValue.note:'',
+
             }) 
-        }
-        
+        }        
     }
     handleParentChange = (newValue) => {
         // console.log(newValue)
@@ -137,20 +163,63 @@ class EditEntrance extends React.Component {
         }
     }
     handleChange = (newValue , event)=> {
-        this.setState({
+        this.setState({            
             [event.name]: newValue
         })    
     };
-    onChange = e => {
+    onChange = e => {     
         this.setState({
+            student_changed: (e.target.name.includes('student')) ? true: false,
+            parent_changed: (e.target.name.includes('parent') || e.target.name.includes('relationship')) ? true: false,
+            entrance_changed: true,
             [e.target.name] : e.target.value
         })
     };
     handleDateChange = date => {
-        this.setState({ student_dob: date });
+        this.setState({ student_dob: date, student_changed: true });
     };
     handleEntranceDateChange = date => {
-        this.setState({ entrance_date: date });
+        this.setState({ entrance_date: date, entrance_changed: true });
+    }
+    handleUploadFile = (files) => {
+        this.setState({test_answers : files , entrance_changed: true, answers_changed: true})
+    }
+    handleEditEntrance = (e) => {
+        e.preventDefault();
+        let data = this.state
+        data.entrance_date = this.state.entrance_date.getTime()/1000
+        data.student_dob = this.state.student_dob.getTime()/1000
+        
+        axios.post(baseUrl+'/entrance/edit', data)
+            .then(response => {
+                if(this.state.test_answers && this.state.answers_changed){
+                    let fd = new FormData()
+                    for(let i = 0 ; i < this.state.test_answers.length ; i++){
+                        fd.append('image'+i , this.state.test_answers[i], this.state.test_answers[i].name)
+                    }
+                    fd.append('entrance_id' , this.state.entrance_id)
+                    fd.append('count', this.state.test_answers.length)
+                    axios.post(baseUrl + '/entrance/upload-test', fd)
+                        .then(uploaded => {
+                            this.props.enqueueSnackbar('Sửa thành công', { 
+                                variant: 'success',
+                            });
+                        })
+                        .catch(err => {
+                            console.log(err.resposne.data)
+                        })
+                }
+                else{
+                    this.props.enqueueSnackbar('Sửa thành công', { 
+                        variant: 'success',
+                    });
+                }
+                this.props.updateTable()
+                this.props.handleCloseDialog()
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
     render(){
         return(
@@ -216,13 +285,29 @@ class EditEntrance extends React.Component {
                             onChange = {this.onChange}
                             handleChange = {this.handleChange}
                         />
+                        <h5 className="title-header">Trạng thái</h5>
+                        <StatusForm 
+                            state = {this.state}
+                            handleEntranceDateChange = {this.handleEntranceDateChange} 
+                            onChange = {this.onChange}
+                            handleChange = {this.handleChange}
+                        />
+                        <h5 className="title-header">Kiểm tra đầu vào</h5>
+                        <TestForm 
+                            state = {this.state}
+                            handleUploadFile = {this.handleUploadFile}
+                            handleEntranceDateChange = {this.handleEntranceDateChange} 
+                            onChange = {this.onChange}
+                            handleChange = {this.handleChange}
+                        />
+                        
                     </form>
                     </DialogContent>
                 <DialogActions>
                     <Button onClick={this.props.handleCloseDialog} color="primary">
                         Hủy bỏ
                     </Button>
-                    <Button onClick={() => {}} color="primary" id="btn-save">
+                    <Button onClick={this.handleEditEntrance} color="primary" id="btn-save">
                         Lưu thay đổi
                     </Button>
                     
@@ -232,4 +317,4 @@ class EditEntrance extends React.Component {
     }
     
 }
-export default EditEntrance
+export default withSnackbar(EditEntrance)

@@ -24,6 +24,7 @@ const CenterSelect = React.memo(props => {
     
     return( 
         <Select
+            key = "center-select"
             value = {props.entrance_center}
             name = "entrance_center"
             placeholder="Cơ sở"
@@ -47,8 +48,9 @@ const CourseSelect = React.memo(props => {
     
     return( 
         <Select
+            key = "course-select"
             value = {props.entrance_courses}
-            isMulti
+            isMulti = {props.entrance_multi_course}
             name = "entrance_courses"
             placeholder="Khóa học"
             options={courses}
@@ -69,6 +71,7 @@ const EntranceForm = props => {
                 <CourseSelect 
                     entrance_courses = {state.entrance_courses}
                     handleChange = {handleChange}
+                    entrance_multi_course = {state.entrance_multi_course}
                 />
             </Grid>
             <Grid item md={12} lg={3} sm={12} xs={12}>

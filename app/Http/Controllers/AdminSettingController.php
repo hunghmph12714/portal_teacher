@@ -73,6 +73,7 @@ class AdminSettingController extends Controller
         }
         else{
             $steps = Step::where('type', $request->type)->orderBy('order','asc')->get()->toArray();
+            
             return response()->json($steps);
         }
         
@@ -134,10 +135,15 @@ class AdminSettingController extends Controller
         return response()->json(200);
     }
     //Setting Status
-    protected $fillable = ['id','name','type','user_created'];
-    protected function getStatus(){
-        $steps = Status::orderBy('type','asc')->get()->toArray();
-        return response()->json($steps);
+    protected function getStatus(Request $request){
+        if($request->type == -1){
+            $s = Status::orderBy('type','asc')->orderBy('order','asc')->get()->toArray();
+            return response()->json($s);
+        }
+        else{
+            $s = Status::where('type', $request->type)->get()->toArray();
+            return response()->json($s);
+        }
     }
     protected function createStatus(Request $request){
         $rules = [

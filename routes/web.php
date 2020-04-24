@@ -16,7 +16,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 // Route::get('/importdb', 'ClassController@importDB');
-//LOG IN
+//LOG IN\
 Route::get('/login', function () {
     return view('welcome');
 })->name('login');
@@ -25,6 +25,7 @@ Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 
 Route::group(['middleware' => ['auth']], function() {
+    
     //Import database 
     // Route::get('/import-db', 'ClassController@importDB');
     Route::get('/get-schools', 'ClassController@getSchool');
@@ -115,7 +116,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/settings/status', function(){
         return view('welcome');
     });
-    Route::get('/status/get', 'AdminSettingController@getStatus'); 
+    Route::post('/status/get', 'AdminSettingController@getStatus'); 
     Route::post('/status/create', 'AdminSettingController@createStatus');
     Route::post('/status/edit', 'AdminSettingController@editStatus');
     Route::post('/status/delete', 'AdminSettingController@deleteStatus');
@@ -130,13 +131,21 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::post('/entrance/create', 'EntranceController@createEntrance');
     Route::post('/entrance', 'EntranceController@getEntrance');
-    Route::get('/getentrance/{step}', 'EntranceController@getEntranceByStep');
+    Route::get('/get-entrance/{step}', 'EntranceController@getEntranceByStep');
+    Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
+    Route::post('/entrance/edit', 'EntranceController@editEntrance');
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');
+//Session
+    Route::post('/session/get-last', 'SessionController@getLastSession');
+    Route::get('/session/get', 'SessionController@getSession');
+    Route::post('/session/create','SessionController@createSession');
+    Route::post('/session/delete', 'SessionController@deleteSession');
+    Route::post('/session/edit', 'SessionController@editSession');
 });
 
 // Auth::routes();

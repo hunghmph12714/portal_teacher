@@ -27,6 +27,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { withSnackbar } from 'notistack';
+
 const baseUrl = window.Laravel.baseUrl
 
 function NumberFormatCustom(props) {
@@ -149,7 +151,7 @@ const DefaultConfig = React.memo( props => {
     }
     return <React.Fragment>{classes}</React.Fragment>
 })
-export default class DialogCreate extends React.Component {
+class DialogCreate extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
@@ -172,8 +174,6 @@ export default class DialogCreate extends React.Component {
     }
     UNSAFE_componentWillReceiveProps(nextProps){
         const course = this.state.courses.filter(c => {
-            console.log(c.label + "  -  " + nextProps.class.course)
-
             return c.label == nextProps.class.course
         })
         const center = this.state.centers.filter(c => {
@@ -188,7 +188,6 @@ export default class DialogCreate extends React.Component {
                 return c.date.value
             })
             let distinc_date = [...new Set(dates)]
-            console.log(configs)
             conf = configs.map(c => {
                 c.from = c.from*1000
                 c.to = c.to*1000
@@ -326,7 +325,9 @@ export default class DialogCreate extends React.Component {
         axios.post(url, data)
             .then(response => {
                 this.props.updateTable(response.data)
-                this.props.notification('Đã lưu thay đổi','success')
+                this.props.enqueueSnackbar('Thêm lớp thành công', { 
+                    variant: 'success',
+                });
                 this.props.handleCloseDialog();
             })
             .catch(err => {
@@ -606,3 +607,4 @@ export default class DialogCreate extends React.Component {
           );
     }
 }
+export default withSnackbar(DialogCreate)
