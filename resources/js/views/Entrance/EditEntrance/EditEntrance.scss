@@ -85,6 +85,10 @@
     .MuiGrid-item{
         padding-bottom: 0px !important;
     }
-     
-    
+    .select-box {
+        z-index: 999 !important;
+    }
+    .select-box-1 {
+        z-index: 1000 !important;
+    }
 }

@@ -17,10 +17,10 @@ class CreateStudentSessionTable2 extends Migration
             $table->bigIncrements('id');
             $table->integer('student_id');
             $table->integer('session_id');
-            $table->enum('attendance',['present','late','absence','n_absence']);
+            $table->enum('attendance',['present','late','absence','n_absence','holding'])->default('holding');
             $table->enum('type',['official','trial']);
             $table->string('score');
-            $table->string('entrance_note');
+            $table->string('attendance_note');
             $table->timestamps();
         });
     }

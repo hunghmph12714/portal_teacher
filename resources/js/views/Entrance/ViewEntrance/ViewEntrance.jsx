@@ -130,7 +130,7 @@ export default class ViewEntrance extends React.Component{
         .catch(err => {
           console.log(err.response.data)
         })
-    }
+    }   
     render(){      
         return(          
           <React.Fragment>  
@@ -448,8 +448,7 @@ export default class ViewEntrance extends React.Component{
                     handleCloseDialog={this.handleCloseAnswerDialog}
                     answers = {this.state.answers}
                   />
-                </div>
-            
+                </div> 
               </React.Fragment>
             )}
             </React.Fragment>

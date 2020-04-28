@@ -8,6 +8,9 @@ use App\Step;
 use App\Relationship;
 use App\Status;
 use App\Parents;
+use App\StudentClass;
+use App\Session;
+use App\StudentSession;
 use Illuminate\Http\Request;
 
 class EntranceController extends Controller
@@ -145,18 +148,20 @@ class EntranceController extends Controller
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
-            'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id'
+            'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
+            'classes.id as class_id', 'classes.name as class', 'enroll_date'
         )->where('entrances.step_id', $sig, $step)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
          ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
-         ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')->orderBy('entrances.status_id','asc')
+         ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')
+         ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
          ->orderBy('priority','desc')->get();
         return response()->json($entrances);
     }
     protected function editEntrance(Request $request){
         $rules = ['student_id' => 'required', 'entrance_id' => 'required', 'parent_id' => 'required'];
         $this->validate($request, $rules);
-
-        //Edit Student and Parent
+       
+        // Edit Student and Parent
         if($request->student_changed){
             $student = Student::find($request->student_id);
             if($student){
@@ -201,11 +206,41 @@ class EntranceController extends Controller
                 }
                 $e->test_score = $request->test_score;
                 $e->test_note = $request->test_note;   
-                $e->save();            
+                //Check if student enrolled or not 
+                if($e->enroll_date == NULL && $e->class_id == NULL && $request->enroll_date && $request->entrance_classes){
+                    $e->enroll_date = date('Y-m-d', $request->enroll_date);
+                    $e->class_id = $request->entrance_classes['value'];
+                    $e->save();     
+                    //Enroll student to class
+                    $this->enrollStudent($e->class_id, $e->student_id, $e->enroll_date);
+                }
+                else{
+                    $e->save();
+                }
+                       
             }
-        }       
+        } 
         
+        // print_r($test->toArray());
     }   
+    protected function enrollStudent($class_id, $student_id, $entrance_date){
+        //Enroll Student to class
+
+        $enroll['student_id'] = $student_id;
+        $enroll['class_id'] = $class_id;
+        $enroll['entrance_date'] = $entrance_date;
+        $sc = StudentClass::insert($enroll);
+        //Enroll Student to session of class
+
+        $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
+        foreach($sessions as $s){
+            $input['student_id'] = $student_id;
+            $input['session_id'] = $s->id;
+            $input['type'] = 'official';
+            StudentSession::insert($input);
+        }
+        print_r($sessions->toArray());
+    }
     protected function uploadTest(Request $request){
         $rules = ['entrance_id' => 'required'];
         $this->validate($request, $rules);

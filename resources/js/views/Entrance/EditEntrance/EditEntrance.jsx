@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withSnackbar } from 'notistack';
 
-import { StudentForm, ParentForm, EntranceForm, TestForm, StatusForm } from '../components';
+import { StudentForm, ParentForm, EntranceForm, TestForm, StatusForm, EnrollForm } from '../components';
 import axios from 'axios';
 
 const baseUrl = window.Laravel.baseUrl
@@ -55,23 +55,27 @@ class EditEntrance extends React.Component {
             entrance_id: '',
             entrance_center: [],
             entrance_courses: [],
+            entrance_classes: null,
             entrance_multi_course: false,
             entrance_date: new Date(),
             entrance_note: '', 
             entrance_step: [],
             entrance_status: [],
-            
+            enroll_date: new Date(),
+
             test_answers: [],
             answers_changed : false,
             test_user: '',
             test_score: '',
             test_note: '',
-            entrance_changed: true,
+            entrance_changed: true,            
+            enroll_disabled: false
         }
     }
     UNSAFE_componentWillReceiveProps(nextProps){
         let dob_str = ""
         let test_time = ""
+        let enroll_date = new Date(nextProps.entrance.enroll_date)
         if(nextProps.entrance){
             let dob_arr = nextProps.entrance.dob.split('/')
             dob_str = (dob_arr.length >2 )?dob_arr[1]+'/'+dob_arr[0]+'/'+dob_arr[2]: null
@@ -101,14 +105,16 @@ class EditEntrance extends React.Component {
             entrance_id: nextProps.entrance.eid,
             entrance_center: { label: nextProps.entrance.center, value: nextProps.entrance.center_id},
             entrance_courses: {label: nextProps.entrance.course, value: nextProps.entrance.course_id},
+            entrance_classes: (nextProps.entrance.class_id)?{ label: nextProps.entrance.class, value: nextProps.entrance.class_id }:null,
             entrance_date: new Date(test_time),
             entrance_note: (nextProps.entrance.enote)?nextProps.entrance.enote:'',  
             entrance_step: { label: nextProps.entrance.step, value: nextProps.entrance.step_id },
             entrance_status: { label: nextProps.entrance.status, value: nextProps.entrance.status_id},
-
+            enroll_date : (nextProps.entrance.enroll_date)?enroll_date:null,
             test_answers: (nextProps.entrance.test_answers)?nextProps.entrance.test_answers:[],
             test_score: nextProps.entrance.test_score,
-            test_note: nextProps.entrance.test_note,            
+            test_note: nextProps.entrance.test_note,
+
         })
     }
     handleStudentChange = (newValue) => {
@@ -181,6 +187,10 @@ class EditEntrance extends React.Component {
     handleEntranceDateChange = date => {
         this.setState({ entrance_date: date, entrance_changed: true });
     }
+    handleEnrollDateChange = date => {
+        this.setState({ enroll_date: date, entrance_changed: true });
+
+    }
     handleUploadFile = (files) => {
         this.setState({test_answers : files , entrance_changed: true, answers_changed: true})
     }
@@ -189,7 +199,7 @@ class EditEntrance extends React.Component {
         let data = this.state
         data.entrance_date = this.state.entrance_date.getTime()/1000
         data.student_dob = this.state.student_dob.getTime()/1000
-        
+        data.enroll_date = (this.state.enroll_date) ? this.state.enroll_date.getTime()/1000 : null
         axios.post(baseUrl+'/entrance/edit', data)
             .then(response => {
                 if(this.state.test_answers && this.state.answers_changed){
@@ -238,46 +248,52 @@ class EditEntrance extends React.Component {
                         Vui lòng điền đầy đủ thông tin cần thiết (*)
                     </DialogContentText>
                     <form noValidate autoComplete="on">
-                        <h5 className="title-header">Thông tin học sinh</h5> 
-                        <ExpansionPanel key="student">
-                            <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                            >
-                            <Typography>{this.state.student_name.label}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                <StudentForm 
-                                    state = {this.state}
-                                    handleStudentChange = {this.handleStudentChange} 
-                                    onChange = {this.onChange}
-                                    handleChange = {this.handleChange}
-                                />
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                        <Grid container spacing={2}>
+                            <Grid item lg={6} md={12}> 
+                                <h5 className="title-header">Thông tin học sinh</h5> 
+                                <ExpansionPanel key="student">
+                                    <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                    >
+                                    <Typography>{this.state.student_name.label}</Typography>
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                        <StudentForm 
+                                            state = {this.state}
+                                            handleStudentChange = {this.handleStudentChange} 
+                                            onChange = {this.onChange}
+                                            handleChange = {this.handleChange}
+                                            handleDateChange = {this.handleDateChange}
+                                        />
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
+                            
+                            </Grid>
+                            <Grid item lg={6} md={12}>
+                                <h5 className="title-header">Thông tin phụ huynh</h5>
+                                <ExpansionPanel key="parent">
+                                    <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                    >
+                                    <Typography>{this.state.parent_name.label}</Typography>
+                                    </ExpansionPanelSummary>
+                                    <ExpansionPanelDetails>
+                                    <ParentForm
+                                        state = {this.state}
+                                        handleParentChange = {this.handleParentChange} 
+                                        onChange = {this.onChange}
+                                        handleChange = {this.handleChange}
+                                    />
+                                    </ExpansionPanelDetails>
+                                </ExpansionPanel>
                         
-                        <h5 className="title-header">Thông tin phụ huynh</h5>
-                        <ExpansionPanel key="parent">
-                            <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"
-                            >
-                            <Typography>{this.state.parent_name.label}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                            <ParentForm
-                                state = {this.state}
-                                handleParentChange = {this.handleParentChange} 
-                                onChange = {this.onChange}
-                                handleChange = {this.handleChange}
-                            />
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
+                            </Grid>
+                        </Grid>
                         
-                        <Divider/>
-
                         <h5 className="title-header">Nguyện vọng đăng ký</h5>
                         <EntranceForm 
                             state = {this.state}
@@ -285,21 +301,35 @@ class EditEntrance extends React.Component {
                             onChange = {this.onChange}
                             handleChange = {this.handleChange}
                         />
-                        <h5 className="title-header">Trạng thái</h5>
-                        <StatusForm 
-                            state = {this.state}
-                            handleEntranceDateChange = {this.handleEntranceDateChange} 
-                            onChange = {this.onChange}
-                            handleChange = {this.handleChange}
-                        />
+                        <Grid container spacing={1}>
+                            <Grid item lg={6} md={12}> 
+                                <h5 className="title-header">Trạng thái</h5>
+                                <StatusForm 
+                                    state = {this.state}
+                                    handleEntranceDateChange = {this.handleEntranceDateChange} 
+                                    onChange = {this.onChange}
+                                    handleChange = {this.handleChange}
+                                />
+                            </Grid>
+                            <Grid item lg={6} md={12}>
+                                <h5 className="title-header">Xếp lớp</h5>
+                                <EnrollForm 
+                                    state = {this.state}
+                                    handleDateChange = {this.handleEnrollDateChange} 
+                                    onChange = {this.onChange}
+                                    handleChange = {this.handleChange}
+                                />
+                            </Grid>
+                        </Grid>
+                        
                         <h5 className="title-header">Kiểm tra đầu vào</h5>
-                        <TestForm 
-                            state = {this.state}
-                            handleUploadFile = {this.handleUploadFile}
-                            handleEntranceDateChange = {this.handleEntranceDateChange} 
-                            onChange = {this.onChange}
-                            handleChange = {this.handleChange}
-                        />
+                                <TestForm 
+                                    state = {this.state}
+                                    handleUploadFile = {this.handleUploadFile}
+                                    handleEntranceDateChange = {this.handleEntranceDateChange} 
+                                    onChange = {this.onChange}
+                                    handleChange = {this.handleChange}
+                                />
                         
                     </form>
                     </DialogContent>

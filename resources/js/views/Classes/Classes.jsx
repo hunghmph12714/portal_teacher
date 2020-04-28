@@ -251,6 +251,7 @@ class Classes extends React.Component{
                       {
                           title: "Học phí",
                           field: "fee",
+                          filtering: false,
                           headerStyle: {
                               padding: '0px',
                               fontWeight: '600',
@@ -264,6 +265,7 @@ class Classes extends React.Component{
                         title: "Sĩ số",
                         field: "student_number",
                         type: "number",
+                        filtering: false,
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',

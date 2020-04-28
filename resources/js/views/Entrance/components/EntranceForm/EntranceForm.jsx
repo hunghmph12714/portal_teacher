@@ -24,6 +24,7 @@ const CenterSelect = React.memo(props => {
     
     return( 
         <Select
+            className="select-box-1"
             key = "center-select"
             value = {props.entrance_center}
             name = "entrance_center"

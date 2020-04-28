@@ -43,9 +43,9 @@ class SessionController extends Controller
                             $input['date'] = $dt->format('Y-m-d');
                             $input['from'] = $dt->format('Y-m-d')." ".$from_time;
                             $input['to'] = $dt->format('Y-m-d')." ".$to_time;
-                            $input['teacher_id'] = $c->teacher->value;
+                            $input['teacher_id'] =(is_object($c->teacher))?$c->teacher->value:NULL;
                             $input['center_id'] = $class->center_id;
-                            $input['room_id'] = $c->room->value;
+                            $input['room_id'] = (is_object($c->room))?$c->room->value:NULL;
                             $input['class_id'] = $class_id;
                             $input['ss_number'] = $index;
                             array_push($sessions, $input);

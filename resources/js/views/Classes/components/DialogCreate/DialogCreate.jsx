@@ -28,9 +28,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withSnackbar } from 'notistack';
-
+import Slide from '@material-ui/core/Slide';
 const baseUrl = window.Laravel.baseUrl
-
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
   
@@ -197,10 +199,10 @@ class DialogCreate extends React.Component {
             session_per_class = dates.length/distinc_date.length
         }
         this.setState({
-            name: nextProps.class.name,
-            code: nextProps.class.code,
-            open_date: new Date(nextProps.class.open_date),
-            fee: nextProps.class.fee,
+            name: (nextProps.class.name)?nextProps.class.name:'',
+            code: (nextProps.class.code)?nextProps.class.code:'',
+            open_date: nextProps.class.open_date ? new Date(nextProps.class.open_date) : null,
+            fee: (nextProps.class.fee)?nextProps.class.fee:'',
             note: nextProps.class.note,
             course_selected : course,
             center_selected : center,
@@ -334,18 +336,6 @@ class DialogCreate extends React.Component {
                 console.log("Create class bug: "+ err)
             })
     }
-    handleEditTeacher = () => {
-        // let url = baseUrl + "/teacher/edit"
-        // axios.post(url, this.state)
-        //     .then(response => {
-        //         this.props.updateTable(response.data)
-        //         this.props.notification('Đã lưu thay đổi','success')
-        //         this.props.handleCloseDialog();
-        //     })
-        //     .catch(err => {
-        //         this.props.notification('Có lỗi xảy ra','error')
-        //     })
-    }
     onChangeTime = (c, type) => time => {
         this.setState(prevState => {
             let totalSession = prevState.session_per_class
@@ -409,6 +399,8 @@ class DialogCreate extends React.Component {
                 </Button> */}
                 <Dialog 
                     fullWidth 
+                    TransitionComponent={Transition}
+                    keepMounted
                     maxWidth='lg'
                     scroll='paper'
                     open={this.props.open} onClose={this.props.handleCloseDialog} aria-labelledby="form-dialog-title"
