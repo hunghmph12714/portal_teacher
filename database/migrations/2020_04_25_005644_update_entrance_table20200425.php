@@ -14,7 +14,6 @@ class UpdateEntranceTable20200425 extends Migration
     public function up()
     {
         Schema::table('entrances', function (Blueprint $table) {
-            //ace
             $table->date('enroll_date');
             $table->smallInteger('class_id');
         });
