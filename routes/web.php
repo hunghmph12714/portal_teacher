@@ -94,7 +94,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/class/edit', 'ClassController@editClass');
     Route::post('/class/deactive', 'ClassController@deactiveClass');
     Route::post('/class/delete', 'ClassController@deleteClass');
-
+    Route::get('/class/:id', function(){
+        return view('welcome');
+    });
+    Route::get('/class/{class_id}', 'ClassController@detailClass');
 //SETTING-RELATIONSHIP
     Route::get('/settings/relationship', function(){
         return view('welcome');

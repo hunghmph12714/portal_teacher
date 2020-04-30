@@ -312,6 +312,12 @@ class DialogCreate extends React.Component {
       };
     handleCreateNewClass = () => {
         let url = baseUrl + "/class/create"
+        if(!this.state.code || !this.state.name || !this.state.open_date ||  !this.state.fee){
+            this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường *', { 
+                variant: 'error',
+            });
+            return 0;
+        }
         let data = {
             center_id : this.state.center_selected.value,
             course_id : this.state.course_selected.value,
@@ -321,7 +327,7 @@ class DialogCreate extends React.Component {
                 return {from: c.from.getTime()/1000, to: c.to.getTime()/1000, teacher: c.teacher, room: c.room, date: c.date}
             })),
             open_date : this.state.open_date.getTime()/1000,
-            note : this.state.note,
+            note : (this.state.note)?this.state.note:'',
             fee : this.state.fee,
         }
         axios.post(url, data)
@@ -333,6 +339,9 @@ class DialogCreate extends React.Component {
                 this.props.handleCloseDialog();
             })
             .catch(err => {
+                this.props.enqueueSnackbar('Thêm lớp thành công', { 
+                    variant: 'success',
+                });
                 console.log("Create class bug: "+ err)
             })
     }

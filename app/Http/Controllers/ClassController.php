@@ -153,7 +153,11 @@ class ClassController extends Controller
         $room = Classes::find($request->id)->forceDelete();
         return response()->json(200);
     }
-
+    //Class Detail
+    protected function detailClass($class_id){
+        return view('welcome');
+        // return $class_id;
+    }
     //HELPER
     public function importDB(){
         $row = 1;

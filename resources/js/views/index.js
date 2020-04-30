@@ -13,7 +13,7 @@ export {default as TeacherList} from './Teacher';
 export { default as BaseSalary } from './BaseSalary';
 export { default as Room } from './Room';
 export { default as Courses } from './Courses';
-export { default as Classes } from './Classes';
+export { Classes, ClassDetail } from './Classes';
 export { default as Relationship } from './Relationship';
 export { default as Step } from './Step';
 export { default as Status } from './Status';
