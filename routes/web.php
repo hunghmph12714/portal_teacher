@@ -124,7 +124,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/status/edit', 'AdminSettingController@editStatus');
     Route::post('/status/delete', 'AdminSettingController@deleteStatus');
 //Schools
-    Route::get('/school/find/{key}', 'StudentController@findSchool');
+    Route::get('/school/find/{key}', 'StudentController@findSchools');
 //Entrance
     Route::get('/entrance/create', function(){
         return view('welcome');
@@ -139,13 +139,14 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/entrance/edit', 'EntranceController@editEntrance');
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
-    Route::get('/student/find/{key}' , 'StudentController@findStudent');
+    Route::get('/student/find/{key}' , 'StudentController@findStudents');
+    Route::get('/stduent/get', 'StudentController@getStudents');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');
 //Session
     Route::post('/session/get-last', 'SessionController@getLastSession');
-    Route::get('/session/get', 'SessionController@getSession');
+    Route::post('/session/get', 'SessionController@getSession');
     Route::post('/session/create','SessionController@createSession');
     Route::post('/session/delete', 'SessionController@deleteSession');
     Route::post('/session/edit', 'SessionController@editSession');

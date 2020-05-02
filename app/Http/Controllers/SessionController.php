@@ -58,16 +58,29 @@ class SessionController extends Controller
         }
         else return $sessions;
     }
-    protected function getSession(){
+    protected function getSession(Request $request){
 
         $rules = [
             'class_id' => 'required',
             'from_date' => 'required',
             'to_date' => 'required',    
         ];
+        
         $this->validate($request, $rules);
+        if($request->from_date == '-1' && $request->to_date == '-1'){
+            $sessions = Classes::find($request->class_id)->sessions()->
+                select('sessions.id as sid','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
+                    'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.stats')->
+                join('teacher','sessions.teacher_id','teacher.id')->
+                join('center','sessions.center_id','center.id')->
+                join('room','sessions.room_id','room.id')->
+                get();
+            return response()->json($sessions->toArray());
+        }
+        else{
 
-
+        }        
         // $this->generateSessionFromConfig('2020-04-01','2020-04-30',5);
         
     }

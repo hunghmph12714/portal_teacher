@@ -74,7 +74,7 @@ export default class DialogCreate extends React.Component {
             salary_percent: 0,
             salary_per_hour: 0,
             base_salaries : [],
-            base_salary: '',
+            base_salary: {value:'', label: ''},
             
         }  
     }
@@ -95,7 +95,7 @@ export default class DialogCreate extends React.Component {
             insurance: nextProps.teacher.insurance,
             salary_percent: nextProps.teacher.percent_salary,
             salary_per_hour: nextProps.teacher.salary_per_hour,
-            base_salary : bs[0],
+            base_salary : (bs[0])?bs[0]:{value:'', label: ''},
             hdType : contract,
         })
     }

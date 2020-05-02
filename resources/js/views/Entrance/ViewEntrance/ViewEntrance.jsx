@@ -155,7 +155,6 @@ export default class ViewEntrance extends React.Component{
                   </Stepper>
                 </div>
                 <div className="root-entrance">
-                  <ReactNotification />
                   <MaterialTable
                     title="Danh sách ghi danh"
                     data={this.state.data}

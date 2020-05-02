@@ -6,14 +6,15 @@ use Illuminate\Http\Request;
 use App\Schools;
 use App\Parents;
 use App\Student;
+use App\Classes;
 class StudentController extends Controller
 {
     //
-    public function findSchool($key){
+    public function findSchools($key){
         $schools = Schools::where('name', 'LIKE', '%'.$key.'%')->limit(10)->get()->toArray();
         return response()->json($schools);
     }
-    public function findStudent($key){
+    public function findStudents($key){
         if(ctype_digit($key)){
             //check parent phone
             $s = Parents::where('parents.phone', 'LIKE', '%'.$key.'%')->select(
@@ -34,5 +35,9 @@ class StudentController extends Controller
                 ->leftJoin('relationships', 'students.relationship_id', 'relationships.id')->limit(10)->get()->toArray();
             return response()->json($students);
         }
+    }
+    protected function getStudents(){
+        $class_id = 1;
+        $class = Classes::find($class_id);
     }
 }

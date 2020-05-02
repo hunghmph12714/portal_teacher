@@ -37,7 +37,8 @@ class ClassDetail extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            value: 1
+            value: 1,
+            class_id: 1,
         }
     }
     handleChange = (event, newValue) => {
@@ -57,7 +58,7 @@ class ClassDetail extends React.Component{
                     Item One
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
-                    <ListSession />
+                    <ListSession class_id={this.state.class_id}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2}>
                     Item Three
