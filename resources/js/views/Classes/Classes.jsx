@@ -129,6 +129,10 @@ class Classes extends React.Component{
           console.log('Ket thuc lop bug: '+ err)
         })
     }
+    handleClassDetail = (event, rowData) => {
+      this.props.history.push('/class/'+rowData.id)
+      console.log(rowData.tableData.id)
+    }
     componentDidMount(){ 
       this.getClass()
     }
@@ -151,7 +155,7 @@ class Classes extends React.Component{
                             paddingLeft: '0px'
                           }
                       }}
-                      onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                      onRowClick={(event, rowData) => this.handleClassDetail(event, rowData)}
                       actions={[                       
                           {
                               icon: () => <AddBoxIcon />,
@@ -306,7 +310,7 @@ class Classes extends React.Component{
                         <Grid container  id="class-detail" spacing={3}>
                           <Grid item md={12} lg={4} id="timetable">
                             <MaterialTable 
-                              title= {"Lịch học lớp" + rowData.code}
+                              title= {"Lịch học lớp " + rowData.code}
                               options = {{
                                 paging: false,
                                 search: false

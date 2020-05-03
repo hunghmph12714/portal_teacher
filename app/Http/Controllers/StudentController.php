@@ -36,8 +36,26 @@ class StudentController extends Controller
             return response()->json($students);
         }
     }
-    protected function getStudents(){
-        $class_id = 1;
+    protected function getStudents(Request $request){
+        $rules = [
+            'class_id' => 'required'
+        ];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
         $class = Classes::find($class_id);
+        $result = [];
+        if($class){
+            $students = $class->students;
+            $result = $students->toArray();
+            foreach($students as $key=>$student){
+                $parents = Parents::find($student->parent_id)
+                            ->select('parents.fullname as pname','relationships.name as rname','parents.phone'
+                                ,'parents.email','parents.alt_fullname','parents.alt_email','parents.alt_phone'
+                                ,'relationships.color', 'relationships.id as rid')
+                            ->leftJoin('relationships','parents.relationship_id','relationships.id')->first()->toArray();
+                $result[$key]['parent'] = $parents;
+            }
+        }
+        return response()->json($result);
     }
 }

@@ -13,6 +13,10 @@ class Classes extends Model
         return $this->hasMany('App\Session','class_id','id');
     }
     public function students(){
-        return $this->belongsToMany('App\Student','student_class','class_id','student_id');
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+                    ->as('detail')
+                    ->using('App\StudentClass')
+                    ->withPivot('status', 'entrance_date','stats')
+                    ->withTimestamps();
     }
 }

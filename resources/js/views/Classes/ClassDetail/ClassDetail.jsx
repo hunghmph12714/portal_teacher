@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { ListSession } from '../components';
+import { ListSession, ListStudent } from '../components';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -19,9 +19,9 @@ function TabPanel(props) {
         {...other}
       >
         {value === index && (
-          <Box p={3}>
+          <div>
             {children}
-          </Box>
+          </div>
         )}
       </div>
     );
@@ -58,10 +58,10 @@ class ClassDetail extends React.Component{
                     Item One
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
-                    <ListSession class_id={this.state.class_id}/>
+                    <ListSession class_id={this.props.match.params.id}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2}>
-                    Item Three
+                  <ListStudent class_id={this.props.match.params.id}/>
                 </TabPanel>
             </div>
         )

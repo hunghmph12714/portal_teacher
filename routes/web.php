@@ -140,7 +140,7 @@ Route::group(['middleware' => ['auth']], function() {
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudents');
-    Route::get('/stduent/get', 'StudentController@getStudents');
+    Route::post('/student/get', 'StudentController@getStudents');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');
