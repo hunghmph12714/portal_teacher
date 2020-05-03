@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, withRouter,Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
+import { withSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
@@ -18,7 +19,7 @@ const schema = {
   email: {
     presence: { allowEmpty: false, message: 'is required' },
     email: {
-      message: "chưa hợp lệ :D"
+      message: "Email chưa hợp lệ :D"
     },
     length: {
       maximum: 64
@@ -198,7 +199,10 @@ const SignIn = props => {
             .then(response => {
               auth.login()
               localStorage.setItem('user', JSON.stringify(response.data.user))
-              history.push('/');
+              props.enqueueSnackbar('Đăng nhập thành công!', { 
+                  variant: 'success',
+              });
+              setTimeout(history.push('/'), 1000)
             })
             .catch(err => {
               console.log('error check auth: '+ err.data)
@@ -339,4 +343,4 @@ SignIn.propTypes = {
   history: PropTypes.object
 };
 
-export default withRouter(SignIn);
+export default withRouter(withSnackbar(SignIn));
