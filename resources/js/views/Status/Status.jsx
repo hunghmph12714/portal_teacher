@@ -58,7 +58,7 @@ export default class Status extends React.Component{
         super(props)
         this.state  = {
             columns: [
-                { title: 'Quy trình', field: 'type' ,
+                { title: 'Quy trình', field: 'type' ,defaultGroupOrder: 0,
                     lookup: { 'Quy trình đầu vào':'Tuyển sinh đầu vào' ,'Quy trình kiểm tra/thi thử':'Quy trình kiểm tra/thi thử',
                     'Quy trình tuyển dụng':'Tuyển dụng nhân sự','Quy trình hoàn trả học phí':'Quy trình hoàn trả học phí','Quy trình học bù/ phụ đạo':'Quy trình học bù/ phụ đạo' }, 
                 },                
@@ -99,7 +99,7 @@ export default class Status extends React.Component{
     }
 
     getStatus = () =>{
-        axios.get(window.Laravel.baseUrl + "/status/get")
+        axios.post(window.Laravel.baseUrl + "/status/get", {type: -1})
             .then(response => {
                 this.setState({
                     data: response.data
@@ -169,6 +169,9 @@ export default class Status extends React.Component{
                 <ReactNotification />
                 <MaterialTable
                     title="Cấu hình trạng thái"
+                    options={
+                        {'grouping': true,}
+                    }
                     columns={this.state.columns}
                     data={this.state.data}
                     editable={{

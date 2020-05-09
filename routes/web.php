@@ -150,6 +150,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/session/create','SessionController@createSession');
     Route::post('/session/delete', 'SessionController@deleteSession');
     Route::post('/session/edit', 'SessionController@editSession');
+
+//Attendance
+    Route::get('/attendance', function(){
+        return view('welcome');
+    });
+    Route::get('/attendance/get', 'AttendanceController@getAttendance');
 });
 
 // Auth::routes();

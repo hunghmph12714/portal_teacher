@@ -71,6 +71,10 @@ const Sidebar = props => {
         {
           title: 'Lớp học',
           href: '/classes'
+        },
+        {
+          title: 'Điểm danh',
+          href: '/attendance'
         }
       ]
     },

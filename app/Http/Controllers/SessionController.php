@@ -79,7 +79,7 @@ class SessionController extends Controller
             return response()->json($sessions->toArray());
         }
         else{
-
+            return response()->json('?');
         }        
         // $this->generateSessionFromConfig('2020-04-01','2020-04-30',5);
         

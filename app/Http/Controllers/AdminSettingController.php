@@ -8,7 +8,7 @@ use App\Step;
 use App\Status;
 class AdminSettingController extends Controller
 {
-    //Setting Relationship
+//Setting Relationship
     protected function getRelationship(){
         $relationships = Relationship::all();
         return response()->json($relationships);
@@ -65,7 +65,7 @@ class AdminSettingController extends Controller
         }
         return response()->json(200);
     }
-    //Setting Step
+//Setting Step
     protected function getStep(Request $request){
         if($request->type == -1){
             $steps = Step::orderBy('type','asc')->orderBy('order','asc')->get()->toArray();
@@ -134,10 +134,10 @@ class AdminSettingController extends Controller
         }
         return response()->json(200);
     }
-    //Setting Status
+//Setting Status
     protected function getStatus(Request $request){
         if($request->type == -1){
-            $s = Status::orderBy('type','asc')->orderBy('order','asc')->get()->toArray();
+            $s = Status::orderBy('type','asc')->get()->toArray();
             return response()->json($s);
         }
         else{
