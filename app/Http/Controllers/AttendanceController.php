@@ -11,18 +11,11 @@ use App\StudentSession;
 class AttendanceController extends Controller
 {
     //
-    protected function getAttendance(){
-        $class_id = 1;
-        $sessions = [23,24];
-        $students = StudentSession::
-                            Select('student_session.id as aid','students.id as sid','parents.id as pid',
-                                    'attendance','type','score','attendance_note',
-                                    'students.fullname as sname', 'dob',
-                                    'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone')
-                            ->whereIn('session_id',$sessions)
-                            ->join('students', 'student_session.student_id', 'students.id')
-                            ->join('parents', 'students.parent_id','parents.id')
-                            ->get();
+    protected function getAttendance(Request $request){
+        $rules = ['class_id' => 'required' , 'sessions' => 'required'];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
+        $sessions = array_column($request->sessions, 'value');        
         $attendances = StudentSession::whereIn('session_id', $sessions)->get();
         $result = [];
         foreach($attendances as $s){            
@@ -31,13 +24,15 @@ class AttendanceController extends Controller
                 $result[$s->student_id]['student'] = Student::where('students.id',$s->student_id)
                     ->select('students.id as sid','parents.id as pid',
                             'students.fullname as sname', 'dob',
-                            'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone','parents.relationship_id as rid')
+                            'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone','parents.relationship_id as rid',
+                            'relationships.name as rname','relationships.color')
+
                     ->join('parents', 'students.parent_id','parents.id')
                     ->join('relationships','parents.relationship_id', 'relationships.id')->first();                
             }
             
         }
-        return response()->json($result);
+        return response()->json(array_values($result));
 
     }
 }

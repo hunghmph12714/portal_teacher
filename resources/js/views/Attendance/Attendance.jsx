@@ -1,12 +1,46 @@
 import React , {useState, useEffect} from 'react'
 import './Attendance.scss'
 import axios from 'axios'
-import { Grid } from '@material-ui/core';
 import { withSnackbar } from 'notistack';
 import Select , { components }  from "react-select";
 import Divider from '@material-ui/core/Divider';
 import { format } from 'date-fns'
-const baseUrl = window.Laravel.baseUrl
+import {
+    Tooltip,
+  } from "@material-ui/core";
+import { Grid } from '@material-ui/core';
+import MaterialTable from "material-table";
+import Typography from '@material-ui/core/Typography';
+import 'react-notifications-component/dist/theme.css'
+import Chip from '@material-ui/core/Chip';
+import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew';
+
+const baseUrl = window.Laravel.baseUrl;
+const customChip = (color = '#ccc') => ({
+  border: '1px solid ' + color,
+  color: '#000',
+  fontSize: '12px',
+})
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const ClassSelect = React.memo(props => {
     const {center, course} = props
@@ -48,7 +82,7 @@ const SessionDateSelect = React.memo(props => {
             c.from = format(new Date(c.from), 'HH:mm')
             c.to = format(new Date(c.to), 'HH:mm')
             c.time = c.from + '-' + c.to
-            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date}
+            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.from, selected:2}
         })
         setSessions(data)
         setTmpSession(data)
@@ -59,22 +93,26 @@ const SessionDateSelect = React.memo(props => {
         }
     }, [props.selected_class])
     useEffect(() => {
-        if(!props.selected_session){
+        if(!props.selected_session || props.selected_session.length == 0){
            setSessions(tmp_sessions)
         }else{
             setSessions(sessions.filter(s => s.date == props.selected_session[0].date))
         }        
     }, [props.selected_session])
     return( 
-        <Select
-            key = "session-select"
-            isMulti
-            value = {props.selected_session}
-            name = "selected_session"
-            placeholder="Chọn Ca học"
-            options={sessions}
-            onChange={props.handleChange}
-        />)
+        
+        <div className = "select-input">
+            <Select                
+                key = "session-select"
+                isMulti
+                value = {props.selected_session}
+                name = "selected_session"
+                placeholder="Chọn Ca học"
+                options={sessions}
+                onChange={props.handleChange}
+            />                 
+        </div>
+    )
 })
 
 class Attendance extends React.Component{
@@ -82,24 +120,60 @@ class Attendance extends React.Component{
         super(props)
 
         this.state = {
+            data : [],
             selected_class : null,
-            selected_session: ''
+            selected_session: [],
+            open_attendance: false,
+            selected_data : [],
         }
     }
     handleClassChange = (newValue , event) => {
         if(this.state.selected_class != newValue){
-            this.setState({selected_session: ''})
+            this.setState({selected_session: []})
             this.setState({
-                'selected_class' : newValue
+                selected_class : (newValue)?newValue:[],                
             })
         }       
         
+    }
+    handleSessionChange = (newValue) => {
+        if(!newValue){ this.setState({data: []}) }
+        if(this.state.selected_session != newValue){
+            this.setState({
+                selected_session: (newValue) ? newValue:[],
+            })
+            axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: newValue})
+                .then(response=> {
+                    this.setState({data: response.data})
+                })
+                .catch(err=> {
+                    console.log(err)
+                })
+        }
     }
     handleChange = (newValue , event)=> {
         this.setState({
             [event.name]: newValue
         })    
     };
+    handleOpenAttendance = (event, data) => {
+        this.setState({open_attendance : true, selected_data: data})
+    }
+    handleCloseAttendance = ( ) => {
+        this.setState({open_attendance: false})
+    }
+    onAttendanceChange =  (type, s_id) => {
+        this.setState(prevState => {
+            let selected_session = prevState.selected_session
+            selected_session = selected_session.map(s => {
+                if(s.value == s_id){
+                    s.selected = (s.selected == type) ? -1 : type
+                }
+                return s
+            })
+            return {...prevState, selected_session}
+        })
+    }
     render(){
         return(
             <div className="root-attendance">
@@ -116,13 +190,445 @@ class Attendance extends React.Component{
                         <SessionDateSelect 
                             selected_class = {this.state.selected_class}
                             selected_session = {this.state.selected_session}
-                            handleChange={this.handleChange}                        
+                            handleChange={this.handleSessionChange}                        
                         />
                     </Grid>
                 </Grid>
                 <Divider/>
-                
+                {this.state.selected_session.length != 0 ? (
+                <MaterialTable
+                    title="Danh sách học sinh"
+                    data={this.state.data}
+                    options={{
+                        pageSize: 10,
+                        selection: true,
+                        exportButton: true,
+                        rowStyle: rowData => {},
+                        filterCellStyle: {
+                          paddingLeft: '0px'
+                        }
+                    }}
+                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                    actions={[                       
+                        {
+                            icon: () => <AccessibilityNewIcon />,
+                            tooltip: 'Điểm danh học sinh',
+                            text: 'Điểm danh',
+                            onClick: (event,data) => this.handleOpenAttendance(event,data),
+                        },
+                    ]}
+                    localization={{
+                        body: {
+                            emptyDataSourceMessage: 'Lớp học rỗng'
+                        },
+                        toolbar: {
+                            searchTooltip: 'Tìm kiếm',
+                            searchPlaceholder: 'Tìm kiếm',
+                            nRowsSelected: '{0} học sinh được chọn'
+                        },
+                        pagination: {
+                            labelRowsSelect: 'dòng',
+                            labelDisplayedRows: ' {from}-{to} của {count}',
+                            firstTooltip: 'Trang đầu tiên',
+                            previousTooltip: 'Trang trước',
+                            nextTooltip: 'Trang tiếp theo',
+                            lastTooltip: 'Trang cuối cùng'
+                        }
+                    }}
+                    columns={[
+                    //   {
+                    //     title: "",
+                    //     field: "action",
+                    //     filtering: false,
+                    //     disableClick: true,
+                    //     sorting: false,
+                    //     headerStyle: {
+                    //         padding: '0px',
+                    //         width: '90px',
+                    //     },
+                    //     cellStyle: {
+                    //         width: '90px',
+                    //         padding: '0px',
+                    //     },
+                    //     render: rowData => (
+                    //         <div style = {{display: 'block'}}>
+                    //             {/* {rowData.tableData.id} */}
+                    //             <Tooltip title="Chỉnh sửa" arrow>
+                    //               <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                    //                 <EditOutlinedIcon fontSize='inherit' />
+                    //               </IconButton>
+                    //             </Tooltip>
+                    //             <Tooltip title="Xóa ghi danh" arrow>
+                    //               <IconButton onClick={() => {
+                    //                 if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                    //                   this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                    //                 }>
+                    //               <DeleteForeverIcon fontSize='inherit' />
+                    //               </IconButton>
+                    //             </Tooltip>                                
+                    //         </div>
+                    //     )
+                    //   },
+                    //Học sinh
+                      {
+                        title: "Học sinh",
+                        field: "sname",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                        render: rowData => {
+                          return (                                
+                            <Typography variant="body2" component="p">                                    
+                                <b>{rowData.student.sname}</b>
+                                <br /> {rowData.student.dob}
+                            </Typography>
+                            
+                          )
+                        }
+                      },
+                    //Phụ huynh
+                      {
+                        title: "Phụ huynh",
+                        field: "pname",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '3px 0px',
+                        },
+                        render: rowData => 
+                          (                              
+                            <Typography variant="body2" component="p">
+                                <b>{rowData.student.pname}</b> 
+                                <br />{rowData.student.phone} 
+                                <br />{rowData.student.pemail}
+                            </Typography>                              
+                          )
 
+                      },
+                    //Quan hệ
+                    {
+                        title: "Quan hệ",
+                        field: "rname",
+                        headerStyle: {
+                            padding: '0px',
+                            width: '120px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                            width: '120px',
+                        },
+                        render: rowData => {
+                          return (                              
+                            <Chip style={customChip(rowData.student.color)} variant="outlined" label={rowData.student.rname} size="small" />                         
+                          )
+                        }               
+                    },
+                    //Điểm danh
+                      {
+                        title: "Điểm danh",
+                        field: "attendance",         
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },  
+                        cellStyle: {
+                            padding: '0px 8px 0px 0px',
+                        },
+                        render: rowData => {
+                          return rowData.attendance.map(a => {
+                            return (
+                                <Tooltip title={a.session_id}>
+                                    <Chip variant="outlined" label={a.attendance} size="small"  className="attendance" />
+                                </Tooltip> 
+                            )
+                          })                          
+                        }
+                      },
+                    // Ghi chú
+                      {
+                          title: "Ghi chú",
+                          field: "note",
+                          headerStyle: {
+                              padding: '0px',
+                              fontWeight: '600',
+                          },
+                          cellStyle: {
+                              padding: '0px',
+                          },
+                          render: rowData => {
+                            return rowData.attendance.map(a => {
+                              return (
+                                  <Tooltip title={a.session_id}>
+                                    <span>{a.attendance_note}</span>    
+                                  </Tooltip> 
+                              )
+                            })                          
+                          }
+                      },                  
+                    //Điểm 
+                    {
+                        title: "Điểm",
+                        field: "score",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },  
+                        render: rowData => {
+                            return rowData.attendance.map(a => {
+                                return (
+                                    <Tooltip title={a.session_id}>
+                                        <span>{a.score}</span>  
+                                    </Tooltip> 
+                                )
+                            })                          
+                        }                          
+                    },
+                    
+                    ]}
+                    
+                    
+                  
+                />
+                ) : ('')}
+                {this.state.selected_session ? (
+                    <Dialog 
+                        open={this.state.open_attendance} onClose={this.handleCloseAttendance} aria-labelledby="form-dialog-title"
+                        fullWidth
+                        maxWidth='xl'>
+                        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText>
+                            <Table className='' aria-label="simple table"  size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>STT</TableCell>
+                                        <TableCell>Học sinh</TableCell>
+                                        <TableCell align="center">
+                                            Có mặt<br/>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                    <FormControlLabel
+                                                        control={<Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>}
+                                                        label={s.time}
+                                                        labelPlacement="top"
+                                                    />)
+                                                })
+                                            }
+                                        </TableCell>
+                                        <TableCell align="center">Muộn<br/>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                    <FormControlLabel
+                                                        control={<Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1} />}
+                                                        label={s.time}
+                                                        labelPlacement="top"
+                                                    />)
+                                                })
+                                            }
+
+                                        </TableCell>
+                                        <TableCell align="center">Có phép<br/>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                    <FormControlLabel
+                                                        control={<Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>}
+                                                        label={s.time}
+                                                        labelPlacement="top"
+                                                    />)
+                                                })
+                                            }</TableCell>
+                                        <TableCell align="center">Không phép<br/>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                    <FormControlLabel
+                                                        control={<Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3} />}
+                                                        label={s.time}
+                                                        labelPlacement="top"
+                                                    />)
+                                                })
+                                            }</TableCell>
+                                        <TableCell align="center">Chưa điểm danh<br/>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                    <FormControlLabel
+                                                        control={<Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>}
+                                                        label={s.time}
+                                                        labelPlacement="top"
+                                                    />)
+                                                })
+                                            }</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {this.state.data.map((row, index) => (
+                                    <TableRow key={row.key}>
+                                        <TableCell component="th" scope="row">
+                                            {index+1}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="body2" component="p">                                    
+                                                <b>{row.student.sname}</b>
+                                                <br /> {row.student.dob}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                this.state.selected_session.map(s => {
+                                                    return (
+                                                        <Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>
+                                                    )
+                                                })
+                                            }
+                                            
+                                        </TableCell>
+                                       
+                                        
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </DialogContentText>
+                        
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={this.handleCloseAttendance} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.handleCloseAttendance} color="primary">
+                            Subscribe
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+            
+                ): ('')}
+                <Dialog 
+                    open={this.state.open_attendance} onClose={this.handleCloseAttendance} aria-labelledby="form-dialog-title"
+                    fullWidth
+                    maxWidth='xl'>
+                    <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        <Table className='' aria-label="simple table"  size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>STT</TableCell>
+                                    <TableCell>Học sinh</TableCell>
+                                    <TableCell align="center">
+                                        Có mặt<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                <FormControlLabel
+                                                    control={<Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>}
+                                                    label={s.time}
+                                                    labelPlacement="top"
+                                                />)
+                                            })
+                                        }
+                                    </TableCell>
+                                    <TableCell align="center">Muộn<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                <FormControlLabel
+                                                    control={<Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1} />}
+                                                    label={s.time}
+                                                    labelPlacement="top"
+                                                />)
+                                            })
+                                        }
+
+                                    </TableCell>
+                                    <TableCell align="center">Có phép<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                <FormControlLabel
+                                                    control={<Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>}
+                                                    label={s.time}
+                                                    labelPlacement="top"
+                                                />)
+                                            })
+                                        }</TableCell>
+                                    <TableCell align="center">Không phép<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                <FormControlLabel
+                                                    control={<Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3} />}
+                                                    label={s.time}
+                                                    labelPlacement="top"
+                                                />)
+                                            })
+                                        }</TableCell>
+                                    <TableCell align="center">Chưa điểm danh<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                <FormControlLabel
+                                                    control={<Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>}
+                                                    label={s.time}
+                                                    labelPlacement="top"
+                                                />)
+                                            })
+                                        }</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {this.state.data.map((row, index) => (
+                                <TableRow key={row.key}>
+                                    <TableCell component="th" scope="row">
+                                        {index+1}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="body2" component="p">                                    
+                                            <b>{row.student.sname}</b>
+                                            <br /> {row.student.dob}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                    <Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>
+                                                )
+                                            })
+                                        }
+                                        
+                                    </TableCell>
+                                    
+                                    
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                    </DialogContentText>
+                    
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={this.handleCloseAttendance} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.handleCloseAttendance} color="primary">
+                        Subscribe
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }

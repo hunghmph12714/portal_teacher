@@ -155,7 +155,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/attendance', function(){
         return view('welcome');
     });
-    Route::get('/attendance/get', 'AttendanceController@getAttendance');
+    Route::post('/attendance/get', 'AttendanceController@getAttendance');
 });
 
 // Auth::routes();
