@@ -156,6 +156,7 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
+    Route::post('/attendance/edit', 'AttendanceController@editAttendance');
 });
 
 // Auth::routes();

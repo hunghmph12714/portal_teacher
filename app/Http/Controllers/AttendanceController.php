@@ -35,4 +35,18 @@ class AttendanceController extends Controller
         return response()->json(array_values($result));
 
     }
+    protected function editAttendance(Request $request){
+        $rules = ['attendance' => 'required'];
+        $this->validate($request, $rules);
+        foreach($request->attendance as $s){
+            foreach($s['attendance'] as $a){
+                $sa = StudentSession::find($a['id']);
+                if($sa){
+                    $sa->attendance = $a['attendance'];
+                    $sa->save();
+                }
+            }
+        }
+        print_r($request->attendance);
+    }
 }

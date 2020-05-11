@@ -82,7 +82,7 @@ const SessionDateSelect = React.memo(props => {
             c.from = format(new Date(c.from), 'HH:mm')
             c.to = format(new Date(c.to), 'HH:mm')
             c.time = c.from + '-' + c.to
-            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.from, selected:2}
+            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.from, selected: -1}
         })
         setSessions(data)
         setTmpSession(data)
@@ -142,7 +142,7 @@ class Attendance extends React.Component{
             this.setState({
                 selected_session: (newValue) ? newValue:[],
             })
-            axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: newValue})
+            axios.post(baseUrl+'/attendance/get', {class_id: this.state.selected_class.value, sessions: newValue})
                 .then(response=> {
                     this.setState({data: response.data})
                 })
@@ -160,9 +160,22 @@ class Attendance extends React.Component{
         this.setState({open_attendance : true, selected_data: data})
     }
     handleCloseAttendance = ( ) => {
-        this.setState({open_attendance: false})
+        this.setState({open_attendance: false, selected_data: []})
+        axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: this.state.selected_session})
+            .then(response=> {
+                this.setState({data: response.data})
+            })
+    }
+    handleSubmitAttendance = () => {
+        axios.post(baseUrl+'/attendance/edit', {attendance: this.state.selected_data})
+            .then(response => {
+                this.setState({open_attendance: false, selected_data: []})
+            })
+            .catch(err => {
+            })
     }
     onAttendanceChange =  (type, s_id) => {
+        let t = ['present','late','absence','n_absence','holding']
         this.setState(prevState => {
             let selected_session = prevState.selected_session
             selected_session = selected_session.map(s => {
@@ -171,14 +184,45 @@ class Attendance extends React.Component{
                 }
                 return s
             })
-            return {...prevState, selected_session}
+            console.log(prevState.data)
+            let selected_data = prevState.selected_data 
+            selected_data = selected_data.map(d => {
+                d.attendance = d.attendance.map(a => {
+                    if(a.session_id == s_id){
+                        a.attendance = t[type]
+                    }
+                    return a
+                })
+                return d
+            })
+            console.log(prevState.data)
+            return {...prevState, selected_session, selected_data}
+        })
+        
+    }
+    onAttendanceStudentChange = (student_id, session_id, type) => {
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            a.attendance = type
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
+            console.log(prevState.data)
+            return {...prevState, selected_data}
         })
     }
     render(){
         return(
             <div className="root-attendance">
                 <Grid container spacing={1} className="select-session">
-                    <Grid item lg={2} sm={12} xs={12}>
+                    <Grid item lg={4} sm={12} xs={12}>
                         <ClassSelect 
                             selected_class = {this.state.selected_class}
                             handleChange={this.handleClassChange}
@@ -186,7 +230,7 @@ class Attendance extends React.Component{
                             center = {-1}
                         />
                     </Grid>
-                    <Grid item lg={4} sm={12} xs={12}>
+                    <Grid item lg={7} sm={12} xs={12}>
                         <SessionDateSelect 
                             selected_class = {this.state.selected_class}
                             selected_session = {this.state.selected_session}
@@ -269,6 +313,7 @@ class Attendance extends React.Component{
                     //         </div>
                     //     )
                     //   },
+
                     //Học sinh
                       {
                         title: "Học sinh",
@@ -395,9 +440,6 @@ class Attendance extends React.Component{
                     },
                     
                     ]}
-                    
-                    
-                  
                 />
                 ) : ('')}
                 {this.state.selected_session ? (
@@ -405,122 +447,7 @@ class Attendance extends React.Component{
                         open={this.state.open_attendance} onClose={this.handleCloseAttendance} aria-labelledby="form-dialog-title"
                         fullWidth
                         maxWidth='xl'>
-                        <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-                        <DialogContent>
-                        <DialogContentText>
-                            <Table className='' aria-label="simple table"  size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>STT</TableCell>
-                                        <TableCell>Học sinh</TableCell>
-                                        <TableCell align="center">
-                                            Có mặt<br/>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>}
-                                                        label={s.time}
-                                                        labelPlacement="top"
-                                                    />)
-                                                })
-                                            }
-                                        </TableCell>
-                                        <TableCell align="center">Muộn<br/>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1} />}
-                                                        label={s.time}
-                                                        labelPlacement="top"
-                                                    />)
-                                                })
-                                            }
-
-                                        </TableCell>
-                                        <TableCell align="center">Có phép<br/>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>}
-                                                        label={s.time}
-                                                        labelPlacement="top"
-                                                    />)
-                                                })
-                                            }</TableCell>
-                                        <TableCell align="center">Không phép<br/>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3} />}
-                                                        label={s.time}
-                                                        labelPlacement="top"
-                                                    />)
-                                                })
-                                            }</TableCell>
-                                        <TableCell align="center">Chưa điểm danh<br/>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>}
-                                                        label={s.time}
-                                                        labelPlacement="top"
-                                                    />)
-                                                })
-                                            }</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {this.state.data.map((row, index) => (
-                                    <TableRow key={row.key}>
-                                        <TableCell component="th" scope="row">
-                                            {index+1}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="body2" component="p">                                    
-                                                <b>{row.student.sname}</b>
-                                                <br /> {row.student.dob}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                this.state.selected_session.map(s => {
-                                                    return (
-                                                        <Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>
-                                                    )
-                                                })
-                                            }
-                                            
-                                        </TableCell>
-                                       
-                                        
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
-                        </DialogContentText>
-                        
-                        </DialogContent>
-                        <DialogActions>
-                        <Button onClick={this.handleCloseAttendance} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.handleCloseAttendance} color="primary">
-                            Subscribe
-                        </Button>
-                        </DialogActions>
-                    </Dialog>
-            
-                ): ('')}
-                <Dialog 
-                    open={this.state.open_attendance} onClose={this.handleCloseAttendance} aria-labelledby="form-dialog-title"
-                    fullWidth
-                    maxWidth='xl'>
-                    <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Điểm danh học sinh</DialogTitle>
                     <DialogContent>
                     <DialogContentText>
                         <Table className='' aria-label="simple table"  size="small">
@@ -533,11 +460,10 @@ class Attendance extends React.Component{
                                         {
                                             this.state.selected_session.map(s => {
                                                 return (
-                                                <FormControlLabel
-                                                    control={<Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>}
-                                                    label={s.time}
-                                                    labelPlacement="top"
-                                                />)
+                                                    <Tooltip title={s.label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>
+                                                    </Tooltip>
+                                                )
                                             })
                                         }
                                     </TableCell>
@@ -545,11 +471,10 @@ class Attendance extends React.Component{
                                         {
                                             this.state.selected_session.map(s => {
                                                 return (
-                                                <FormControlLabel
-                                                    control={<Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1} />}
-                                                    label={s.time}
-                                                    labelPlacement="top"
-                                                />)
+                                                    <Tooltip title={s.label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1}/>
+                                                    </Tooltip>
+                                                )
                                             })
                                         }
 
@@ -558,39 +483,36 @@ class Attendance extends React.Component{
                                         {
                                             this.state.selected_session.map(s => {
                                                 return (
-                                                <FormControlLabel
-                                                    control={<Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>}
-                                                    label={s.time}
-                                                    labelPlacement="top"
-                                                />)
+                                                    <Tooltip title={s.label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>
+                                                    </Tooltip>
+                                                )
                                             })
                                         }</TableCell>
                                     <TableCell align="center">Không phép<br/>
                                         {
                                             this.state.selected_session.map(s => {
                                                 return (
-                                                <FormControlLabel
-                                                    control={<Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3} />}
-                                                    label={s.time}
-                                                    labelPlacement="top"
-                                                />)
+                                                    <Tooltip title={s.label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3}/>
+                                                    </Tooltip>
+                                                )
                                             })
                                         }</TableCell>
                                     <TableCell align="center">Chưa điểm danh<br/>
                                         {
                                             this.state.selected_session.map(s => {
                                                 return (
-                                                <FormControlLabel
-                                                    control={<Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>}
-                                                    label={s.time}
-                                                    labelPlacement="top"
-                                                />)
+                                                    <Tooltip title={s.label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceChange(4, s.value)} checked={s.selected==4}/>
+                                                    </Tooltip>
+                                                )
                                             })
                                         }</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                            {this.state.data.map((row, index) => (
+                            {this.state.selected_data.map((row, index) => (
                                 <TableRow key={row.key}>
                                     <TableCell component="th" scope="row">
                                         {index+1}
@@ -601,18 +523,86 @@ class Attendance extends React.Component{
                                             <br /> {row.student.dob}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell align="center">
                                         {
-                                            this.state.selected_session.map(s => {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                // console.log(session_info)
                                                 return (
-                                                    <Checkbox onChange={() => this.onAttendanceChange(4,s.value)} checked={s.selected==4}/>
+                                                    
+                                                    <Tooltip title={session_info[0].label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'present')} 
+                                                        checked={s.attendance=='present'}/>
+                                                    </Tooltip>
+                                                    
+                                                )
+                                            })
+                                        }
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                // console.log(session_info)
+                                                return (
+                                                    
+                                                    <Tooltip title={session_info[0].label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'late')} 
+                                                        checked={s.attendance=='late'}/>
+                                                    </Tooltip>                                                    
+                                                )
+                                                
+                                            })
+                                        }
+                                        
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                // console.log(session_info)
+                                                return (
+                                                    
+                                                    <Tooltip title={session_info[0].label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'absence')} 
+                                                        checked={s.attendance=='absence'}/>
+                                                    </Tooltip>                                                    
                                                 )
                                             })
                                         }
                                         
                                     </TableCell>
-                                    
-                                    
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                // console.log(session_info)
+                                                return (
+                                                    
+                                                    <Tooltip title={session_info[0].label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'n_absence')} 
+                                                        checked={s.attendance=='n_absence'}/>
+                                                    </Tooltip>                                                    
+                                                )
+                                            })
+                                        }
+                                        
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                // console.log(session_info)
+                                                return (
+                                                    
+                                                    <Tooltip title={session_info[0].label} arrow>
+                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'holding')} 
+                                                        checked={s.attendance=='holding'}/>
+                                                    </Tooltip>                                                    
+                                                )
+                                            })
+                                        }                                        
+                                    </TableCell> 
                                 </TableRow>
                             ))}
                             </TableBody>
@@ -622,13 +612,16 @@ class Attendance extends React.Component{
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={this.handleCloseAttendance} color="primary">
-                        Cancel
+                        Hủy
                     </Button>
-                    <Button onClick={this.handleCloseAttendance} color="primary">
-                        Subscribe
+                    <Button onClick={this.handleSubmitAttendance} color="primary">
+                        Lưu
                     </Button>
                     </DialogActions>
                 </Dialog>
+            
+                ): ('')}
+                
             </div>
         )
     }
