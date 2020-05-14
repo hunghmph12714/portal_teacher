@@ -157,10 +157,17 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
     Route::post('/attendance/edit', 'AttendanceController@editAttendance');
-});
 //Accounts
+    Route::get('/finaccount', function(){
+        return view('welcome');
+    });
+    Route::post('/account/get','AccountController@getAccount');
+    Route::post('/account/edit','AccountController@editAccount');
+    Route::post('/account/delete', 'AccountController@deleteAccount');
+    Route::post('/account/create', 'AccountController@addAccount');
+    Route::get('/account/importDb', 'AccountController@importDb');
+});
     
-
 // Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test', function(){

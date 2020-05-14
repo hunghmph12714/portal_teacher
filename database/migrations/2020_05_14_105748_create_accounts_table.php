@@ -16,7 +16,7 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->smallInteger('level_1');
-            $table->smallInteger('level_2');
+            $table->integer('level_2');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->integer('balance')->default(0);

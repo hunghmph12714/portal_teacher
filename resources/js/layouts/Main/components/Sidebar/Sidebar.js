@@ -14,6 +14,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { Profile, SidebarNav } from './components';
 
@@ -54,7 +55,7 @@ const Sidebar = props => {
     {
       title: 'Đào tạo',
       href: '#',
-      icon: <AccountBalanceIcon />,
+      icon: <LocalLibraryIcon />,
       children: [
         {
           title: 'Cơ sở',
@@ -110,29 +111,24 @@ const Sidebar = props => {
       ]
     },
     {
-      title: 'Products',
-      href: '/products',
-      icon: <ShoppingBasketIcon />
+      title: 'Kế Toán',
+      href: '#',
+      icon: <AccountBalanceIcon />,
+      children: [
+        {
+          title: 'Tài khoản',
+          href: '/finaccount',
+        },
+        {
+          title: 'Giao dịch',
+          href: '/transaction',
+        }
+      ]
     },
     {
-      title: 'Authentication',
-      href: '/sign-in',
-      icon: <LockOpenIcon />
-    },
-    {
-      title: 'Typography',
-      href: '/typography',
-      icon: <TextFieldsIcon />
-    },
-    {
-      title: 'Icons',
-      href: '/icons',
-      icon: <ImageIcon />
-    },
-    {
-      title: 'Account',
+      title: 'Tài khoản',
       href: '/account',
-      icon: <AccountBoxIcon />
+      icon: <AssignmentIndIcon />
     },
     {
       title: 'Cài đặt',

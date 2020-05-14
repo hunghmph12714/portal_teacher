@@ -24,7 +24,8 @@ import {
   Relationship,
   Step,
   Status, 
-  CreateEntrance, ViewEntrance, ClassDetail, Attendance
+  CreateEntrance, ViewEntrance, ClassDetail, Attendance,
+  FinAccount
 } from './views';
 
 const Routes = (props) => {
@@ -171,6 +172,11 @@ const Routes = (props) => {
         component = {Attendance}        
         layout={MainLayout}
         path="/attendance"
+      />
+      <ProtectedRouteWithLayout 
+        component = {FinAccount}        
+        layout={MainLayout}
+        path="/finaccount"
       />
       <Redirect to="/not-found" />
     </Switch>
