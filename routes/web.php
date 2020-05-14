@@ -158,6 +158,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
     Route::post('/attendance/edit', 'AttendanceController@editAttendance');
 });
+//Accounts
+    
 
 // Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
