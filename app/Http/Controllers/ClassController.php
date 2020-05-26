@@ -8,6 +8,7 @@ use App\Course;
 use App\Classes;
 use Carbon\Carbon;
 use App\Schools;
+use App\Student;
 use Illuminate\Http\Request;
 
 class ClassController extends Controller
@@ -157,6 +158,16 @@ class ClassController extends Controller
     protected function detailClass($class_id){
         return view('welcome');
         // return $class_id;
+    }
+    protected function detailStudentClass(Request $request){
+        $rules = ['student_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student = Student::find($request->student_id);
+        if($student){
+            $classes = $student->classes;
+            return response()->json($classes);
+        }
     }
     //HELPER
     public function importDB(){

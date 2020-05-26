@@ -78,7 +78,7 @@ const StudentSearch = props => {
             loadOptions={inputValue => throttleOptions(inputValue)}
             autosize={true}
             isClearable
-            placeholder={'Họ tên học sinh (tìm theo tên HS hoặc SĐT PH)'}
+            placeholder={'Học sinh (tìm theo tên HS hoặc SĐT PH)'}
             name="student_name"
             value = {student_name}
             onChange = {handleStudentChange}

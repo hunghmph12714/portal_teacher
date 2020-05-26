@@ -25,7 +25,7 @@ import {
   Step,
   Status, 
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
-  FinAccount
+  FinAccount, Transaction
 } from './views';
 
 const Routes = (props) => {
@@ -177,6 +177,11 @@ const Routes = (props) => {
         component = {FinAccount}        
         layout={MainLayout}
         path="/finaccount"
+      />
+      <ProtectedRouteWithLayout 
+        component = {Transaction}        
+        layout={MainLayout}
+        path="/transaction"
       />
       <Redirect to="/not-found" />
     </Switch>

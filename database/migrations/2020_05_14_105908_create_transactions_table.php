@@ -19,10 +19,10 @@ class CreateTransactionsTable extends Migration
             $table->integer('credit');
             $table->bigInteger('amount');
             $table->datetime('time');
-            $table->string('content');
-            $table->integer('student_id');
-            $table->integer('class_id');
-            $table->integer('session_id');
+            $table->string('content')->nullable();
+            $table->integer('student_id')->nullable();
+            $table->integer('class_id')->nullable();
+            $table->integer('session_id')->nullable();
             $table->timestamps();
         });
     }

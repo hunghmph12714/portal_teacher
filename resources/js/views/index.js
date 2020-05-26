@@ -21,3 +21,4 @@ export { Entrance } from './Entrance';
 export { CreateEntrance, ViewEntrance } from './Entrance';
 export { default as Attendance } from './Attendance';
 export { default as FinAccount } from './FinAccount';
+export { default as Transaction } from './Transaction';

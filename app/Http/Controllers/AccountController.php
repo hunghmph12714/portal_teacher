@@ -63,4 +63,11 @@ class AccountController extends Controller
             fclose($handle);
         }
     }
+    protected function findAccount(Request $request){
+        $rules = ['key' => 'required'];
+        $this->validate($request, $rules);
+
+        $accs = Account::where('level_2', 'LIKE', $request->key.'%')->orWhere('name', 'LIKE', '%'.$request->key.'%')->get();
+        return response()->json($accs);
+    }
 }

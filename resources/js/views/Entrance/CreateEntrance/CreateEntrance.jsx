@@ -148,8 +148,7 @@ class CreateEntrance extends React.Component {
     
     render(){        
         return(
-            <div  className="root-create-entrance">      
-                      
+            <div  className="root-create-entrance"> 
                 <form noValidate autoComplete="on">
                     <Paper elevation={4}>
                         <h4 className="root-header">Ghi danh học sinh</h4>
