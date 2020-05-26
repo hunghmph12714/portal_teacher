@@ -15,7 +15,19 @@ import {
   } from "@material-ui/pickers";
 import Select , { components }  from "react-select";
 import Button from '@material-ui/core/Button';
+import MaterialTable from "material-table";
+import Typography from '@material-ui/core/Typography';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import Chip from '@material-ui/core/Chip';
 
+const customChip = (color) => ({
+    border: '1px solid #85144b',
+    backgroundColor: color,
+    color: '#000',
+    fontSize: '12px',
+})
 const baseUrl = window.Laravel.baseUrl
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
@@ -103,7 +115,265 @@ const SessionDateSelect = React.memo(props => {
         </div>
     )
 })
-
+const TransactionView = React.memo(props => {
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            var r = await axios.post(baseUrl + '/transaction/get', {})            
+            setData(r.data)
+        }
+        fetchData()
+    },[])
+    return(
+        <MaterialTable
+            title="Danh sách giao dịch"
+            data={data}
+            options={{
+                pageSize: 20,
+                grouping: true,
+                filtering: true,
+                exportButton: true,
+                rowStyle: rowData => {                          
+                },
+                filterCellStyle: {
+                    paddingLeft: '0px'
+                }
+            }}
+            onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+            actions={[                       
+                {
+                    icon: () => <AddBoxIcon />,
+                    tooltip: 'Thêm giao dịch',
+                    isFreeAction: true,
+                    text: 'Thêm giao dịch',
+                    onClick: (event) => {
+                        this.props.history.push('/entrance/create')
+                    },
+                },
+            ]}
+            icon={{
+                Filter: () => <div />
+            }}
+            localization={{
+                body: {
+                    emptyDataSourceMessage: 'Không tìm thấy giao dịch hoặc sever gặp lỗi'
+                },
+                toolbar: {
+                    searchTooltip: 'Tìm kiếm',
+                    searchPlaceholder: 'Tìm kiếm',
+                    nRowsSelected: '{0} hàng được chọn'
+                },
+                pagination: {
+                    labelRowsSelect: 'dòng',
+                    labelDisplayedRows: ' {from}-{to} của {count}',
+                    firstTooltip: 'Trang đầu tiên',
+                    previousTooltip: 'Trang trước',
+                    nextTooltip: 'Trang tiếp theo',
+                    lastTooltip: 'Trang cuối cùng'
+                },
+                grouping: {
+                    placeholder: 'Kéo tên cột vào đây để nhóm'
+                }
+            }}
+            columns={[
+            //Thời  gian thực hiện giao dịch
+                {
+                    title: "Thời gian",
+                    field: "time",
+                    grouping: false,
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        width: '130px',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '130px',
+                    },
+                    render: rowData => (<span> {rowData.time_formated} </span>)
+                },
+            //Số tiền  
+                {
+                    title: "Số tiền",
+                    field: "amount",
+                    type: "currency", 
+                    grouping: false,
+                    headerStyle: {
+                        padding: '0px 0px',
+                        fontWeight: '600',
+                        width: '80px',
+                        textAlign: 'right',
+                    },
+                    cellStyle: {
+                        padding: '0px 15px 0px 0px',
+                        width: '80px',
+                        
+                    },
+                    render: rowData => {
+                        return (                                
+                            <Typography variant="body2" component="p">                                    
+                                <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                            </Typography>
+                        )
+                    },                            
+                    
+                },
+            //Tài khoản nợ
+                {
+                    title: "TK nợ",
+                    field: "debit_level_2",
+                    grouping: false,
+                    headerStyle: {
+                        fontWeight: '600',
+                        textAlign: 'right',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        padding: '0px 15px 0px 0px',
+                        textAlign: 'right',
+                        width: '100px',
+                    },
+                    render: rowData => {
+                        var color = '#fef3d8'
+                        if(rowData.debit_type === 'equity') {
+                            color = '#f6deda';
+                        }
+                        if(rowData.debit_type === 'assets') {
+                            color = '#bfdced';
+                        }
+                        if(rowData.debit_type === 'liabilties') {
+                            color = '#fdeab5';
+                        }
+                        return (
+                            <Chip style={customChip(color)} variant="outlined" label={rowData.debit_level_2} size="small" clickable/>
+                        )
+                    }
+                },    
+            //Tài khoản có
+                {
+                    title: "TK có",
+                    field: "credit_level_2",
+                    grouping: false,
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        padding: '3px 0px',
+                        width: '100px',
+                    },
+                    render: rowData => {
+                        var color = '#fef3d8'
+                        if(rowData.credit_type === 'equity') {
+                            color = '#f6deda';
+                        }
+                        if(rowData.credit_type === 'assets') {
+                            color = '#bfdced';
+                        }
+                        if(rowData.credit_type === 'liabilties') {
+                            color = '#fdeab5';
+                        }
+                        return (
+                            <span> >> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
+                        )
+                    }
+                },          
+            // Miêu tả
+                {
+                    title: "Nội dung",
+                    field: "content",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                },
+            // Học sinh
+                {
+                    title: "Học sinh",
+                    field: "sname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                    render: rowData => {
+                    return (                                
+                        <Typography variant="body2" component="p">                                    
+                            <b>{rowData.sname}</b>
+                            <br /> {rowData.dob}
+                        </Typography>
+                        
+                    )
+                    },
+                    
+                    renderGroup: (sname, groupData) => (
+                        <Chip variant="outlined" label={sname} size="small" />      
+                    )
+                },
+            //Lớp học
+                {
+                    title: "Lớp học",
+                    field: "cname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '100px',
+                    },
+                },
+            //Người tạo
+                {
+                    title: "Người tạo",
+                    field: "uname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '100px',
+                    },                            
+                },
+            //Ngày tạo
+                {
+                title: "Ngày tạo",
+                field: "created_at",
+                headerStyle: {
+                    padding: '0px',
+                    fontWeight: '600',
+                    width: '100px',
+                },
+                cellStyle: {
+                    padding: '0px',
+                    width: '100px',
+                },
+                render: rowData => {
+                    let date = format(new Date(rowData.created_at),  'dd-MM-yyyy')
+                    return (<span>{date}</span>)
+                }
+                },
+            
+            ]}
+            detailPanel={rowData => {
+            return (
+                <div> {rowData.step} </div>
+            )
+            
+            }}
+                
+            />
+    )
+})
 class Transaction extends React.Component {
     constructor(props){
         super(props)
@@ -113,10 +383,12 @@ class Transaction extends React.Component {
             time: new Date(),
             student : null,
             amount :'',
+            content:'',
             selected_class: [],
             selected_session:null,
         }
     }
+    
     onChange = (e) => {
         this.setState({
             [e.target.name] : e.target.value
@@ -259,6 +531,9 @@ class Transaction extends React.Component {
                                         multiline
                                         rows={1}
                                         variant="outlined"
+                                        name="content"
+                                        value={this.state.content}
+                                        onChange = {this.onChange}
                                     />
                                     <Button
                                         variant="contained"
@@ -273,9 +548,7 @@ class Transaction extends React.Component {
                         </Paper>
                     </form>
                 </div>
-                <div className="root-transaction">
-                    
-                </div>
+                <TransactionView/>
             </React.Fragment>
         )
     }

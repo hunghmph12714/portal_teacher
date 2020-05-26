@@ -173,6 +173,8 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::post('/transaction/add','TransactionController@addTransaction');
+    Route::post('/transaction/get','TransactionController@getTransaction');
+    Route::get('/transaction/test', 'TransactionController@getTransaction');
 });
     
 // Auth::routes();

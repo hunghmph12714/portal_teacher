@@ -48,7 +48,7 @@ const StudentForm = props => {
                     handleStudentChange={handleStudentChange}
                 />
                 <Grid container spacing={2}>
-                    <Grid item md={12} xl={6} sm={12}>
+                    <Grid item md={6} sm={12}>
                         <div className="date-time">
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <KeyboardDatePicker
@@ -66,12 +66,11 @@ const StudentForm = props => {
                         </div>
                 
                     </Grid>    
-                    <Grid item md={12} xl={6} sm={12}>
+                    <Grid item md={12} md={6} sm={12}>
                         <FormControl component="fieldset">
                             <RadioGroup row aria-label="gender" name="student_gender" value={state.student_gender} onChange={onChange}>
                                 <FormControlLabel value="Nam" control={<Radio />} label="Nam" />
                                 <FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
-                                <FormControlLabel value="Khác" control={<Radio />} label="Khác" />
                             </RadioGroup>
                         </FormControl>
                     </Grid>    
