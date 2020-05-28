@@ -4,7 +4,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
-
+import DialogSession from './DialogSession';
 import {
     Menu,
     MenuItem,
@@ -18,7 +18,20 @@ const baseUrl = window.Laravel.baseUrl
 const ListSession = (props) => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const { class_id } = props
+    const [open, setOpen] = useState(false);
+    const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
+    function handleCloseSessionDialog(){
+      setOpen(false)
+    }
+    function handleCreateSession(){
+      setOpen(true)
+      setDialogType('create')
+    }
+    function handleEditSession(){
+      setOpen(true)
+      setDialogType('edit')
+    }
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
@@ -61,9 +74,7 @@ const ListSession = (props) => {
                             tooltip: 'Thêm mới ca học',
                             isFreeAction: true,
                             text: 'Thêm ca học',
-                            onClick: (event) => {
-                                this.props.history.push('/entrance/create')
-                            },
+                            onClick: handleCreateSession,
                         },
                     ]}
                 localization={{
@@ -107,7 +118,7 @@ const ListSession = (props) => {
                             <div style = {{display: 'block'}}>
                                 {/* {rowData.tableData.id} */}
                                 <Tooltip title="Chỉnh sửa" arrow>
-                                  <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                                  <IconButton onClick={handleEditSession}>
                                     <EditOutlinedIcon fontSize='inherit' />
                                   </IconButton>
                                 </Tooltip>
@@ -208,7 +219,6 @@ const ListSession = (props) => {
                                   <br /> {rowData.phone}
                                   <br /> {rowData.email}
                               </Typography>
-                              
                             )
                           },
                           
@@ -240,6 +250,11 @@ const ListSession = (props) => {
                     
                   ]}
             />
+            <DialogSession
+              open={open}
+              class={{}}
+              handleCloseDialog={handleCloseSessionDialog}
+              dialogType = {dialogType}/>
         </React.Fragment>
     )
 }
