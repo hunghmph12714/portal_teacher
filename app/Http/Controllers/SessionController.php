@@ -59,13 +59,11 @@ class SessionController extends Controller
         else return $sessions;
     }
     protected function getSession(Request $request){
-
         $rules = [
             'class_id' => 'required',
             'from_date' => 'required',
             'to_date' => 'required',    
         ];
-        
         $this->validate($request, $rules);
         if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Classes::find($request->class_id)->sessions()->
@@ -74,15 +72,13 @@ class SessionController extends Controller
                     'sessions.stats')->
                 join('teacher','sessions.teacher_id','teacher.id')->
                 join('center','sessions.center_id','center.id')->
-                join('room','sessions.room_id','room.id')->
+                join('room','sessions.room_id','room.id')->orderBy('sessions.date','DESC')->
                 get();
             return response()->json($sessions->toArray());
         }
         else{
             return response()->json('?');
-        }        
-        // $this->generateSessionFromConfig('2020-04-01','2020-04-30',5);
-        
+        }
     }
     protected function editSession(Request $request){
         $rules = ['class_id' => 'required'];
