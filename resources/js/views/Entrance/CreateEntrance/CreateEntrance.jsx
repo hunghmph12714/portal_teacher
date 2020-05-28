@@ -156,6 +156,7 @@ class CreateEntrance extends React.Component {
                         <StudentForm 
                             state = {this.state}
                             handleStudentChange = {this.handleStudentChange} 
+                            handleDateChange = {this.handleDateChange}
                             onChange = {this.onChange}
                             handleChange = {this.handleChange}
                         />
