@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import {
     KeyboardTimePicker,
     KeyboardDatePicker,
+    KeyboardDateTimePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
 import  DateFnsUtils from "@date-io/date-fns"; // choose your lib
@@ -59,6 +60,9 @@ class DialogSession extends React.Component {
         this.state = {
             name: "",
             code: "",
+            room: "",
+            from_date: null,
+            to_date: null,
             open_date: new Date(),
             fee: "",
             note:"",
@@ -299,6 +303,15 @@ class DialogSession extends React.Component {
             })
         }
     }
+    handleFromDate = date => {
+        this.setState({ from_date: date });
+    }    
+    handleToDate = date => {
+        this.setState({ to_date : date })
+    }
+    handleRoomChange = room => {
+        this.setState({room: room})
+    } 
     render(){
         
         return (
@@ -336,21 +349,23 @@ class DialogSession extends React.Component {
                                         options={this.state.centers}
                                         placeholder="Cơ sở"
                                     />
-                                    <FormHelperText >Cơ sở học tập</FormHelperText>
 
                                 </FormControl>                                   
-                                <TextField  label="Tên lớp" 
-                                    id="name"
-                                    required
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    helperText="Tên buổi học eg: Toán chuyên 9.1"
-                                    margin = "dense"
-                                    value = {this.state.name}
-                                    name = 'name'
-                                    onChange = {this.onChange}
-                                />           
+                                <div className="date-time">
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDateTimePicker
+                                        minutesStep= {15}
+                                        value={this.state.from_date}                            
+                                        onChange={this.handleFromDate}
+                                        placeholder="Thời gian bắt đầu"                            
+                                        className="input-date"
+                                        variant="inline"
+                                        inputVariant="outlined"
+                                        format="dd/MM/yyyy hh:mm a"
+
+                                    />                     
+                                    </MuiPickersUtilsProvider>
+                                </div>    
                                 
                                 <FormControl fullWidth variant="outlined" margin="dense">
                                     <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
@@ -418,25 +433,28 @@ class DialogSession extends React.Component {
                             >
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
                                     <Select
-                                        value={this.state.course_selected}
-                                        onChange={this.handleCourseChange}
-                                        options={this.state.courses}
-                                        placeholder="Khóa học"
+                                        value={this.state.room}
+                                        onChange={this.handleRoomChange}
+                                        options={this.state.rooms}
+                                        placeholder="Phòng học"
                                     />
-                                    <FormHelperText >Khóa học của lớp </FormHelperText>
+        
+                                </FormControl> 
+                                <div className="date-time">
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDateTimePicker
+                                        minutesStep= {15}
+                                        value={this.state.from_date}                            
+                                        onChange={this.handleFromDate}
+                                        placeholder="Thời gian bắt đầu"                            
+                                        className="input-date"
+                                        variant="inline"
+                                        inputVariant="outlined"
+                                        format="dd/MM/yyyy hh:mm a"
 
-                                </FormControl>
-                                <TextField  label="Mã lớp" 
-                                    variant="outlined"
-                                    size="small"
-                                    type="text"
-                                    fullWidth
-                                    helperText="Mã buổi học: eg:TC9.1"
-                                    margin = "dense"
-                                    name = 'code'
-                                    value = {this.state.code}
-                                    onChange = {this.onChange}
-                                />  
+                                    />                     
+                                    </MuiPickersUtilsProvider>
+                                </div> 
                                 <div className="date-time">
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDatePicker
