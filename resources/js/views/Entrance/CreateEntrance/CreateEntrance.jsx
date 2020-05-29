@@ -34,8 +34,8 @@ class CreateEntrance extends React.Component {
             
             selected_relationship: '',
 
-            entrance_center: {label: "CS1: VietElite Đỗ Quang (67)", value: 2},
-            entrance_courses: [{label: "Toán Chuyên9", value: 1}, {label: "Lý Chuyên9", value: 2}],
+            entrance_center: '',
+            entrance_courses: [],
             entrance_multi_course: true,
             entrance_date: new Date(),
             entrance_note: '',           

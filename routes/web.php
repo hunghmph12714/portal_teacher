@@ -151,6 +151,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/session/create','SessionController@createSession');
     Route::post('/session/delete', 'SessionController@deleteSession');
     Route::post('/session/edit', 'SessionController@editSession');
+    Route::post('/session/add', 'SessionController@addSession');
 
 //Attendance
     Route::get('/attendance', function(){

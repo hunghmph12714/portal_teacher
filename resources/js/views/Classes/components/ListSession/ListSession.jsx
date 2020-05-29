@@ -253,6 +253,7 @@ const ListSession = (props) => {
             <DialogSession
               open={open}
               class={{}}
+              class_id = {class_id}
               handleCloseDialog={handleCloseSessionDialog}
               dialogType = {dialogType}/>
         </React.Fragment>

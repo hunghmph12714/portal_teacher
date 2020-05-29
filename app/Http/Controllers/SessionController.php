@@ -97,6 +97,81 @@ class SessionController extends Controller
         $sessions = $this->generateSessionFromConfig($from_date, $to_date, $request->class_id);
         return count($sessions);
     }
+    protected function addSession(Request $request){
+        $rules = ['class_id' => 'required', 
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'fee' => 'required'
+        ];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
+        $input['class_id'] = $request->class_id;
+        $input['teacher_id'] = $request->teacher_id;
+        $input['center_id'] = $request->center_id;
+        $input['room_id'] = $request->room_id;
+        $input['status'] = 0;
+
+        $input['date'] = date('Y-m-d', $request->from_date);
+        $input['from_date'] = date('Y-m-d H:i:00', $request->from_date);
+        $input['to_date'] = date('Y-m-d H:i:00', $request->to_date);
+        $document = '';
+        for($i = 0 ; $i < $request->document_count; $i++){
+            if($request->has('document'.$i)){
+                $ans = $request->file('document'.$i);
+                $name = $class_id."_document_".$i."_".time();
+                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                if($i == 0){
+                    $document = $path;
+                }else{
+                    $document = $document.",".$path;
+                } 
+            }
+        }
+        $input['document'] = $document;
+        $exercice = '';
+        for($i = 0 ; $i < $request->exercice_count ; $i++){
+            if($request->has('exercice'.$i)){
+                $ans = $request->file('exercice'.$i);
+                $name = $class_id."_exercice_".$i."_".time();
+                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                if($i == 0){
+                    $exercice = str_replace(',','',$path);
+                }else{
+                    $exercice = $document.",". str_replace(',','',$path);
+                } 
+            }
+        }
+        $input['exercice'] = $exercice;
+        // print_r($input);
+        
+        
+    }
+    protected function uploadTest(Request $request){
+        $rules = ['entrance_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->entrance_id);
+        $answers = '';
+        if($entrance){
+            for($i = 0 ; $i < $request->count; $i++ ){
+                if($request->has('image'.$i)){
+                    $ans = $request->file('image'.$i);
+                    $name = $entrance->id."_answer".$i."_".time();
+                    $ans->move(public_path(). "/images/answers/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/images/answers/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0){
+                        $answers = $path;
+                    }else{
+                        $answers = $answers.",".$path;
+                    } 
+                }
+            }
+            $entrance->test_answers = $answers;
+            $entrance->save();
+        }
+    }
     protected function deleteSession(Request $request){
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);

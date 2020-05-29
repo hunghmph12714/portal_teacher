@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Select from "react-select";
+import {DropzoneArea} from 'material-ui-dropzone'
 
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -58,24 +59,19 @@ class DialogSession extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
-            name: "",
-            code: "",
             room: "",
             from_date: null,
             to_date: null,
-            open_date: new Date(),
+            teacher: "",
+            note: "",
+            document: [],
+            exercice: [],
             fee: "",
-            note:"",
-            session_per_class: 0,
-            class_per_week: 0,
             centers : [],
-            center_selected: '',
-            courses: [],
-            course_selected: '',
+            center: '',
             teachers: [],
             rooms: [],
-            config: [],
-            days : [{value: 0, label:'Thứ 2'},{value: 1, label:'Thứ 3'},{value: 2, label:'Thứ 4'},{value: 3, label:'Thứ 5'},{value: 4, label:'Thứ 6'},{value: 5, label:'Thứ 7'},{value: 6, label:'Chủ nhật'},]
+            status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
@@ -109,7 +105,7 @@ class DialogSession extends React.Component {
             fee: (nextProps.class.fee)?nextProps.class.fee:'',
             note: nextProps.class.note,
             course_selected : course,
-            center_selected : center,
+            center : center,
             session_per_class: session_per_class    ,
             class_per_week: class_per_week,
             config: conf
@@ -176,44 +172,15 @@ class DialogSession extends React.Component {
             [e.target.name] : e.target.value
         })
     };
-    updateConfigState = (x, y) => {
-        let c = [];
-        for(let i = 0 ; i < x; i++){
-            for(let j = 0; j < y ; j++){
-                c.push({from: new Date(),to: new Date(),teacher:'',room:'', date:''})
-            }
-        }
-        this.setState({ config:c })
-    }
-    onChangeClassPerWeek = e =>{       
-        
-        this.setState({
-            [e.target.name] : parseInt(e.target.value),
-        })
-        this.updateConfigState(parseInt(e.target.value), this.state.session_per_class);
-    }
-    onChangeSessionPerClass = e => {        
-        this.setState({
-            [e.target.name] : parseInt(e.target.value),
-        })
-        this.updateConfigState(this.state.class_per_week, parseInt(e.target.value));
-    }
+    
     handleCenterChange = (center)=> {
-        this.setState({ center_selected: center })
+        this.setState({ center: center })
         this.getRoom(center.value)
     }
-    handleCourseChange = (course) => {
-        this.setState({ 
-            course_selected: course,
-            fee: course.fee,
-            class_per_week: course.class_per_week,
-            session_per_class: course.session_per_class,
-        })
-        this.updateConfigState(course.class_per_week, course.session_per_class)
-    }
+    
     handleDateChange = date => {
         this.setState({ open_date: date });
-      };
+    };
     handleCreateNewClass = () => {
         let url = baseUrl + "/class/create"
         if(!this.state.code || !this.state.name || !this.state.open_date ||  !this.state.fee){
@@ -223,7 +190,7 @@ class DialogSession extends React.Component {
             return 0;
         }
         let data = {
-            center_id : this.state.center_selected.value,
+            center_id : this.state.center.value,
             course_id : this.state.course_selected.value,
             code : this.state.code,
             name : this.state.name,
@@ -249,71 +216,88 @@ class DialogSession extends React.Component {
                 console.log("Create class bug: "+ err)
             })
     }
-    onChangeTime = (c, type) => time => {
-        this.setState(prevState => {
-            let totalSession = prevState.session_per_class
-            let totalClass = prevState.class_per_week
-            let config = [...prevState.config]
-            while(c < totalClass*totalSession){
-                if(type == 'from'){
-                    config[c].from = time
-                }
-                if(type == 'to') {
-                    config[c].to = time
-                }
-                c = c + totalSession
-            }
-            return {...prevState, config}
-        })              
-    }
     
-    onChangeTeacher = (c) => teacher => {
-        let totalSession = this.state.session_per_class
-        let totalClass = this.state.class_per_week
-        this.setState(prevState => {
-            let config = [...prevState.config]
-            while(c < totalClass*totalSession){
-                config[c].teacher = teacher
-                c = c + totalSession
-            }
-            return {...prevState, config}
-        })
-
-    }
-    onChangeRoom = (c) => room => {
-        let totalSession = this.state.session_per_class
-        let totalClass = this.state.class_per_week
-        this.setState(prevState => {
-            let config = [...prevState.config]
-            while(c < totalClass*totalSession){
-                config[c].room = room
-                c = c + totalSession
-            }
-            return {...prevState, config}
-        })
-    }
-    onChangeDay = (i) => day => {
-        let current_class = i * this.state.session_per_class
-        for(let a = 0; a < this.state.session_per_class ; a++){
-            let current_node = current_class + a
-            this.setState(prevState => {
-                let config = [...prevState.config]
-                config[current_node].date = day
-                return {...prevState, config}
-            })
-        }
-    }
     handleFromDate = date => {
-        this.setState({ from_date: date });
+        this.setState({ 
+            from_date: date, 
+            to_date: (this.state.to_date)?this.state.to_date:date});
     }    
     handleToDate = date => {
-        this.setState({ to_date : date })
+        this.setState({ to_date : date, from_date: date });
     }
     handleRoomChange = room => {
         this.setState({room: room})
+    }
+    handleChangeTeacher = teacher => {
+        this.setState({teacher: teacher})
     } 
-    render(){
+    handleDocumentUpload = doc => {
+        this.setState({document : doc})
+    }
+    handleExerciceUpload = exercice => {
+        this.setState({exercice: exercice})
+    }
+    handleAddNewSession = () => {
         
+    }
+    handleAddSession = (e) => {
+        e.preventDefault();
+        let fd = new FormData()
+        for(let i = 0 ; i < this.state.document.length ; i++){
+            fd.append('document'+i , this.state.document[i], this.state.document[i].name)
+        }
+        for(let j = 0 ; j < this.state.exercice.length ; j++){
+            fd.append('exercice' + j, this.state.exercice[j], this.state.exercice[j].name)
+        }
+        fd.append('document_count', this.state.document.length)
+        fd.append('exercice_count', this.state.exercice.length)
+        fd.append('center_id', this.state.center.value)
+        fd.append('class_id', this.props.class_id)
+        fd.append('room_id', this.state.room.value)
+        fd.append('from_date', this.state.from_date.getTime()/1000)
+        fd.append('to_date', this.state.to_date.getTime()/1000)
+        fd.append('teacher_id', this.state.teacher.value)
+        fd.append('note', this.state.note)
+        fd.append('fee', this.state.fee)
+        axios.post(baseUrl+'/session/add', fd)
+            .then(response => {
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        // axios.post(baseUrl+'/entrance/edit', data)
+        //     .then(response => {
+        //         if(this.state.test_answers && this.state.answers_changed){
+        //             let fd = new FormData()
+        //             for(let i = 0 ; i < this.state.test_answers.length ; i++){
+        //                 fd.append('image'+i , this.state.test_answers[i], this.state.test_answers[i].name)
+        //             }
+        //             fd.append('entrance_id' , this.state.entrance_id)
+        //             fd.append('count', this.state.test_answers.length)
+        //             axios.post(baseUrl + '/entrance/upload-test', fd)
+        //                 .then(uploaded => {
+        //                     this.props.enqueueSnackbar('Sửa thành công', { 
+        //                         variant: 'success',
+        //                     });
+        //                 })
+        //                 .catch(err => {
+        //                     console.log(err.resposne.data)
+        //                 })
+        //         }
+        //         else{
+        //             this.props.enqueueSnackbar('Sửa thành công', { 
+        //                 variant: 'success',
+        //             });
+        //         }
+        //         this.props.updateTable()
+        //         this.props.handleCloseDialog()
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+    }
+    render(){
         return (
             <Dialog 
                 fullWidth 
@@ -344,29 +328,35 @@ class DialogSession extends React.Component {
                             >
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
                                     <Select
-                                        value={this.state.center_selected}
+                                        value={this.state.center}
                                         onChange={this.handleCenterChange}
                                         options={this.state.centers}
                                         placeholder="Cơ sở"
                                     />
-
                                 </FormControl>                                   
                                 <div className="date-time">
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                    <KeyboardDateTimePicker
-                                        minutesStep= {15}
-                                        value={this.state.from_date}                            
-                                        onChange={this.handleFromDate}
-                                        placeholder="Thời gian bắt đầu"                            
-                                        className="input-date"
-                                        variant="inline"
-                                        inputVariant="outlined"
-                                        format="dd/MM/yyyy hh:mm a"
-
-                                    />                     
+                                        <KeyboardDateTimePicker
+                                            minutesStep= {15}
+                                            value={this.state.from_date}                            
+                                            onChange={this.handleFromDate}
+                                            placeholder="Thời gian bắt đầu"                            
+                                            className="input-date"
+                                            variant="inline"
+                                            inputVariant="outlined"
+                                            format="dd/MM/yyyy hh:mm a"     
+                                        />                     
                                     </MuiPickersUtilsProvider>
                                 </div>    
-                                
+                                <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
+                                    <Select
+                                        value={this.state.teacher}
+                                        onChange={this.handleChangeTeacher}
+                                        options={this.state.teachers}
+                                        placeholder="Giáo viên"
+                                    />
+        
+                                </FormControl> 
                                 <FormControl fullWidth variant="outlined" margin="dense">
                                     <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
                                     <OutlinedInput
@@ -379,52 +369,7 @@ class DialogSession extends React.Component {
                                     >
                                     </OutlinedInput>
                                 </FormControl>
-                                <Grid
-                                    container
-                                    spacing={4}
-                                >
-                                    <Grid
-                                        item
-                                        md={12}
-                                        lg={6}
-                                    >
-                                        <TextField  label="Số buổi/ tuần" 
-                                            id="class"
-                                            type="number"
-                                            inputProps={{ min: "0", max: "7", step: "1" }}
-                                            required
-                                            variant="outlined"
-                                            size="small"
-                                            fullWidth
-                                            helperText=""
-                                            margin = "normal"
-                                            value = {this.state.class_per_week}
-                                            name = 'class_per_week'
-                                            onChange = {this.onChangeClassPerWeek}
-                                        />  
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        md={12}
-                                        lg={6}
-                                    >
-                                    <TextField  label="Số ca/ buổi" 
-                                            id="session"
-                                            type="number"
-                                            inputProps={{ min: "0", max: "4", step: "1" }}
-                                            required
-                                            variant="outlined"
-                                            size="small"
-                                            fullWidth
-                                            helperText=""
-                                            margin = "normal"
-                                            value = {this.state.session_per_class}
-                                            name = 'session_per_class'
-                                            onChange = {this.onChangeSessionPerClass}
-                                        />
-                                    </Grid>
                                 
-                                </Grid>
                             </Grid>
                             <Grid
                                 item
@@ -444,9 +389,10 @@ class DialogSession extends React.Component {
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                     <KeyboardDateTimePicker
                                         minutesStep= {15}
-                                        value={this.state.from_date}                            
-                                        onChange={this.handleFromDate}
-                                        placeholder="Thời gian bắt đầu"                            
+                                        value={this.state.to_date}                            
+                                        onChange={this.handleToDate}
+                                        minDate = {this.state.from_date}
+                                        placeholder="Thời gian kết thúc"                            
                                         className="input-date"
                                         variant="inline"
                                         inputVariant="outlined"
@@ -455,28 +401,11 @@ class DialogSession extends React.Component {
                                     />                     
                                     </MuiPickersUtilsProvider>
                                 </div> 
-                                <div className="date-time">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                    <KeyboardDatePicker
-                                        autoOk
-                                        className="input-date"
-                                        variant="inline"
-                                        inputVariant="outlined"
-                                        format="dd/MM/yyyy"
-                                        placeholder= "Ngày khai giảng"
-                                        views={["year", "month", "date"]}
-                                        value={this.state.open_date}
-                                        onChange={this.handleDateChange}
-
-                                    />                     
-                                    </MuiPickersUtilsProvider>
-                                </div>  
                                 <TextField  label="Ghi chú" 
                                     variant="outlined"
                                     size="medium"
                                     type="text"
                                     fullWidth
-                                    helperText="Ghi chú của lớp"
                                     margin = "dense"
                                     name = 'note'
                                     value = {this.state.note}
@@ -485,8 +414,41 @@ class DialogSession extends React.Component {
 
                             </Grid>
                         </Grid>
-                    <h5>Lịch học theo tuần</h5>
-                        
+                    <h5>Tài liệu và Bài tập về nhà</h5>
+                        <Grid container spacing={4}>
+                            <Grid item
+                                md={12}
+                                lg={6} 
+                            >
+                                <div className = 'upload'>
+                                    <DropzoneArea 
+                                        onChange={this.handleDocumentUpload}
+                                        acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                        filesLimit = {5}
+                                        maxFileSize = {10000000}
+                                        initialFiles = {this.state.document.slice(0,5)}
+                                        dropzoneText = "Kéo thả tài liệu buổi học (Ảnh, PDF, Word)"
+                                    />
+                                </div>
+                                
+                            </Grid>
+                            <Grid item
+                                md={12}
+                                lg={6}
+                            >
+                                <div className = 'upload'>
+                                    <DropzoneArea 
+                                        onChange={this.handleExerciceUpload}
+                                        acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                        filesLimit = {5}
+                                        maxFileSize = {10000000}
+                                        initialFiles = {this.state.exercice.slice(0,5)}
+                                        dropzoneText = "Kéo thả bài tập về nhà (Ảnh, PDF, Word)"
+                                    />
+                                </div>
+                                
+                            </Grid>
+                        </Grid>
                     </form>
                     </DialogContent>
                 <DialogActions>
@@ -495,7 +457,7 @@ class DialogSession extends React.Component {
                     </Button>
                     {
                         (this.props.dialogType == 'create') ? (
-                            <Button onClick={this.handleCreateNewClass} color="primary" id="btn-save">
+                            <Button onClick={this.handleAddSession} color="primary" id="btn-save">
                                 Tạo mới buổi học
                             </Button>
                         ) : (
