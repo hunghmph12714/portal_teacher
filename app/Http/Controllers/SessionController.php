@@ -72,10 +72,10 @@ class SessionController extends Controller
             $sessions = Classes::find($request->class_id)->sessions()->
                 select('sessions.id as sid','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
                     'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.stats')->
+                    'sessions.stats','sessions.document','sessions.exercice')->
                 join('teacher','sessions.teacher_id','teacher.id')->
                 join('center','sessions.center_id','center.id')->
-                join('room','sessions.room_id','room.id')->orderBy('sessions.date','DESC')->
+                join('room','sessions.room_id','room.id')->
                 get();
             return response()->json($sessions->toArray());
         }

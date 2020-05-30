@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -56,7 +56,54 @@ function NumberFormatCustom(props) {
     );
   }
   
-
+const CenterSelect = React.memo(props => {
+    const [centers, setCenters] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/get-center')
+            setCenters(r.data.map(center => {
+                    return {label: center.name, value: center.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
+    
+    return( 
+        <Select
+            className="select-box-1"
+            key = "center-select"
+            value = {props.center}
+            name = "center"
+            placeholder="Cơ sở"
+            options={centers}
+            onChange={props.handleChange}
+        />)
+})
+const TeacherSelect = React.memo(props => {
+    const [teachers, setTeacher] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/get-teacher')
+            setTeacher(r.data.map(center => {
+                    return {label: center.name, value: center.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
+    
+    return( 
+        <Select
+            className="select-box-1"
+            key = "center-select"
+            value = {props.teacher}
+            name = "teacher"
+            placeholder="Giáo viên"
+            options={teachers}
+            onChange={props.handleChange}
+        />)
+}) 
 class DialogSession extends React.Component {
     constructor(props){
         super(props)      
@@ -79,85 +126,9 @@ class DialogSession extends React.Component {
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        const course = this.state.courses.filter(c => {
-            return c.label == nextProps.class.course
-        })
-        const center = this.state.centers.filter(c => {
-            return c.label == nextProps.class.center
-        })
-        let conf = []
-        let class_per_week = 0
-        let session_per_class = 0
-        if(nextProps.class.config) {
-            const configs = JSON.parse(nextProps.class.config)
-            let dates = configs.map(c => {
-                return c.date.value
-            })
-            let distinc_date = [...new Set(dates)]
-            conf = configs.map(c => {
-                c.from = c.from*1000
-                c.to = c.to*1000
-                return c
-            })
-            class_per_week = distinc_date.length
-            session_per_class = dates.length/distinc_date.length
-        }
-        this.setState({
-            name: (nextProps.class.name)?nextProps.class.name:'',
-            code: (nextProps.class.code)?nextProps.class.code:'',
-            open_date: nextProps.class.open_date ? new Date(nextProps.class.open_date) : null,
-            fee: (nextProps.class.fee)?nextProps.class.fee:'',
-            note: nextProps.class.note,
-            course_selected : course,
-            center : center,
-            session_per_class: session_per_class    ,
-            class_per_week: class_per_week,
-            config: conf
-             
-        })
-    }
-    componentDidMount () {
-        this.getCenters()
-        this.getCourses()
-        this.getTeacher()    
-    }
-    getCenters = () =>{
-        axios.get(window.Laravel.baseUrl + "/get-center")
-            .then(response => {
-                this.setState({
-                    centers: response.data.map(center => {
-                        return { value: center.id, label: center.name }
-                    })
-                })
-            })
-            .catch(err => {
-                console.log('center bug: ' + err)
-            })
-    }
-    getCourses = () =>{
-        axios.get(window.Laravel.baseUrl + '/get-courses')
-            .then(response => {
-                this.setState({
-                    courses: response.data.map(course => {
-                        return {value: course.id, label: course.name + " " +course.grade, fee:course.fee,                              
-                            session_per_class: course.session_per_class, class_per_week: course.class_per_week}
-                    })
-                })
-            })
-    }
-    getTeacher = () => {
-        axios.get(window.Laravel.baseUrl + '/get-teacher')
-            .then(response => {
-                this.setState({
-                    teachers: response.data.map(teacher => {
-                        return {value: teacher.id, label: teacher.name}
-                    })
-                })
-            })
-            .catch(err => {
-                console.log('teacher get bug: '+ err)
-            })
-    }
+        
+    }    
+   
     getRoom = (center_id) => {
         axios.get(window.Laravel.baseUrl + '/get-room/'+ center_id)
             .then(response => {
@@ -184,59 +155,22 @@ class DialogSession extends React.Component {
     
     handleDateChange = date => {
         this.setState({ open_date: date });
-    };
-    handleCreateNewClass = () => {
-        let url = baseUrl + "/class/create"
-        if(!this.state.code || !this.state.name || !this.state.open_date ||  !this.state.fee){
-            this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường *', { 
-                variant: 'error',
-            });
-            return 0;
-        }
-        let data = {
-            center_id : this.state.center.value,
-            course_id : this.state.course_selected.value,
-            code : this.state.code,
-            name : this.state.name,
-            config : JSON.stringify(this.state.config.map(c => {
-                return {from: c.from.getTime()/1000, to: c.to.getTime()/1000, teacher: c.teacher, room: c.room, date: c.date}
-            })),
-            open_date : this.state.open_date.getTime()/1000,
-            note : (this.state.note)?this.state.note:'',
-            fee : this.state.fee,
-        }
-        axios.post(url, data)
-            .then(response => {
-                this.props.updateTable(response.data)
-                this.props.enqueueSnackbar('Thêm lớp thành công', { 
-                    variant: 'success',
-                });
-                this.props.handleCloseDialog();
-            })
-            .catch(err => {
-                this.props.enqueueSnackbar('Thêm lớp thành công', { 
-                    variant: 'success',
-                });
-                console.log("Create class bug: "+ err)
-            })
-    }
+    };   
     
     handleFromDate = date => {
         //Check exist session date
         var d = date.getTime()
         axios.post(baseUrl+'/session/check-date', {date: d/1000})
             .then(response => {
-                if(response.data.result){
-                    this.setState({ 
-                        from_date: date, 
-                        to_date: (this.state.to_date)?this.state.to_date:date});
-                }
-                else{
+                if(!response.data.result){
                     this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
                         variant: 'warning',
                     })
                 }
-                
+                this.setState({ 
+                    from_date: date, 
+                    to_date: (this.state.to_date)?this.state.to_date:date
+                });
             })
             .catch(err => {
                 console.log(err)
@@ -291,41 +225,14 @@ class DialogSession extends React.Component {
         fd.append('transaction_involved', this.state.transaction_involved)
         axios.post(baseUrl+'/session/add', fd)
             .then(response => {
-
+                this.props.enqueueSnackbar('Thêm buổi học thành công', {
+                    variant: 'success'
+                })
             })
             .catch(err => {
                 console.log(err)
             })
-        // axios.post(baseUrl+'/entrance/edit', data)
-        //     .then(response => {
-        //         if(this.state.test_answers && this.state.answers_changed){
-        //             let fd = new FormData()
-        //             for(let i = 0 ; i < this.state.test_answers.length ; i++){
-        //                 fd.append('image'+i , this.state.test_answers[i], this.state.test_answers[i].name)
-        //             }
-        //             fd.append('entrance_id' , this.state.entrance_id)
-        //             fd.append('count', this.state.test_answers.length)
-        //             axios.post(baseUrl + '/entrance/upload-test', fd)
-        //                 .then(uploaded => {
-        //                     this.props.enqueueSnackbar('Sửa thành công', { 
-        //                         variant: 'success',
-        //                     });
-        //                 })
-        //                 .catch(err => {
-        //                     console.log(err.resposne.data)
-        //                 })
-        //         }
-        //         else{
-        //             this.props.enqueueSnackbar('Sửa thành công', { 
-        //                 variant: 'success',
-        //             });
-        //         }
-        //         this.props.updateTable()
-        //         this.props.handleCloseDialog()
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //     })
+        
     }
     render(){
         return (
@@ -357,11 +264,9 @@ class DialogSession extends React.Component {
                                 lg={6}
                             >
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <Select
-                                        value={this.state.center}
-                                        onChange={this.handleCenterChange}
-                                        options={this.state.centers}
-                                        placeholder="Cơ sở"
+                                    <CenterSelect 
+                                        center = {this.state.center}
+                                        handleChange={this.handleCenterChange}
                                     />
                                 </FormControl>                                   
                                 <div className="date-time">
@@ -379,11 +284,9 @@ class DialogSession extends React.Component {
                                     </MuiPickersUtilsProvider>
                                 </div>    
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <Select
-                                        value={this.state.teacher}
-                                        onChange={this.handleChangeTeacher}
-                                        options={this.state.teachers}
-                                        placeholder="Giáo viên"
+                                    <TeacherSelect
+                                        teacher={this.state.teacher}
+                                        handleChange={this.handleChangeTeacher}                                       
                                     />
         
                                 </FormControl> 

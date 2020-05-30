@@ -5,6 +5,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 import DialogSession from './DialogSession';
+import DialogDocument from './DialogDocument'
 import {
     Menu,
     MenuItem,
@@ -14,6 +15,7 @@ import {
   } from "@material-ui/core";
   import MaterialTable from "material-table";
   import Chip from '@material-ui/core/Chip';
+  import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 const baseUrl = window.Laravel.baseUrl
 const ListSession = (props) => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
@@ -22,8 +24,173 @@ const ListSession = (props) => {
     const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const [fetchData, setFetchData] = useState(false);
+    const [columns, setColumn] = useState(
+      [
+        //Actions
+          {
+            title: "",
+            field: "action",
+            filtering: false,
+            disableClick: true,
+            sorting: false,
+            headerStyle: {
+                padding: '0px',
+                width: '140px',
+            },
+            cellStyle: {
+                width: '114px',
+                padding: '0px',
+            },
+            render: rowData => (
+                <div style = {{display: 'block'}}>
+                    {/* {rowData.tableData.id} */}
+                    <Tooltip title="Chỉnh sửa" arrow>
+                      <IconButton onClick={handleEditSession}>
+                        <EditOutlinedIcon fontSize='inherit' />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa ca học" arrow>
+                      <IconButton onClick={() => {
+                        if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                          this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                        }>
+                      <DeleteForeverIcon fontSize='inherit' />
+                      </IconButton>
+                    </Tooltip>                                
+                </div>
+            )
+          },
+        //Thứ
+          {
+            title: "Thứ",
+            field: "day",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            render: rowData => {
+              return (                                
+                <div>
+                    {Vndate[rowData.day]}
+                </div>                           
+              )
+            },
+            
+            renderGroup: (day, groupData) => (
+              <Chip variant="outlined" label={Vndate[day]} size="small" />      
+            )
+          },
+        //Ngày học
+          {
+            title: "Ngày học",
+            field: "date",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '3px 0px',
+            },
+          },
+          {
+            title: "Thời gian",
+            field: "time",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '3px 0px',
+            }                        
+          },
+        //Phòng học
+          {
+            title: "Phòng học",
+            field: "rname",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            render: rowData => {                            
+              return (                              
+                <Tooltip title={rowData.ctname}>
+                  <Chip variant="outlined" label={rowData.rname} size="small" />
+                </Tooltip>                          
+              )
+            },
+            renderGroup: (rname, groupData) => (                            
+              <Chip variant="outlined" label={rname} size="small" />
+            )                
+          }, 
+          {
+            title: "Giáo viên",
+            field: "tname",
+            disableClick: true,
+            headerStyle: {
+                padding: '0px',                            
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            render: rowData => {
+                return (                                
+                  <Typography variant="body2" component="p">                                    
+                      <b>{rowData.tname}</b>
+                      <br /> {rowData.phone}
+                      <br /> {rowData.email}
+                  </Typography>
+                )
+              },
+              
+            renderGroup: (tname, groupData) => (
+                <Chip variant="outlined" label={tname} size="small" />      
+            )
+                           
+          },      
+          {
+            title: "Tài liệu",
+            field: "document",     
+            grouping: false,                   
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',                      
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            render: rowData => {                    
+              return (rowData.document || rowData.exercice) ? (
+                <FolderOpenIcon  onClick = {() => handleOpenDocument(rowData)}/>
+                
+              ): ("")
+            } 
+          },    
+      ]
+    )
+    const [openDocument, setOpenDocument] = useState(false);
+    const [document, setDocument] = useState('');
+    const [exercice, setExercice] = useState('');
+    
+
+    function handleOpenDocument(rowData){
+      setOpenDocument(true)
+      setDocument(rowData.document ? rowData.document : '')
+      setExercice(rowData.exercice ? rowData.exercice : '')
+    }
+    function handleCloseDocument (){
+      setOpenDocument(false)
+    }
     function handleCloseSessionDialog(){
       setOpen(false)
+      setFetchData(!fetchData)
     }
     function handleCreateSession(){
       setOpen(true)
@@ -49,7 +216,7 @@ const ListSession = (props) => {
             setLoading(true)
         }
         fetchData()
-    }, [])
+    }, [fetchData])
     return (
         <React.Fragment>
             <MaterialTable
@@ -100,157 +267,7 @@ const ListSession = (props) => {
                           placeholder: 'Kéo tên cột vào đây để nhóm'
                         }
                     }}
-                columns={[
-                    //Actions
-                      {
-                        title: "",
-                        field: "action",
-                        filtering: false,
-                        disableClick: true,
-                        sorting: false,
-                        headerStyle: {
-                            padding: '0px',
-                            width: '140px',
-                        },
-                        cellStyle: {
-                            width: '114px',
-                            padding: '0px',
-                        },
-                        render: rowData => (
-                            <div style = {{display: 'block'}}>
-                                {/* {rowData.tableData.id} */}
-                                <Tooltip title="Chỉnh sửa" arrow>
-                                  <IconButton onClick={handleEditSession}>
-                                    <EditOutlinedIcon fontSize='inherit' />
-                                  </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Xóa ca học" arrow>
-                                  <IconButton onClick={() => {
-                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                      this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                                    }>
-                                  <DeleteForeverIcon fontSize='inherit' />
-                                  </IconButton>
-                                </Tooltip>                                
-                            </div>
-                        )
-                      },
-                    //Thứ
-                      {
-                        title: "Thứ",
-                        field: "day",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                        render: rowData => {
-                          return (                                
-                            <div>
-                                {Vndate[rowData.day]}
-                            </div>                           
-                          )
-                        },
-                        
-                        renderGroup: (day, groupData) => (
-                          <Chip variant="outlined" label={Vndate[day]} size="small" />      
-                        )
-                      },
-                    //Ngày học
-                      {
-                        title: "Ngày học",
-                        field: "date",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '3px 0px',
-                        },
-                      },
-                      {
-                        title: "Thời gian",
-                        field: "time",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '3px 0px',
-                        }                        
-                      },
-                    //Phòng học
-                      {
-                        title: "Phòng học",
-                        field: "rname",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                        render: rowData => {                            
-                          return (                              
-                            <Tooltip title={rowData.ctname}>
-                              <Chip variant="outlined" label={rowData.rname} size="small" />
-                            </Tooltip>                          
-                          )
-                        },
-                        renderGroup: (rname, groupData) => (                            
-                          <Chip variant="outlined" label={rname} size="small" />
-                        )                
-                      }, 
-                      {
-                        title: "Giáo viên",
-                        field: "tname",
-                        disableClick: true,
-                        headerStyle: {
-                            padding: '0px',                            
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                        render: rowData => {
-                            return (                                
-                              <Typography variant="body2" component="p">                                    
-                                  <b>{rowData.tname}</b>
-                                  <br /> {rowData.phone}
-                                  <br /> {rowData.email}
-                              </Typography>
-                            )
-                          },
-                          
-                        renderGroup: (tname, groupData) => (
-                            <Chip variant="outlined" label={tname} size="small" />      
-                        )
-                                       
-                      },                    
-                    //Tài liệu
-                    //   {
-                    //   title: "Tài liệu",
-                    //   field: "document",     
-                    //   grouping: false,                   
-                    //   headerStyle: {
-                    //       padding: '0px',
-                    //       fontWeight: '600',                      
-                    //   },
-                    //   cellStyle: {
-                    //       padding: '0px',
-                    //   },
-                    //   render: rowData => {                    
-                    //     return (rowData.document) ? (
-                    //       <Button variant="contained" color="secondary" onClick = {() => {}}>
-                    //         Xem
-                    //       </Button>
-                    //     ): ("")
-                    //   } 
-                    // },                    
-                    
-                  ]}
+                columns={columns}
             />
             <DialogSession
               open={open}
@@ -258,6 +275,12 @@ const ListSession = (props) => {
               class_id = {class_id}
               handleCloseDialog={handleCloseSessionDialog}
               dialogType = {dialogType}/>
+            <DialogDocument 
+              open_dialog={openDocument}
+              handleCloseDialog={handleCloseDocument}
+              document = {document}
+              exercice = {exercice}
+            />
         </React.Fragment>
     )
 }
