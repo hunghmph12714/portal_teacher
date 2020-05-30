@@ -152,7 +152,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/session/delete', 'SessionController@deleteSession');
     Route::post('/session/edit', 'SessionController@editSession');
     Route::post('/session/add', 'SessionController@addSession');
-
+    Route::post('/session/check-date', 'SessionController@checkDate');
 //Attendance
     Route::get('/attendance', function(){
         return view('welcome');

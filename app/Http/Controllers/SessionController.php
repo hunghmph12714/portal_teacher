@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Session;
+use App\StudentSession;
 use App\Classes;
+use App\Account;
+use App\Transaction;
 use DateTime;
 use DateInterval;
 use DatePeriod;
@@ -88,7 +91,8 @@ class SessionController extends Controller
        $rules = [
             'class_id' => 'required',
             'from_date' => 'required',
-            'to_date' => 'required',    
+            'to_date' => 'required',  
+            'fee' => 'required'  
         ];
         $this->validate($request, $rules);
 
@@ -109,16 +113,21 @@ class SessionController extends Controller
         $input['teacher_id'] = $request->teacher_id;
         $input['center_id'] = $request->center_id;
         $input['room_id'] = $request->room_id;
-        $input['status'] = 0;
+        $input['status'] = '0';
 
         $input['date'] = date('Y-m-d', $request->from_date);
-        $input['from_date'] = date('Y-m-d H:i:00', $request->from_date);
-        $input['to_date'] = date('Y-m-d H:i:00', $request->to_date);
+        $input['from'] = date('Y-m-d H:i:00', $request->from_date);
+        $input['to'] = date('Y-m-d H:i:00', $request->to_date);
+        $input['ss_number'] = 0;
+        //Create new session
+        $session = Session::create($input);
+
         $document = '';
+        //Upload document
         for($i = 0 ; $i < $request->document_count; $i++){
             if($request->has('document'.$i)){
                 $ans = $request->file('document'.$i);
-                $name = $class_id."_document_".$i."_".time();
+                $name = $session->id."_document_".$i."_".time();
                 $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
                 $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
                 if($i == 0){
@@ -128,12 +137,11 @@ class SessionController extends Controller
                 } 
             }
         }
-        $input['document'] = $document;
         $exercice = '';
         for($i = 0 ; $i < $request->exercice_count ; $i++){
             if($request->has('exercice'.$i)){
                 $ans = $request->file('exercice'.$i);
-                $name = $class_id."_exercice_".$i."_".time();
+                $name = $session->id."_exercice_".$i."_".time();
                 $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
                 $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
                 if($i == 0){
@@ -143,35 +151,55 @@ class SessionController extends Controller
                 } 
             }
         }
-        $input['exercice'] = $exercice;
-        // print_r($input);
-        
-        
-    }
-    protected function uploadTest(Request $request){
-        $rules = ['entrance_id' => 'required'];
-        $this->validate($request, $rules);
+        $session->document = $document;
+        $session->exercice = $exercice;
+        //Add student to session
+        if($request->student_involved){
+            //Get all active student from class
+            $class = Classes::find($class_id);
+            if($class){
+                $students = $class->activeStudents;
+                foreach($students as $student){
+                    $input['student_id'] = $student->id;
+                    $input['session_id'] = $session->id;
+                    $input['attendance'] = 'holding';
+                    $input['type'] = 'official';
+                    StudentSession::create($input);
 
-        $entrance = Entrance::find($request->entrance_id);
-        $answers = '';
-        if($entrance){
-            for($i = 0 ; $i < $request->count; $i++ ){
-                if($request->has('image'.$i)){
-                    $ans = $request->file('image'.$i);
-                    $name = $entrance->id."_answer".$i."_".time();
-                    $ans->move(public_path(). "/images/answers/",$name.".".$ans->getClientOriginalExtension());
-                    $path = "/public/images/answers/".$name.".".$ans->getClientOriginalExtension();
-                    if($i == 0){
-                        $answers = $path;
-                    }else{
-                        $answers = $answers.",".$path;
-                    } 
+                    if($request->transaction_involved){
+                        //get account 131
+                        $debit = Account::where('level_2', '131')->first();
+                        $credit = Account::where('level_2', '3387')->first();
+                        $transaction['debit'] = $debit->id;
+                        $transaction['credit'] = $credit->id;
+                        $transaction['amount'] = intval($request->fee);
+                        $transaction['time'] = $session->from;
+                        $transaction['content'] = 'Học phí tháng '.date('m', $request->from_date);
+                        $transaction['student_id'] = $student->id;
+                        $transaction['class_id'] = $class_id;
+                        $transaction['session_id'] = $session->id;
+                        $transaction['user'] = auth()->user()->id;
+                        $trans = Transaction::create($transaction);
+                    }
                 }
             }
-            $entrance->test_answers = $answers;
-            $entrance->save();
+            
+        }
+        $session->save();
+        //return response()->json($session);
+        // print_r($input);        
+    }
+    protected function checkDate(Request $request){
+        $date = date('Y-m-d', $request->date);
+        $session = Session::where('date', $date)->first();
+        if($session){
+            return response()->json(['result' => false]);
+        }
+        else{
+            return response()->json(['result'=>true]);
         }
     }
+   
     protected function deleteSession(Request $request){
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);

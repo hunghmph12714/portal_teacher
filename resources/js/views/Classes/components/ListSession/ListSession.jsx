@@ -21,6 +21,7 @@ const ListSession = (props) => {
     const [open, setOpen] = useState(false);
     const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
+    const [isLoading, setLoading] = useState(false);
     function handleCloseSessionDialog(){
       setOpen(false)
     }
@@ -45,7 +46,7 @@ const ListSession = (props) => {
                     return r
                 })
             )
-
+            setLoading(true)
         }
         fetchData()
     }, [])
@@ -54,6 +55,7 @@ const ListSession = (props) => {
             <MaterialTable
                 title="Danh sách ca học"
                 data={data}
+                isLoading={!isLoading}
                 options={{
                         pageSize: 10,
                         grouping: true,

@@ -19,4 +19,7 @@ class Classes extends Model
                     ->withPivot('status', 'entrance_date','stats')
                     ->withTimestamps();
     }
+    public function activeStudents(){
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')->wherePivot('status', 'active');
+    }
 }

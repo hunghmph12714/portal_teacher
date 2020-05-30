@@ -4,7 +4,9 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Select from "react-select";
 import {DropzoneArea} from 'material-ui-dropzone'
-
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -59,8 +61,10 @@ class DialogSession extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
+            student_involved: false,
+            transaction_involved: false,
             room: "",
-            from_date: null,
+            from_date: new Date(),
             to_date: null,
             teacher: "",
             note: "",
@@ -218,12 +222,31 @@ class DialogSession extends React.Component {
     }
     
     handleFromDate = date => {
-        this.setState({ 
-            from_date: date, 
-            to_date: (this.state.to_date)?this.state.to_date:date});
+        //Check exist session date
+        var d = date.getTime()
+        axios.post(baseUrl+'/session/check-date', {date: d/1000})
+            .then(response => {
+                if(response.data.result){
+                    this.setState({ 
+                        from_date: date, 
+                        to_date: (this.state.to_date)?this.state.to_date:date});
+                }
+                else{
+                    this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
+                        variant: 'warning',
+                    })
+                }
+                
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        
     }    
     handleToDate = date => {
-        this.setState({ to_date : date, from_date: date });
+        this.setState({ 
+            to_date : date, 
+            from_date: (this.state.from_date)?this.state.from_date:date });
     }
     handleRoomChange = room => {
         this.setState({room: room})
@@ -239,6 +262,11 @@ class DialogSession extends React.Component {
     }
     handleAddNewSession = () => {
         
+    }
+    handleCheckBoxChange = (e) => {
+        this.setState({
+            [e.target.name] : !this.state[e.target.name]
+        })
     }
     handleAddSession = (e) => {
         e.preventDefault();
@@ -259,6 +287,8 @@ class DialogSession extends React.Component {
         fd.append('teacher_id', this.state.teacher.value)
         fd.append('note', this.state.note)
         fd.append('fee', this.state.fee)
+        fd.append('student_involved', this.state.student_involved)
+        fd.append('transaction_involved', this.state.transaction_involved)
         axios.post(baseUrl+'/session/add', fd)
             .then(response => {
 
@@ -392,6 +422,7 @@ class DialogSession extends React.Component {
                                         value={this.state.to_date}                            
                                         onChange={this.handleToDate}
                                         minDate = {this.state.from_date}
+                                        maxDate = {this.state.from_date}
                                         placeholder="Thời gian kết thúc"                            
                                         className="input-date"
                                         variant="inline"
@@ -410,7 +441,25 @@ class DialogSession extends React.Component {
                                     name = 'note'
                                     value = {this.state.note}
                                     onChange = {this.onChange}
-                                />  
+                                />
+                                <FormGroup row>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={this.state.student_involved} onChange={this.handleCheckBoxChange} name="student_involved" />}
+                                        label="Thêm học sinh hiện hữu vào buổi học"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                        <Checkbox
+                                            checked={this.state.transaction_involved && this.state.student_involved}
+                                            onChange={this.handleCheckBoxChange}
+                                            name="transaction_involved"
+                                            disabled = {!this.state.student_involved}
+                                            color="primary"
+                                        />
+                                        }
+                                        label="Tạo công nợ"
+                                    /> 
+                                </FormGroup>
 
                             </Grid>
                         </Grid>
