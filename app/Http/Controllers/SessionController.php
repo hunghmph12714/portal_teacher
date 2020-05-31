@@ -72,7 +72,7 @@ class SessionController extends Controller
             $sessions = Classes::find($request->class_id)->sessions()->
                 select('sessions.id as sid','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
                     'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.stats','sessions.document','sessions.exercice')->
+                    'sessions.stats','sessions.document','sessions.exercice','sessions.note','sessions.status')->
                 join('teacher','sessions.teacher_id','teacher.id')->
                 join('center','sessions.center_id','center.id')->
                 join('room','sessions.room_id','room.id')->
@@ -113,12 +113,13 @@ class SessionController extends Controller
         $input['teacher_id'] = $request->teacher_id;
         $input['center_id'] = $request->center_id;
         $input['room_id'] = $request->room_id;
-        $input['status'] = '0';
-
+        $input['status'] = ($request->student_involved && $request->transaction_involved) ? '1' : '0';
+        print($input['status']);
         $input['date'] = date('Y-m-d', $request->from_date);
         $input['from'] = date('Y-m-d H:i:00', $request->from_date);
         $input['to'] = date('Y-m-d H:i:00', $request->to_date);
         $input['ss_number'] = 0;
+        $input['note'] = $request->note;
         //Create new session
         $session = Session::create($input);
 
@@ -153,6 +154,7 @@ class SessionController extends Controller
         }
         $session->document = $document;
         $session->exercice = $exercice;
+        $session->save();
         //Add student to session
         if($request->student_involved){
             //Get all active student from class
@@ -160,12 +162,11 @@ class SessionController extends Controller
             if($class){
                 $students = $class->activeStudents;
                 foreach($students as $student){
-                    $input['student_id'] = $student->id;
-                    $input['session_id'] = $session->id;
-                    $input['attendance'] = 'holding';
-                    $input['type'] = 'official';
-                    StudentSession::create($input);
-
+                    $s['student_id'] = $student->id;
+                    $s['session_id'] = $session->id;
+                    $s['attendance'] = 'holding';
+                    $s['type'] = 'official';
+                    StudentSession::create($s);
                     if($request->transaction_involved){
                         //get account 131
                         $debit = Account::where('level_2', '131')->first();
@@ -183,9 +184,7 @@ class SessionController extends Controller
                     }
                 }
             }
-            
         }
-        $session->save();
         //return response()->json($session);
         // print_r($input);        
     }

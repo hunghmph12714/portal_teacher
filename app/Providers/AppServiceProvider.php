@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 use App\Entrance;
+use App\StudentSession;
 use App\Transaction;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
 use App\Observers\EntranceObserver;
 use App\Observers\TransactionObserver;
+use App\Observers\StudentSessionObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -31,5 +33,6 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         Entrance::observe(EntranceObserver::class);
         Transaction::observe(TransactionObserver::class);
+        StudentSession::observe(StudentSessionObserver::class);
     }
 }

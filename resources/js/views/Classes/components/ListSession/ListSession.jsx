@@ -1,4 +1,5 @@
 import React , { useState, useEffect } from 'react'
+import './ListSession.scss'
 import { format } from 'date-fns'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -18,7 +19,7 @@ import {
   import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 const baseUrl = window.Laravel.baseUrl
 const ListSession = (props) => {
-    const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
+    const Vndate = ['','Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const { class_id } = props
     const [open, setOpen] = useState(false);
     const [dialogType, setDialogType] = useState('create');
@@ -184,7 +185,20 @@ const ListSession = (props) => {
             cellStyle: {
                 padding: '0px',
             },
-          }  
+          } ,
+          {
+            title: "Trạng thái",
+            field: "status",
+            lookup: {0: 'Khởi tạo', 1: 'Công nợ', 2: 'Điểm danh', 3: 'Chốt'},
+            grouping: false,
+            headerStyle: {
+              padding: '0px',
+              fontWeight: '600',                      
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+          }
       ]
     )
     const [openDocument, setOpenDocument] = useState(false);
