@@ -174,7 +174,7 @@ class SessionController extends Controller
                         $transaction['credit'] = $credit->id;
                         $transaction['amount'] = intval($request->fee);
                         $transaction['time'] = $session->from;
-                        $transaction['content'] = 'Học phí tháng '.date('m', $request->from_date);
+                        $transaction['content'] = 'Học phí tháng '.date('m', $request->from_date) . ' - Buổi '.date('d/m', $request->from_date);
                         $transaction['student_id'] = $student->id;
                         $transaction['class_id'] = $class_id;
                         $transaction['session_id'] = $session->id;

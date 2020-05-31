@@ -172,7 +172,19 @@ const ListSession = (props) => {
                 
               ): ("")
             } 
-          },    
+          },  
+          {
+            title: "Ghi chú",
+            field: "note",
+            grouping: false,
+            headerStyle: {
+              padding: '0px',
+              fontWeight: '600',                      
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+          }  
       ]
     )
     const [openDocument, setOpenDocument] = useState(false);
