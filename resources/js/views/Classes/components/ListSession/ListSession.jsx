@@ -218,7 +218,7 @@ const ListSession = (props) => {
             setData(response.data.map(r => {
                     let date = new Date(r.date)
                     r.date = format(date , 'dd-MM-yyyy')
-                    r.day = format(date, 'i')
+                    r.day = format(date, 'i') 
                     r.from = format(new Date(r.from), 'HH:mm')
                     r.to = format(new Date(r.to), 'HH:mm')
                     r.time = r.from + ' - ' + r.to
