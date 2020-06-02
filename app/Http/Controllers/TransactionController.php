@@ -48,9 +48,8 @@ class TransactionController extends Controller
             ->join('students','transactions.student_id','students.id')
             ->join('classes','transactions.class_id','classes.id')
             ->join('sessions', 'transactions.session_id','sessions.id')
-            ->join('users', 'transactions.user', 'users.id')
+            ->join('users', 'transactions.user', 'users.id')->orderBy('created_at', 'DESC')->take(100)
             ->get();
-        
         return response()->json($transactions);
     }
     public function generate(){
