@@ -107,6 +107,10 @@ const Sidebar = props => {
         {
           title: 'Danh sách ghi danh',
           href: '/entrance/list',
+        },
+        {
+          title: 'Ưu đãi',
+          href: '/discount'
         }
       ]
     },

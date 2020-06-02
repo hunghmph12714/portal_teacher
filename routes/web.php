@@ -99,6 +99,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');
+    Route::post('/class/find', 'ClassController@findClass');
 //SETTING-RELATIONSHIP
     Route::get('/settings/relationship', function(){
         return view('welcome');
@@ -176,6 +177,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/transaction/add','TransactionController@addTransaction');
     Route::post('/transaction/get','TransactionController@getTransaction');
     Route::get('/transaction/test', 'TransactionController@getTransaction');
+    Route::get('/transaction/generate', 'TransactionController@generate');
+//Discount
+    Route::get('/discount', function(){
+        return view('welcome');
+    });
+    Route::get('/discount/get', 'DiscountController@getDiscount');
+    Route::post('/discount/add', 'DiscountController@addDiscount');
+    Route::post('/discount/edit', 'DiscountController@editDiscount');
+    Route::post('/discount/delete', 'DiscountController@deleteDiscount');
 });
     
 // Auth::routes();

@@ -12,4 +12,7 @@ class StudentClass extends Pivot
     protected $fillable = ['student_id','class_id','entrance_date','status','stats','updated_at','created_at'];
     public $incrementing = true;
     public $timestamps = true;
+    public function discounts(){
+        return $this->hasMany('App\Discount');
+    }
 }

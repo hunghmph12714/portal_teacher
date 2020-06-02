@@ -1,0 +1,328 @@
+import React from 'react';
+import './Discount.scss'
+import {StudentSearch} from '../../components'
+import {
+    Grid,
+    Menu,
+    MenuItem,
+    IconButton,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    FormControlLabel,
+    RadioGroup,
+    Radio,
+    TextField,
+    Tooltip,
+    Typography,
+  } from "@material-ui/core";
+import MaterialTable from "material-table";
+import {MTableAction} from "material-table";
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import Icofont from "react-icofont";
+import NumberFormat from 'react-number-format';
+import { TwitterPicker } from 'react-color';
+
+import axios from 'axios'
+import { withSnackbar } from 'notistack'
+const baseUrl = window.Laravel.baseUrl;
+function NumberFormatCustom(props) {
+    const { inputRef, onChange, name, ...other } = props;
+
+    return (
+        <NumberFormat
+            {...other}
+            getInputRef={inputRef}
+            onValueChange={values => {
+                onChange({
+                    target: {
+                        name: name,
+                        value: values.value,
+                    },
+                });
+            }}
+            thousandSeparator
+            isNumericString
+            prefix="đ"
+        />
+    );
+}
+class Discount extends React.Component{
+    constructor(props){
+        super(props)
+        this.state  = {
+            columns: [
+            // Mã ưu đãi
+                {
+                    title: 'Mã',
+                    field: 'did',
+                    editable: 'never',
+                    headerStyle: {
+                        width: '50px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        width: '50px'
+                    }
+                },
+            //Học sinh
+                {
+                    title: "Học sinh",
+                    field: "student",
+                    headerStyle: {
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                    },
+                    render: rowData => {
+                      return (
+                        <Tooltip title={'Phụ huynh: '+rowData.pname} aria-label="student">
+                            <Typography variant="body2" component="p">                                    
+                                <b>{rowData.sname}</b>
+                                <br /> {rowData.dob}
+                            </Typography>
+                        </Tooltip>       
+                      )
+                    },
+                    editComponent : props => (
+                        <StudentSearch
+                            student_name={props.value}
+                            handleStudentChange={newValue => {
+                                console.log(newValue)
+                                props.onChange(newValue)
+                            }}
+                        />
+                    )
+                },
+            // Lớp học
+                {
+                    title: "Lớp",
+                    field: "cid",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '15%',
+                    },
+                    cellStyle: {
+                        width: '15%',
+                    },
+                    render: rowData => {
+                        return (
+                            <div> {rowData.code} </div>
+                        )
+                    }
+                },
+            // Coupon
+                {
+                    title: "%",
+                    field: "percentage",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '50px',
+                    },
+                    cellStyle: {
+                        width: '50px',
+                    },
+
+                },
+            // Voucher
+                {
+                    title: "VNĐ",
+                    field: "amount",
+                    type: "numeric",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '8%%',
+                    },
+                    cellStyle: {
+                        width: '8%',
+                    },
+                    render: rowData => {
+                        return (<NumberFormat 
+                            thousandSeparator
+                            displayType={'text'}
+                            prefix="đ"    
+                            value={rowData.amount}                        
+                        
+                        />)
+                    }
+
+                },
+            // Active date
+                {
+                    title: "Hiệu lực",
+                    field: "active_at",
+                    type: "date",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '10%',
+                    },
+                    cellStyle: {
+                        width: '10%',
+                    },
+
+                },
+            //Expired date
+                {
+                    title: "Hết hạn",
+                    field: "expired_at",
+                    type: "date",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '10%',
+                    },
+                    cellStyle: {
+                        width: '10%',
+                    }
+                },
+            //Max use
+                {
+                    title: "Số lần",
+                    field: "max_use",
+                    type: "numeric",
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '9%',
+                    },
+                    cellStyle: {
+                        width: '9%',
+                    }
+                },
+            //Status
+                {
+                    title: "Tình trạng",
+                    field: "status",
+                    lookup: {'active': 'Đã kích hoạt', 'deactive': 'Vô hiệu hóa','expired': 'Hết hạn'},
+                    headerStyle: {
+                        fontWeight: '600',
+                        width: '10%',
+                    },
+                    cellStyle: {
+                        width: '10%',
+                    }
+                }
+            ],
+            data: [],
+            c: 10000,
+        }
+    }
+
+    getDiscount = () =>{
+        axios.get(window.Laravel.baseUrl + "/discount/get")
+            .then(response => {
+                this.setState({
+                    data: response.data
+                })
+            })
+            .catch(err => {
+                console.log('center bug: ' + err)
+            })
+    }
+    
+    componentDidMount(){
+        this.getDiscount()
+    }
+    addNewDiscount = (newData) => {        
+        return axios.post(baseUrl + '/discount/create', newData)
+            .then((response) => {
+                this.successNotification('Thêm thành công')
+                this.setState(prevState => {
+                    const data = [...prevState.data];
+                    data.push(response.data);
+                    return { ...prevState, data };
+                    });
+            })
+            .catch(err => {
+                console.log("Add new center bug: "+ err)
+            })
+    }
+    editDiscount = (oldData, newData) => {
+        let req = {id: oldData.id, newData: newData}
+        return axios.post(baseUrl + '/discount/edit', req)
+            .then(response => {
+                console.log(response)
+                this.setState(prevState => {
+                    const data = [...prevState.data];
+                    data[oldData.tableData.id] = newData;
+                    return { ...prevState, data };
+                });
+                this.successNotification('Sửa thành công')
+            })
+            .then(err => {
+                console.log(err)
+            })
+    }
+    deleteDiscount = (oldData) => {
+        return axios.post(baseUrl+ '/discount/delete', {id: oldData.id})
+            .then(response => {
+                this.successNotification('Xóa thành công')
+                this.setState(prevState => {
+                    const data = [...prevState.data];
+                    data.splice(data.indexOf(oldData), 1);
+                    return { ...prevState, data };
+                });
+            })
+            .catch(err => {
+                this.props.errorNotification('Có lỗi')
+                console.log('delete Center bug: ' + err)
+            })
+    }
+    onChange = e => {
+        this.setState({
+            [e.target.name] : e.target.value
+        })
+    }
+    render(){
+        return(
+            <div className="root-discount">
+                <MaterialTable
+                    title="Ưu đãi"
+                    columns={this.state.columns}
+                    data={this.state.data}
+                    options = {{
+                        pageSize: 10,
+                    }}
+                    editable={{
+                        onRowAdd: newData => this.addNewDiscount(newData) ,
+                        onRowUpdate: (newData, oldData) => this.editDiscount(oldData, newData),
+                        onRowDelete: oldData => this.deleteDiscount(oldData),
+                    }}
+                    localization={{
+                        header: {
+                            actions: ''
+                        },
+                        body: {
+                          emptyDataSourceMessage: 'Không tìm thấy quy trình',
+                          editRow:{
+                            deleteText: 'Bạn có chắc muốn xóa dòng này ?',
+                            cancelTooltip: 'Đóng',
+                            saveTooltip: 'Lưu'
+                          },
+                          deleteTooltip: "Xóa",
+                          addTooltip: "Thêm mới"
+                        },
+                        toolbar: {
+                          searchTooltip: 'Tìm kiếm',
+                          searchPlaceholder: 'Tìm kiếm',
+                          nRowsSelected: '{0} hàng được chọn'
+                        },
+                        pagination: {
+                          labelRowsSelect: 'dòng',
+                          labelDisplayedRows: ' {from}-{to} của {count}',
+                          firstTooltip: 'Trang đầu tiên',
+                          previousTooltip: 'Trang trước',
+                          nextTooltip: 'Trang tiếp theo',
+                          lastTooltip: 'Trang cuối cùng'
+                        }
+                    }}
+                />
+                
+            </div>
+        );
+    }
+}
+
+export default withSnackbar(Discount)

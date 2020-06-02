@@ -169,6 +169,13 @@ class ClassController extends Controller
             return response()->json($classes);
         }
     }
+    protected function findClass(Request $request){
+        $rules = ['key' => 'required'];
+        $this->validate($request, $rules);
+
+        $results = Classes::where('code','LIKE', '%'.$request->key.'%')->get();
+        return response()->json($results);
+    }
     //HELPER
     public function importDB(){
         $row = 1;

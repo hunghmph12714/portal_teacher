@@ -53,4 +53,18 @@ class TransactionController extends Controller
         
         return response()->json($transactions);
     }
+    public function generate(){
+        for($i = 0 ; $i < 100000 ; $i++){
+            $input['credit'] = 10;
+            $input['debit'] = 86;
+            $input['amount'] = 500000;
+            $input['time'] = '2020-05-24 17:13:05';
+            $input['content'] = 'Hoàn trả học phí tháng 5';
+            $input['student_id'] = 5;
+            $input['class_id'] = 1;
+            $input['session_id'] = 24;
+            $input['user'] = auth()->user()->id;
+            $transaction = Transaction::create($input);
+        }
+    }
 }

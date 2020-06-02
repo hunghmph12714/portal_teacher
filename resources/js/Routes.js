@@ -25,7 +25,7 @@ import {
   Step,
   Status, 
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
-  FinAccount, Transaction
+  FinAccount, Transaction, Discount
 } from './views';
 
 const Routes = (props) => {
@@ -183,7 +183,14 @@ const Routes = (props) => {
         layout={MainLayout}
         path="/transaction"
       />
+      <ProtectedRouteWithLayout 
+        component = {Discount}
+        layout = {MainLayout}
+        path = "/discount"
+      />
+      
       <Redirect to="/not-found" />
+
     </Switch>
   );
 };
