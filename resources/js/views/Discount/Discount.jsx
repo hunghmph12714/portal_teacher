@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Discount.scss'
 import {StudentSearch} from '../../components'
 import {
@@ -25,6 +25,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Icofont from "react-icofont";
 import NumberFormat from 'react-number-format';
+import Select , { components }  from "react-select";
+
 import { TwitterPicker } from 'react-color';
 
 import axios from 'axios'
@@ -51,6 +53,32 @@ function NumberFormatCustom(props) {
         />
     );
 }
+const ClassSelect = React.memo(props => {
+    const {center, course} = props
+    const [classes, setClasses] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            setClasses(r.data.map(c => {
+                    // console.log(c)
+                    return {label: c.code + ' - ' +c.name, value: c.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
+    
+    return( 
+        <Select
+            key = "class-select"
+            value = {props.selected_class}
+            name = "selected_class"
+            placeholder="Chọn lớp"
+            isClearable
+            options={classes}
+            onChange={props.handleChange}
+        />)
+})
 class Discount extends React.Component{
     constructor(props){
         super(props)
@@ -92,7 +120,7 @@ class Discount extends React.Component{
                         <StudentSearch
                             student_name={props.value}
                             handleStudentChange={newValue => {
-                                console.log(newValue)
+                                // console.log(newValue)
                                 props.onChange(newValue)
                             }}
                         />
@@ -101,7 +129,7 @@ class Discount extends React.Component{
             // Lớp học
                 {
                     title: "Lớp",
-                    field: "cid",
+                    field: "class",
                     headerStyle: {
                         fontWeight: '600',
                         width: '15%',
@@ -113,7 +141,19 @@ class Discount extends React.Component{
                         return (
                             <div> {rowData.code} </div>
                         )
+                    },
+                    editComponent : props => {
+                            return (
+                                <ClassSelect 
+                                selected_class = {props.value}
+                                handleChange={newValue => {props.onChange(newValue)}}
+                                course = {-1}
+                                center = {-1}
+                            />
+                        )
                     }
+                        
+                    
                 },
             // Coupon
                 {
@@ -225,18 +265,22 @@ class Discount extends React.Component{
     componentDidMount(){
         this.getDiscount()
     }
-    addNewDiscount = (newData) => {        
+    addNewDiscount = (newData) => {      
+        // newData.ative_at = newData.active_at.getTime()/1000
+        // newData.expired_at = newData.expired_at.getTime()/1000  
         return axios.post(baseUrl + '/discount/create', newData)
             .then((response) => {
-                this.successNotification('Thêm thành công')
-                this.setState(prevState => {
-                    const data = [...prevState.data];
-                    data.push(response.data);
-                    return { ...prevState, data };
-                    });
+                this.getDiscount()
+                this.props.enqueueSnackbar('Tạo ưu đãi thành công', {
+                    variant: 'success'
+                })
             })
             .catch(err => {
-                console.log("Add new center bug: "+ err)
+                if(err.response.status == '421'){
+                    this.props.enqueueSnackbar(err.response.data, { 
+                        variant: 'error',
+                      });
+                }
             })
     }
     editDiscount = (oldData, newData) => {

@@ -170,11 +170,16 @@ class ClassController extends Controller
         }
     }
     protected function findClass(Request $request){
-        $rules = ['key' => 'required'];
+        $rules = ['student_id' => 'required'];
         $this->validate($request, $rules);
 
-        $results = Classes::where('code','LIKE', '%'.$request->key.'%')->get();
-        return response()->json($results);
+        $student = Student::find($request->student_id);
+        if($student){
+            $classes = $student->classes;
+            return response()->json($classes);
+        }
+        // $results = Classes::where('code','LIKE', '%'.$request->key.'%')->get();
+        // return response()->json($results);
     }
     //HELPER
     public function importDB(){

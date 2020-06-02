@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Discount;
+use App\StudentClass;
 class DiscountController extends Controller
 {
     //
@@ -21,11 +22,34 @@ class DiscountController extends Controller
                             ->get()->toArray();
         foreach($discounts as $key => $d){
             $discounts[$key]['student'] = ['label' => $d['sname'], 'value' => $d['sid']];
+            $discounts[$key]['class'] = ['label' => $d['code'], 'value'=>$d['cid']];
         }
         return response()->json($discounts);
     }
-    protected function addDiscount(Request $request){
+    protected function createDiscount(Request $request){
+        $rules = [
+            'student' => 'required',
+            'class' => 'required',
+            // 'expired_at' => 'required',
+        ];
+        $this->validate($request, $rules);
 
+        //Check student in class
+        $c = StudentClass::where('student_id', $request->student['sid'])->where('class_id', $request->class['value'])->first();
+        if($c){
+            $input['student_class_id'] = $c->id;
+            $input['active_at'] = explode('T', $request->active_at)[0];
+            $input['expired_at'] = explode('T', $request->expired_at)[0];
+            $input['percentage'] = $request->percentage ? $request->percentage : NULL;
+            $input['amount'] = $request->amount ? $request->amount : NULL;
+            $input['status'] = $request->status;
+            // print_r($input);
+            $discount = Discount::create($input);
+            
+
+        }else{
+            return response()->json('Học sinh không học lớp này !', 421);
+        }
     }
     protected function editDiscount(Request $requet){
 

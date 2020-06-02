@@ -183,7 +183,7 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::get('/discount/get', 'DiscountController@getDiscount');
-    Route::post('/discount/add', 'DiscountController@addDiscount');
+    Route::post('/discount/create', 'DiscountController@createDiscount');
     Route::post('/discount/edit', 'DiscountController@editDiscount');
     Route::post('/discount/delete', 'DiscountController@deleteDiscount');
 });

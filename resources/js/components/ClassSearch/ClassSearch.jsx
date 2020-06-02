@@ -46,11 +46,11 @@ const CustomOption = props => {
     ) : <components.Option {...props} />
 };
 const findClasss = (inputValue, student_id) => {
-    return axios.post(baseUrl + '/class/find/', {key: inputValue, student_id: })
+    return axios.post(baseUrl + '/class/find/', {key: inputValue, student_id: student_id })
         .then(response => {
             return response.data.map(c => {
-                c.value = c.sid
-                c.label = c.s_name
+                c.value = c.cid
+                c.label = c.cname
                 c.custom = 1
                 return c
             })
@@ -70,12 +70,13 @@ const checkValidCreate = (inputValue, selectValue, selectOptions) => {
     }else return true
 }
 const ClassSearch = props => {
-    const {class_name, handleClassChange} = props
+    
+    const {class_name, handleClassChange, student_id} = props
     return (
         <AsyncCreatableSelect
             components = {{ Option: CustomOption }}
             cacheOptions
-            loadOptions = {inputValue => throttleOptions(inputValue)}
+            loadOptions = {inputValue => throttleOptions(inputValue, student_id)}
             autosize={true}
             isClearable
             placeholder = {'Chọn lớp'}

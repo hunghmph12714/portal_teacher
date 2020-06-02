@@ -43,7 +43,8 @@ class TransactionController extends Controller
                 'students.id as sid', 'students.fullname as sname','students.dob', 
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
                 'users.id as uid','users.name as uname'
-            )->join('accounts as debit_account','transactions.debit','debit_account.id')
+            )
+            ->join('accounts as debit_account','transactions.debit','debit_account.id')
             ->join('accounts as credit_account','transactions.credit','credit_account.id')
             ->join('students','transactions.student_id','students.id')
             ->join('classes','transactions.class_id','classes.id')
