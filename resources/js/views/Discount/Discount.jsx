@@ -281,22 +281,45 @@ class Discount extends React.Component{
                         variant: 'error',
                       });
                 }
+                if(err.response.status == 500){
+                    this.props.enqueueSnackbar('Lỗi server, vui lòng thử lại sau', {
+                        variant: 'error',
+                    })
+                }
+                if(err.response.status == 422){
+                    this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường', {
+                        variant: 'error',
+                    })
+                }
+
             })
     }
+    //edi
     editDiscount = (oldData, newData) => {
         let req = {id: oldData.id, newData: newData}
-        return axios.post(baseUrl + '/discount/edit', req)
+        return axios.post(baseUrl + '/discount/edit', newData)
             .then(response => {
-                console.log(response)
-                this.setState(prevState => {
-                    const data = [...prevState.data];
-                    data[oldData.tableData.id] = newData;
-                    return { ...prevState, data };
-                });
-                this.successNotification('Sửa thành công')
+                this.getDiscount()
+                this.props.enqueueSnackbar('Sửa ưu đãi thành công', {
+                    variant: 'success'
+                })
             })
-            .then(err => {
-                console.log(err)
+            .catch(err => {
+                if(err.response.status == '421'){
+                    this.props.enqueueSnackbar(err.response.data, { 
+                        variant: 'error',
+                      });
+                }
+                if(err.response.status == 500){
+                    this.props.enqueueSnackbar('Lỗi server, vui lòng thử lại sau', {
+                        variant: 'error',
+                    })
+                }
+                if(err.response.status == 422){
+                    this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường', {
+                        variant: 'error',
+                    })
+                }
             })
     }
     deleteDiscount = (oldData) => {

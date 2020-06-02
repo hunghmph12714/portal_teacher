@@ -45,14 +45,39 @@ class DiscountController extends Controller
             $input['status'] = $request->status;
             // print_r($input);
             $discount = Discount::create($input);
-            
-
         }else{
             return response()->json('Học sinh không học lớp này !', 421);
         }
     }
-    protected function editDiscount(Request $requet){
-
+    protected function editDiscount(Request $request){
+        $rules = [
+            'did'=>'required',
+            'active_at' => 'required',
+            'expired_at' => 'required',            
+            'max_use' => 'required'
+        ];
+        $this->validate($request, $rules);
+        
+        
+        $c = StudentClass::where('student_id', $request->student['value'])->where('class_id', $request->class['value'])->first();
+        if($c){
+            $d = Discount::find($request->did);
+            if($d){
+                $d->active_at = explode('T', $request->active_at)[0];
+                $d->expired_at = explode('T', $request->expired_at)[0];
+                $d->percentage = $request->percentage;
+                $d->amount = $request->amount;
+                $d->max_use = $request->max_use;
+                $d->status = $request->status;
+                $d->student_class_id = $c->id;
+                $d->save();
+                return response()->json('ok', 200);
+                
+            }
+        }else{
+            return response()->json('Học sinh không học lớp này !', 421);
+        }
+        
     }
     protected function deleteDiscount(Request $request){
 
