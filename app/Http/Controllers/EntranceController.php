@@ -46,7 +46,21 @@ class EntranceController extends Controller
         $s['phone'] = $request['student_phone'];
         $s['dob'] = $request['student_dob'];
         $s['gender'] = $request['student_gender'];
+
         return Student::create($s);
+    }
+    protected function handleUpdateStudent($student_id, $request){
+        $s['parent_id'] = $parent_id;
+        $s['relationship_id'] = $request['selected_relationship']['value'];
+        $s['fullname'] = $request['student_name']['value'];
+        $s['school'] = $request['student_school']['label'];
+        $s['grade'] = $request['student_grade'];
+        $s['email'] = $request['student_email'];
+        $s['phone'] = $request['student_phone'];
+        $s['dob'] = $request['student_dob'];
+        $s['gender'] = $request['student_gender'];
+        
+        return Student::find($student_id)->update($s);
     }
     protected function createEntrance(Request $request){
         //Validation
@@ -69,19 +83,19 @@ class EntranceController extends Controller
         $request = $request->toArray();
         $request['entrance_date'] = ($request['entrance_date']) ? date('Y-m-d H:i:m', $request['entrance_date']) : null;
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', $request['student_dob']) : null;
-        
+        $p = [];
+        $p['fullname'] = $request['parent_name']['value'];
+        $p['relationship_id'] = $request['selected_relationship']['value'];
+        $p['phone'] = $request['parent_phone'];
+        $p['email'] = $request['parent_email'];
+        $p['note'] = $request['parent_note'];
+        $p['alt_fullname'] = $request['parent_alt_name'];
+        $p['alt_email'] = $request['parent_alt_email'];
+        $p['alt_phone'] = $request['parent_alt_phone'];
+
         //Check parent exist
         if($request['parent_name']['__isNew__']){
         // New parent
-            $p = [];
-            $p['fullname'] = $request['parent_name']['value'];
-            $p['relationship_id'] = $request['selected_relationship']['value'];
-            $p['phone'] = $request['parent_phone'];
-            $p['email'] = $request['parent_email'];
-            $p['note'] = $request['parent_note'];
-            $p['alt_fullname'] = $request['parent_alt_name'];
-            $p['alt_email'] = $request['parent_alt_email'];
-            $p['alt_phone'] = $request['parent_alt_phone'];
             $parent = Parents::create($p);
 
             if($request['student_name']['__isNew__']){ // New Student
@@ -95,6 +109,8 @@ class EntranceController extends Controller
         } 
         else{
         //Existed parent
+            //Update parent 
+            Parent::find($request['parent_name']['value'])->update($p);
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
                 $parent_id = $request['parent_name']['value'];
@@ -105,14 +121,13 @@ class EntranceController extends Controller
                 }
             }
             else{
-                foreach($request['entrance_courses'] as $entrance_course){
-                    $student_id = $request['student_name']['value'];
+                $student_id = $request['student_name']['value'];
+                $this->handleUpdateStudent($student_id, $request);
+                foreach($request['entrance_courses'] as $entrance_course){                    
                     $new_entrance = $this->handleCreateEntrance($student_id, $request['entrance_center']['value'], $entrance_course['value'], $request['entrance_date'], $request['entrance_note']);    
                 }
             }
         }
-
-
         return response()->json('ok');
 
     }
@@ -143,6 +158,8 @@ class EntranceController extends Controller
         if($step == -1){
             $step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first()->id;
         }
+        // $entrances = Entrance::all();
+        //     return response()->json($entrances);
         $entrances = Entrance::Select(
             'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
@@ -150,9 +167,11 @@ class EntranceController extends Controller
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
             'classes.id as class_id', 'classes.name as class', 'enroll_date'
-        )->where('entrances.step_id', $sig, $step)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->join('relationships','parents.relationship_id','relationships.id')
-         ->leftJoin('courses','course_id','courses.id')->join('center','center_id','center.id')
-         ->leftJoin('steps','step_id','steps.id')->join('status','status_id','status.id')
+        )->where('entrances.step_id', $sig, $step)
+        ->leftJoin('students','student_id','students.id')->leftJoin('parents','students.parent_id','parents.id')
+        ->leftJoin('relationships','parents.relationship_id','relationships.id')
+         ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
+         ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
          ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
          ->orderBy('priority','desc')->get();
         return response()->json($entrances);
