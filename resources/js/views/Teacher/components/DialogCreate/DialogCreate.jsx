@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './DialogCreate.scss';
 
 import { Grid } from '@material-ui/core';
@@ -21,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { withSnackbar } from 'notistack' 
 const baseUrl = window.Laravel.baseUrl
 
 function NumberFormatCustom(props) {
@@ -44,8 +45,41 @@ function NumberFormatCustom(props) {
     );
   }
   
+const MinSalarySelect = React.memo(props => {
+    const [data, setData] = useState([])
+    const fetchData = async() => {
+        const r = await axios.get(window.Laravel.baseUrl + "/get-base-salary")
+        let data = r.data.map(c => {
+            var formatter = new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+            });
+            return {
+                value: c.id, label: c.domain+" "+c.level+" "+ c.grade+" - "+ formatter.format(c.salary)
+            }
 
-export default class DialogCreate extends React.Component {
+        })
+        setData(data)
+    }
+    useEffect(() => {        
+        fetchData()
+    }, [])    
+    return(        
+        <div className = "select-input">
+            <Select                
+                key = "session-select"
+                isMulti
+                value = {props.min_salary}
+                name = "min-salary"
+                placeholder="Chọn bậc lương tối thiểu"
+                options={data}
+                onChange={props.handleChange}
+            />                 
+        </div>
+    )
+})
+
+class DialogCreate extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
@@ -73,16 +107,26 @@ export default class DialogCreate extends React.Component {
             //Lương
             salary_percent: 0,
             salary_per_hour: 0,
-            base_salaries : [],
-            base_salary: {value:'', label: ''},
+            min_salary: [],
             
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        const bs = this.state.base_salaries.filter(s => {
-            return s.value == nextProps.teacher.basic_salary_id
-        })
+        
         const contract = {value: nextProps.teacher.contract, label : nextProps.teacher.contract}
+        var formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
+        console.log(nextProps.teacher['min_salary'])
+        let min_salary = []
+        if(nextProps.teacher.min_salary){
+            min_salary = nextProps.teacher['min_salary'].map(c => {            
+                return {
+                    value: c.id, label: c.domain+" "+c.level+" "+ c.grade+" - "+ formatter.format(c.salary)
+                }
+            })
+        }
         this.setState({
             id : nextProps.teacher.id,
             name: nextProps.teacher.name,
@@ -95,41 +139,18 @@ export default class DialogCreate extends React.Component {
             insurance: nextProps.teacher.insurance,
             salary_percent: nextProps.teacher.percent_salary,
             salary_per_hour: nextProps.teacher.salary_per_hour,
-            base_salary : (bs[0])?bs[0]:{value:'', label: ''},
+            min_salary : min_salary,
             hdType : contract,
         })
     }
-    componentDidMount () {
-        this.getBaseSalary()
-    }
-    getBaseSalary = () =>{
-        axios.get(window.Laravel.baseUrl + "/get-base-salary")
-            .then(response => {
-                var formatter = new Intl.NumberFormat('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND',
-                });
-                let data = []
-                data = response.data.map(salary => {
-                    return {
-                        value: salary.id, label: salary.domain+" "+salary.level+" "+ salary.grade+" - "+ formatter.format(salary.salary)
-                    }
-                })
-                this.setState({
-                    base_salaries: data
-                })
-            })
-            .catch(err => {
-                console.log('center bug: ' + err)
-            })
-    }
+    
     onChange = e => {
         this.setState({
             [e.target.name] : e.target.value
         })
     };
-    handleBaseSalaryChange = (base_salary)=> {
-        this.setState({ base_salary: base_salary })
+    handleMinSalaryChange = (min_salary)=> {
+        this.setState({ min_salary: min_salary })
     }
     
     handleCreateNewTeacher = () => {
@@ -138,7 +159,9 @@ export default class DialogCreate extends React.Component {
         axios.post(url, data)
             .then(response => {
                 this.props.updateTable(response.data);
-                this.props.notification('Tạo giáo viên thành công','success')
+                this.props.enqueueSnackbar('Tạo giáo viên thành công', {
+                    variant: 'success'
+                })
                 this.props.handleCloseDialog();
             })
             .catch(err => {
@@ -150,11 +173,15 @@ export default class DialogCreate extends React.Component {
         axios.post(url, this.state)
             .then(response => {
                 this.props.updateTable(response.data)
-                this.props.notification('Đã lưu thay đổi','success')
+                this.props.enqueueSnackbar('Đã lưu thay đổi', {
+                    variant: 'success'
+                })
                 this.props.handleCloseDialog();
             })
             .catch(err => {
-                this.props.notification('Có lỗi xảy ra','error')
+                this.props.enqueueSnackbar('Có lỗi xảy ra', {
+                    variant: 'error'
+                })
             })
     }
     render(){
@@ -303,12 +330,10 @@ export default class DialogCreate extends React.Component {
                                         </OutlinedInput>
                                         <FormHelperText >Lương giáo viên / 1 giờ dạy</FormHelperText>
                                     </FormControl>        
-                                    <FormControl variant="outlined" className="base_salary" fullWidth  margin="dense">
-                                        <Select
-                                            value={this.state.base_salary}
-                                            onChange={this.handleBaseSalaryChange}
-                                            options={this.state.base_salaries}
-                                            placeholder="Lương cơ bản"
+                                    <FormControl variant="outlined" className="min_salary" fullWidth  margin="dense">
+                                        <MinSalarySelect 
+                                            min_salary = {this.state.min_salary}
+                                            handleChange = {this.handleMinSalaryChange}
                                         />
                                         <FormHelperText >Lương cơ bản theo lớp/trình độ</FormHelperText>
 
@@ -368,3 +393,4 @@ export default class DialogCreate extends React.Component {
           );
     }
 }
+export default withSnackbar(DialogCreate)

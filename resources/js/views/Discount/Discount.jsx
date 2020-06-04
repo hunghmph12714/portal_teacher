@@ -294,7 +294,7 @@ class Discount extends React.Component{
 
             })
     }
-    //edi
+    //edit
     editDiscount = (oldData, newData) => {
         let req = {id: oldData.id, newData: newData}
         return axios.post(baseUrl + '/discount/edit', newData)

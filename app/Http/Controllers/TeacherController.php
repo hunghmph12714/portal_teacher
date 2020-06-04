@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Teacher;
 use App\MinSalary;
+use App\TeacherMinSalary;
 class TeacherController extends Controller
 {
     //
@@ -15,8 +16,16 @@ class TeacherController extends Controller
         else return $v;
     }
     protected function index(){
-        $center = Teacher::where('active', 1)->get()->toArray();
-        return response()->json($center);
+        $result = [];
+        $teachers = Teacher::where('active', 1)->get();
+        $i = 0;
+        foreach($teachers as $teacher){
+            $result[$i] = $teacher;
+            $minSalary = $teacher->minSalary;
+            $result[$i]['min_salary'] = $minSalary;            
+            $i++;
+        }
+        return response()->json($result);
     }
     protected function create(Request $request){
         $rules = [
@@ -31,14 +40,19 @@ class TeacherController extends Controller
         $input['school'] = $request->school;
         $input['personal_tax'] = $this->checkNull($request->tncn);
         $input['insurance'] = $this->checkNull($request->insurance);
-        $input['basic_salary_id'] = $this->checkNull($request->base_salary['value']);
         $input['salary_per_hour'] = $this->checkNull($request->salary_per_hour) ;
         $input['percent_salary'] = $this->checkNull($request->salary_percent);
         
         $teacher = Teacher::create($input);
-
+        foreach($request->min_salary as $ms){
+            $tms['teacher_id'] = $teacher->id;
+            $tms['min_salary_id'] = $ms['value'];
+            TeacherMinSalary::create($tms);
+        }
+        $min_salary = $teacher->minSalary;
+        $teacher = $teacher->toArray(); 
+        $teacher['min_salary'] = $min_salary;
         return response()->json($teacher);
-
     }
     protected function edit(Request $request){
         $this->validate($request, ['id'=>'required']);
@@ -51,13 +65,17 @@ class TeacherController extends Controller
         $input['school'] = $request->school;
         $input['personal_tax'] = $this->checkNull($request->tncn);
         $input['insurance'] = $this->checkNull($request->insurance);
-        $input['basic_salary_id'] = $this->checkNull($request->base_salary['value']);
         $input['salary_per_hour'] = $this->checkNull($request->salary_per_hour) ;
         $input['percent_salary'] = $this->checkNull($request->salary_percent);
         
         $teacher = Teacher::find($request->id)->update($input);
-
-        return response()->json(Teacher::find($request->id));
+        $teacher = Teacher::find($request->id);
+        $teacher->minSalary()->sync(($request->min_salary)? array_column($request->min_salary, 'value') : []);
+        
+        $min_salary = $teacher->minSalary;
+        $teacher = $teacher->toArray(); 
+        $teacher['min_salary'] = $min_salary;
+        return response()->json($teacher);
 
     }
     protected function resign(Request $request){
