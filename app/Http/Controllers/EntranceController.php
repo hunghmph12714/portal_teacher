@@ -24,7 +24,8 @@ class EntranceController extends Controller
         $input['course_id'] = $course_id;
         $input['test_time'] = $test_time;
         $input['note'] = $note;
-        $input['priority'] = 0;
+        $s = Student::find($student_id);
+        $input['priority'] = ($r = Relationship::find($s->relationship_id))? $r->weight : 0;
         
         $init_step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first();
         

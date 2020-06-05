@@ -19,6 +19,19 @@
     label{
         font-weight: bold;
     }
+    h1{
+        font-size: 32px;
+        color: #6ebe45;
+        margin-bottom: 40px;
+        font-weight: 500;
+    }
+    h2{
+        background-color: #6EBE45;
+        color: #fff;
+        padding: 5px 10px 5px 10px !important;
+        font-weight: 700;
+        font-size: 1.25em;
+    }
     </style>
   </head>
   <body>
@@ -31,13 +44,13 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputEmail4">Họ tên học sinh (*)</label>
-                    <input  class="form-control" id="inputEmail4">
+                    <input  class="form-control" id="inputEmail4" name="sname" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputPassword4">Ngày sinh (*)</label>
                     
                     <div class="input-group mb-2">                        
-                        <input type="text" class="form-control" id="datepicker" placeholder="Ngày sinh">
+                        <input type="text" class="form-control" id="datepicker" placeholder="Ngày sinh" name="dob" required>
                         <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                         </div>
@@ -47,19 +60,19 @@
 
                 <div class="form-group col-md-4">
                     <label for="inputPassword4">Trường học</label>
-                    <input type="text" class="form-control" id="schools" autocomplete="on">
+                    <input type="text" class="form-control" id="schools" autocomplete="on" name="school">
                 </div>
             </div>
             <h2>Thông tin Phụ huynh</h2>
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="inputEmail4">Họ tên phụ huynh(*)</label>
-                    <input  class="form-control" id="inputEmail4" name="pname">
+                    <input  class="form-control" id="inputEmail4" name="pname" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputPassword4">Số điện thoại (*)</label>
                     <div class="input-group mb-2">                        
-                        <input class="form-control" type="tel" id="phone"name="pphone">
+                        <input class="form-control" type="tel" id="phone"name="pphone" required>
                         <div class="input-group-prepend">
                             <div class="input-group-text"><i class="fas fa-phone"></i></div>
                         </div>
@@ -68,7 +81,7 @@
                 <div class="form-group col-md-4">
                     <label for="inputPassword4">Email phụ huynh (*)</label>
                     <div class="input-group mb-2">                        
-                        <input type="email" class="form-control" name="pemail">
+                        <input type="email" class="form-control" name="pemail" required>
                         <div class="input-group-prepend">
                             <div class="input-group-text">@</div>
                         </div>
@@ -87,7 +100,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="grade">Chọn khối</label>
-                    <select id="grade" class="form-control" name="center" required>
+                    <select id="grade" class="form-control" name="grade" required>
                         <option value="3">Khối 3</option>
                         <option value="4">Khối 4</option>
                         <option value="5">Khối 5</option>
@@ -106,7 +119,7 @@
                 </div>
                 <div class="form-group col-md-3" id = "note">
                     <label for="note">Ghi chú</label>
-                    <input type="text" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc">
+                    <textarea  class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
                 </div>
             </div>
             
@@ -154,7 +167,7 @@
                         $("#course").append('<div> Hiện tại chưa có khóa học nào.</div>')
                     }
                     for (var i = 0; i < data.length; i++) {
-                        $('#course').append('<div class="checkbox"> <label><input type="checkbox" value="'+data[i].id+'" name="course">  ' + data[i].name + '</label></div>')
+                        $('#course').append('<div class="checkbox"> <label><input type="checkbox" value="'+data[i].id+'" name="course[]">  ' + data[i].name + '</label></div>')
                     }
                 }
             });

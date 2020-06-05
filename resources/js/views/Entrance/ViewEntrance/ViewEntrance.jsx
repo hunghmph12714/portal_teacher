@@ -165,10 +165,13 @@ export default class ViewEntrance extends React.Component{
                         exportButton: true,
                         rowStyle: rowData => {
                           let today = new Date()
-                          let test_time = rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t))                          
-                          if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
-                            return {backgroundColor: yellow[200],}
+                          if(rowData.test_time){
+                            let test_time = (rowData.test_time) ? rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
+                            if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
+                              return {backgroundColor: yellow[200]}
+                            }
                           }
+                          
                           if(rowData.priority >= 8){
                             return {backgroundColor: colors.orange[300],}
                           }
