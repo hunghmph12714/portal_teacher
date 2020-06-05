@@ -93,6 +93,7 @@
                 <div class="form-group col-md-3">
                 <label for="center">Cơ sở</label>
                     <select id="center" class="form-control" name="center" required>
+                        <option value="" hidden selected>Chọn cơ sở đăng ký</option>
                         @foreach($centers as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
@@ -101,6 +102,8 @@
                 <div class="form-group col-md-3">
                     <label for="grade">Chọn khối</label>
                     <select id="grade" class="form-control" name="grade" required>
+                        <option value=""  hidden selected>Chọn khối lớp</option>
+
                         <option value="3">Khối 3</option>
                         <option value="4">Khối 4</option>
                         <option value="5">Khối 5</option>
