@@ -80,6 +80,14 @@ class DiscountController extends Controller
         
     }
     protected function deleteDiscount(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $discount = Discount::find($request->id);
+        if($discount){
+            $discount->forceDelete();
+            return response()->json('ok');
+        }
 
     }
 }

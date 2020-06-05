@@ -15,15 +15,15 @@
 Route::get('/', function () {
     return view('welcome');
 });
-// Route::get('/importdb', 'ClassController@importDB');
-//LOG IN\
+Route::get('/form-public','GuestController@formPublic');
+Route::post('/get/courses', 'GuestController@getCourses');
+Route::post('/handle-form', 'GuestController@handleForm');
 Route::get('/login', function () {
     return view('welcome');
 })->name('login');
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
-
 Route::group(['middleware' => ['auth']], function() {
     
     //Import database 
@@ -83,8 +83,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/course/create', 'ClassController@createCourse');
     Route::post('/course/edit', 'ClassController@editCourse');
     Route::post('/course/delete', 'ClassController@deleteCourse');
-    
-
 //Class Management
     Route::get('/classes', function(){
         return view('welcome');
@@ -143,7 +141,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudents');
     Route::post('/student/get', 'StudentController@getStudents');
-    Route::get('/student/import', 'StudentController@importStudent');
+    // Route::get('/student/import', 'StudentController@importStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');
@@ -189,8 +187,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/discount/delete', 'DiscountController@deleteDiscount');
 });
 // Auth::routes();
-Route::get('/csv', 'StudentController@csv');
-Route::get('/student/chuan-hoa', 'StudentController@chuanHoa');
+// Route::get('/csv', 'StudentController@csv');
+// Route::get('/student/chuan-hoa', 'StudentController@chuanHoa');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test', function(){
     return view('home');

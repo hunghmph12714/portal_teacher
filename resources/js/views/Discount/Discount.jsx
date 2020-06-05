@@ -249,7 +249,6 @@ class Discount extends React.Component{
             c: 10000,
         }
     }
-
     getDiscount = () =>{
         axios.get(window.Laravel.baseUrl + "/discount/get")
             .then(response => {
@@ -261,11 +260,10 @@ class Discount extends React.Component{
                 console.log('center bug: ' + err)
             })
     }
-    
     componentDidMount(){
         this.getDiscount()
     }
-    addNewDiscount = (newData) => {      
+    addNewDiscount = (newData) => {
         // newData.ative_at = newData.active_at.getTime()/1000
         // newData.expired_at = newData.expired_at.getTime()/1000  
         return axios.post(baseUrl + '/discount/create', newData)
@@ -325,7 +323,9 @@ class Discount extends React.Component{
     deleteDiscount = (oldData) => {
         return axios.post(baseUrl+ '/discount/delete', {id: oldData.id})
             .then(response => {
-                this.successNotification('Xóa thành công')
+                this.props.enqueueSnackbar('Xóa thành công', {
+                    variant: 'success'
+                })
                 this.setState(prevState => {
                     const data = [...prevState.data];
                     data.splice(data.indexOf(oldData), 1);
@@ -333,7 +333,9 @@ class Discount extends React.Component{
                 });
             })
             .catch(err => {
-                this.props.errorNotification('Có lỗi')
+                this.props.enqueueSnackbar('Có lỗi xảy ra', {
+                    variant: 'error'
+                })
                 console.log('delete Center bug: ' + err)
             })
     }
