@@ -78,15 +78,18 @@ class GuestController extends Controller
                 } 
             }
         }else{
+            $relationship = Relationship::orderBy('weight', 'asc')->first();          
             $parent['fullname'] = $request->pname;
             $parent['phone'] = $pphone;
             $parent['email'] = $request->email;
+            $parent['relationship_id'] = $relationship->id;
             $parent = Parents::create($parent);
 
             $student['fullname'] = $request->sname;
             $student['dob'] = $dob;
             $student['school'] = $request->school;
             $student['parent_id'] = $parent->id;
+            $student['relationship_id'] = $relationship->id;
             $student = Student::create($student);
 
             foreach($request->course as $c){
