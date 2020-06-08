@@ -122,7 +122,7 @@
                 </div>
                 <div class="form-group col-md-3" id = "note">
                     <label for="note">Ghi chú</label>
-                    <textarea  class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
+                    <textarea rows="4" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
                 </div>
             </div>
             
