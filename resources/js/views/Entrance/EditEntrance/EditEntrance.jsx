@@ -78,9 +78,9 @@ class EditEntrance extends React.Component {
         let enroll_date = new Date(nextProps.entrance.enroll_date)
         if(nextProps.entrance){
             let dob_arr = nextProps.entrance.dob.split('/')
-            dob_str = (dob_arr.length >2 )?dob_arr[1]+'/'+dob_arr[0]+'/'+dob_arr[2]: null
+            dob_str = (dob_arr.length >2 )?dob_arr[1]+'/'+dob_arr[0]+'/'+dob_arr[2]: ''
             let test_time_arr = nextProps.entrance.test_time.split('/')
-            test_time = (test_time_arr.length > 2) ? test_time_arr[1] + '/' + test_time_arr[0] + '/' + test_time_arr[2] : null
+            test_time = (test_time_arr.length > 2) ? test_time_arr[1] + '/' + test_time_arr[0] + '/' + test_time_arr[2] : ''
         }
         this.setState({            
             student_id: nextProps.entrance.sid,
