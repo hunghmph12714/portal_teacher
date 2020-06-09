@@ -186,6 +186,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/discount/edit', 'DiscountController@editDiscount');
     Route::post('/discount/delete', 'DiscountController@deleteDiscount');
 });
+Route::get('/create-use', function(){
+    return Hash::make('12345Bay');
+});
 // Auth::routes();
 // Route::get('/csv', 'StudentController@csv');
 // Route::get('/student/chuan-hoa', 'StudentController@chuanHoa');
