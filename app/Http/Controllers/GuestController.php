@@ -34,7 +34,7 @@ class GuestController extends Controller
         $e['student_id'] = $student->id;
         $e['center_id'] = $center;
         $e['course_id'] = $course;
-        $e['note'] = $note;
+        $e['note'] = $note." Nguồn: Website";
         $e['priority'] = Relationship::find($student->relationship_id)->weight;
         $init_step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first();        
         $e['step_id'] = ($init_step->id) ? $init_step->id : null;
