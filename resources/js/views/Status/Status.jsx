@@ -60,7 +60,7 @@ export default class Status extends React.Component{
             columns: [
                 { title: 'Quy trình', field: 'type' ,defaultGroupOrder: 0,
                     lookup: { 'Quy trình đầu vào':'Tuyển sinh đầu vào' ,'Quy trình kiểm tra/thi thử':'Quy trình kiểm tra/thi thử',
-                    'Quy trình tuyển dụng':'Tuyển dụng nhân sự','Quy trình hoàn trả học phí':'Quy trình hoàn trả học phí','Quy trình học bù/ phụ đạo':'Quy trình học bù/ phụ đạo' }, 
+                    'Quy trình tuyển dụng':'Tuyển dụng nhân sự','Quy trình hoàn trả học phí':'Quy trình hoàn trả học phí','Quy trình học bù/ phụ đạo':'Quy trình học bù/ phụ đạo','Phiếu thu':'Phiếu thu', 'Phiếu chi':'Phiếu chi' }, 
                 },                
                 { title: 'Tên trạng thái', field: 'name' },                       
                 { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },             

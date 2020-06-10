@@ -126,6 +126,10 @@ const Sidebar = props => {
         {
           title: 'Giao dịch',
           href: '/transaction',
+        },
+        {
+          title: 'Phiếu chi',
+          href: '/payment',
         }
       ]
     },

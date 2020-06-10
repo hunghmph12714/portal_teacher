@@ -190,9 +190,15 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/payment', function(){
         return view('welcome');
     });
-    Route::post('/payment/create', 'PaperController@createPaper');
-    Route::post('/payment/edit', 'PaperController@editPaper');
-    Route::post('/payment/delete', 'PaperController@deletePaper');
+    Route::post('/payment/create', 'PaperController@createPayment');
+    Route::post('/payment/edit', 'PaperController@editPayment');
+    Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
+    Route::post('/payment/delete', 'PaperController@deletePayment');
+
+//Receipt 
+    Route::get('/receipt', function(){
+        return view('welcome');
+    });
 });
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');

@@ -14,8 +14,8 @@ class UpdateUserTable2 extends Migration
     public function up()
     {
         //
-        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('mediumInteger', 'integer');
+        // DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        // DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('mediumInteger', 'integer');
 
         Schema::table('users', function(Blueprint $table){
             $table->date('dob')->nullable()->change();

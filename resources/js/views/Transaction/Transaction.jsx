@@ -17,8 +17,6 @@ import Select , { components }  from "react-select";
 import Button from '@material-ui/core/Button';
 import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Chip from '@material-ui/core/Chip';
 
