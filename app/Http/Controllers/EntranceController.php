@@ -285,4 +285,11 @@ class EntranceController extends Controller
             $entrance->save();
         }
     }
+    protected function deleteEntrance(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id)->forceDelete();
+        return response()->json(200);
+    }
 }

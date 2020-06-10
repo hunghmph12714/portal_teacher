@@ -137,6 +137,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/get-entrance/{step}', 'EntranceController@getEntranceByStep');
     Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
     Route::post('/entrance/edit', 'EntranceController@editEntrance');
+    Route::post('/entrance/delete', 'EntranceController@deleteEntrance');
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudents');
@@ -185,10 +186,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/discount/create', 'DiscountController@createDiscount');
     Route::post('/discount/edit', 'DiscountController@editDiscount');
     Route::post('/discount/delete', 'DiscountController@deleteDiscount');
+//Paper 
+    Route::get('/payment', function(){
+        return view('welcome');
+    });
+    Route::post('/payment/create', 'PaperController@createPaper');
+    Route::post('/payment/edit', 'PaperController@editPaper');
+    Route::post('/payment/delete', 'PaperController@deletePaper');
 });
-Route::get('/create-use', function(){
-    return Hash::make('12345Bay');
-});
+// Route::get('/create-use', function(){
+//     return Hash::make('12345Bay');
+// });
 // Auth::routes();
 // Route::get('/csv', 'StudentController@csv');
 // Route::get('/student/chuan-hoa', 'StudentController@chuanHoa');

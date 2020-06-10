@@ -29,13 +29,14 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
 import { AnswersDialog } from '../components';
+import { withSnackbar } from 'notistack'
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
   color: '#000',
   fontSize: '12px',
 })
-export default class ViewEntrance extends React.Component{
+class ViewEntrance extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -118,6 +119,23 @@ export default class ViewEntrance extends React.Component{
     }
     handleCloseAnswerDialog = () => {
       this.setState({open_answers : false})
+    }
+    handleDeleteEntrance = (id, rowId) => {
+      console.log(id)
+      axios.post(baseUrl + '/entrance/delete', {id: id})
+        .then(response => { 
+          this.setState(prevState => {
+            const data = [...prevState.data]
+            data.splice(rowId, 1);
+            return {...prevState, data}
+          })
+          this.props.enqueueSnackbar('Xóa thành công ghi danh', {
+            variant: 'success'
+          })
+        })
+        .catch(err => {
+          console.log('Xóa ghi danh bug: '+ err)
+        })
     }
     updateTable = ( entrance ) => {
       let step_id = this.state.steps[this.state.activeStep].id
@@ -248,7 +266,7 @@ export default class ViewEntrance extends React.Component{
                                 <Tooltip title="Xóa ghi danh" arrow>
                                   <IconButton onClick={() => {
                                     if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                      this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                      this.handleDeleteEntrance(rowData.eid, rowData.tableData.id)}
                                     }>
                                   <DeleteForeverIcon fontSize='inherit' />
                                   </IconButton>
@@ -457,3 +475,4 @@ export default class ViewEntrance extends React.Component{
         )
     }
 }
+export default withSnackbar(ViewEntrance)
