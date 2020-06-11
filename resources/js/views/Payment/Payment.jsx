@@ -1,6 +1,7 @@
 import React from 'react'
 import './Payment.scss'
 import { AccountSearch } from '../Transaction/components';
+import { TransactionForm } from '../Transaction/components';
 import { withSnackbar } from 'notistack'
 import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
@@ -61,9 +62,9 @@ class Payment extends React.Component {
             address:'',
             description: '',
             
-            max_amount: '',
-            transaction_count: 1,
-            transaction: [],
+            remaining_amount: '',
+            transaction_count: 0,
+            transactions: [],
 
         }
     }
@@ -74,13 +75,62 @@ class Payment extends React.Component {
     }
     onChangeTransactionCount = (e) => {
         let t = []
-        for(let i = 0 ; i < e.target.value ; i++){
-            t.push({from: '', to : '', date: '', amount: '', note: ''})
+        let c = (e.target.value > 10) ? 10 : e.target.value        
+        for(let i = 0 ; i < c ; i++){
+            t.push({debit: '', credit: '', time: '', student: '', amount: '', content: '', selected_class: null, selected_session: null})
         }
         this.setState({
-            transaction_count: e.target.value,
-            transactions: t,
+            transaction_count: c,
+            transactions: t,  
         })
+    }
+    handleDateChange = (key, date) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key].time = date;
+            return {...prevState, transactions}
+        })
+    }
+    handleDebitChange = (key, newValue) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key].debit = newValue;
+            return {...prevState, transactions}
+        })
+    }
+    handleCreditChange = (key, newValue) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key].credit = newValue;
+            return {...prevState, transactions}
+        })
+    }
+    handleStudentChange = (key, newValue) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key].student = newValue;
+            return {...prevState, transactions}
+        }) 
+    }
+    handleClassChange = (key, newValue) => {
+
+        if(this.state.transactions[key].selected_class != newValue || !this.state.transactions[key].selected_class){
+            this.setState(prevState => {
+                let transactions = prevState.transactions;
+                transactions[key]['selected_session'] = [] 
+                transactions[key]['selected_class'] = (newValue)?newValue:[]
+                return {...prevState, transactions}
+            })
+        }
+    }
+    handleSessionChange = (key, newValue) => {
+        if(this.state.transactions[key].selected_session != newValue ){
+            this.setState(prevState => {
+                let transactions = prevState.transactions;
+                transactions[key]['selected_session'] = (newValue)? newValue: [] 
+                return {...prevState, transactions}
+            })
+        }
     }
     render(){
         return (
@@ -140,81 +190,51 @@ class Payment extends React.Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <ExpansionPanel className="transaction-add">
-                                <ExpansionPanelSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                                >
-                                    <Typography variant="button"><strong>Hạch toán</strong></Typography>                                    
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    {/* <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={12}>
-                                            <FormLabel color="primary">Số giao dịch</FormLabel>
-                                            <TextField
-                                                fullWidth
-                                                type="number"
-                                                value={this.state.transaction_count}
-                                                onChange={e => this.onChangeTransactionCount(e)}
-                                                name = "transaction_count"
-                                                variant="outlined"
-                                                size="small"
-                                            />
-                                        </Grid>
-                                    </Grid> */}
-                                
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={4}>                                        
-                                            <FormLabel color="primary">Tài khoản nợ</FormLabel>
-                                            <AccountSearch
-                                                account={this.state.debit}
-                                                handleAccountChange={this.handleDebitChange}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={4}>
-                                            <FormLabel color="primary">Tài khoản có</FormLabel>
-                                            <AccountSearch
-                                                account={this.state.credit}
-                                                handleAccountChange={this.handleCreditChange}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={2}>
-                                            <FormLabel color="primary">Ngày hạch toán</FormLabel> <br/>
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                                <KeyboardDatePicker
-                                                    autoOk
-                                                    fullWidth
-                                                    value={this.state.time}                            
-                                                    onChange={this.handleDateChange}
-                                                    placeholder="Ngày giao dịch"                            
-                                                    className="input-date"
-                                                    variant="inline"
-                                                    size="small"
-                                                    inputVariant="outlined"
-                                                    format="dd/MM/yyyy"
-                                                />
-                                                            
-                                            </MuiPickersUtilsProvider>
-                                        </Grid>
-                                        <Grid item xs={12} sm={2}>
-                                            <FormLabel color="primary">Số tiền</FormLabel><br/>
-                                            <TextField
-                                                fullWidth
-                                                value={this.state.amount}
-                                                onChange={e => this.onChange(e)}
-                                                name = "amount"
-                                                variant="outlined"
-                                                size="small"
-                                                InputProps={{
-                                                    inputComponent: NumberFormatCustom,
-                                                }}
-                                            />
-                                        </Grid>                    
-                                    </Grid>
-                                
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
+                            <Grid container justify="flex-start" alignItems="center" spacing={2}>
+                                <Grid item xs={4} md={2} xl={1}>
+                                    <Typography variant="button"><b>Hạch toán</b></Typography>
+                                </Grid>
+                                <Grid item xs={4} xl={1} md={1}>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.transaction_count}
+                                        onChange={e => this.onChangeTransactionCount(e)}
+                                        name = "transaction_count"
+                                        variant="outlined"
+                                        size="small"
+                                        type="number"
+                                        inputProps={{ min: "0", max: "10", step: "1" }}
+                                    />
+                                </Grid>
+                                <Grid item xs={4} xl={2} md={2}>
+                                    <Typography variant="button">giao dịch</Typography>
+                                </Grid>
+                            </Grid>                      
+                            {this.state.transactions.map((transaction, key) => {
+                                return (
+                                    <TransactionForm
+                                        debit = {transaction.debit}
+                                        credit = {transaction.credit}
+                                        time = {transaction.time}
+                                        student = {transaction.student}
+                                        amount = {transaction.amount}
+                                        content = {transaction.content}
+                                        selected_class = {transaction.selected_class}
+                                        selected_session = {transaction.selected_session}
+
+                                        onChange = { this.onChange }
+                                        handleDateChange = { (date) => this.handleDateChange(key, date ) }
+                                        handleDebitChange = { (newValue) => this.handleDebitChange(key, newValue) }
+                                        handleCreditChange = { (newValue) => this.handleCreditChange(key, newValue) }
+                                        handleStudentChange = {(newValue) => this.handleStudentChange(key, newValue)}
+                                        handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
+                                        handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
+                                        submitButton = {false}
+                                        onSubmitTransaction = {{}}                   
+                                    />
+                                )
+                            })}
+                            
                         </Paper>
                     </form>
                 </div>

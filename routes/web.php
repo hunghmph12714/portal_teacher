@@ -199,6 +199,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/receipt', function(){
         return view('welcome');
     });
+//Tag
+    Route::get('/tag/get', 'TagController@getTag');
 });
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');

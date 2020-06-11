@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Account;
 use DB;
 use App\Transaction;
+use App\Tag;
 class TransactionController extends Controller
 {
     //
@@ -28,6 +29,17 @@ class TransactionController extends Controller
         $input['session_id'] = ($request->selected_session) ? $request->selected_session['value']:NULL;
         $input['user'] = auth()->user()->id;
         $transaction = Transaction::create($input);
+        
+        $tags = [];
+        foreach($request->tags as $tag){
+            if(array_key_exists('__isNew__', $tag)){
+                $tag = Tag::create(['name'=>$tag['value']]);
+                $transaction->tags()->attach($tag->id);
+            }
+            else{
+                $transaction->tags()->attach($tag['value']);
+            }
+        }
         return response()->json($transaction);
 
     }
@@ -44,12 +56,12 @@ class TransactionController extends Controller
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
                 'users.id as uid','users.name as uname'
             )
-            ->join('accounts as debit_account','transactions.debit','debit_account.id')
-            ->join('accounts as credit_account','transactions.credit','credit_account.id')
-            ->join('students','transactions.student_id','students.id')
-            ->join('classes','transactions.class_id','classes.id')
-            ->join('sessions', 'transactions.session_id','sessions.id')
-            ->join('users', 'transactions.user', 'users.id')->orderBy('created_at', 'DESC')->take(100)
+            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+            ->leftJoin('students','transactions.student_id','students.id')
+            ->leftJoin('classes','transactions.class_id','classes.id')
+            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->take(100)
             ->get();
         return response()->json($transactions);
     }

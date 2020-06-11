@@ -15,6 +15,18 @@
     .transaction-add{
         margin-top: 15px;
     }
+    #transactions{
+        border-bottom: 1px solid #f5f5f5;
+    }
+    #transactions .Mui-expanded{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .transaction-form{
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #8bc34a;
+    }
     
 }
 .credit-account{

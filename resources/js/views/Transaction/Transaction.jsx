@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import './Transaction.scss'
 import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
-import { AccountSearch } from './components';
+import { AccountSearch, TransactionForm } from './components';
 import { withSnackbar } from 'notistack'
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import NumberFormat from 'react-number-format';
@@ -114,6 +114,7 @@ const SessionDateSelect = React.memo(props => {
     )
 })
 const TransactionView = React.memo(props => {
+    const {reload} = props
     const [data, setData] = useState([])
     useEffect(() => {
         const fetchData = async() => {
@@ -121,7 +122,7 @@ const TransactionView = React.memo(props => {
             setData(r.data)
         }
         fetchData()
-    },[])
+    },[reload])
     return(
         <MaterialTable
             title="Danh sách giao dịch"
@@ -383,7 +384,9 @@ class Transaction extends React.Component {
             amount :'',
             content:'',
             selected_class: [],
-            selected_session:null,
+            selected_session: null,
+            tags: [],
+            reload: false,
         }
     }
     
@@ -427,126 +430,60 @@ class Transaction extends React.Component {
                 selected_session: (newValue) ? newValue:[],
             })            
         }
+    } 
+    handleTagChange = (newValue) => {
+        this.setState({tags: newValue});
     }
     onSubmitTransaction = (event) => {
         event.preventDefault()
         let data = this.state
         data.time = data.time.getTime()/1000
+        this.setState({time: new Date(data.time*1000)})
         axios.post(baseUrl + '/transaction/add', this.state)
             .then(response => {
-
+                this.setState({ reload: !this.state.reload })
+                this.props.enqueueSnackbar('Tạo giao dịch thành công!', {
+                    variant: 'success'
+                })
+                
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar('Có lỗi xảy ra !', {
+                    variant: 'error'
+                })
             })
     }
     render(){
         return(
             <React.Fragment>
                 <div className="root-transaction">
-                    <form noValidate autoComplete="on">
-                        <Paper elevation={4} className="paper-transaction">
-                            <Grid container spacing={2} id="transaction-form">
-                                <Grid item xs={12} sm={4}>
-                                    <FormLabel color="primary">Tài khoản nợ</FormLabel>
-                                    <AccountSearch
-                                        account={this.state.debit}
-                                        handleAccountChange={this.handleDebitChange}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <FormLabel color="primary">Tài khoản có</FormLabel>
-                                    <AccountSearch
-                                        account={this.state.credit}
-                                        handleAccountChange={this.handleCreditChange}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={2}>
-                                    <FormLabel color="primary">Ngày </FormLabel> <br/>
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            fullWidth
-                                            value={this.state.time}                            
-                                            onChange={this.handleDateChange}
-                                            placeholder="Ngày giao dịch"                            
-                                            className="input-date"
-                                            variant="inline"
-                                            size="small"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                        />
-                                                    
-                                    </MuiPickersUtilsProvider>
-                                </Grid>
-                                <Grid item xs={12} sm={2}>
-                                    <FormLabel color="primary">Số tiền</FormLabel><br/>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.amount}
-                                        onChange={e => this.onChange(e)}
-                                        name = "amount"
-                                        variant="outlined"
-                                        size="small"
-                                        InputProps={{
-                                            inputComponent: NumberFormatCustom,
-                                        }}
-                                    />
-                                </Grid>                    
-                            </Grid>
-                            <Grid container spacing={2}>
-                                
-                                <Grid item lg={4} xs={12}>
-                                    <FormLabel color="primary">Học sinh</FormLabel>
-                                    <StudentSearch
-                                        student_name={this.state.student}
-                                        handleStudentChange={this.handleStudentChange}
-                                    />
-                                </Grid>
-                                <Grid  item lg={4} xs={12}>
-                                    <FormLabel color="primary">Lớp học</FormLabel>
-                                    <ClassSelect 
-                                        selected_class = {this.state.selected_class}
-                                        handleChange={this.handleClassChange}
-                                        course = {-1}
-                                        center = {-1}
-                                        student = {this.state.student}
-                                    />
-                                </Grid>
-                                <Grid item  lg={4} xs={12}>
-                                    <FormLabel color="primary">Buổi học</FormLabel>
-                                    <SessionDateSelect 
-                                        selected_class = {this.state.selected_class}
-                                        selected_session = {this.state.selected_session}
-                                        handleChange={this.handleSessionChange}                        
-                                    />
-                                </Grid>
-                                
-                            </Grid>
-                            <Grid item lg={12} xs={12}>
-                                    <FormLabel color="primary">Miêu tả</FormLabel>
-                                    <TextField
-                                        id="outlined-multiline-static"
-                                        fullWidth
-                                        placeholder="Miêu tả của giao dịch"
-                                        multiline
-                                        rows={1}
-                                        variant="outlined"
-                                        name="content"
-                                        value={this.state.content}
-                                        onChange = {this.onChange}
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        className="submit-btn"
-                                        onClick = {(e) => this.onSubmitTransaction(e)}
-                                        endIcon={<SendIcon/>}
-                                    >
-                                        Thực hiện
-                                    </Button>
-                                </Grid>
-                        </Paper>
-                    </form>
+                    <TransactionForm
+                        debit = {this.state.debit}
+                        credit = {this.state.credit}
+                        time = {this.state.time}
+                        student = {this.state.student}
+                        amount = {this.state.amount}
+                        content = {this.state.content}
+                        selected_class = {this.state.selected_class}
+                        selected_session = {this.state.selected_session}
+                        tags = {this.state.tags}
+
+                        onChange = { this.onChange }
+                        handleDateChange = {this.handleDateChange}
+                        handleDebitChange = { this.handleDebitChange }
+                        handleCreditChange = {this.handleCreditChange}
+                        handleDateChange = {this.handleDateChange}
+                        handleStudentChange = {this.handleStudentChange}
+                        handleClassChange = {this.handleClassChange}
+                        handleSessionChange = {this.handleSessionChange}
+                        handleTagChange = {this.handleTagChange}
+                        submitButton = {true}
+                        onSubmitTransaction = {this.onSubmitTransaction}                   
+                    />
                 </div>
-                <TransactionView/>
+                <TransactionView
+                    reload = {this.state.reload}
+                />
             </React.Fragment>
         )
     }
