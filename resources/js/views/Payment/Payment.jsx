@@ -77,7 +77,7 @@ class Payment extends React.Component {
         let t = []
         let c = (e.target.value > 10) ? 10 : e.target.value        
         for(let i = 0 ; i < c ; i++){
-            t.push({debit: '', credit: '', time: '', student: '', amount: '', content: '', selected_class: null, selected_session: null})
+            t.push({debit: '', credit: '', time: new Date(), student: '', amount: '', content: '', selected_class: null, selected_session: null})
         }
         this.setState({
             transaction_count: c,
