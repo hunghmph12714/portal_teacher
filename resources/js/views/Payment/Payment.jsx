@@ -60,7 +60,8 @@ class Payment extends React.Component {
             name: '',
             amount: '',
             address:'',
-            description: '',
+            description: '',    
+            payment_time: new Date,
             
             remaining_amount: '',
             transaction_count: 0,
@@ -72,6 +73,9 @@ class Payment extends React.Component {
         this.setState({
             [e.target.name] : e.target.value
         })
+    }
+    handlePaymentTimeChange  = (date) => {
+        this.setState({ payment_time : date })
     }
     onChangeTransactionCount = (e) => {
         let t = []
@@ -132,6 +136,19 @@ class Payment extends React.Component {
             })
         }
     }
+    onSubmitTransaction = (e) => {
+        e.preventDefault();
+        let data = this.state
+        data.payment_time = data.payment_time.getTime()/1000
+        this.setState({payment_time: new Date(data.time*1000)})
+        axios.post(baseUrl + '/payment/create', data)
+            .then(response => {
+                
+            })
+            .catch(err => {
+
+            })
+    }
     render(){
         return (
             <React.Fragment>
@@ -175,7 +192,7 @@ class Payment extends React.Component {
                                         size="small"
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={3}>
                                     <FormLabel color="primary">Số tiền</FormLabel>
                                     <TextField
                                         fullWidth
@@ -188,6 +205,24 @@ class Payment extends React.Component {
                                             inputComponent: NumberFormatCustom,
                                         }}
                                     />
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormLabel color="primary">Ngày chứng từ</FormLabel>
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <KeyboardDatePicker
+                                            autoOk
+                                            fullWidth
+                                            value={this.state.payment_time}                            
+                                            onChange={this.handlePaymentTimeChange}
+                                            placeholder="Ngày chứng từ"                            
+                                            className="input-date"
+                                            variant="inline"
+                                            size="small"
+                                            inputVariant="outlined"
+                                            format="dd/MM/yyyy"
+                                        />
+                                                    
+                                    </MuiPickersUtilsProvider>
                                 </Grid>
                             </Grid>
                             <Grid container justify="flex-start" alignItems="center" spacing={2}>
@@ -234,7 +269,15 @@ class Payment extends React.Component {
                                     />
                                 )
                             })}
-                            
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className="submit-btn"
+                                onClick = {(e) => this.onSubmitTransaction(e)}
+                                endIcon={<SendIcon/>}
+                            >
+                                Tạo mới
+                            </Button>
                         </Paper>
                     </form>
                 </div>

@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 class PaperController extends Controller
 {
     //
-    protected function addPayment(Request $request){
-
+    protected function createPayment(Request $request){
+        return resposne()->json($request);
     }
     protected function editPayment(Request $request){
 
