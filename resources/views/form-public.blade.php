@@ -95,7 +95,7 @@
                     <select id="center" class="form-control" name="center" required>
                         <option value="" hidden selected>Chọn cơ sở đăng ký</option>
                         @foreach($centers as $key => $value)
-                            <option value="{{ $key }}">{{ $value }}</option>
+                            <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
                         @endforeach
                     </select>
                 </div>

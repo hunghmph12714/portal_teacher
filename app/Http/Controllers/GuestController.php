@@ -18,8 +18,7 @@ class GuestController extends Controller
     public function formPublic(){
         $schools = Schools::Select('name')->get()->toArray();
         $schools = array_column($schools, 'name');
-        $centers = Center::Select('name')->where('name', 'LIKE', '%CS%')->get()->toArray();
-        $centers = array_column($centers, 'name');
+        $centers = Center::Select('name','id')->where('name', 'LIKE', '%CS%')->get()->toArray();
         // return $schools;
         return view('form-public', compact('schools','centers'));
     }
