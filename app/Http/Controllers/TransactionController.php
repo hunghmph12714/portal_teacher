@@ -50,7 +50,7 @@ class TransactionController extends Controller
         $this->validate($request, $rules);
         $result = [];
         $transactions = Transaction::Select(
-                'transactions.id as tid','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+                'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
                 'students.id as sid', 'students.fullname as sname','students.dob', 
@@ -66,9 +66,10 @@ class TransactionController extends Controller
             ->get();
         $x = $transactions->toArray();
         foreach($transactions as $key => $t){
-            $tags = $t->tags;
+            $tags = $t->tags()->get();
+            // print_r($t->tags->toArray());
             $result[$key] = $x[$key];
-            $result[$key]['tags'] = $tags;
+            $result[$key]['tags'] = $tags->toArray();
         }
         return response()->json($result);
     }

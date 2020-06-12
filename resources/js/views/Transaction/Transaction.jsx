@@ -289,6 +289,25 @@ const TransactionView = React.memo(props => {
                         padding: '0px',
                     },
                 },
+            //Tag
+                {
+                    title: "Tag",
+                    field: "tags",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                    render: rowData => {
+                        return (<span>
+                            {rowData.tags.map(tag => {
+                                return (<Chip color="secondary" size="small" label={tag.name} clickable/>)
+                            })}
+                        </span>)
+                    }
+                },
             // Học sinh
                 {
                     title: "Học sinh",
