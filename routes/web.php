@@ -199,6 +199,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/receipt', function(){
         return view('welcome');
     });
+    Route::post('/receipt/create', 'PaperController@createReceipt');
+    Route::post('/receipt/edit', 'PaperController@editReceipt');
+    Route::post('/receipt/add-transaction', 'PaperController@addReceiptTransaction');
+    Route::post('/receipt/delete', 'PaperController@deleteReceipt');
+
 //Tag
     Route::get('/tag/get', 'TagController@getTag');
 });

@@ -476,6 +476,7 @@ class Transaction extends React.Component {
         return(
             <React.Fragment>
                 <div className="root-transaction">
+                <form noValidate autoComplete="on" className="transaction-form">
                     <TransactionForm
                         debit = {this.state.debit}
                         credit = {this.state.credit}
@@ -496,9 +497,13 @@ class Transaction extends React.Component {
                         handleClassChange = {this.handleClassChange}
                         handleSessionChange = {this.handleSessionChange}
                         handleTagChange = {this.handleTagChange}
+                        handleAmountChange = {this.onChange}
+                        handleNoteChange = {this.onChange}
                         submitButton = {true}
                         onSubmitTransaction = {this.onSubmitTransaction}                   
                     />
+                </form>
+                    
                 </div>
                 <TransactionView
                     reload = {this.state.reload}

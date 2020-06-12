@@ -141,9 +141,10 @@ const TagSelect = React.memo(props => {
 })
 const TransactionForm = props => {
     const {debit, credit, time, student, amount, content, selected_class, selected_session, submitButton, tags,
-    onChange, handleDateChange , handleDebitChange, handleCreditChange, handleStudentChange, handleClassChange, handleSessionChange, onSubmitTransaction, handleTagChange} = props
+    onChange, handleDateChange , handleDebitChange, handleCreditChange, handleStudentChange, handleClassChange, handleSessionChange, onSubmitTransaction, handleTagChange,
+    handleAmountChange, handleNoteChange} = props
     return(
-        <form noValidate autoComplete="on" className="transaction-form">
+        <React.Fragment>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
                     <FormLabel color="primary">Tài khoản nợ</FormLabel>
@@ -178,19 +179,19 @@ const TransactionForm = props => {
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item xs={12} sm={2}>
-                    <FormLabel color="primary">Số tiền</FormLabel><br/>
-                    <TextField
-                        fullWidth
-                        value={amount}
-                        onChange={e => onChange(e)}
-                        name = "amount"
-                        variant="outlined"
-                        size="small"
-                        InputProps={{
-                            inputComponent: NumberFormatCustom,
-                        }}
-                    />
-                </Grid>                    
+                        <FormLabel color="primary">Số tiền</FormLabel><br/>
+                        <TextField
+                            fullWidth
+                            value={amount}
+                            onChange={handleAmountChange}
+                            name = "amount"
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                                inputComponent: NumberFormatCustom,
+                            }}
+                        />
+                    </Grid>                    
             </Grid>
             <Grid container spacing={2}>
                 
@@ -251,12 +252,13 @@ const TransactionForm = props => {
                         variant="outlined"
                         name="content"
                         value={content}
-                        onChange = {onChange}
+                        onChange = {handleNoteChange}
                     />
                 </Grid>
         
             </Grid>
-        </form>
+        </React.Fragment>
+        
     )
 
 }

@@ -26,7 +26,7 @@ import {
   Status, 
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
   FinAccount, Transaction, Discount,
-  Payment,
+  Payment, Receipt
 } from './views';
 
 const Routes = (props) => {
@@ -193,6 +193,11 @@ const Routes = (props) => {
         component = {Payment}
         layout = {MainLayout}
         path = "/payment"
+      />
+      <ProtectedRouteWithLayout 
+        component = {Receipt}
+        layout = {MainLayout}
+        path = "/receipt"
       />
       
       <Redirect to="/not-found" />

@@ -130,7 +130,12 @@ const Sidebar = props => {
         {
           title: 'Phiếu chi',
           href: '/payment',
-        }
+        },
+        
+        {
+          title: 'Phiếu thu',
+          href: '/receipt',
+        },
       ]
     },
     {

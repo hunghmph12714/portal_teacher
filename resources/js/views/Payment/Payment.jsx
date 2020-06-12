@@ -71,7 +71,8 @@ class Payment extends React.Component {
     }
     onChange = (e) => {
         this.setState({
-            [e.target.name] : e.target.value
+            [e.target.name] : e.target.value,
+            remaining_amount: (e.target.name == 'amount') ? e.target.value : 0
         })
     }
     handlePaymentTimeChange  = (date) => {
@@ -81,7 +82,7 @@ class Payment extends React.Component {
         let t = []
         let c = (e.target.value > 10) ? 10 : e.target.value        
         for(let i = 0 ; i < c ; i++){
-            t.push({debit: '', credit: '', time: new Date(), student: '', amount: '', content: '', selected_class: null, selected_session: null})
+            t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
         }
         this.setState({
             transaction_count: c,
@@ -135,6 +136,41 @@ class Payment extends React.Component {
                 return {...prevState, transactions}
             })
         }
+    }
+    handleAmountChange = (key, newValue) => {
+        let amount = newValue.target.value
+        let reg_amount = 0
+        for(let i = 0; i<this.state.transactions.length; i++){
+            if(i !== key){
+                reg_amount += this.state.transactions[i].amount;
+            }
+        }
+        if(amount <= this.state.remaining_amount - reg_amount){
+            this.setState(prevState => {
+                let transactions = prevState.transactions;
+                transactions[key]['amount'] = (newValue) ? amount: 0
+                return {...prevState, transactions}
+            })
+        }
+        else{
+            this.props.enqueueSnackbar('Số tiền không hợp lệ', {variant: 'warning', })
+        }
+    }
+    handleNoteChange = (key, newValue) => {
+        let note = newValue.target.value
+        this.setState(prevState => {
+            
+            let transactions = prevState.transactions;
+            transactions[key]['note'] = (newValue) ? note : ''
+            return { ...prevState, transactions}
+        })
+    }
+    handleTagChange = (key, newValue) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key]['tags'] = newValue
+            return {...prevState, transactions}
+        })
     }
     onSubmitTransaction = (e) => {
         e.preventDefault();
@@ -256,6 +292,8 @@ class Payment extends React.Component {
                                         content = {transaction.content}
                                         selected_class = {transaction.selected_class}
                                         selected_session = {transaction.selected_session}
+                                        content = {transaction.note}
+                                        tags = {transaction.tags}
 
                                         onChange = { this.onChange }
                                         handleDateChange = { (date) => this.handleDateChange(key, date ) }
@@ -264,6 +302,9 @@ class Payment extends React.Component {
                                         handleStudentChange = {(newValue) => this.handleStudentChange(key, newValue)}
                                         handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
                                         handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
+                                        handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
+                                        handleNoteChange = { newValue => this.handleNoteChange(key, newValue) }
+
                                         submitButton = {false}
                                         onSubmitTransaction = {{}}                   
                                     />

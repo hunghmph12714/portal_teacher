@@ -24,3 +24,4 @@ export { default as FinAccount } from './FinAccount';
 export { default as Transaction } from './Transaction';
 export { default as Discount } from './Discount';
 export { default as Payment } from './Payment';
+export { default as Receipt } from './Receipt';
