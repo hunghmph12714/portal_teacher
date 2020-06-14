@@ -8,7 +8,7 @@ class PaperController extends Controller
 {
     //
     protected function createPayment(Request $request){
-        return resposne()->json($request);
+        return response()->json($request);
     }
     protected function editPayment(Request $request){
 

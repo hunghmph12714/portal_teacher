@@ -176,7 +176,12 @@ class Payment extends React.Component {
         e.preventDefault();
         let data = this.state
         data.payment_time = data.payment_time.getTime()/1000
-        this.setState({payment_time: new Date(data.time*1000)})
+        this.setState({payment_time: new Date(data.payment_time*1000)})
+        data.transactions = data.transactions.map(t => {
+            let time = t.time.getTime()/1000
+            t.time = time
+            return t
+        })
         axios.post(baseUrl + '/payment/create', data)
             .then(response => {
                 
@@ -304,7 +309,7 @@ class Payment extends React.Component {
                                         handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
                                         handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
                                         handleNoteChange = { newValue => this.handleNoteChange(key, newValue) }
-
+                                        handleTagChange = { newValue => this.handleTagChange(key, newValue) }
                                         submitButton = {false}
                                         onSubmitTransaction = {{}}                   
                                     />
