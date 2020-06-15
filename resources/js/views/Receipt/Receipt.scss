@@ -27,7 +27,14 @@
         padding-bottom: 15px;
         border-bottom: 1px solid #8bc34a;
     }
-    
+    .transaction-view{
+        margin-top: 15px;
+    }
+    .MuiInputAdornment-positionStart{
+        .MuiIcon-root{
+            display: none !important;
+        }
+    }
 }
 .credit-account{
     margin-left: 13px !important;

@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useState, useEffect} from 'react'
 import './Receipt.scss'
 import { AccountSearch } from '../Transaction/components';
 import { TransactionForm } from '../Transaction/components';
@@ -52,7 +52,408 @@ function NumberFormatCustom(props) {
         />
     );
 }
-
+const ReceiptView = React.memo(props => {
+    const {reload} = props
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            var r = await axios.get(baseUrl + '/receipt/get')            
+            setData(r.data)
+        }
+        fetchData()
+    },[reload])
+    return(
+        <MaterialTable            
+            title="Danh sách phiếu thu"
+            data={data}
+            options={{
+                pageSize: 20,
+                grouping: true,
+                filtering: true,
+                exportButton: true,
+                rowStyle: rowData => {                          
+                },
+                filterCellStyle: {
+                    paddingLeft: '0px'
+                }
+            }}
+            onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+            actions={[                       
+                {
+                    icon: () => <AddBoxIcon />,
+                    tooltip: 'Thêm phiếu thu',
+                    isFreeAction: true,
+                    text: 'Thêm phiếu thu',
+                    onClick: (event) => {
+                        this.props.history.push('/entrance/create')
+                    },
+                },
+            ]}
+            icon={{
+                Filter: () => <div />
+            }}
+            localization={{
+                body: {
+                    emptyDataSourceMessage: 'Không tìm thấy phiếu thu hoặc sever gặp lỗi'
+                },
+                toolbar: {
+                    searchTooltip: 'Tìm kiếm',
+                    searchPlaceholder: 'Tìm kiếm',
+                    nRowsSelected: '{0} hàng được chọn'
+                },
+                pagination: {
+                    labelRowsSelect: 'dòng',
+                    labelDisplayedRows: ' {from}-{to} của {count}',
+                    firstTooltip: 'Trang đầu tiên',
+                    previousTooltip: 'Trang trước',
+                    nextTooltip: 'Trang tiếp theo',
+                    lastTooltip: 'Trang cuối cùng'
+                },
+                grouping: {
+                    placeholder: 'Kéo tên cột vào đây để nhóm'
+                }
+            }}
+            columns={[
+            //Số phiếu thu
+                {
+                    title: "ID",
+                    field: "receipt_number",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        width: '100px'
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '100px'
+                    },
+                    render: rowData => {
+                        return (
+                            <span>
+                                PT{rowData.receipt_number}
+                            </span>
+                        )
+                    }
+                },
+            //Thời  gian chứng từ
+                {
+                    title: "Chứng từ",
+                    field: "created_at",
+                    grouping: false,
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                        width: '130px',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                        width: '130px',
+                    },
+                    render: rowData => (<span> {format(new Date(rowData.created_at) , 'd/M/yyyy')} </span>)
+                },
+            //Số tiền  
+                {
+                    title: "Số tiền",
+                    field: "amount",
+                    type: "currency", 
+                    grouping: false,
+                    headerStyle: {
+                        padding: '0px 0px',
+                        fontWeight: '600',
+                        width: '80px',
+                        textAlign: 'right',
+                    },
+                    cellStyle: {
+                        padding: '0px 15px 0px 0px',
+                        width: '80px',
+                        
+                    },
+                    render: rowData => {
+                        return (                                
+                            <Typography variant="body2" component="p">                                    
+                                <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                            </Typography>
+                        )
+                    },                            
+                    
+                },
+            // Người nhận
+                {
+                    title: "Người nhận",
+                    field: "name",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                },
+            // Địa chỉ
+                {
+                    title: "Địa chỉ",
+                    field: "address",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                },
+            // Lý do
+                {
+                    title: "Lý do",
+                    field: "description",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
+                },
+            //Nguoi tạo
+                {
+                title: "Người tạo",
+                field: "uname",
+                headerStyle: {
+                    padding: '0px',
+                    fontWeight: '600',
+                    width: '100px',
+                    },
+                cellStyle: {
+                    padding: '0px',
+                    width: '100px',
+                    },
+               
+                },
+            
+            ]}
+            detailPanel={rowData => {
+            return (
+                <MaterialTable 
+                    title= {"Hạch toán"}
+                    options = {{
+                        paging: false,
+                        search: false
+                    }}
+                    data= {rowData.transactions}
+                    columns={[
+                        //Thời  gian thực hiện giao dịch
+                            {
+                                title: "Thời gian",
+                                field: "time",
+                                grouping: false,
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                    width: '130px',
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                    width: '130px',
+                                },
+                                render: rowData => (<span> {rowData.time_formated} </span>)
+                            },
+                        //Số tiền  
+                            {
+                                title: "Số tiền",
+                                field: "amount",
+                                type: "currency", 
+                                grouping: false,
+                                headerStyle: {
+                                    padding: '0px 0px',
+                                    fontWeight: '600',
+                                    width: '80px',
+                                    textAlign: 'right',
+                                },
+                                cellStyle: {
+                                    padding: '0px 15px 0px 0px',
+                                    width: '80px',
+                                    
+                                },
+                                render: rowData => {
+                                    return (                                
+                                        <Typography variant="body2" component="p">                                    
+                                            <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                                        </Typography>
+                                    )
+                                },                            
+                                
+                            },
+                        //Tài khoản nợ
+                            {
+                                title: "TK nợ",
+                                field: "debit_level_2",
+                                grouping: false,
+                                headerStyle: {
+                                    fontWeight: '600',
+                                    textAlign: 'right',
+                                    width: '100px',
+                                },
+                                cellStyle: {
+                                    padding: '0px 15px 0px 0px',
+                                    textAlign: 'right',
+                                    width: '100px',
+                                },
+                                render: rowData => {
+                                    var color = '#fef3d8'
+                                    if(rowData.debit_type === 'equity') {
+                                        color = '#f6deda';
+                                    }
+                                    if(rowData.debit_type === 'assets') {
+                                        color = '#bfdced';
+                                    }
+                                    if(rowData.debit_type === 'liabilties') {
+                                        color = '#fdeab5';
+                                    }
+                                    return (
+                                        <Chip style={customChip(color)} variant="outlined" label={rowData.debit_level_2} size="small" clickable/>
+                                    )
+                                }
+                            },    
+                        //Tài khoản có
+                            {
+                                title: "TK có",
+                                field: "credit_level_2",
+                                grouping: false,
+                                headerStyle: {
+                                    fontWeight: '600',
+                                    width: '100px',
+                                },
+                                cellStyle: {
+                                    padding: '3px 0px',
+                                    width: '100px',
+                                },
+                                render: rowData => {
+                                    var color = '#fef3d8'
+                                    if(rowData.credit_type === 'equity') {
+                                        color = '#f6deda';
+                                    }
+                                    if(rowData.credit_type === 'assets') {
+                                        color = '#bfdced';
+                                    }
+                                    if(rowData.credit_type === 'liabilties') {
+                                        color = '#fdeab5';
+                                    }
+                                    return (
+                                        <span> >> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
+                                    )
+                                }
+                            },          
+                        // Miêu tả
+                            {
+                                title: "Nội dung",
+                                field: "content",
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                },
+                            },
+                        //Tag
+                            {
+                                title: "Tag",
+                                field: "tags",
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                },
+                                render: rowData => {
+                                    return (<span>
+                                        {rowData.tags.map(tag => {
+                                            return (<Chip color="secondary" size="small" label={tag.name} clickable/>)
+                                        })}
+                                    </span>)
+                                }
+                            },
+                        // Học sinh
+                            {
+                                title: "Học sinh",
+                                field: "sname",
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                    
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                },
+                                render: rowData => {
+                                return (                                
+                                    <Typography variant="body2" component="p">                                    
+                                        <b>{rowData.sname}</b>
+                                        <br /> {rowData.dob}
+                                    </Typography>
+                                    
+                                )
+                                },
+                                
+                                renderGroup: (sname, groupData) => (
+                                    <Chip variant="outlined" label={sname} size="small" />      
+                                )
+                            },
+                        //Lớp học
+                            {
+                                title: "Lớp học",
+                                field: "cname",
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                    width: '100px',
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                    width: '100px',
+                                },
+                            },
+                        //Người tạo
+                            {
+                                title: "Người tạo",
+                                field: "uname",
+                                headerStyle: {
+                                    padding: '0px',
+                                    fontWeight: '600',
+                                    width: '100px',
+                                },
+                                cellStyle: {
+                                    padding: '0px',
+                                    width: '100px',
+                                },                            
+                            },
+                        //Ngày tạo
+                            {
+                            title: "Ngày tạo",
+                            field: "created_at",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                                width: '100px',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                                width: '100px',
+                            },
+                            render: rowData => {
+                                let date = format(new Date(rowData.created_at),  'dd-MM-yyyy')
+                                return (<span>{date}</span>)
+                            }
+                            },
+                        
+                    ]}
+                />
+            )
+            
+            }}
+        />
+    )
+})
 class Receipt extends React.Component {
     constructor(props){
         super(props)
@@ -61,12 +462,11 @@ class Receipt extends React.Component {
             amount: '',
             address:'',
             description: '',    
-            Receipt_time: new Date,
-            
+            receipt_time: new Date,
+            reload: false,
             remaining_amount: '',
             transaction_count: 0,
             transactions: [],
-
         }
     }
     onChange = (e) => {
@@ -76,7 +476,7 @@ class Receipt extends React.Component {
         })
     }
     handleReceiptTimeChange  = (date) => {
-        this.setState({ Receipt_time : date })
+        this.setState({ receipt_time : date })
     }
     onChangeTransactionCount = (e) => {
         let t = []
@@ -157,35 +557,47 @@ class Receipt extends React.Component {
         }
     }
     handleNoteChange = (key, newValue) => {
+        let note = newValue.target.value
+        this.setState(prevState => {
+            
+            let transactions = prevState.transactions;
+            transactions[key]['note'] = (newValue) ? note : ''
+            return { ...prevState, transactions}
+        })
+    }
+    handleTagChange = (key, newValue) => {
         this.setState(prevState => {
             let transactions = prevState.transactions;
-            transactions[key]['note'] = (newValue) ? newValue : ''
-            return { ...prevState, transactions}
+            transactions[key]['tags'] = newValue
+            return {...prevState, transactions}
         })
     }
     onSubmitTransaction = (e) => {
         e.preventDefault();
-        let data = this.state
-        data.Receipt_time = data.Receipt_time.getTime()/1000
-        this.setState({Receipt_time: new Date(data.time*1000)})
-        axios.post(baseUrl + '/Receipt/create', data)
+        let data = this.state        
+        axios.post(baseUrl + '/receipt/create', data)
             .then(response => {
-                
+                this.setState({reload: !this.state.reload})
+                this.props.enqueueSnackbar('Tạo thành công', {
+                    variant: 'success'
+                })
             })
             .catch(err => {
-
-            })
+                this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng kiểm tra lại', {
+                    variant: 'error'
+                })
+            })        
     }
     render(){
         return (
             <React.Fragment>
-                <div className="root-Receipt">
+                <div className="root-receipt">
                 <form noValidate autoComplete="on">
-                        <Paper elevation={4} className="paper-Receipt">
-                            <h2>Lập Phiếu thu</h2>
-                            <Grid container spacing={2} id="Receipt-form">
+                        <Paper elevation={4} className="paper-receipt">
+                            <h2>Lập phiếu thu</h2>
+                            <Grid container spacing={2} id="receipt-form">
                                 <Grid item xs={12} sm={6}>
-                                    <FormLabel color="primary">Tên người nhận</FormLabel>
+                                    <FormLabel color="primary">Tên người nộp tiền</FormLabel>
                                     <TextField
                                         fullWidth
                                         value={this.state.name}
@@ -207,7 +619,7 @@ class Receipt extends React.Component {
                                     />
                                 </Grid>
                             </Grid>
-                            <Grid container spacing={2} id="Receipt-form">
+                            <Grid container spacing={2} id="receipt-form">
                                 <Grid item xs={12} sm={6}>
                                     <FormLabel color="primary">Lý do</FormLabel>
                                     <TextField
@@ -239,7 +651,7 @@ class Receipt extends React.Component {
                                         <KeyboardDatePicker
                                             autoOk
                                             fullWidth
-                                            value={this.state.Receipt_time}                            
+                                            value={this.state.receipt_time}                            
                                             onChange={this.handleReceiptTimeChange}
                                             placeholder="Ngày chứng từ"                            
                                             className="input-date"
@@ -283,7 +695,7 @@ class Receipt extends React.Component {
                                         content = {transaction.content}
                                         selected_class = {transaction.selected_class}
                                         selected_session = {transaction.selected_session}
-                                        note = {transaction.note}
+                                        content = {transaction.note}
                                         tags = {transaction.tags}
 
                                         onChange = { this.onChange }
@@ -295,7 +707,7 @@ class Receipt extends React.Component {
                                         handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
                                         handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
                                         handleNoteChange = { newValue => this.handleNoteChange(key, newValue) }
-
+                                        handleTagChange = { newValue => this.handleTagChange(key, newValue) }
                                         submitButton = {false}
                                         onSubmitTransaction = {{}}                   
                                     />
@@ -312,7 +724,12 @@ class Receipt extends React.Component {
                             </Button>
                         </Paper>
                     </form>
+                    
                 </div>
+                <ReceiptView
+                        className="transaction-view"
+                        reload = {this.state.reload}
+                    />
             </React.Fragment>
         )
     }

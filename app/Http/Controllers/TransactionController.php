@@ -67,7 +67,6 @@ class TransactionController extends Controller
         $x = $transactions->toArray();
         foreach($transactions as $key => $t){
             $tags = $t->tags()->get();
-            // print_r($t->tags->toArray());
             $result[$key] = $x[$key];
             $result[$key]['tags'] = $tags->toArray();
         }
