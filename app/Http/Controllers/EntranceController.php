@@ -220,7 +220,7 @@ class EntranceController extends Controller
                 $new_note = explode("|",$request->entrance_note);
                 $old_note = explode("|", $e->note);                
                 if(count($new_note) >= count($old_note)){
-                    $n = date('d-m-Y') . " - ". auth()->user()->name. ": " .$new_note[count($note) - 1]. "\r\n|" ;
+                    $n = date('d-m-Y') . " - ". auth()->user()->name. ": " .$new_note[count($new_note) - 1]. "\r\n|" ;
                     $e->note = $e->note . $n;
                 }
                 $e->status_id = $request->entrance_status['value'];
