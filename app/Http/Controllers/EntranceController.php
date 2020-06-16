@@ -218,8 +218,8 @@ class EntranceController extends Controller
                 $e->course_id = $request->entrance_courses['value'];
                 $e->test_time = ($request->entrance_date) ? date('Y-m-d H:i:m', strtotime($request->entrance_date)) : null;
                 $new_note = explode("|",$request->entrance_note);
-                $old_note = explode("|", $e->note);
-                if(count($new_note) > count($old_note)){
+                $old_note = explode("|", $e->note);                
+                if(count($new_note) >= count($old_note)){
                     $n = date('d-m-Y') . " - ". auth()->user()->name. ": " .$note[count($note) - 1]. "\r\n|" ;
                     $e->note = $e->note . $n;
                 }
