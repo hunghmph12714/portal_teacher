@@ -191,7 +191,7 @@ class EntranceController extends Controller
                 $student->grade = $request->student_grade;
                 $student->email = $request->student_email;
                 $student->phone = $request->student_phone;
-                $student->dob = ($request->student_dob) ? date('Y-m-d', $request->student_dob) : null;
+                $student->dob = ($request->student_dob) ? date('Y-m-d', strtotime($request->student_dob)) : null;
                 $student->gender = $request->student_gender;
                 $student->save();
             }
@@ -216,7 +216,7 @@ class EntranceController extends Controller
             if($e){
                 $e->center_id = $request->entrance_center['value'];
                 $e->course_id = $request->entrance_courses['value'];
-                $e->test_time = ($request->entrance_date) ? date('Y-m-d', $request->entrance_date) : null;
+                $e->test_time = ($request->entrance_date) ? date('Y-m-d H:i:m', strtotime($request->entrance_date)) : null;
                 $e->note = $request->entrance_note;
                 $e->status_id = $request->entrance_status['value'];
                 //Check step changed

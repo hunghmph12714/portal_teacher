@@ -19,14 +19,7 @@ import { StudentForm, ParentForm, EntranceForm, TestForm, StatusForm, EnrollForm
 import axios from 'axios';
 
 const baseUrl = window.Laravel.baseUrl
-// function dmyToMdy (str){
-//     let arr = str.split('/')
-//     if(arr.length >= 3){
-//         let mdy = arr[1]+'/'+arr[0]+'/'+arr[2]
-//         return mdy
-//     }
-//     else return null
-// }
+
 class EditEntrance extends React.Component {
     constructor(props){
         super(props)
@@ -206,9 +199,6 @@ class EditEntrance extends React.Component {
     handleEditEntrance = (e) => {
         e.preventDefault();
         let data = this.state
-        data.entrance_date = this.state.entrance_date.getTime()/1000
-        data.student_dob = this.state.student_dob.getTime()/1000
-        data.enroll_date = (this.state.enroll_date) ? this.state.enroll_date.getTime()/1000 : null
         axios.post(baseUrl+'/entrance/edit', data)
             .then(response => {
                 if(this.state.test_answers && this.state.answers_changed){
