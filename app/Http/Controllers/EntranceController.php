@@ -217,7 +217,9 @@ class EntranceController extends Controller
                 $e->center_id = $request->entrance_center['value'];
                 $e->course_id = $request->entrance_courses['value'];
                 $e->test_time = ($request->entrance_date) ? date('Y-m-d H:i:m', strtotime($request->entrance_date)) : null;
-                $e->note = $request->entrance_note;
+                $note = explode("|",$request->entrance_note);
+                $n = date('d-m-Y') . " - ". auth()->user()->name. ": " .$note[count($note) - 1]. "\r\n|" ;
+                $e->note = $e->note . $n;
                 $e->status_id = $request->entrance_status['value'];
                 //Check step changed
                 if($e->step_id != $request->entrance_step['value']){
