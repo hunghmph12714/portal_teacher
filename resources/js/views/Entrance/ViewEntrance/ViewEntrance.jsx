@@ -450,6 +450,9 @@ class ViewEntrance extends React.Component{
                     
                   ]}
                   detailPanel={rowData => {
+                    if(!rowData.enote){
+                      return ""
+                    }
                     let note = rowData.enote.split('|')
                     return note.map(n => {
                       return (<div className="entrance_comment"> {n} </div>)
