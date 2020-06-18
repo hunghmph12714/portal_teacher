@@ -23,7 +23,7 @@ class EntranceController extends Controller
         $input['center_id'] = $center_id;
         $input['course_id'] = $course_id;
         $input['test_time'] = $test_time;
-        $input['note'] = $note;
+        $input['note'] = date('d-m-Y') . " - ". auth()->user()->name. ": " . $note ."|";
         $s = Student::find($student_id);
         $input['priority'] = ($r = Relationship::find($s->relationship_id))? $r->weight : 0;
         

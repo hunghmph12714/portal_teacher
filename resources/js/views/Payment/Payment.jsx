@@ -9,21 +9,22 @@ import NumberFormat from 'react-number-format';
 import { format } from 'date-fns'
 import SendIcon from '@material-ui/icons/Send';
 import {
+    IconButton,
+    Tooltip,
+} from "@material-ui/core";
+import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
 import Select , { components }  from "react-select";
 import Button from '@material-ui/core/Button';
-import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Chip from '@material-ui/core/Chip';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MaterialTable from "material-table";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 
 const customChip = (color) => ({
     border: '1px solid #85144b',
@@ -114,6 +115,39 @@ const PaymentView = React.memo(props => {
                 }
             }}
             columns={[
+                {
+                    title: "",
+                    field: "action",
+                    disableClick: true,
+                    sorting: false,
+                    headerStyle: {
+                        padding: '0px',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        width: '100px',
+                        padding: '0px',
+                    },
+                    render: rowData => (
+                        <div style = {{display: 'block'}}>
+                            {/* {rowData.tableData.id} */}
+                            {this.amount == this.transactions.map()}
+                            <Tooltip title="Chỉnh sửa" arrow>
+                                <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                                    <PostAddIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xóa phiếu thu" arrow>
+                                <IconButton onClick={() => {
+                                    if (window.confirm('Xóa phiếu thu?')) 
+                                    this.handleResignTeacher(rowData.id, rowData.tableData.id)}
+                                }>
+                                <DeleteIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>                                
+                        </div>
+                    )
+                },
             //Số phiếu thu
                 {
                     title: "ID",
