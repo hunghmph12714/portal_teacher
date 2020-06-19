@@ -71,7 +71,7 @@ const checkValidCreate = (inputValue, selectValue, selectOptions) => {
     }else return true
 }
 const AccountSearch = props => {
-    const {account_name, handleAccountChange} = props
+    const {account, handleAccountChange} = props
     return (
         <AsyncCreatableSelect
             components={{ Option: CustomOption }}
@@ -80,7 +80,7 @@ const AccountSearch = props => {
             isClearable
             placeholder={'Tìm kiếm tài khoản'}
             name="account_name"
-            value = {account_name}
+            value = {account}
             onChange = {handleAccountChange}
             formatCreateLabel = {promptTextCreator}
             isValidNewOption = {checkValidCreate}

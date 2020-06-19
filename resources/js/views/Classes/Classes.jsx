@@ -2,32 +2,22 @@ import React from 'react'
 import './Classes.scss';
 import { DialogCreate, CreateSession } from './components';
 import {
-    Menu,
-    MenuItem,
     IconButton,
     Tooltip,
   } from "@material-ui/core";
 import { Grid } from '@material-ui/core';
 import { withSnackbar } from 'notistack';
-
 import MaterialTable from "material-table";
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import BlockOutlinedIcon from '@material-ui/icons/BlockOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import axios from 'axios';
 import {format, subDays } from 'date-fns';
 
 const baseUrl = window.Laravel.baseUrl;
-//1
+
 class Classes extends React.Component{
     constructor(props){
         super(props)
