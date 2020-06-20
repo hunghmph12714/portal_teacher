@@ -25,6 +25,16 @@ const customChip = (color) => ({
     fontSize: '12px',
 })
 const baseUrl = window.Laravel.baseUrl
+const initState = {            
+    name: '',
+    amount: '',
+    address:'',
+    description: '',    
+    payment_time: new Date,
+    remaining_amount: '',
+    transaction_count: 0,
+    transactions: [],
+}
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
     return (
@@ -48,45 +58,44 @@ function NumberFormatCustom(props) {
 class DialogForm extends React.Component {
     constructor(props){
         super(props)
-        this.state = {
-            
-            name: '',
-            amount: '',
-            address:'',
-            description: '',    
-            payment_time: new Date,
-            remaining_amount: '',
-            transaction_count: 0,
-            transactions: [],
-        }
+        this.state = initState
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        console.log(nextProps.payment)
-        let transactions = nextProps.payment.transactions.map(t => {
-            t.debit = {value: t.debit_id, label: t.debit_level_2+ " | " + t.debit_name}
-            t.credit = {value: t.credit_id, label: t.credit_level_2+ " | " + t.credit_name}
-            t.time = new Date(t.time)
-            t.student = {value: t.sid, label: t.sname}
-            t.selected_class = {value: t.cid , label: t.cname}
-            t.selected_session = {value: t.ssid, label: t.ssid}
-            return t
-        })
-        console.log(transactions)
-        this.setState({
-            address : nextProps.payment.address,
-            name: nextProps.payment.name,
-            amount: nextProps.payment.amount,
-            description: nextProps.payment.description,
-            payment_time: new Date(nextProps.payment.created_at),
-            transaction_count: nextProps.payment.transactions.length,
-            transactions : transactions
-        })
-        console.log(this.state.transactions)
+        if(nextProps.payment.length != 0){
+            let transactions = nextProps.payment.transactions.map(t => {
+                t.debit = {value: t.debit_id, label: t.debit_level_2+ " | " + t.debit_name}
+                t.credit = {value: t.credit_id, label: t.credit_level_2+ " | " + t.credit_name}
+                t.time = new Date(t.time)
+                t.student = {value: t.sid, label: t.sname}
+                t.selected_class = {value: t.cid , label: t.cname}
+                t.selected_session = {value: t.ssid, label: t.ssid}
+                t.tags = t.tags.map(tag => {
+                    return {value: tag.id, label: tag.name}
+                })
+                return t
+            })
+            this.setState({
+                address : nextProps.payment.address,
+                name: nextProps.payment.name,
+                amount: nextProps.payment.amount,
+                remaining_amount: nextProps.payment.amount,
+                description: nextProps.payment.description,
+                payment_time: new Date(nextProps.payment.created_at),
+                transaction_count: nextProps.payment.transactions.length,
+                transactions : transactions
+    
+            })
+        }
     }
     onChange = (e) => {
         this.setState({
-            [e.target.name] : e.target.value,
-            remaining_amount: (e.target.name == 'amount') ? e.target.value : 0
+            [e.target.name] : e.target.value,            
+        })
+    }
+    handlePaymentAmountChange = (e) => {
+        this.setState({
+            amount: e.target.value,
+            remaining_amount: e.target.value,
         })
     }
     handlePaymentTimeChange  = (date) => {
@@ -94,14 +103,30 @@ class DialogForm extends React.Component {
     }
     onChangeTransactionCount = (e) => {
         let t = []
-        let c = (e.target.value > 10) ? 10 : e.target.value        
-        for(let i = 0 ; i < c ; i++){
-            t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
+        let c = (e.target.value > 10) ? 10 : e.target.value
+        //Check amount of payment and transactions
+        if(this.state.amount <= this.state.transactions.map(t => t.amount).reduce((acc, am) => acc+parseInt(am) ,0)){
+            this.props.enqueueSnackbar('Không thể tạo thêm giao dịch', {variant: 'warning'})
         }
-        this.setState({
-            transaction_count: c,
-            transactions: t,  
-        })
+        else {
+            if(this.props.type == "create"){
+                for(let i = 0 ; i < c ; i++){
+                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
+                }
+            }
+            if(this.props.type == "edit" && c > this.state.transaction_count ){
+                t = this.state.transactions
+                for(let i = this.state.transaction_count   ; i < c ; i++){
+                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
+                }
+            }       
+            this.setState({
+                transaction_count: c,
+                transactions: t,
+
+            })
+        }
+        
     }
     handleDateChange = (key, date) => {
         this.setState(prevState => {
@@ -156,13 +181,16 @@ class DialogForm extends React.Component {
         let reg_amount = 0
         for(let i = 0; i<this.state.transactions.length; i++){
             if(i !== key){
-                reg_amount += this.state.transactions[i].amount;
+                reg_amount += parseInt(this.state.transactions[i].amount);
             }
         }
         if(amount <= this.state.remaining_amount - reg_amount){
             this.setState(prevState => {
                 let transactions = prevState.transactions;
                 transactions[key]['amount'] = (newValue) ? amount: 0
+                // if(key < this.state.transaction_count){
+                //     transactions[this.state.transaction_count - 1]['amount'] = this.state.remaining_amount - reg_amount - amount;
+                // }
                 return {...prevState, transactions}
             })
         }
@@ -188,7 +216,8 @@ class DialogForm extends React.Component {
     }
     onSubmitTransaction = (e) => {
         e.preventDefault();
-        let data = this.state        
+        
+        let data = this.state       
         axios.post(baseUrl + '/payment/create', data)
             .then(response => {
                 this.props.enqueueSnackbar('Tạo thành công', {
@@ -203,11 +232,28 @@ class DialogForm extends React.Component {
         this.props.handleReloadTable()
         this.props.handleCloseDialog()     
     }
+    onSubmitEdit = (e) => {
+        e.preventDefault();
+        let data = this.state
+        data.payment_id = this.props.payment.id
+        axios.post(baseUrl + '/payment/edit', data)
+            .then(response => {
+                this.props.enqueueSnackbar('Sửa thành công', {
+                    variant: 'success'
+                })  
+            })
+            .catch(err => {})
+        this.props.handleReloadTable()
+        this.props.handleCloseDialog()
+    }
     render(){
         return (
             <Dialog 
                 open={this.props.open} 
-                onClose={this.props.handleCloseDialog} 
+                onClose={() => {
+                    this.props.handleCloseDialog()
+                    this.setState(initState)                    
+                }} 
                 aria-labelledby="form-dialog-title" 
                 fullWidth maxWidth="xl"> 
                 
@@ -255,7 +301,7 @@ class DialogForm extends React.Component {
                                         <TextField
                                             fullWidth
                                             value={this.state.amount}
-                                            onChange={e => this.onChange(e)}
+                                            onChange={e => this.handlePaymentAmountChange(e)}
                                             name = "amount"
                                             variant="outlined"
                                             size="small"
@@ -338,7 +384,15 @@ class DialogForm extends React.Component {
                                             variant="contained"
                                             color="secondary"
                                             className="submit-btn"
-                                            onClick = {(e) => this.onSubmitTransaction(e)}
+                                            onClick = {(e) => {
+                                                if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
+                                                    if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
+                                                        this.onSubmitTransaction(e)
+                                                    }
+                                                }else{
+                                                    this.onSubmitTransaction(e)
+                                                }
+                                            }}  
                                             endIcon={<SendIcon/>}
                                         >
                                             Tạo mới
@@ -348,7 +402,16 @@ class DialogForm extends React.Component {
                                             variant="contained"
                                             color="secondary"
                                             className="submit-btn"
-                                            onClick = {(e) => this.onSubmitEdit(e)}
+                                            onClick = {(e) => {
+                                                if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
+                                                    if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
+                                                        this.onSubmitEdit(e)
+                                                    }
+                                                    
+                                                }else{
+                                                    this.onSubmitEdit(e)
+                                                }
+                                            }}
                                             endIcon={<SendIcon/>}
                                         >
                                             Lưu thay đổi

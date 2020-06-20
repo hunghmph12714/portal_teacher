@@ -43,8 +43,8 @@ function NumberFormatCustom(props) {
         />
     );
 }
-const PaymentView = React.memo(props => {
-    const {reload, handleOpenCreateDialog, handleOpenEditDialog} = props
+const PaymentView = (props => {
+    const {reload, handleOpenCreateDialog, handleOpenEditDialog, handleDeletePayment} = props
     const [data, setData] = useState([])
     useEffect(() => {
         const fetchData = async() => {
@@ -133,10 +133,10 @@ const PaymentView = React.memo(props => {
                                     <EditIcon fontSize='inherit' />
                                 </IconButton>
                             </Tooltip>
-                            <Tooltip title="Xóa phiếu thu" arrow>
+                            <Tooltip title="Xóa phiếu chi" arrow>
                                 <IconButton onClick={() => {
-                                    if (window.confirm('Xóa phiếu thu?')) 
-                                    this.handleResignTeacher(rowData.id, rowData.tableData.id)}
+                                    if (window.confirm('Xóa phiếu chi?')) 
+                                    handleDeletePayment(rowData.id)}
                                 }>
                                 <DeleteIcon fontSize='inherit' />
                                 </IconButton>
@@ -491,25 +491,21 @@ class Payment extends React.Component {
             reload: false,
             open: false,
             type: 'create',  
-            selected_data : {},  
+            selected_data : [],  
         }
     }
     
     handleCloseDialog = () => {
         this.setState({
             open: false, 
+            selected_data: []
         })
     }
     handleOpenCreateDialog = () => {
         this.setState({
             open: true, 
             type: 'create',
-        })
-    }
-    handleOpenCloseDialog = () => {
-        this.setState({
-            open: true,
-            type: 'edit'
+            selected_data: []
         })
     }
     handleReloadTable = () => {
@@ -518,8 +514,21 @@ class Payment extends React.Component {
     handleOpenEditDialog = (rowData) => {
         this.setState({
             selected_data: rowData,
+            type: 'edit',
             open: true,
         })
+    }
+    handleDeletePayment = (payment_id) => {
+        axios.post(baseUrl + '/payment/delete', {payment_id: payment_id})
+            .then(response => {
+                this.setState({
+                    reload: !this.state.reload
+                })
+                this.props.enqueueSnackbar('Xóa thành công', {variant: 'success'})
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
     render(){
         return (
@@ -535,6 +544,7 @@ class Payment extends React.Component {
                     reload = {this.state.reload}
                     handleOpenCreateDialog = {this.handleOpenCreateDialog}
                     handleOpenEditDialog = {this.handleOpenEditDialog}
+                    handleDeletePayment = {this.handleDeletePayment}
                     
                 />
             </React.Fragment>

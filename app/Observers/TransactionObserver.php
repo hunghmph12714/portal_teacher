@@ -44,6 +44,13 @@ class TransactionObserver
     public function deleted(Transaction $transaction)
     {
         //
+        $debit = Account::find($transaction->debit);
+        $credit = Account::find($transaction->credit);
+        $amount = $transaction->amount;
+        $debit->balance += $amount;
+        $credit->balance -= $amount;
+        $credit->save();
+        $debit->save();
     }
 
     /**
@@ -66,5 +73,12 @@ class TransactionObserver
     public function forceDeleted(Transaction $transaction)
     {
         //
+        $debit = Account::find($transaction->debit);
+        $credit = Account::find($transaction->credit);
+        $amount = $transaction->amount;
+        $debit->balance += $amount;
+        $credit->balance -= $amount;
+        $credit->save();
+        $debit->save();
     }
 }

@@ -68,13 +68,63 @@ class PaperController extends Controller
         return response()->json($payment);
     }
     protected function editPayment(Request $request){
-
+        $rules = [
+            'payment_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $payment = Paper::find($request->payment_id);
+        if($payment){
+            $payment->name = $request->name;
+            $payment->amount = $request->amount;
+            $payment->address = $request->address;
+            $payment->created_at = date('Y-m-d', strtotime($request->payment_time));
+            $payment->save();
+            if($request->transaction_count == 0){
+                $t = Transaction::where('paper_id', $request->payment_id)->forceDelete();
+            }
+            foreach($request->transactions as $t){
+                //edit existing transactions
+                if(array_key_exists('id', $t)){
+                    $td = Transaction::find($t['id']);
+                    if($td){
+                        $td->debit = $t['debit']['value'];
+                        $td->credit = $t['credit']['value'];
+                        $td->amount = $t['amount'];
+                        $td->time = date('Y-m-d H:i:m', strtotime($t['time']));
+                        $td->content = $t['content'];
+                        $td->student_id = $t['student']['value'];
+                        $td->class_id = $t['selected_class']['value'];
+                        $td->session_id = $t['selected_session']['value'];
+                        // $td->
+                        $tags = array_column($t['tags'], 'value');
+                        $td->tags()->sync($tags);
+                        $td->save();                        
+                    }
+                }
+                //Create new transaction
+                else{
+                    $this->addTransaction($t, $request->payment_id);
+                }
+            }
+        }
+        return response()->json($request);
     }
     protected function addPaymentTransaction(Request $request){
 
     }
     protected function deletePayment(Request $request){
-        
+        $rules = [
+            'payment_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $p = Paper::find($request->payment_id);
+        if($p){
+            $p->forceDelete();
+            $transactions = Transaction::where('paper_id', $request->payment_id)->get();
+            foreach($transactions as $t){
+                $t->forceDelete();
+            }
+        }
     }
     protected function getPayment(){
         $result = [];
