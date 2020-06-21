@@ -43,7 +43,7 @@ function NumberFormatCustom(props) {
         />
     );
 }
-const PaymentView = (props => {
+const PaymentView = React.memo(props => {
     const {reload, handleOpenCreateDialog, handleOpenEditDialog, handleDeletePayment} = props
     const [data, setData] = useState([])
     useEffect(() => {
@@ -501,6 +501,7 @@ class Payment extends React.Component {
             selected_data: []
         })
     }
+    //s
     handleOpenCreateDialog = () => {
         this.setState({
             open: true, 

@@ -223,14 +223,15 @@ class DialogForm extends React.Component {
                 this.props.enqueueSnackbar('Tạo thành công', {
                     variant: 'success'
                 })                
+                this.props.handleReloadTable()
+                this.props.handleCloseDialog()    
             })
             .catch(err => {
                 this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng kiểm tra lại', {
                     variant: 'error'
                 })
             })
-        this.props.handleReloadTable()
-        this.props.handleCloseDialog()     
+         
     }
     onSubmitEdit = (e) => {
         e.preventDefault();
@@ -241,10 +242,11 @@ class DialogForm extends React.Component {
                 this.props.enqueueSnackbar('Sửa thành công', {
                     variant: 'success'
                 })  
+                this.props.handleReloadTable()
+                this.props.handleCloseDialog()
             })
             .catch(err => {})
-        this.props.handleReloadTable()
-        this.props.handleCloseDialog()
+        
     }
     render(){
         return (
@@ -379,7 +381,7 @@ class DialogForm extends React.Component {
                                     )
                                 })}
                                 {
-                                    (this.state.type == "create")?
+                                    (this.props.type == "create")?
                                         (<Button
                                             variant="contained"
                                             color="secondary"

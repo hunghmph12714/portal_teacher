@@ -1,30 +1,21 @@
 import React , {useState, useEffect} from 'react'
 import './Receipt.scss'
-import { AccountSearch } from '../Transaction/components';
-import { TransactionForm } from '../Transaction/components';
+import { DialogForm } from './components'
 import { withSnackbar } from 'notistack'
-import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
-import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns'
-import SendIcon from '@material-ui/icons/Send';
 import {
-    KeyboardDatePicker,
-    MuiPickersUtilsProvider
-  } from "@material-ui/pickers";
-import Select , { components }  from "react-select";
-import Button from '@material-ui/core/Button';
-import MaterialTable from "material-table";
+    IconButton,
+    Tooltip,
+} from "@material-ui/core";
+
 import Typography from '@material-ui/core/Typography';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Chip from '@material-ui/core/Chip';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import MaterialTable from "material-table";
+import DeleteIcon from '@material-ui/icons/Delete';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import EditIcon from '@material-ui/icons/Edit';
 const customChip = (color) => ({
     border: '1px solid #85144b',
     backgroundColor: color,
@@ -53,7 +44,7 @@ function NumberFormatCustom(props) {
     );
 }
 const ReceiptView = React.memo(props => {
-    const {reload} = props
+    const {reload, handleOpenCreateDialog, handleOpenEditDialog, handleDeleteReceipt} = props
     const [data, setData] = useState([])
     useEffect(() => {
         const fetchData = async() => {
@@ -63,7 +54,8 @@ const ReceiptView = React.memo(props => {
         fetchData()
     },[reload])
     return(
-        <MaterialTable            
+        <MaterialTable
+            className = "receipt-table"
             title="Danh sách phiếu thu"
             data={data}
             options={{
@@ -84,13 +76,11 @@ const ReceiptView = React.memo(props => {
                     tooltip: 'Thêm phiếu thu',
                     isFreeAction: true,
                     text: 'Thêm phiếu thu',
-                    onClick: (event) => {
-                        this.props.history.push('/entrance/create')
-                    },
+                    onClick: (event) => {handleOpenCreateDialog()},
                 },
             ]}
             icon={{
-                Filter: () => <div />
+                Filter: () => <span />
             }}
             localization={{
                 body: {
@@ -114,6 +104,46 @@ const ReceiptView = React.memo(props => {
                 }
             }}
             columns={[
+                {
+                    title: "",
+                    className: "action",
+                    field: "action",
+                    disableClick: true,
+                    sorting: false,
+                    filtering: false,
+                    headerStyle: {
+                        padding: '0px',
+                        width: '100px',
+                    },
+                    cellStyle: {
+                        width: '100px',
+                        padding: '0px',
+                    },
+                    render: rowData => (
+                        <div style = {{display: 'block'}}>
+                            <Tooltip title="Hạch toán" arrow>
+                                <span>
+                                    <IconButton onClick={() => {handleOpenEditDialog(rowData)}} disabled = {rowData.amount == rowData.transactions.map(t => t.amount).reduce((acc, cur) => {return acc+cur} , 0)}>
+                                        <PostAddIcon fontSize='inherit' />
+                                    </IconButton>
+                                </span>                                
+                            </Tooltip>
+                            <Tooltip title="Chỉnh sửa" arrow>
+                                <IconButton onClick={() => {handleOpenEditDialog(rowData)}}>
+                                    <EditIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Xóa phiếu thu" arrow>
+                                <IconButton onClick={() => {
+                                    if (window.confirm('Xóa phiếu thu?')) 
+                                    handleDeleteReceipt(rowData.id)}
+                                }>
+                                <DeleteIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>                                
+                        </div>
+                    )
+                },
             //Số phiếu thu
                 {
                     title: "ID",
@@ -130,7 +160,7 @@ const ReceiptView = React.memo(props => {
                     render: rowData => {
                         return (
                             <span>
-                                PT{rowData.receipt_number}
+                                PC{rowData.receipt_number}
                             </span>
                         )
                     }
@@ -244,14 +274,14 @@ const ReceiptView = React.memo(props => {
                             {
                                 title: "Thời gian",
                                 field: "time",
-                                grouping: false,
+                                grouping: false,                                
                                 headerStyle: {
-                                    padding: '0px',
+                                    padding: '5px 15px',
                                     fontWeight: '600',
                                     width: '130px',
                                 },
                                 cellStyle: {
-                                    padding: '0px',
+                                    padding: '5px 15px',
                                     width: '130px',
                                 },
                                 render: rowData => (<span> {rowData.time_formated} </span>)
@@ -457,279 +487,67 @@ const ReceiptView = React.memo(props => {
 class Receipt extends React.Component {
     constructor(props){
         super(props)
-        this.state = {
-            name: '',
-            amount: '',
-            address:'',
-            description: '',    
-            receipt_time: new Date,
+        this.state = {      
             reload: false,
-            remaining_amount: '',
-            transaction_count: 0,
-            transactions: [],
+            open: false,
+            type: 'create',  
+            selected_data : [],  
         }
     }
-    onChange = (e) => {
+    
+    handleCloseDialog = () => {
         this.setState({
-            [e.target.name] : e.target.value,
-            remaining_amount: (e.target.name == 'amount') ? e.target.value : 0
+            open: false, 
+            selected_data: []
         })
     }
-    handleReceiptTimeChange  = (date) => {
-        this.setState({ receipt_time : date })
-    }
-    onChangeTransactionCount = (e) => {
-        let t = []
-        let c = (e.target.value > 10) ? 10 : e.target.value        
-        for(let i = 0 ; i < c ; i++){
-            t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
-        }
+    //s
+    handleOpenCreateDialog = () => {
         this.setState({
-            transaction_count: c,
-            transactions: t,  
+            open: true, 
+            type: 'create',
+            selected_data: []
         })
     }
-    handleDateChange = (key, date) => {
-        this.setState(prevState => {
-            let transactions = prevState.transactions;
-            transactions[key].time = date;
-            return {...prevState, transactions}
+    handleReloadTable = () => {
+        this.setState({reload : !this.state.reload})
+    }
+    handleOpenEditDialog = (rowData) => {
+        this.setState({
+            selected_data: rowData,
+            type: 'edit',
+            open: true,
         })
     }
-    handleDebitChange = (key, newValue) => {
-        this.setState(prevState => {
-            let transactions = prevState.transactions;
-            transactions[key].debit = newValue;
-            return {...prevState, transactions}
-        })
-    }
-    handleCreditChange = (key, newValue) => {
-        this.setState(prevState => {
-            let transactions = prevState.transactions;
-            transactions[key].credit = newValue;
-            return {...prevState, transactions}
-        })
-    }
-    handleStudentChange = (key, newValue) => {
-        this.setState(prevState => {
-            let transactions = prevState.transactions;
-            transactions[key].student = newValue;
-            return {...prevState, transactions}
-        }) 
-    }
-    handleClassChange = (key, newValue) => {
-
-        if(this.state.transactions[key].selected_class != newValue || !this.state.transactions[key].selected_class){
-            this.setState(prevState => {
-                let transactions = prevState.transactions;
-                transactions[key]['selected_session'] = [] 
-                transactions[key]['selected_class'] = (newValue)?newValue:[]
-                return {...prevState, transactions}
-            })
-        }
-    }
-    handleSessionChange = (key, newValue) => {
-        if(this.state.transactions[key].selected_session != newValue ){
-            this.setState(prevState => {
-                let transactions = prevState.transactions;
-                transactions[key]['selected_session'] = (newValue)? newValue: [] 
-                return {...prevState, transactions}
-            })
-        }
-    }
-    handleAmountChange = (key, newValue) => {
-        let amount = newValue.target.value
-        let reg_amount = 0
-        for(let i = 0; i<this.state.transactions.length; i++){
-            if(i !== key){
-                reg_amount += this.state.transactions[i].amount;
-            }
-        }
-        if(amount <= this.state.remaining_amount - reg_amount){
-            this.setState(prevState => {
-                let transactions = prevState.transactions;
-                transactions[key]['amount'] = (newValue) ? amount: 0
-                return {...prevState, transactions}
-            })
-        }
-        else{
-            this.props.enqueueSnackbar('Số tiền không hợp lệ', {variant: 'warning', })
-        }
-    }
-    handleNoteChange = (key, newValue) => {
-        let note = newValue.target.value
-        this.setState(prevState => {
-            
-            let transactions = prevState.transactions;
-            transactions[key]['note'] = (newValue) ? note : ''
-            return { ...prevState, transactions}
-        })
-    }
-    handleTagChange = (key, newValue) => {
-        this.setState(prevState => {
-            let transactions = prevState.transactions;
-            transactions[key]['tags'] = newValue
-            return {...prevState, transactions}
-        })
-    }
-    onSubmitTransaction = (e) => {
-        e.preventDefault();
-        let data = this.state        
-        axios.post(baseUrl + '/receipt/create', data)
+    handleDeleteReceipt = (receipt_id) => {
+        axios.post(baseUrl + '/receipt/delete', {receipt_id: receipt_id})
             .then(response => {
-                this.setState({reload: !this.state.reload})
-                this.props.enqueueSnackbar('Tạo thành công', {
-                    variant: 'success'
+                this.setState({
+                    reload: !this.state.reload
                 })
+                this.props.enqueueSnackbar('Xóa thành công', {variant: 'success'})
             })
             .catch(err => {
-                this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng kiểm tra lại', {
-                    variant: 'error'
-                })
-            })        
+                console.log(err)
+            })
     }
     render(){
         return (
             <React.Fragment>
-                <div className="root-receipt">
-                <form noValidate autoComplete="on">
-                        <Paper elevation={4} className="paper-receipt">
-                            <h2>Lập phiếu thu</h2>
-                            <Grid container spacing={2} id="receipt-form">
-                                <Grid item xs={12} sm={6}>
-                                    <FormLabel color="primary">Tên người nộp tiền</FormLabel>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.name}
-                                        onChange={e => this.onChange(e)}
-                                        name = "name"
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <FormLabel color="primary">Địa chỉ</FormLabel>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.address}
-                                        onChange={e => this.onChange(e)}
-                                        name = "address"
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={2} id="receipt-form">
-                                <Grid item xs={12} sm={6}>
-                                    <FormLabel color="primary">Lý do</FormLabel>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.description}
-                                        onChange={e => this.onChange(e)}
-                                        name = "description"
-                                        variant="outlined"
-                                        size="small"
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={3}>
-                                    <FormLabel color="primary">Số tiền</FormLabel>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.amount}
-                                        onChange={e => this.onChange(e)}
-                                        name = "amount"
-                                        variant="outlined"
-                                        size="small"
-                                        InputProps={{
-                                            inputComponent: NumberFormatCustom,
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={3}>
-                                    <FormLabel color="primary">Ngày chứng từ</FormLabel>
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            fullWidth
-                                            value={this.state.receipt_time}                            
-                                            onChange={this.handleReceiptTimeChange}
-                                            placeholder="Ngày chứng từ"                            
-                                            className="input-date"
-                                            variant="inline"
-                                            size="small"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                        />
-                                                    
-                                    </MuiPickersUtilsProvider>
-                                </Grid>
-                            </Grid>
-                            <Grid container justify="flex-start" alignItems="center" spacing={2}>
-                                <Grid item xs={4} md={2} xl={1}>
-                                    <Typography variant="button"><b>Hạch toán</b></Typography>
-                                </Grid>
-                                <Grid item xs={4} xl={1} md={1}>
-                                    <TextField
-                                        fullWidth
-                                        value={this.state.transaction_count}
-                                        onChange={e => this.onChangeTransactionCount(e)}
-                                        name = "transaction_count"
-                                        variant="outlined"
-                                        size="small"
-                                        type="number"
-                                        inputProps={{ min: "0", max: "10", step: "1" }}
-                                    />
-                                </Grid>
-                                <Grid item xs={4} xl={2} md={2}>
-                                    <Typography variant="button">giao dịch</Typography>
-                                </Grid>
-                            </Grid>                      
-                            {this.state.transactions.map((transaction, key) => {
-                                return (
-                                    <TransactionForm
-                                        debit = {transaction.debit}
-                                        credit = {transaction.credit}
-                                        time = {transaction.time}
-                                        student = {transaction.student}
-                                        amount = {transaction.amount}
-                                        content = {transaction.content}
-                                        selected_class = {transaction.selected_class}
-                                        selected_session = {transaction.selected_session}
-                                        content = {transaction.note}
-                                        tags = {transaction.tags}
-
-                                        onChange = { this.onChange }
-                                        handleDateChange = { (date) => this.handleDateChange(key, date ) }
-                                        handleDebitChange = { (newValue) => this.handleDebitChange(key, newValue) }
-                                        handleCreditChange = { (newValue) => this.handleCreditChange(key, newValue) }
-                                        handleStudentChange = {(newValue) => this.handleStudentChange(key, newValue)}
-                                        handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
-                                        handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
-                                        handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
-                                        handleNoteChange = { newValue => this.handleNoteChange(key, newValue) }
-                                        handleTagChange = { newValue => this.handleTagChange(key, newValue) }
-                                        submitButton = {false}
-                                        onSubmitTransaction = {{}}                   
-                                    />
-                                )
-                            })}
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                className="submit-btn"
-                                onClick = {(e) => this.onSubmitTransaction(e)}
-                                endIcon={<SendIcon/>}
-                            >
-                                Tạo mới
-                            </Button>
-                        </Paper>
-                    </form>
-                    
-                </div>
+                <DialogForm 
+                    open = {this.state.open}
+                    type = {this.state.type}
+                    receipt = {this.state.selected_data}
+                    handleCloseDialog = {this.handleCloseDialog}
+                    handleReloadTable = {this.handleReloadTable}
+                />                  
                 <ReceiptView
-                        className="transaction-view"
-                        reload = {this.state.reload}
-                    />
+                    reload = {this.state.reload}
+                    handleOpenCreateDialog = {this.handleOpenCreateDialog}
+                    handleOpenEditDialog = {this.handleOpenEditDialog}
+                    handleDeleteReceipt = {this.handleDeleteReceipt}
+                    
+                />
             </React.Fragment>
         )
     }

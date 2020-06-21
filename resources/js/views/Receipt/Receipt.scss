@@ -9,9 +9,7 @@
     .paper-receipt{
         padding: 13px;
     }
-    .submit-btn{
-        margin-top: 15px;
-    }
+    
     .transaction-add{
         margin-top: 15px;
     }
@@ -27,15 +25,19 @@
         padding-bottom: 15px;
         border-bottom: 1px solid #8bc34a;
     }
-    .transaction-view{
-        margin-top: 15px;
-    }
-    .MuiInputAdornment-positionStart{
-        .MuiIcon-root{
-            display: none !important;
-        }
-    }
+    
+    
+}
+.submit-btn{
+    margin-top: 15px;
+    margin-bottom:15px !important; 
 }
 .credit-account{
     margin-left: 13px !important;
+}
+.MuiTable-root{
+    button{
+        padding: 3px 3px !important;
+        margin: 10px 0px !important;
+    }
 }
