@@ -9,6 +9,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
+import { format } from 'date-fns';
 import {
     KeyboardTimePicker,
     KeyboardDatePicker,
@@ -22,6 +26,8 @@ class CreateSession extends React.Component{
         this.state = {
             from_date: null,
             to_date:null, 
+            student_involved: false,
+            transaction_involved: false,
         }
     }
     handleFromDate = date => {
@@ -30,6 +36,11 @@ class CreateSession extends React.Component{
     handleToDate = date => {
         this.setState( {to_date: date });
     }
+    handleCheckBoxChange = (e) => {
+        this.setState({
+            [e.target.name] : !this.state[e.target.name]
+        })
+    }
     render(){
         const last_session = (this.props.selectedClass.last_session)?new Date(this.props.selectedClass.last_session) : ''
         return (
@@ -37,10 +48,29 @@ class CreateSession extends React.Component{
                 <DialogTitle id="form-dialog-title">Thêm ca học lớp {this.props.selectedClass.code}</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
-                    Các ca học sẽ được thêm tự động theo lịch học đã cài đặt.  {
-                        (this.props.selectedClass.last_session) ? 'Ca học cuối cùng :'+this.props.selectedClass.last_session : 'Chưa có ca học nào'
+                    Các ca học sẽ được thêm tự động theo lịch học đã cài đặt. <br/>  
+                    {
+                        (this.props.selectedClass.last_session) ? 'Ca học cuối cùng : '+ format(new Date(this.props.selectedClass.last_session), 'd/M/yyyy') : 'Chưa có ca học nào'
                     }
                 </DialogContentText>
+                    <FormGroup row>
+                        <FormControlLabel
+                            control={<Checkbox checked={this.state.student_involved} onChange={this.handleCheckBoxChange} name="student_involved" />}
+                            label="Thêm học sinh"
+                        />
+                        <FormControlLabel
+                            control={
+                            <Checkbox
+                                checked={this.state.transaction_involved && this.state.student_involved}
+                                onChange={this.handleCheckBoxChange}
+                                name="transaction_involved"
+                                disabled = {!this.state.student_involved}
+                                color="primary"
+                            />
+                            }
+                            label="Tạo công nợ"
+                        /> 
+                    </FormGroup>
                     <div className="date-time">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
@@ -58,6 +88,7 @@ class CreateSession extends React.Component{
                         />                     
                         </MuiPickersUtilsProvider>
                     </div>
+                    
                     <div className="date-time">
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
