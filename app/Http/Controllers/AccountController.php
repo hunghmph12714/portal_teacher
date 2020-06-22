@@ -4,12 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Account;
+use App\Transaction;
 class AccountController extends Controller
 {
     //
     protected function getAccount(Request $request){
         $accounts = Account::orderBy('level_1')->get();
-        return response()->json($accounts);
+        $result = [];
+        foreach($accounts as $key => $account){
+            $result[$key] = $account;
+            $debit = Transaction::where('debit', $account->id)->sum('amount');
+            $credit = Transaction::where('credit', $account->id)->sum('amount');
+            $result[$key]['debit'] = $debit;
+            $result[$key]['credit'] = $credit;
+        }
+        return response()->json($result);
     }
     protected function addAccount(Request $request){
         $rules = ['level_1' => 'required',

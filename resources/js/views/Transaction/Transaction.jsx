@@ -498,7 +498,7 @@ class Transaction extends React.Component {
                         handleSessionChange = {this.handleSessionChange}
                         handleTagChange = {this.handleTagChange}
                         handleAmountChange = {this.onChange}
-                        handleNoteChange = {this.onChange}
+                        handleContentChange = {this.onChange}
                         submitButton = {true}
                         onSubmitTransaction = {this.onSubmitTransaction}                   
                     />

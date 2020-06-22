@@ -142,7 +142,7 @@ const TagSelect = React.memo(props => {
 const TransactionForm = props => {
     const {debit, credit, time, student, amount, content, selected_class, selected_session, submitButton, tags,
     onChange, handleDateChange , handleDebitChange, handleCreditChange, handleStudentChange, handleClassChange, handleSessionChange, onSubmitTransaction, handleTagChange,
-    handleAmountChange, handleNoteChange} = props
+    handleAmountChange, handleContentChange} = props
     return(
         <React.Fragment>
             <Grid container spacing={2}>
@@ -252,7 +252,7 @@ const TransactionForm = props => {
                         variant="outlined"
                         name="content"
                         value={content}
-                        onChange = {handleNoteChange}
+                        onChange = {handleContentChange}
                     />
                 </Grid>
         

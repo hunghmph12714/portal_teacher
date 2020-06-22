@@ -79,6 +79,28 @@ class Account extends React.Component{
                         fontWeight: '600',
                     },
                 },
+                { title: 'Nợ', field: 'debit', type: "currency", 
+                  currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
+                  editable: 'never',                  
+                    headerStyle: {
+                        fontWeight: '600',
+                        textAlign: 'right'
+                    },
+                    cellStyle:{
+                        paddingRight: '34px',
+                    }
+                },    
+                { title: 'Có', field: 'credit', type: "currency", 
+                    currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
+                    editable: 'never',                  
+                    headerStyle: {
+                        fontWeight: '600',
+                        textAlign: 'right'
+                    },
+                    cellStyle:{
+                        paddingRight: '34px',
+                    }
+                }, 
                 { title: 'Số dư', field: 'balance', type: "currency", 
                   currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
                   editable: 'never',

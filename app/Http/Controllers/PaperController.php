@@ -45,11 +45,13 @@ class PaperController extends Controller
             'name' => 'required',
             'amount' => 'required',
             'payment_time' => 'required',
+            'center' => 'required'
         ];
         $this->validate($request, $rules);
 
-        $max_payment_number = Paper::max('payment_number')!="" ? Paper::max('payment_number') : 0;
+        $max_payment_number = Paper::where('center_id', $request->center['value'])->max('payment_number')!="" ? Paper::where('center_id', $request->center['value'])->max('payment_number') : 0;
         $p['payment_number'] = $max_payment_number + 1;
+        $p['center_id'] = $request->center['value'];
         $p['type'] = 'payment';
         $p['name'] = $request->name;
         $p['description'] = $request->description;
@@ -70,6 +72,7 @@ class PaperController extends Controller
     protected function editPayment(Request $request){
         $rules = [
             'payment_id' => 'required',
+            'center' => 'required'
         ];
         $this->validate($request, $rules);
         $payment = Paper::find($request->payment_id);
@@ -78,6 +81,11 @@ class PaperController extends Controller
             $payment->amount = $request->amount;
             $payment->address = $request->address;
             $payment->created_at = date('Y-m-d', strtotime($request->payment_time));
+            if($payment->center_id != $request->center['value']){
+                $max_payment_number = Paper::where('center_id', $request->center['value'])->max('payment_number')!="" ? Paper::where('center_id', $request->center['value'])->max('payment_number') : 0;
+                $payment->payment_number = $max_payment_number + 1;
+                $payment->center_id = $request->center['value'];
+            }
             $payment->save();
             if($request->transaction_count == 0){
                 $t = Transaction::where('paper_id', $request->payment_id)->forceDelete();
@@ -109,9 +117,6 @@ class PaperController extends Controller
         }
         return response()->json($request);
     }
-    protected function addPaymentTransaction(Request $request){
-
-    }
     protected function deletePayment(Request $request){
         $rules = [
             'payment_id' => 'required',
@@ -129,7 +134,10 @@ class PaperController extends Controller
     protected function getPayment(){
         $result = [];
         $payments = Paper::Select('papers.id as id', 'payment_number','type','papers.name as name','description','amount','papers.created_at as created_at','papers.status as status',
-                                    'users.name as uname','papers.address as address')->where('type', 'payment')->leftJoin('users','papers.user_created_id','users.id')->get();
+                                    'users.name as uname','papers.address as address','center.name as ctname', 'center.id as ctid')->where('type', 'payment')
+                                    ->leftJoin('users','papers.user_created_id','users.id')
+                                    ->leftJoin('center', 'papers.center_id', 'center.id')
+                                    ->get();
         foreach($payments as $key => $p){
             $transaction_result = [];       
             $result[$key] = $p;     
@@ -140,13 +148,13 @@ class PaperController extends Controller
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
                 'students.id as sid', 'students.fullname as sname','students.dob', 
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                'users.id as uid','users.name as uname', 'paper_id'
+                'users.id as uid','users.name as uname', 'paper_id'               
             )
             ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
             ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
             ->leftJoin('students','transactions.student_id','students.id')
             ->leftJoin('classes','transactions.class_id','classes.id')
-            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+            ->leftJoin('sessions', 'transactions.session_id','sessions.id')            
             ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
             ->get();
 
@@ -170,9 +178,9 @@ class PaperController extends Controller
             'receipt_time' => 'required',
         ];
         $this->validate($request, $rules);
-
-        $max_receipt_number = Paper::max('receipt_number')!="" ? Paper::max('receipt_number') : 0;
+        $max_receipt_number = Paper::where('center_id', $request->center['value'])->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->max('receipt_number') : 0;
         $p['receipt_number'] = $max_receipt_number + 1;
+        $p['center_id'] = $request->center['value'];
         $p['type'] = 'receipt';
         $p['name'] = $request->name;
         $p['description'] = $request->description;
@@ -191,18 +199,68 @@ class PaperController extends Controller
         return response()->json($receipt);
     }
     protected function editReceipt(Request $request){
-
-    }
-    protected function addReceiptTransaction(Request $request){
-
+        $rules = [
+            'receipt_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $receipt = Paper::find($request->receipt_id);
+        if($receipt){
+            $receipt->name = $request->name;
+            $receipt->amount = $request->amount;
+            $receipt->address = $request->address;
+            $receipt->created_at = date('Y-m-d', strtotime($request->receipt_time));
+            $receipt->save();
+            if($request->transaction_count == 0){
+                $t = Transaction::where('paper_id', $request->receipt_id)->forceDelete();
+            }
+            foreach($request->transactions as $t){
+                //edit existing transactions
+                if(array_key_exists('id', $t)){
+                    $td = Transaction::find($t['id']);
+                    if($td){
+                        $td->debit = $t['debit']['value'];
+                        $td->credit = $t['credit']['value'];
+                        $td->amount = $t['amount'];
+                        $td->time = date('Y-m-d H:i:m', strtotime($t['time']));
+                        $td->content = $t['content'];
+                        $td->student_id = $t['student']['value'];
+                        $td->class_id = $t['selected_class']['value'];
+                        $td->session_id = $t['selected_session']['value'];
+                        // $td->
+                        $tags = array_column($t['tags'], 'value');
+                        $td->tags()->sync($tags);
+                        $td->save();                        
+                    }
+                }
+                //Create new transaction
+                else{
+                    $this->addTransaction($t, $request->receipt_id);
+                }
+            }
+        }
+        return response()->json($request);
     }
     protected function deleteReceipt(Request $request){
-        
+        $rules = [
+            'receipt_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $p = Paper::find($request->receipt_id);
+        if($p){
+            $p->forceDelete();
+            $transactions = Transaction::where('paper_id', $request->receipt_id)->get();
+            foreach($transactions as $t){
+                $t->forceDelete();
+            }
+        }
     }
     protected function getReceipt(){
         $result = [];
         $receipts = Paper::Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount','papers.created_at as created_at','papers.status as status',
-                                    'users.name as uname','papers.address as address')->where('type', 'receipt')->leftJoin('users','papers.user_created_id','users.id')->get();
+                                    'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid')->where('type', 'receipt')
+                                    ->leftJoin('users','papers.user_created_id','users.id')
+                                    ->leftJoin('center', 'papers.center_id', 'center.id')
+                                    ->get();
         foreach($receipts as $key => $p){
             $transaction_result = [];       
             $result[$key] = $p;     
@@ -234,5 +292,120 @@ class PaperController extends Controller
         }
         return response()->json($result);
     }
-
+    public function convert_number_to_words($number) {
+            $hyphen      = ' ';
+            $conjunction = '  ';
+            $separator   = ' ';
+            $negative    = 'âm ';
+            $decimal     = ' phẩy ';
+            $dictionary  = array(
+            0                   => 'không',
+            1                   => 'một',
+            2                   => 'hai',
+            3                   => 'ba',
+            4                   => 'bốn',
+            5                   => 'năm',
+            6                   => 'sáu',
+            7                   => 'bảy',
+            8                   => 'tám',
+            9                   => 'chín',
+            10                  => 'mười',
+            11                  => 'mười một',
+            12                  => 'mười hai',
+            13                  => 'mười ba',
+            14                  => 'mười bốn',
+            15                  => 'mười năm',
+            16                  => 'mười sáu',
+            17                  => 'mười bảy',
+            18                  => 'mười tám',
+            19                  => 'mười chín',
+            20                  => 'hai mươi',
+            30                  => 'ba mươi',
+            40                  => 'bốn mươi',
+            50                  => 'năm mươi',
+            60                  => 'sáu mươi',
+            70                  => 'bảy mươi',
+            80                  => 'tám mươi',
+            90                  => 'chín mươi',
+            100                 => 'trăm',
+            1000                => 'nghìn',
+            1000000             => 'triệu',
+            1000000000          => 'tỷ',
+            1000000000000       => 'nghìn tỷ',
+            1000000000000000    => 'nghìn triệu triệu',
+            1000000000000000000 => 'tỷ tỷ'
+            );
+        if (!is_numeric($number)) {
+            return false;
+        }
+        if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
+            // overflow
+            trigger_error(
+            'convert_number_to_words only accepts numbers between -' . PHP_INT_MAX . ' and ' . PHP_INT_MAX,
+            E_USER_WARNING
+            );
+            return false;
+        }
+        if ($number < 0) {
+            return $negative . convert_number_to_words(abs($number));
+        }
+        $string = $fraction = null;
+            if (strpos($number, '.') !== false) {
+            list($number, $fraction) = explode('.', $number);
+        }
+        switch (true) {
+        case $number < 21:
+            $string = $dictionary[$number];
+        break;
+        case $number < 100:
+            $tens   = ((int) ($number / 10)) * 10;
+            $units  = $number % 10;
+            $string = $dictionary[$tens];
+            if ($units) {
+                $string .= $hyphen . $dictionary[$units];
+            }
+        break;
+        case $number < 1000:
+            $hundreds  = $number / 100;
+            $remainder = $number % 100;
+            $string = $dictionary[$hundreds] . ' ' . $dictionary[100];
+            if ($remainder) {
+                $string .= $conjunction . $this->convert_number_to_words($remainder);
+            }
+        break;
+        default:
+            $baseUnit = pow(1000, floor(log($number, 1000)));
+            $numBaseUnits = (int) ($number / $baseUnit);
+            $remainder = $number % $baseUnit;
+            $string = $this->convert_number_to_words($numBaseUnits) . ' ' . $dictionary[$baseUnit];
+            if ($remainder) {
+                $string .= $remainder < 100 ? $conjunction : $separator;
+                $string .= $this->convert_number_to_words($remainder);
+            }
+            break;
+        }
+        if (null !== $fraction && is_numeric($fraction)) {
+            $string .= $decimal;
+            $words = array();
+            foreach (str_split((string) $fraction) as $number) {
+                $words[] = $dictionary[$number];
+            }
+            $string .= implode(' ', $words);
+        }
+            return $string;
+    }
+    protected function printPaper($id){
+        
+        $paper = Paper::Where('papers.id', $id)->Select('papers.id as id','receipt_number', 'payment_number','type','papers.name as name','description','amount','papers.created_at as created_at','papers.status as status',
+            'users.name as uname','papers.address as address','center.name as ctname', 'center.id as ctid')
+        ->leftJoin('users','papers.user_created_id','users.id')
+        ->leftJoin('center', 'papers.center_id', 'center.id')
+        ->first()->toArray();
+        $paper['amount_str'] =  $this->convert_number_to_words($paper['amount']);
+        $paper['amount'] = number_format($paper['amount'], 0, '', ',');
+        $t = explode('-',  explode(' ', $paper['created_at'])[0]);
+        $paper['time'] = 'Ngày '.$t[2]. ' tháng '.$t[1]. ' năm '.$t[0];
+        return view('paper.print', compact('paper'));
+        // return response()->json($paper);
+    }
 }

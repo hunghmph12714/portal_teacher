@@ -16,6 +16,7 @@ import MaterialTable from "material-table";
 import DeleteIcon from '@material-ui/icons/Delete';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import EditIcon from '@material-ui/icons/Edit';
+import PrintIcon from '@material-ui/icons/Print';
 const customChip = (color) => ({
     border: '1px solid #85144b',
     backgroundColor: color,
@@ -79,7 +80,7 @@ const ReceiptView = React.memo(props => {
                     onClick: (event) => {handleOpenCreateDialog()},
                 },
             ]}
-            icon={{
+            icons={{
                 Filter: () => <span />
             }}
             localization={{
@@ -113,10 +114,10 @@ const ReceiptView = React.memo(props => {
                     filtering: false,
                     headerStyle: {
                         padding: '0px',
-                        width: '100px',
+                        width: '130px',
                     },
                     cellStyle: {
-                        width: '100px',
+                        width: '130px',
                         padding: '0px',
                     },
                     render: rowData => (
@@ -140,7 +141,14 @@ const ReceiptView = React.memo(props => {
                                 }>
                                 <DeleteIcon fontSize='inherit' />
                                 </IconButton>
-                            </Tooltip>                                
+                            </Tooltip>    
+                            <Tooltip title="In phiếu thu" arrow>
+                                <IconButton onClick={() => {
+                                    window.open('/paper/print/' + rowData.id, '_blank')
+                                }}>
+                                <PrintIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>                            
                         </div>
                     )
                 },
@@ -160,7 +168,7 @@ const ReceiptView = React.memo(props => {
                     render: rowData => {
                         return (
                             <span>
-                                PT{rowData.receipt_number}
+                                PC{rowData.receipt_number}
                             </span>
                         )
                     }
@@ -206,6 +214,18 @@ const ReceiptView = React.memo(props => {
                         )
                     },                            
                     
+                },
+            //Cơ sở
+                {
+                    title: "Cơ sở",
+                    field: "ctname",
+                    headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                        padding: '0px',
+                    },
                 },
             // Người nhận
                 {

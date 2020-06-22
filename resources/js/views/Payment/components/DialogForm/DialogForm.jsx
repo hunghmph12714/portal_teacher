@@ -6,6 +6,8 @@ import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import NumberFormat from 'react-number-format';
 import { format } from 'date-fns'
+import Select , { components }  from "react-select";
+
 import SendIcon from '@material-ui/icons/Send';
 import {
     KeyboardDatePicker,
@@ -29,12 +31,37 @@ const initState = {
     name: '',
     amount: '',
     address:'',
-    description: '',    
+    description: '', 
+    center: [],   
     payment_time: new Date,
     remaining_amount: '',
     transaction_count: 0,
     transactions: [],
 }
+const CenterSelect = React.memo(props => {
+    const [centers, setCenters] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/get-center')
+            setCenters(r.data.map(center => {
+                    return {label: center.name, value: center.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
+    
+    return( 
+        <Select
+            className="select-box-1"
+            key = "center-select"
+            value = {props.entrance_center}
+            name = "entrance_center"
+            placeholder="Cơ sở"
+            options={centers}
+            onChange={props.handleChange}
+        />)
+})
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
     return (
@@ -82,7 +109,8 @@ class DialogForm extends React.Component {
                 description: nextProps.payment.description,
                 payment_time: new Date(nextProps.payment.created_at),
                 transaction_count: nextProps.payment.transactions.length,
-                transactions : transactions
+                transactions : transactions,
+                center: {label: nextProps.payment.ctname, value: nextProps.payment.ctid}
     
             })
         }
@@ -90,6 +118,19 @@ class DialogForm extends React.Component {
     onChange = (e) => {
         this.setState({
             [e.target.name] : e.target.value,            
+        })
+    }
+    handleDescriptionChange = (e) => {
+        let value = e.target.value
+        this.setState(prevState => {
+            let transactions = prevState.transactions
+            transactions = transactions.map(t => {
+                t.content = value
+                t.note = value
+                return t
+            })
+            prevState.description = value
+            return {...prevState, transactions}
         })
     }
     handlePaymentAmountChange = (e) => {
@@ -111,13 +152,13 @@ class DialogForm extends React.Component {
         else {
             if(this.props.type == "create"){
                 for(let i = 0 ; i < c ; i++){
-                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
+                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: this.state.description, selected_class: null, selected_session: null, note: this.state.description, tags:[]})
                 }
             }
             if(this.props.type == "edit" && c > this.state.transaction_count ){
                 t = this.state.transactions
                 for(let i = this.state.transaction_count   ; i < c ; i++){
-                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: '', selected_class: null, selected_session: null, note: '', tags:[]})
+                    t.push({debit: '', credit: '', time: new Date(), student: '', amount: 0, content: this.state.description, selected_class: null, selected_session: null, note: this.state.description, tags:[]})
                 }
             }       
             this.setState({
@@ -198,12 +239,12 @@ class DialogForm extends React.Component {
             this.props.enqueueSnackbar('Số tiền không hợp lệ', {variant: 'warning', })
         }
     }
-    handleNoteChange = (key, newValue) => {
-        let note = newValue.target.value
+    handleContentChange = (key, newValue) => {
+        let content = newValue.target.value
         this.setState(prevState => {
             
             let transactions = prevState.transactions;
-            transactions[key]['note'] = (newValue) ? note : ''
+            transactions[key]['content'] = (newValue) ? content : ''
             return { ...prevState, transactions}
         })
     }
@@ -213,6 +254,9 @@ class DialogForm extends React.Component {
             transactions[key]['tags'] = newValue
             return {...prevState, transactions}
         })
+    }
+    handleCenterChange = (newValue) => {
+        this.setState({center: newValue})
     }
     onSubmitTransaction = (e) => {
         e.preventDefault();
@@ -263,7 +307,14 @@ class DialogForm extends React.Component {
                         <form noValidate autoComplete="on">
                                 <h2>Lập phiếu chi</h2>
                                 <Grid container spacing={2} id="payment-form">
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={3}>
+                                        <FormLabel color="primary">Cơ sở</FormLabel>
+                                        <CenterSelect 
+                                            entrance_center = {this.state.center}
+                                            handleChange={this.handleCenterChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={3}>
                                         <FormLabel color="primary">Tên người nhận</FormLabel>
                                         <TextField
                                             fullWidth
@@ -274,6 +325,7 @@ class DialogForm extends React.Component {
                                             size="small"
                                         />
                                     </Grid>
+                                    
                                     <Grid item xs={12} sm={6}>
                                         <FormLabel color="primary">Địa chỉ</FormLabel>
                                         <TextField
@@ -292,7 +344,7 @@ class DialogForm extends React.Component {
                                         <TextField
                                             fullWidth
                                             value={this.state.description}
-                                            onChange={e => this.onChange(e)}
+                                            onChange={e => this.handleDescriptionChange(e)}
                                             name = "description"
                                             variant="outlined"
                                             size="small"
@@ -362,7 +414,6 @@ class DialogForm extends React.Component {
                                             content = {transaction.content}
                                             selected_class = {transaction.selected_class}
                                             selected_session = {transaction.selected_session}
-                                            content = {transaction.note}
                                             tags = {transaction.tags}
 
                                             onChange = { this.onChange }
@@ -373,7 +424,7 @@ class DialogForm extends React.Component {
                                             handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
                                             handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
                                             handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
-                                            handleNoteChange = { newValue => this.handleNoteChange(key, newValue) }
+                                            handleContentChange = { newValue => this.handleContentChange(key, newValue) }
                                             handleTagChange = { newValue => this.handleTagChange(key, newValue) }
                                             submitButton = {false}
                                             onSubmitTransaction = {{}}                   

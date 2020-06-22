@@ -206,6 +206,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/receipt/add-transaction', 'PaperController@addReceiptTransaction');
     Route::post('/receipt/delete', 'PaperController@deleteReceipt');
 
+    Route::get('/paper/print/{id}', 'PaperController@printPaper');
 //Tag
     Route::get('/tag/get', 'TagController@getTag');
 });
