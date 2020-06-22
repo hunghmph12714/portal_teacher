@@ -106,9 +106,6 @@
                 <p>Địa chỉ:<b> {{$paper['address']}}</b></p>                
             </div>
             <div class="row detail">
-                <p>Họ tên người nhận tiền : <b>{{$paper['name']}}</b></p>                
-            </div>
-            <div class="row detail">
                 <p>Lý do chi: <b>{{$paper['description']}}</b></p>                
             </div>
             <div class="row detail">
@@ -124,7 +121,7 @@
                 <div class="col-sm"></div>
                 <div class="col-sm"></div>
                 <div class="col-sm centered">
-                    <i>Ngày 15 tháng 5 năm 2020 </i> 
+                    <i>{{ $paper['time'] }}</i> 
                 </div>
             </div>
             <div class="row">
@@ -160,5 +157,4 @@
             </div>
         </div>
     </section>
-
 </body>
