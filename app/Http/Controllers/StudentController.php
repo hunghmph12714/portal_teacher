@@ -7,6 +7,9 @@ use App\Schools;
 use App\Parents;
 use App\Student;
 use App\Classes;
+use App\Account;
+use App\Transaction;
+use App\Session;
 class StudentController extends Controller
 {
     //
@@ -48,12 +51,12 @@ class StudentController extends Controller
             $students = $class->students;
             $result = $students->toArray();
             foreach($students as $key=>$student){
-                $parents = Parents::find($student->parent_id)
+                $parent = Parents::where('parents.id',$student->parent_id)
                             ->select('parents.fullname as pname','relationships.name as rname','parents.phone'
                                 ,'parents.email','parents.alt_fullname','parents.alt_email','parents.alt_phone'
                                 ,'relationships.color', 'relationships.id as rid')
                             ->leftJoin('relationships','parents.relationship_id','relationships.id')->first()->toArray();
-                $result[$key]['parent'] = $parents;
+                $result[$key]['parent'] = $parent;
             }
         }
         return response()->json($result);
@@ -70,6 +73,46 @@ class StudentController extends Controller
         }
     }
 
+    protected function getFee(){
+        $student_id = 11;
+        $student = Student::find($student_id);
+        $classes = $student->classes;
+        
+        $acc = Account::where('level_2','131')->first();
+        $result = [];
+        foreach($classes as $class){            
+            $transactions = Transaction::where('student_id', $student_id)
+                                        ->where('transactions.class_id', $class->id)->orderBy('time', 'ASC')
+                                        ->Select(
+                                            'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
+                                            'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                                            'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                                            'students.id as sid', 'students.fullname as sname','students.dob', 
+                                            'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                                            'users.id as uid','users.name as uname'
+                                        )
+                                        ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                                        ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                                        ->leftJoin('students','transactions.student_id','students.id')
+                                        ->leftJoin('classes','transactions.class_id','classes.id')
+                                        ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                                        ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->take(100)
+                                        ->get();
+            foreach($transactions as $t){
+                $month = Date('m-Y', strtotime($t->time));
+                if(!array_key_exists($month, $result)){
+                    $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
+                    $result[$month]['transactions'] = [$t->toArray()];
+                }
+                else{
+                    $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+                    array_push($result[$month]['transactions'], $t->toArray());
+                }
+            }
+        }
+        return response()->json($result);
+    }
+    
     protected function importStudent(){
         if (($handle = fopen(public_path()."/hs.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {

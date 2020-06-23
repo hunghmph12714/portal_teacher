@@ -51,9 +51,9 @@ class EntranceController extends Controller
         return Student::create($s);
     }
     protected function handleUpdateStudent($student_id, $request){
-        $s['parent_id'] = $parent_id;
+        // $s['parent_id'] = $parent_id;
         $s['relationship_id'] = $request['selected_relationship']['value'];
-        $s['fullname'] = $request['student_name']['value'];
+        $s['fullname'] = $request['student_name']['label'];
         $s['school'] = $request['student_school']['label'];
         $s['grade'] = $request['student_grade'];
         $s['email'] = $request['student_email'];
@@ -85,7 +85,7 @@ class EntranceController extends Controller
         $request['entrance_date'] = ($request['entrance_date']) ? date('Y-m-d H:i:m', $request['entrance_date']) : null;
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', $request['student_dob']) : null;
         $p = [];
-        $p['fullname'] = $request['parent_name']['value'];
+        $p['fullname'] = $request['parent_name']['label'];
         $p['relationship_id'] = $request['selected_relationship']['value'];
         $p['phone'] = $request['parent_phone'];
         $p['email'] = $request['parent_email'];
@@ -111,7 +111,7 @@ class EntranceController extends Controller
         else{
         //Existed parent
             //Update parent 
-            Parent::find($request['parent_name']['value'])->update($p);
+            Parents::find($request['parent_name']['value'])->update($p);
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
                 $parent_id = $request['parent_name']['value'];
@@ -233,7 +233,7 @@ class EntranceController extends Controller
                 $e->test_note = $request->test_note;   
                 //Check if student enrolled or not 
                 if($e->enroll_date == NULL && $e->class_id == NULL && $request->enroll_date && $request->entrance_classes){
-                    $e->enroll_date = date('Y-m-d', $request->enroll_date);
+                    $e->enroll_date = date('Y-m-d', strtotime($request->enroll_date));
                     $e->class_id = $request->entrance_classes['value'];
                     $e->save();     
                     //Enroll student to class

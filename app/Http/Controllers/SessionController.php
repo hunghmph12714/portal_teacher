@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Session;
 use App\StudentSession;
+use App\StudentClass;
 use App\Classes;
 use App\Account;
 use App\Transaction;
+use App\Student;
+use App\Discount;
 use DateTime;
 use DateInterval;
 use DatePeriod;
@@ -23,7 +26,7 @@ class SessionController extends Controller
             return response()->json($last_session);
         }
         else{
-            return response()->json('Không có ca học mới', 412);
+            return response()->json('Chưa có ca học mới', 412);
         }
     }
     public function generateSessionFromConfig($from, $to, $class_id){
@@ -51,16 +54,91 @@ class SessionController extends Controller
                             $input['room_id'] = (is_object($c->room))?$c->room->value:NULL;
                             $input['class_id'] = $class_id;
                             $input['ss_number'] = $index;
-                            array_push($sessions, $input);
+                            $input['fee'] = $class->fee;
+                            $x = Session::create($input);
+                            array_push($sessions, $x->toArray());
                         } 
                     }
                 }
             }
-            Session::insert($sessions);
+            // $sessions = Session::insert($sessions);
             return $sessions;
         }
         else return $sessions;
     }
+    public function generateAttendances($sessions, $students){
+        foreach($sessions as $s){
+            $ss['session_id'] = $s['id'];
+            foreach($students as $st){
+                $ss['student_id'] = $st->id;
+                $ss['type'] = 'official';
+                StudentSession::create($ss);
+            }
+        }
+    }
+    public function generateTransactions($sessions, $students, $class_id){
+        $fees = [];
+        $class = Classes::find($class_id);
+        $fee_per_session = 0;
+        foreach($sessions as $s){
+            $month = date('m-Y', strtotime($s['date']));
+            if(!array_key_exists($month, $fees)){
+                $fees[$month]['amount'] = 0;
+                $fees[$month]['count'] = 0;
+            }
+            else{
+                $fees[$month]['amount'] += $s['fee'];
+                $fees[$month]['count']++;
+            }
+            $fee_per_session = $s['fee'];
+        }
+        // print_r($fees);
+        foreach($fees as $key => $fee){
+            if($fee != 0){
+                foreach($students as $s){
+                    //Create new transaction for fee
+                    //Find account 131
+                    $t['debit'] = Account::Where('level_2', '131')->first()->id;
+                    $t['credit'] = Account::Where('level_2', '3387')->first()->id;
+                    $t['amount'] = $fee['amount'];
+                    $t['time'] = Date('Y-m-d', strtotime('1-'.$key));
+                    $t['student_id'] = $s->id;
+                    $t['class_id'] = $class_id;
+                    $t['user'] = auth()->user()->id;
+                    $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
+                    Transaction::create($t);
+                    //Check Discount
+                    $discounts = Discount::where('student_class_id', $s->pivot['id'])
+                                        ->where('status', 'active')
+                                        ->where('max_use','>',0)
+                                        ->where('expired_at', '>', $t['time'])->get();
+                    foreach($discounts as $d){
+                        //Check discount available
+                        $dt['credit'] = Account::Where('level_2', '131')->first()->id;
+                        $dt['debit'] = Account::Where('level_2', '511')->first()->id;
+                        $dt['time'] = Date('Y-m-d', strtotime('1-'.$key));
+                        $dt['student_id'] = $s->id;
+                        $dt['class_id'] = $class_id;
+                        $dt['user'] = auth()->user()->id;                                           
+                        if($d['percentage']){
+                            $dt['amount'] = $fee['amount']/100*intval($d['percentage']);
+                            $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';     
+                        }
+                        if($d['amount']){
+                            $dt['amount'] = intval($d['amount']);
+                            $dt['content'] = 'Miễn giảm học phí '. $key . ' '.intval($d['amount']).'đ';     
+                            $discount = Discount::find($d['id']);
+                            $discount->max_use= $discount->max_use - 1;
+                            $discount->save();
+                        }
+                        Transaction::create($dt);
+                    }
+                    
+                }   
+            }
+        }
+    }
+
     protected function getSession(Request $request){
         $rules = [
             'class_id' => 'required',
@@ -92,14 +170,17 @@ class SessionController extends Controller
             'class_id' => 'required',
             'from_date' => 'required',
             'to_date' => 'required',  
-            'fee' => 'required'  
         ];
         $this->validate($request, $rules);
 
         $from_date = date('Y-m-d', $request->from_date);
         $to_date = date('Y-m-d', $request->to_date);
         $sessions = $this->generateSessionFromConfig($from_date, $to_date, $request->class_id);
-        return count($sessions);
+        
+        $students = Classes::find($request->class_id)->activeStudents;
+        $this->generateAttendances($sessions, $students);
+        $this->generateTransactions($sessions, $students, $request->class_id);
+        return response()->json($students);
     }
     protected function addSession(Request $request){
         $rules = ['class_id' => 'required', 

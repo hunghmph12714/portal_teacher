@@ -209,6 +209,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/paper/print/{id}', 'PaperController@printPaper');
 //Tag
     Route::get('/tag/get', 'TagController@getTag');
+//Fee
+    Route::get('/fee/get', 'StudentController@getFee');
 });
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');

@@ -20,6 +20,6 @@ class Classes extends Model
                     ->withTimestamps();
     }
     public function activeStudents(){
-        return $this->belongsToMany('App\Student','student_class','class_id','student_id')->wherePivot('status', 'active');
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')->wherePivot('status', 'active')->withPivot('id','status', 'entrance_date','stats');
     }
 }

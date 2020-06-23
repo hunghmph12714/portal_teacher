@@ -95,10 +95,21 @@ class Classes extends React.Component{
       // console.log(data)
       axios.post(baseUrl+'/session/create', data)
         .then(response => {
-          this.handelCloseCreateSession
+          this.handleCloseCreateSession()
           this.props.enqueueSnackbar('Thêm thành công '+ response.data+' ca học', { 
             variant: 'success',
           });
+          axios.get(window.Laravel.baseUrl + "/class/get/-1/-1")
+          .then(response => {             
+            this.setState({
+                data: response.data
+            })
+            
+          })
+          .catch(err => {
+              console.log('class get bug: ' + err)
+          })
+
         })
         .catch(err => {
           console.log(err.response.data)
