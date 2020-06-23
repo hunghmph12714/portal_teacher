@@ -145,7 +145,35 @@ class ClassController extends Controller
         // echo date("Y-m-d\TH:i:s\Z", $request->open_date/1000);
     }
     protected function editClass(Request $request){
-
+        $rules = [
+            'class_id' => 'required',
+            'code' => 'required',
+            'name' => 'required',
+            'fee' => 'required',
+            'center_id' => 'required',
+            'course_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        
+        $class = Classes::find($request->class_id);
+        if($class){
+            $class->code = $request->code;
+            $class->config = $request->config;
+            $class->name = $request->name;
+            $class->fee = $request->fee;
+            $class->center_id = $request->center_id;
+            $class->course_id = $request->course_id;
+            $class->open_date = date('Y-m-d', strtotime($request->open_date));
+            $class->save();
+            $result = Classes::where('classes.id', $class->id)->
+                        select('classes.id as id','classes.name as name','code',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                        'student_number','open_date','classes.active as status',
+                        'config','classes.fee as fee')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->first()->toArray();
+            return response()->json($result);
+        }
     }
     protected function deleteClass(Request $request){
         $rules = ['id' => 'required'];

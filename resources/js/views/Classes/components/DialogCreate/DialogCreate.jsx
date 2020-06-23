@@ -204,8 +204,8 @@ class DialogCreate extends React.Component {
             open_date: nextProps.class.open_date ? new Date(nextProps.class.open_date) : null,
             fee: (nextProps.class.fee)?nextProps.class.fee:'',
             note: nextProps.class.note,
-            course_selected : course,
-            center_selected : center,
+            course_selected : course[0],
+            center_selected : center[0],
             session_per_class: session_per_class    ,
             class_per_week: class_per_week,
             config: conf
@@ -324,7 +324,7 @@ class DialogCreate extends React.Component {
             code : this.state.code,
             name : this.state.name,
             config : JSON.stringify(this.state.config.map(c => {
-                return {from: c.from.getTime()/1000, to: c.to.getTime()/1000, teacher: c.teacher, room: c.room, date: c.date}
+                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: c.date}
             })),
             open_date : this.state.open_date.getTime()/1000,
             note : (this.state.note)?this.state.note:'',
@@ -345,6 +345,42 @@ class DialogCreate extends React.Component {
                 console.log("Create class bug: "+ err)
             })
     }
+    handleEditClass = () => {
+        let url = baseUrl + "/class/edit"
+        if(!this.state.code || !this.state.name || !this.state.open_date ||  !this.state.fee){
+            this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường *', { 
+                variant: 'error',
+            });
+            return 0;
+        }
+        let data = {
+            class_id: this.props.class.id,
+            center_id : this.state.center_selected.value,
+            course_id : this.state.course_selected.value,
+            code : this.state.code,
+            name : this.state.name,
+            config : JSON.stringify(this.state.config.map(c => {
+                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: c.date}
+            })),
+            open_date : this.state.open_date,
+            note : (this.state.note)?this.state.note:'',
+            fee : this.state.fee,
+        }
+        axios.post(url, data)
+            .then(response => {
+                this.props.updateTable(response.data)
+                this.props.enqueueSnackbar('Sửa thành công', { 
+                    variant: 'success',
+                });
+                this.props.handleCloseDialog();
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar('Có lỗi xảy ra', { 
+                    variant: 'error',
+                });
+                console.log("Create class bug: "+ err)
+            })
+    }
     onChangeTime = (c, type) => time => {
         this.setState(prevState => {
             let totalSession = prevState.session_per_class
@@ -352,10 +388,10 @@ class DialogCreate extends React.Component {
             let config = [...prevState.config]
             while(c < totalClass*totalSession){
                 if(type == 'from'){
-                    config[c].from = time
+                    config[c].from = time.getTime()
                 }
                 if(type == 'to') {
-                    config[c].to = time
+                    config[c].to = time.getTime()
                 }
                 c = c + totalSession
             }
@@ -596,7 +632,7 @@ class DialogCreate extends React.Component {
                                     Tạo mới lớp học
                                 </Button>
                             ) : (
-                                <Button onClick={this.handleEditTeacher} color="primary" id="btn-save">
+                                <Button onClick={this.handleEditClass} color="primary" id="btn-save">
                                     Lưu thay đổi
                                 </Button>
                             )
