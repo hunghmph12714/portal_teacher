@@ -73,16 +73,20 @@ class StudentController extends Controller
         }
     }
 
-    protected function getFee(){
-        $student_id = 11;
+    protected function getFee(Request $request){
+        $rules = ['student_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student_id = $request->student_id;
         $student = Student::find($student_id);
         $classes = $student->classes;
         
         $acc = Account::where('level_2','131')->first();
         $result = [];
+        $id = -1;
         foreach($classes as $class){            
             $transactions = Transaction::where('student_id', $student_id)
-                                        ->where('transactions.class_id', $class->id)->orderBy('time', 'ASC')
+                                        ->where('transactions.class_id', $class->id)
                                         ->Select(
                                             'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
                                             'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
@@ -96,21 +100,47 @@ class StudentController extends Controller
                                         ->leftJoin('students','transactions.student_id','students.id')
                                         ->leftJoin('classes','transactions.class_id','classes.id')
                                         ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-                                        ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->take(100)
+                                        ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')
                                         ->get();
-            foreach($transactions as $t){
-                $month = Date('m-Y', strtotime($t->time));
+            
+            foreach($transactions as $key => $t){
+                $month = Date('m-Y', strtotime($t->time));                
                 if(!array_key_exists($month, $result)){
+                    // echo $month."<br>";
                     $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
-                    $result[$month]['transactions'] = [$t->toArray()];
+                    $result[$month]['id'] = --$id;
+                    $result[$month]['parent_id'] = '';                    
+                    $tarray = $t->toArray();
+                    $tarray['month'] = $month;
+                    $tarray['parent_id'] = $id;
+                    array_push($result, $tarray);
+                    $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
+                    $result[$month]['month'] = $month;
+                    $result[$month]['content'] = 'Tổng tiền tháng '.$month;
+                    $result[$month]['cname'] = '';
                 }
                 else{
                     $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
-                    array_push($result[$month]['transactions'], $t->toArray());
+                    $tarray = $t->toArray();
+                    $tarray['month'] = $month;
+                    $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                    $tarray['parent_id'] = $id;
+                    array_push($result, $tarray);
                 }
             }
+            
         }
-        return response()->json($result);
+        $neutral = [];
+        foreach($result as $r){
+            if($r['amount'] == 0){
+                array_push($neutral, $r['id'] );
+            }
+        }
+        $result = array_filter($result, function($v, $k) use ($neutral){
+            return ($v['amount'] != 0) && !in_array($v['parent_id'] , $neutral);
+        }, ARRAY_FILTER_USE_BOTH);
+        
+        return response()->json(array_values($result));
     }
     
     protected function importStudent(){

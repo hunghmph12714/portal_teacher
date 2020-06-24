@@ -111,7 +111,12 @@ const Sidebar = props => {
         {
           title: 'Ưu đãi',
           href: '/discount'
+        },
+        {
+          title: 'Học phí',
+          href: '/fee'
         }
+        
       ]
     },
     {
