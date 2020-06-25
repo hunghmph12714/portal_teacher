@@ -8,6 +8,10 @@ use App\Transaction;
 class AccountController extends Controller
 {
     //
+    protected function getEquity(){
+        $accounts = Account::where('type','equity')->orderBy('level_1')->get();
+        return response()->json($accounts);
+    }
     protected function getAccount(Request $request){
         $accounts = Account::orderBy('level_1')->get();
         $result = [];

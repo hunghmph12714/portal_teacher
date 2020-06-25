@@ -170,6 +170,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/account/create', 'AccountController@addAccount');
     // Route::get('/account/importDb', 'AccountController@importDb');
     Route::post('/account/find', 'AccountController@findAccount');
+    Route::get('/get-equity', 'AccountController@getEquity');
 //Transaction
     Route::get('/transaction', function(){
         return view('welcome');
@@ -214,6 +215,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/fee', function(){
         return view('welcome');
     });
+    Route::post('/fee/gather', 'PaperController@gatherFee');
 });
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Paper;
 use App\Transaction;
 use App\Tag;
+use App\Account;
 use DB;
 class PaperController extends Controller
 {
@@ -407,5 +408,71 @@ class PaperController extends Controller
         $paper['time'] = 'Ngày '.$t[2]. ' tháng '.$t[1]. ' năm '.$t[0];
         return view('paper.print', compact('paper'));
         // return response()->json($paper);
+    }
+
+    protected function gatherFee(Request $request){
+        $rules = [
+            'transactions' => 'required',
+            'student' => 'required',
+            'center'=>'required',
+            'name' => 'required',
+            'account' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $total_amount = 0;
+        $description = [];
+        $classes = "";
+        foreach($request->transactions as $key => $value){
+            if($value['id'] > 0){
+                $t = [];
+                $total_amount += $value['amount'];
+                if(!array_key_exists($value['cname'], $description)){
+                    $description[$value['cname']] = [$value['month']];
+                }    
+                else{
+                    if(!in_array($value['month'], $description[$value['cname']])) 
+                    {
+                        array_push($description[$value['cname']], $value['month']);
+                    }
+                }
+            }
+        }
+        $classes = array_keys($description);
+        $des = "";
+        foreach($description as $class => $month){
+            $des = $des. $class. ': '. implode(', ', $month). " - ";
+        }
+        $max_receipt_number = Paper::where('center_id', $request->center)->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->max('receipt_number') : 0;
+        $p['receipt_number'] = $max_receipt_number + 1;
+        $p['center_id'] = $request->center;
+        $p['type'] = 'receipt';
+        $p['name'] = $request->name;
+        $p['description'] = 'Thu học phí '.$request->student['name']['label']. ' lớp: '.$des;
+
+        $p['amount'] = $total_amount;
+        $p['user_created_id'] = auth()->user()->id;
+        $p['note'] = '';
+        $p['created_at'] = date('Y-m-d');
+        $p['status'] = NULL;
+        $p['address'] = '';
+        // print_r($p);
+        $p = Paper::create($p);
+        foreach($request->transactions as $key => $value){
+            if($value['id'] > 0){
+                $t['debit'] = $request->account;
+                $t['credit'] = Account::where('level_2', '131')->first()->id;
+                $t['amount'] = $value['amount'];
+                $t['time'] = date('Y-m-d H:i:m', strtotime('01-'.$value['month']));
+                $t['content'] = 'Cân đối học phí '. $value['month'];
+                $t['student_id'] = $request->student['id'];
+                $t['class_id'] = $value['cid'];
+                $t['session_id'] = NULL;
+                $t['user'] = auth()->user()->id;
+                $t['paper_id'] = $p->id;                
+                Transaction::create($t);
+            }
+        }
+        return response()->json(200);
+        
     }
 }

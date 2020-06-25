@@ -113,6 +113,8 @@ class StudentController extends Controller
                     $tarray = $t->toArray();
                     $tarray['month'] = $month;
                     $tarray['parent_id'] = $id;
+                    $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                    $tarray['time'] = Date('d/m/Y', strtotime($t->time));
                     array_push($result, $tarray);
                     $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
                     $result[$month]['month'] = $month;
@@ -124,7 +126,8 @@ class StudentController extends Controller
                     $tarray = $t->toArray();
                     $tarray['month'] = $month;
                     $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
-                    $tarray['parent_id'] = $id;
+                    $tarray['parent_id'] = $result[$month]['id'];
+                    $tarray['time'] = Date('d/m/Y', strtotime($t->time));
                     array_push($result, $tarray);
                 }
             }

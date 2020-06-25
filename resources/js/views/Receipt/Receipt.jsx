@@ -229,7 +229,7 @@ const ReceiptView = React.memo(props => {
                 },
             // Người nhận
                 {
-                    title: "Người nhận",
+                    title: "Người nộp",
                     field: "name",
                     headerStyle: {
                         padding: '0px',

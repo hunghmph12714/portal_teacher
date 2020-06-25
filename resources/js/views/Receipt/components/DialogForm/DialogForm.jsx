@@ -133,13 +133,13 @@ class DialogForm extends React.Component {
             return {...prevState, transactions}
         })
     }
-    handleRecieptAmountChange = (e) => {
+    handleReceiptAmountChange = (e) => {
         this.setState({
             amount: e.target.value,
             remaining_amount: e.target.value,
         })
     }
-    handleRecieptTimeChange  = (date) => {
+    handleReceiptTimeChange  = (date) => {
         this.setState({ receipt_time : date })
     }
     onChangeTransactionCount = (e) => {
@@ -315,7 +315,7 @@ class DialogForm extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Tên người nộp</FormLabel>
+                                        <FormLabel color="primary">Tên người nhận</FormLabel>
                                         <TextField
                                             fullWidth
                                             value={this.state.name}
@@ -355,7 +355,7 @@ class DialogForm extends React.Component {
                                         <TextField
                                             fullWidth
                                             value={this.state.amount}
-                                            onChange={e => this.handleRecieptAmountChange(e)}
+                                            onChange={e => this.handleReceiptAmountChange(e)}
                                             name = "amount"
                                             variant="outlined"
                                             size="small"
@@ -371,7 +371,7 @@ class DialogForm extends React.Component {
                                                 autoOk
                                                 fullWidth
                                                 value={this.state.receipt_time}                            
-                                                onChange={this.handleRecieptTimeChange}
+                                                onChange={this.handleReceiptTimeChange}
                                                 placeholder="Ngày chứng từ"                            
                                                 className="input-date"
                                                 variant="inline"

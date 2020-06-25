@@ -43,6 +43,7 @@ class AttendanceController extends Controller
                 $sa = StudentSession::find($a['id']);
                 if($sa){
                     $sa->attendance = $a['attendance'];
+                    $sa->score = $a['score'];
                     $sa->save();
                 }
             }

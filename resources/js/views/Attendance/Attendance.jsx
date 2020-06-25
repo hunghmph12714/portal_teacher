@@ -214,7 +214,25 @@ class Attendance extends React.Component{
                 }
                 return d
             })
-            console.log(prevState.data)
+            return {...prevState, selected_data}
+        })
+    }
+    onScoreStudentChange =  (student_id, session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            // console.log(session_id)
+                            a.score = e.target.value
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
             return {...prevState, selected_data}
         })
     }
@@ -509,6 +527,8 @@ class Attendance extends React.Component{
                                                 )
                                             })
                                         }</TableCell>
+                                    <TableCell align="center">Điểm<br/>
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -598,6 +618,26 @@ class Attendance extends React.Component{
                                                     <Tooltip title={session_info[0].label} arrow>
                                                         <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'holding')} 
                                                         checked={s.attendance=='holding'}/>
+                                                    </Tooltip>                                                    
+                                                )
+                                            })
+                                        }                                        
+                                    </TableCell> 
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                return (
+                                                    <Tooltip title={session_info[0].label} arrow>                                                       
+                                                        <TextField
+                                                            fullWidth
+                                                            value={s.score}
+                                                            name = {'score_'+s.session_id} 
+                                                            key = {'score_'+s.session_id} 
+                                                            variant="outlined"
+                                                            size="small"
+                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
+                                                        />
                                                     </Tooltip>                                                    
                                                 )
                                             })
