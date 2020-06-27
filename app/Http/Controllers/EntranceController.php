@@ -167,7 +167,7 @@ class EntranceController extends Controller
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
-            'classes.id as class_id', 'classes.name as class', 'enroll_date'
+            'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message'
         )->where('entrances.step_id', $sig, $step)
         ->leftJoin('students','student_id','students.id')->leftJoin('parents','students.parent_id','parents.id')
         ->leftJoin('relationships','parents.relationship_id','relationships.id')
@@ -296,5 +296,21 @@ class EntranceController extends Controller
 
         $entrance = Entrance::find($request->id)->forceDelete();
         return response()->json(200);
+    }
+    protected function sendMessage(Request $request){
+        $rules = ['entrance_id' => 'required', 'message' => 'required'];
+        $this->validate($request, $rules);
+        $entrance = Entrance::find($request->entrance_id);
+
+        $time = strtotime(date('d-m-Y H:i:m'));
+
+        $user = auth()->user()->name;
+        if($entrance){
+            $r = $entrance->message;
+            array_push($r, ['time'=> $time , 'user' => $user, 'content' => $request->message]);
+            $entrance->message = $r;
+            return response()->json($r);
+        }
+        
     }
 }

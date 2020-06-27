@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import './ViewEntrance.scss'
 // import { DialogCreate } from './components';
 import { EditEntrance } from '../EditEntrance';
@@ -9,7 +9,7 @@ import {
     Tooltip,
     Button,
   } from "@material-ui/core";
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +22,14 @@ import { store } from 'react-notifications-component';
 import axios from 'axios';
 import Chip from '@material-ui/core/Chip';
 import { colors } from '@material-ui/core';
+import { format } from 'date-fns'
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import orange from '@material-ui/core/colors/orange';
 import yellow from '@material-ui/core/colors/yellow';
@@ -36,6 +44,40 @@ const customChip = (color = '#ccc') => ({
   color: '#000',
   fontSize: '12px',
 })
+const MessageInput = props => {
+  const { entrance_id } = props
+  const [ message, setMessage ] = useState('');
+  const onChangeMessage = (e) => {
+    setMessage(e.target.value)
+  }
+  const sendMessage = () => {
+    axios.post(baseUrl + '/entrance/send-message', {entrance_id : entrance_id, message: message})
+      .then(response => {
+        props.updateMessage(entrance_id, response.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  return (
+    <React.Fragment>
+      <TextField  label="Tin nhắn" 
+        className = "input-text"
+        variant="outlined"
+        size="small"
+        type="text"
+        margin = "dense"
+        name = 'message'
+        value = {message}
+        onChange = {onChangeMessage}
+      />
+      <Button color="primary" onClick = {sendMessage}>
+        Lưu
+      </Button>
+    </React.Fragment>
+     
+  )
+}
 class ViewEntrance extends React.Component{
     constructor(props){
         super(props)
@@ -48,6 +90,7 @@ class ViewEntrance extends React.Component{
             steps: [],
             selectedEntrance: '',
             loaded: false,
+            message: '',
         }
     }
    
@@ -56,7 +99,7 @@ class ViewEntrance extends React.Component{
       this.getEntrance();
     }
     getEntrance = () => {
-      console.log(this.state.steps)
+      // console.log(this.state.steps)
       axios.get(baseUrl + "/get-entrance/-1 ")
         .then(response => {
           let r = {}
@@ -149,6 +192,18 @@ class ViewEntrance extends React.Component{
           console.log(err.response.data)
         })
     }   
+    updateMessage = ( entrance_id, messages ) => {
+      this.setState( prevState => {
+        let data = prevState.data
+        data.map( e => {
+          if(e.eid == entrance_id ){
+            e.message = messages
+          }
+          return e
+        })
+        return {...prevState , data}
+      })
+    }
     render(){      
         return(          
           <React.Fragment>  
@@ -450,14 +505,36 @@ class ViewEntrance extends React.Component{
                     
                   ]}
                   detailPanel={rowData => {
-                    if(!rowData.enote){
-                      return ""
+                    if(rowData.message){
+                      let messages = rowData.message
+                      let content = ''
+                      return(
+                        <Table className='' aria-label="simple table"  size="small">
+                           <TableBody>
+                                {messages.map(m => {return (
+                                  <TableRow>
+                                      <TableCell>{format(new Date(m.time*1000) , 'd/M/yyyy HH:mm')}</TableCell>
+                                      <TableCell>{m.user}</TableCell>
+                                      <TableCell>{m.content}</TableCell>
+                                  </TableRow>
+                                )})}
+                                <TableRow>
+                                  <TableCell>
+                                    {format(new Date() , 'd/M/yyyy HH:mm')}
+                                  </TableCell>
+                                  <TableCell>
+                                    
+                                  </TableCell>
+                                  <TableCell>
+                                    <MessageInput entrance_id = {rowData.eid} updateMessage={this.updateMessage}/>
+                                  </TableCell>
+                                </TableRow>
+                            </TableBody>                             
+                        </Table>
+                      )
                     }
-                    let note = rowData.enote.split('|')
-                    return note.map(n => {
-                      return (<div className="entrance_comment"> {n} </div>)
-                    })                    
-                    }}
+                  
+                  }}
                         
                   />
                   <EditEntrance 

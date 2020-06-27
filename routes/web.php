@@ -138,6 +138,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
     Route::post('/entrance/edit', 'EntranceController@editEntrance');
     Route::post('/entrance/delete', 'EntranceController@deleteEntrance');
+    Route::post('/entrance/send-message', 'EntranceController@sendMessage');
+    
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudents');
