@@ -505,35 +505,32 @@ class ViewEntrance extends React.Component{
                     
                   ]}
                   detailPanel={rowData => {
-                    if(rowData.message){
-                      let messages = rowData.message
-                      let content = ''
-                      return(
-                        <Table className='' aria-label="simple table"  size="small">
-                           <TableBody>
-                                {messages.map(m => {return (
-                                  <TableRow>
-                                      <TableCell>{format(new Date(m.time*1000) , 'd/M/yyyy HH:mm')}</TableCell>
-                                      <TableCell>{m.user}</TableCell>
-                                      <TableCell>{m.content}</TableCell>
-                                  </TableRow>
-                                )})}
+                    let messages = (rowData.message)?rowData : []
+                    let content = ''
+                    return(
+                      <Table className='' aria-label="simple table"  size="small">
+                          <TableBody>
+                              {messages.map(m => {return (
                                 <TableRow>
-                                  <TableCell>
-                                    {format(new Date() , 'd/M/yyyy HH:mm')}
-                                  </TableCell>
-                                  <TableCell>
-                                    
-                                  </TableCell>
-                                  <TableCell>
-                                    <MessageInput entrance_id = {rowData.eid} updateMessage={this.updateMessage}/>
-                                  </TableCell>
+                                    <TableCell>{format(new Date(m.time*1000) , 'd/M/yyyy HH:mm')}</TableCell>
+                                    <TableCell>{m.user}</TableCell>
+                                    <TableCell>{m.content}</TableCell>
                                 </TableRow>
-                            </TableBody>                             
-                        </Table>
-                      )
-                    }
-                  
+                              )})}
+                              <TableRow>
+                                <TableCell>
+                                  {format(new Date() , 'd/M/yyyy HH:mm')}
+                                </TableCell>
+                                <TableCell>
+                                  
+                                </TableCell>
+                                <TableCell>
+                                  <MessageInput entrance_id = {rowData.eid} updateMessage={this.updateMessage}/>
+                                </TableCell>
+                              </TableRow>
+                          </TableBody>                             
+                      </Table>
+                    )
                   }}
                         
                   />

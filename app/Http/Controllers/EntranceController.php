@@ -306,9 +306,10 @@ class EntranceController extends Controller
 
         $user = auth()->user()->name;
         if($entrance){
-            $r = $entrance->message;
+            $r = ($entrance->message)?$entrance->message: [];
             array_push($r, ['time'=> $time , 'user' => $user, 'content' => $request->message]);
             $entrance->message = $r;
+            $entrance->save();
             return response()->json($r);
         }
         
