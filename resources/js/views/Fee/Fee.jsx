@@ -122,6 +122,7 @@ const NameText = React.memo(props => {
 
     return (
         <TextField
+            className="select-box"
             variant="outlined"
             label="Tên người nộp"
             value={props.name}
