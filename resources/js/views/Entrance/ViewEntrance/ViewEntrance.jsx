@@ -149,7 +149,7 @@ class ViewEntrance extends React.Component{
         open_edit: true,
         selectedEntrance: rowData
       })
-      console.log(rowData)
+      // console.log(rowData)
     }
     handleCloseDialogCreate = () => {
       this.setState({open_edit : false, selectedEntrance : ''})
@@ -505,7 +505,7 @@ class ViewEntrance extends React.Component{
                     
                   ]}
                   detailPanel={rowData => {
-                    let messages = (rowData.message)?rowData : []
+                    let messages = (rowData.message)?rowData.message : []
                     let content = ''
                     return(
                       <Table className='' aria-label="simple table"  size="small">

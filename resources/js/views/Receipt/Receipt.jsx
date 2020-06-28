@@ -168,7 +168,7 @@ const ReceiptView = React.memo(props => {
                     render: rowData => {
                         return (
                             <span>
-                                PC{rowData.receipt_number}
+                                PT{rowData.receipt_number}
                             </span>
                         )
                     }

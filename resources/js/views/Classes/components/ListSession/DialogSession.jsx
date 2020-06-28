@@ -126,7 +126,13 @@ class DialogSession extends React.Component {
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        
+        //d
+        let s = nextProps.session
+        console.log(nextProps.session)
+        this.setState({
+            room : {label: s.rname, value: s.rid},
+            center : {label: s.ctname, value: s.ctid},
+        })
     }    
    
     getRoom = (center_id) => {

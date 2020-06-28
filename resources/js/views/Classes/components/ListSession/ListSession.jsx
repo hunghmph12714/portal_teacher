@@ -26,6 +26,7 @@ const ListSession = (props) => {
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [fetchData, setFetchData] = useState(false);
+    const [selected_session, setSelectedSession] = useState([]);
     const [columns, setColumn] = useState(
       [
         //Actions
@@ -47,7 +48,7 @@ const ListSession = (props) => {
                 <div style = {{display: 'block'}}>
                     {/* {rowData.tableData.id} */}
                     <Tooltip title="Chỉnh sửa" arrow>
-                      <IconButton onClick={handleEditSession}>
+                      <IconButton onClick={() => handleEditSession(rowData)}>
                         <EditOutlinedIcon fontSize='inherit' />
                       </IconButton>
                     </Tooltip>
@@ -222,9 +223,11 @@ const ListSession = (props) => {
       setOpen(true)
       setDialogType('create')
     }
-    function handleEditSession(){
+    function handleEditSession(rowData){
       setOpen(true)
       setDialogType('edit')
+      setSelectedSession(rowData)
+      //ss
     }
     useEffect(() => {
         const fetchData = async() => {
@@ -298,6 +301,7 @@ const ListSession = (props) => {
             <DialogSession
               open={open}
               class={{}}
+              session = {selected_session}
               class_id = {class_id}
               handleCloseDialog={handleCloseSessionDialog}
               dialogType = {dialogType}/>

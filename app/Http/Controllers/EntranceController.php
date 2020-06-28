@@ -197,7 +197,7 @@ class EntranceController extends Controller
             }
         }
         if($request->parent_changed){
-            $p = Parent::find($request->parent_id);
+            $p = Parents::find($request->parent_id);
             if($p){
                 $p->relationship_id = $request->selected_relationship['value'];
                 $p->fullname = $request->parent_name['label'];
@@ -217,12 +217,8 @@ class EntranceController extends Controller
                 $e->center_id = $request->entrance_center['value'];
                 $e->course_id = $request->entrance_courses['value'];
                 $e->test_time = ($request->entrance_date) ? date('Y-m-d H:i:m', strtotime($request->entrance_date)) : null;
-                $new_note = explode("|",$request->entrance_note);
-                $old_note = explode("|", $e->note);                
-                if(count($new_note) >= count($old_note)){
-                    $n = date('d-m-Y') . " - ". auth()->user()->name. ": " .$new_note[count($new_note) - 1]. "\r\n|" ;
-                    $e->note = $e->note . $n;
-                }
+                
+                $e->note = $request->entrance_note;
                 $e->status_id = $request->entrance_status['value'];
                 //Check step changed
                 if($e->step_id != $request->entrance_step['value']){
@@ -254,17 +250,18 @@ class EntranceController extends Controller
         $enroll['student_id'] = $student_id;
         $enroll['class_id'] = $class_id;
         $enroll['entrance_date'] = $entrance_date;
+        $enroll['status'] = 'waiting';
         $sc = StudentClass::insert($enroll);
         //Enroll Student to session of class
 
-        $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
-        foreach($sessions as $s){
-            $input['student_id'] = $student_id;
-            $input['session_id'] = $s->id;
-            $input['type'] = 'official';
-            StudentSession::insert($input);
-        }
-        print_r($sessions->toArray());
+        // $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
+        // foreach($sessions as $s){
+        //     $input['student_id'] = $student_id;
+        //     $input['session_id'] = $s->id;
+        //     $input['type'] = 'official';
+        //     StudentSession::insert($input);
+        // }
+        // print_r($sessions->toArray());
     }
     protected function uploadTest(Request $request){
         $rules = ['entrance_id' => 'required'];

@@ -4,7 +4,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
-
+import DialogCreate from './DialogCreate'
 import {
     Menu,
     MenuItem,
@@ -22,10 +22,12 @@ const customChip = (color = '#ccc') => ({
     color: '#000',
     fontSize: '12px',
   })
+
 const ListStudent = (props) => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const { class_id } = props
     const [data, setData] = useState([]);
+    const [ openDialog, setOpen ] = useState(false);
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -40,24 +42,30 @@ const ListStudent = (props) => {
         }
         fetchData()
     }, [])
+    function openCreateDialog(){
+        setOpen(true)
+    }
+    function closeCreateDialog(){
+        setOpen(false)
+    }
     return (
         <React.Fragment>
             <MaterialTable
                 title="Danh sách học sinh"
                 data={data}
                 options={{
-                        pageSize: 10,
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,
-                        rowStyle: rowData => {
-                            return {padding: '0px',}                         
-                          
-                        },
-                        filterCellStyle: {
-                          paddingLeft: '0px'
-                        }
-                    }}
+                    pageSize: 10,
+                    grouping: true,
+                    filtering: true,
+                    exportButton: true,
+                    rowStyle: rowData => {
+                        return {padding: '0px',}                         
+                        
+                    },
+                    filterCellStyle: {
+                        paddingLeft: '0px'
+                    }
+                }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
                 actions={[                       
                         {
@@ -66,7 +74,7 @@ const ListStudent = (props) => {
                             isFreeAction: true,
                             text: 'Thêm học sinh',
                             onClick: (event) => {
-                                this.props.history.push('/entrance/create')
+                                openCreateDialog()
                             },
                         },
                     ]}
@@ -262,6 +270,10 @@ const ListStudent = (props) => {
                     }                 
                     
                   ]}
+            />
+            <DialogCreate 
+                open = {openDialog}
+                handleClose = {closeCreateDialog}
             />
         </React.Fragment>
     )
