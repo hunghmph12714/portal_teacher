@@ -48,7 +48,7 @@ class StudentController extends Controller
         $class = Classes::find($class_id);
         $result = [];
         if($class){
-            $students = $class->students;
+            $students = $class->students()->orderBy('status')->get();
             $result = $students->toArray();
             foreach($students as $key=>$student){
                 $parent = Parents::where('parents.id',$student->parent_id)
