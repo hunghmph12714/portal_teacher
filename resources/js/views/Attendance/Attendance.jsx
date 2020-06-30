@@ -236,6 +236,25 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
+    onBtvnScoreChange =  (student_id, session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            // console.log(session_id)
+                            a.btvn_score = e.target.value
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
     render(){
         return(
             <div className="root-attendance">
@@ -527,7 +546,41 @@ class Attendance extends React.Component{
                                                 )
                                             })
                                         }</TableCell>
-                                    <TableCell align="center">Điểm<br/>
+                                    <TableCell align="center">Bài tập trên lớp<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                    <Tooltip title={s.label} arrow>                                                       
+                                                        <TextField
+                                                            className="score_input"
+                                                            placeholder="Tổng điểm"
+                                                            name="max_score"                                                          
+                                                            variant="outlined"
+                                                            size="small"
+                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
+                                                        />
+                                                    </Tooltip>  
+                                                )
+                                            })
+                                        }
+                                    </TableCell>
+                                    <TableCell align="center">Bài tập về nhà<br/>
+                                        {
+                                            this.state.selected_session.map(s => {
+                                                return (
+                                                    <Tooltip title={s.label} arrow>                                                       
+                                                        <TextField
+                                                            className="score_input"
+                                                            placeholder="Tổng điểm"
+                                                            name="max_score"                                                          
+                                                            variant="outlined"
+                                                            size="small"
+                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
+                                                        />
+                                                    </Tooltip>  
+                                                )
+                                            })
+                                        }
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
@@ -630,13 +683,53 @@ class Attendance extends React.Component{
                                                 return (
                                                     <Tooltip title={session_info[0].label} arrow>                                                       
                                                         <TextField
-                                                            fullWidth
+                                                            className="score_input"
                                                             value={s.score}
                                                             name = {'score_'+s.session_id} 
                                                             key = {'score_'+s.session_id} 
                                                             variant="outlined"
                                                             size="small"
                                                             onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
+                                                        />
+                                                    </Tooltip>                                                    
+                                                )
+                                            })
+                                        }                                        
+                                    </TableCell> 
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                return (
+                                                    <Tooltip title={session_info[0].label} arrow>                                                       
+                                                        <TextField
+                                                            className="score_input"
+                                                            value={s.btvn_score}
+                                                            name = {'btvn_score'+s.session_id} 
+                                                            key = {'btvn_score'+s.session_id} 
+                                                            variant="outlined"
+                                                            size="small"
+                                                            onChange={(e) => this.onBtvnScoreChange(row.student.sid, s.session_id, e)}
+                                                        />
+                                                    </Tooltip>                                                    
+                                                )
+                                            })
+                                        }                                        
+                                    </TableCell> 
+                                    <TableCell align="center">
+                                        {
+                                            row.attendance.map(s => {
+                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
+                                                return (
+                                                    <Tooltip title={session_info[0].label} arrow>                                                       
+                                                        <TextField
+                                                            className="btvn_complete"
+                                                            value={s.btvn_complete}
+                                                            name = {'btvn_complete'+s.session_id} 
+                                                            key = {'btvn_complete'+s.session_id} 
+                                                            variant="outlined"
+                                                            size="small"
+                                                            onChange={(e) => this.onBtvnCompleteChange(row.student.sid, s.session_id, e)}
                                                         />
                                                     </Tooltip>                                                    
                                                 )

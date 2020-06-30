@@ -210,7 +210,7 @@ class Teacher extends React.Component{
                     ]}
                     localization={{
                         body: {
-                            emptyDataSourceMessage: 'Không tìm thấy giáo viên hoặc sever gặp lỗi'
+                            emptyDataSourceMessage: 'Không tìm thấy giáo viên'
                         },
                         toolbar: {
                             searchTooltip: 'Tìm kiếm',

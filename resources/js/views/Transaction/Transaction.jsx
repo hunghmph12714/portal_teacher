@@ -155,7 +155,7 @@ const TransactionView = React.memo(props => {
             }}
             localization={{
                 body: {
-                    emptyDataSourceMessage: 'Không tìm thấy giao dịch hoặc sever gặp lỗi'
+                    emptyDataSourceMessage: 'Không tìm thấy giao dịch'
                 },
                 toolbar: {
                     searchTooltip: 'Tìm kiếm',

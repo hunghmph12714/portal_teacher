@@ -9,6 +9,9 @@ use App\Classes;
 use Carbon\Carbon;
 use App\Schools;
 use App\Student;
+use App\Parents;
+use App\StudentClass;
+use App\StudentSession;
 use Illuminate\Http\Request;
 
 class ClassController extends Controller
@@ -95,6 +98,112 @@ class ClassController extends Controller
         return response()->json(200);
     }
     // Lớp học
+    protected function handleCreateStudent($parent_id, $request){
+        $s['parent_id'] = $parent_id;
+        $s['relationship_id'] = $request['selected_relationship']['value'];
+        $s['fullname'] = $request['student_name']['value'];
+        $s['school'] = $request['student_school']['label'];
+        $s['grade'] = $request['student_grade'];
+        $s['email'] = $request['student_email'];
+        $s['phone'] = $request['student_phone'];
+        $s['dob'] = $request['student_dob'];
+        $s['gender'] = $request['student_gender'];
+
+        return Student::create($s);
+    }
+    protected function handleUpdateStudent($student_id, $request){
+        // $s['parent_id'] = $parent_id;
+        $s['relationship_id'] = $request['selected_relationship']['value'];
+        $s['fullname'] = $request['student_name']['label'];
+        $s['school'] = $request['student_school']['label'];
+        $s['grade'] = $request['student_grade'];
+        $s['email'] = $request['student_email'];
+        $s['phone'] = $request['student_phone'];
+        $s['dob'] = $request['student_dob'];
+        $s['gender'] = $request['student_gender'];
+        
+        return Student::find($student_id)->update($s);
+    }
+    protected function addStudentToClass(Request $request){
+        //Validation
+        $rules = [
+            'student_name' => 'required',
+            'parent_name' => 'required',
+            'parent_email' => 'required | email',
+            'parent_phone' => 'required',
+            'status' => 'required',
+        ];
+        $messages = [
+            'student_name.required' => 'Vui lòng điền tên học sinh',
+            'parent_name.required' => 'Vui lòng điền tên phụ huynh',
+            'parent_email.required' => 'Vui lòng điền email phụ huynh',
+            'parent_email.email' => 'Email không hợp lệ',
+            'parent_phone.required' => 'Vui lòng điền số điện thoại phụ huynh',
+            'status.required' => 'Vui lòng điền trạng thái'
+        ];
+        $this->validate($request, $rules, $messages);
+        $request = $request->toArray();
+        $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', strtotime($request['student_dob'])) : null;
+        $p = [];
+        $p['fullname'] = $request['parent_name']['label'];
+        $p['relationship_id'] = $request['selected_relationship']['value'];
+        $p['phone'] = $request['parent_phone'];
+        $p['email'] = $request['parent_email'];
+        $p['note'] = $request['parent_note'];
+        $p['alt_fullname'] = $request['parent_alt_name'];
+        $p['alt_email'] = $request['parent_alt_email'];
+        $p['alt_phone'] = $request['parent_alt_phone'];
+        $student_id = NULL;
+        //Check parent exist
+        if($request['parent_name']['__isNew__']){
+        // New parent
+            $parent = Parents::create($p);
+
+            if($request['student_name']['__isNew__']){ // New Student
+            //Create new student
+                $student = $this->handleCreateStudent($parent->id, $request);
+                $student_id = $student->id;
+            //Add student to Class
+            }
+        } 
+        else{
+        //Existed parent
+            //Update parent 
+            Parents::find($request['parent_name']['value'])->update($p);
+            if($request['student_name']['__isNew__']){ // New Student
+            //Create new student
+                $parent_id = $request['parent_name']['value'];
+                $student = $this->handleCreateStudent($parent_id, $request);
+                $student_id = $student->id;
+            //Add student to Class
+                
+            //Generate fee   
+            }
+            else{
+                $student_id = $request['student_name']['value'];
+                $this->handleUpdateStudent($student_id, $request);
+                
+                //Add student to Class
+
+                //Generate fee
+            }
+        }
+        if($student_id){
+            $checkExisting = StudentClass::where('class_id', $request['class_id'])->where('student_id', $student_id)->first();
+            if($checkExisting){
+                return response()->json('Học sinh đã tồn tại trong lớp', 422);
+            }
+            else{
+                $sc['student_id'] = $student_id;
+                $sc['class_id'] = $request['class_id'];
+                $sc['status'] = $request['status'];
+                $sc['entrance_date'] = date('Y-m-d', strtotime($request['active_date']));
+                
+                $sc = StudentClass::create($sc);
+            }
+        }
+        return response()->json('ok');
+    }
     protected function getClass($center_id, $course_id){
         $center_operator = ($center_id == '-1')? '!=': '=';
         $center_value = ($center_id == '-1')? NULL: $center_id;

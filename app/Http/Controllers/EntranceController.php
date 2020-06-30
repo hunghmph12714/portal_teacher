@@ -254,19 +254,19 @@ class EntranceController extends Controller
         $enroll['student_id'] = $student_id;
         $enroll['class_id'] = $class_id;
         $enroll['entrance_date'] = $entrance_date;
-        $sc = StudentClass::insert($enroll);
+        $sc = StudentClass::create($enroll);
         //Enroll Student to session of class
 
-        $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
-        foreach($sessions as $s){
-            $input['student_id'] = $student_id;
-            $input['session_id'] = $s->id;
-            $input['type'] = 'official';
-            StudentSession::insert($input);
-        }
-        $sessions = $sessions->toArray();
-        $students = Student::where('id', $student_id)->get();
-        $this->generateTransactions($sessions, $students, $class_id);
+        // $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
+        // foreach($sessions as $s){
+        //     $input['student_id'] = $student_id;
+        //     $input['session_id'] = $s->id;
+        //     $input['type'] = 'official';
+        //     StudentSession::insert($input);
+        // }
+        // $sessions = $sessions->toArray();
+        // $students = Student::where('id', $student_id)->get();
+        // $this->generateTransactions($sessions, $students, $class_id);
         // print_r($seessions->toArray());
     }
     public function generateTransactions($sessions, $students, $class_id){

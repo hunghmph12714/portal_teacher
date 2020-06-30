@@ -85,7 +85,7 @@ const PaymentView = React.memo(props => {
             }}
             localization={{
                 body: {
-                    emptyDataSourceMessage: 'Không tìm thấy phiếu chi hoặc sever gặp lỗi'
+                    emptyDataSourceMessage: 'Không tìm thấy phiếu chi'
                 },
                 toolbar: {
                     searchTooltip: 'Tìm kiếm',

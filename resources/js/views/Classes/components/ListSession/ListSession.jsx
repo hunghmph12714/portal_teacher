@@ -277,7 +277,7 @@ const ListSession = (props) => {
                     ]}
                 localization={{
                         body: {
-                            emptyDataSourceMessage: 'Không tìm thấy ca học hoặc sever gặp lỗi'
+                            emptyDataSourceMessage: 'Không tìm thấy ca học'
                         },
                         toolbar: {
                             searchTooltip: 'Tìm kiếm',

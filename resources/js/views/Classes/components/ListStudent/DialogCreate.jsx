@@ -1,9 +1,10 @@
 import React , { useState, useEffect } from 'react';
+import './DialogCreate.scss'
 import axios from 'axios';
 import _ from "lodash";
 import Box from '@material-ui/core/Box';
 // import './DialogCreate.scss';
-import { Paper} from '@material-ui/core';
+import { Paper, Grid} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import SaveIcon from '@material-ui/icons/Save';
@@ -14,6 +15,18 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { StudentForm, ParentForm } from '../../../Entrance/components';
 import { withSnackbar } from 'notistack';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 const baseUrl = window.Laravel.baseUrl
 
 class DialogCreate extends React.Component {    
@@ -39,11 +52,9 @@ class DialogCreate extends React.Component {
             
             selected_relationship: '',
 
-            entrance_center: '',
-            entrance_courses: [],
-            entrance_multi_course: true,
-            entrance_date: new Date(),
-            entrance_note: '',           
+            status: '',
+            active_date: new Date(),
+            create_fee : true,         
 
         }
     }
@@ -106,31 +117,33 @@ class DialogCreate extends React.Component {
         this.setState({
             [e.target.name] : e.target.value
         })
+        if(e.target.name == "status" && e.target.value == "active"){
+            this.setState({ create_fee : true })
+        }
     };
     handleDateChange = date => {
         this.setState({ student_dob: date });
     };
-    handleEntranceDateChange = date => {
-        this.setState({ entrance_date: date });
+    handleChecked = e => {
+        this.setState({
+            [e.target.name] : e.target.checked
+        })
     }
+    handleActiveDateChange = date => {
+        this.setState({ active_date : date });
+    }
+    
     handleDialogCreate = (e) => {
         e.preventDefault();
         let data = this.state
-        data.entrance_date = this.state.entrance_date.getTime()/1000
-        data.student_dob = this.state.student_dob.getTime()/1000
-   
-        axios.post(baseUrl + '/entrance/create', data)
+        data.class_id = this.props.class_id
+        axios.post(baseUrl + '/class/add-student', data)
             .then(response => {
-                this.props.enqueueSnackbar('Tạo ghi danh thành công', { 
+                this.props.enqueueSnackbar('Thêm học sinh thành công', { 
                     variant: 'success',
                 });
-                setTimeout(this.props.history.push('/entrance/list'), 1000)
             })
-            .catch(err => {
-                this.setState({
-                    entrance_date : new Date(data.entrance_date*1000),
-                    student_dob : new Date(data.student_dob * 1000)
-                })
+            .catch(err => {                
                 // console.log("create entrance bug: " + err.response.data)
                 let variant = ''
                 let response = err.response
@@ -182,12 +195,56 @@ class DialogCreate extends React.Component {
                         handleChange = {this.handleChange}
                     />
                     <Divider/>
+                    <h5 className="title-header">Nhập học</h5>
+                        <Grid container spacing={3}>
+                            <Grid item md={4} sm={12}>
+                                <FormControl variant="outlined" size="small" fullWidth className="input-text">
+                                    <InputLabel className="input-text">Trạng thái</InputLabel>
+                                    <Select
+                                        className="input-text"
+                                        name="status"
+                                        value={this.state.status}
+                                        onChange={this.onChange}
+                                        label="Trạng thái"
+                                    >
+                                        <MenuItem value={'active'}>Hoạt động</MenuItem>
+                                        <MenuItem value={'waiting'}>Chờ học</MenuItem>
+                                        <MenuItem value={'retain'}>Bảo lưu</MenuItem>
+                                    </Select>
+                                </FormControl>    
+                            </Grid>
+                            <Grid item md={4} sm={12}> 
+                                <div className="date-time">
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <KeyboardDatePicker
+                                            autoOk
+                                            className="input-date"
+                                            variant="inline"
+                                            inputVariant="outlined"
+                                            format="dd/MM/yyyy"
+                                            placeholder="Ngày nhập học"
+                                            views={["year", "month", "date"]}
+                                            value={this.state.active_date}
+                                            onChange={this.handleActiveDateChange}
+                                        />                     
+                                    </MuiPickersUtilsProvider>     
+                                </div>
+                            </Grid>
+                            <Grid item md={4} sm={12}> 
+                            <FormControlLabel
+                                control = {
+                                    <Checkbox checked={this.state.create_fee} onChange={this.handleChecked} name="create_fee" disabled={this.state.status == 'active'}/>
+                                }
+                                label="Khởi tạo học phí"
+                            />
+                            </Grid>
+                        </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.props.handleClose} color="primary">
                     Hủy bỏ
                 </Button>
-                <Button onClick={this.handleCreateNewClass} color="primary" id="btn-save">
+                <Button onClick={this.handleDialogCreate} color="primary" id="btn-save">
                     Xác nhận
                 </Button>
                 

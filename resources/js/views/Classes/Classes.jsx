@@ -170,7 +170,7 @@ class Classes extends React.Component{
                       ]}
                       localization={{
                           body: {
-                              emptyDataSourceMessage: 'Không tìm thấy lớp học hoặc sever gặp lỗi'
+                              emptyDataSourceMessage: 'Không tìm thấy lớp học'
                           },
                           toolbar: {
                               searchTooltip: 'Tìm kiếm',

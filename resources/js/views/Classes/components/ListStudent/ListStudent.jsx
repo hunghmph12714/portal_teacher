@@ -34,7 +34,10 @@ const ListStudent = (props) => {
             setData(response.data.map(r => {
                     let date = new Date(r.dob)
                     r.dob = format(date , 'dd/MM/yyyy')      
-                    r.detail.entrance_date = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
+                    r.entrance_date = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
+                    r.status = r.detail.status
+                    r.pname = r.parent.pname
+                    r.rname = r.parent.rname
                     return r
                 })
             )
@@ -54,13 +57,21 @@ const ListStudent = (props) => {
                 title="Danh sách học sinh"
                 data={data}
                 options={{
-                    pageSize: 10,
-                    grouping: true,
+                    grouping: false,
                     filtering: true,
                     exportButton: true,
+                    paging: false,
                     rowStyle: rowData => {
                         return {padding: '0px',}                         
                         
+                    },
+                    rowStyle: rowData => {                       
+                        if(rowData.status == 'droped'){
+                            return { backgroundColor: '#d4cad5'}
+                        }
+                        if(rowData.status == 'waiting'){
+                            return { backgroundColor: '#cac2c0'}
+                        }
                     },
                     filterCellStyle: {
                         paddingLeft: '0px'
@@ -80,7 +91,7 @@ const ListStudent = (props) => {
                     ]}
                 localization={{
                         body: {
-                            emptyDataSourceMessage: 'Không tìm thấy học sinh hoặc sever gặp lỗi'
+                            emptyDataSourceMessage: 'Không tìm thấy học sinh'
                         },
                         toolbar: {
                             searchTooltip: 'Tìm kiếm',
@@ -101,50 +112,48 @@ const ListStudent = (props) => {
                     }}
                 columns={[
                     //Actions
-                    {
-                        title: "",
-                        field: "action",
-                        filtering: false,
-                        disableClick: true,
-                        sorting: false,
-                        headerStyle: {
-                            padding: '0px',
-                            width: '140px',
-                        },
-                        cellStyle: {
-                            width: '114px',
-                            padding: '0px',
-                        },
-                        render: rowData => (
-                            <div style = {{display: 'block'}}>
-                                {/* {rowData.tableData.id} */}
-                                <Tooltip title="Chỉnh sửa" arrow>
-                                    <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                                    <EditOutlinedIcon fontSize='inherit' />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Xóa học sinh" arrow>
-                                    <IconButton onClick={() => {
-                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                                    }>
-                                    <DeleteForeverIcon fontSize='inherit' />
-                                    </IconButton>
-                                </Tooltip>                                
-                            </div>
-                        )
-                    },
+                    // {
+                    //     title: "",
+                    //     field: "action",
+                    //     filtering: false,
+                    //     disableClick: true,
+                    //     sorting: false,
+                    //     headerStyle: {
+                    //         padding: '0px',
+                    //         width: '140px',
+                    //     },
+                    //     cellStyle: {
+                    //         width: '114px',
+                    //         padding: '0px',
+                    //     },
+                    //     render: rowData => (
+                    //         <div style = {{display: 'block'}}>
+                    //             {/* {rowData.tableData.id} */}
+                    //             <Tooltip title="Chỉnh sửa" arrow>
+                    //                 <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                    //                 <EditOutlinedIcon fontSize='inherit' />
+                    //                 </IconButton>
+                    //             </Tooltip>
+                    //             <Tooltip title="Xóa học sinh" arrow>
+                    //                 <IconButton onClick={() => {
+                    //                 if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                    //                     this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                    //                 }>
+                    //                 <DeleteForeverIcon fontSize='inherit' />
+                    //                 </IconButton>
+                    //             </Tooltip>                                
+                    //         </div>
+                    //     )
+                    // },
                     //STT
                     {
                         title: "STT",
                         field: "id",
                         headerStyle: {
-                            padding: '0px',
                             width: '50px',
                             fontWeight: '600',
                         },
                         cellStyle: {
-                            padding: '0px',
                             width: '50px',
                         },
                         render: rowData => {
@@ -173,9 +182,7 @@ const ListStudent = (props) => {
                             <Typography variant="body2" component="p">                                    
                                 <b>{rowData.fullname}</b>
                                 <br /> {rowData.dob}
-                            </Typography>
-                            
-                            )
+                            </Typography>                            )
                         },
                         
                         renderGroup: (sname, groupData) => (
@@ -185,7 +192,7 @@ const ListStudent = (props) => {
                     //Phụ huynh
                     {
                         title: "Phụ huynh",
-                        field: "parent",
+                        field: "pname",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
@@ -209,7 +216,7 @@ const ListStudent = (props) => {
                     //Quan hệ
                     {
                         title: "Quan hệ",
-                        field: "parent",
+                        field: "rname",
                         headerStyle: {
                             padding: '0px',
                             width: '120px',
@@ -221,17 +228,17 @@ const ListStudent = (props) => {
                         },
                         render: rowData => {
                             return (                              
-                            <Chip style={customChip(rowData.parent.color)} variant="outlined" label={rowData.parent.rname} size="small" />                         
+                            <Chip style={customChip(rowData.parent.color)} variant="outlined" label={rowData.rname} size="small" />                         
                             )
                         },
-                        renderGroup: (parent, groupData) => (                            
-                            <Chip variant="outlined" label={parent.rname} size="small" />
+                        renderGroup: (rname, groupData) => (                            
+                            <Chip variant="outlined" label={rname} size="small" />
                         )                
                     },
                     //Ngày nhập học
                     {
                         title: "Ngày nhập học",
-                        field: "detail",
+                        field: "entrance_date",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
@@ -241,17 +248,17 @@ const ListStudent = (props) => {
                         },
                         render: rowData => {
                             return (                              
-                            <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.detail.entrance_date} size="small" />                         
+                            <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.entrance_date} size="small" />                         
                             )
                         },
-                        renderGroup: (detail, groupData) => (                            
-                            <Chip variant="outlined" label={detail.entrance_date} size="small" />
+                        renderGroup: (entrance_date, groupData) => (                            
+                            <Chip variant="outlined" label={entrance_date} size="small" />
                         )                
                     },
                     //Trạng thái
                     {
                         title: "Trạng thái",
-                        field: "detail",
+                        field: "status",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
@@ -259,14 +266,8 @@ const ListStudent = (props) => {
                         cellStyle: {
                             padding: '0px',
                         },
-                        render: rowData => {
-                            return (                              
-                            <Chip variant="outlined" label={rowData.detail.status} size="small" />                         
-                            )
-                        },
-                        renderGroup: (detail, groupData) => (                            
-                            <Chip variant="outlined" label={detail.status} size="small" />
-                        )  
+                        lookup: {'active': 'Đang học', 'droped': 'Đã nghỉ', 'waiting': 'Đang chờ', 'retain': 'Bảo lưu'},
+                          
                     }                 
                     
                   ]}
@@ -274,6 +275,7 @@ const ListStudent = (props) => {
             <DialogCreate 
                 open = {openDialog}
                 handleClose = {closeCreateDialog}
+                class_id = {class_id}
             />
         </React.Fragment>
     )

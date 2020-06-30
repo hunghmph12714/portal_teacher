@@ -19,7 +19,7 @@ class Student extends Model
                     ->withTimestamps();
         }
     public function sessions(){
-        return $this->belingsToMany('App\Session','student_session','student_id','session_id');
+        return $this->belongsToMany('App\Session','student_session','student_id','session_id');
     }
 
 }

@@ -85,7 +85,7 @@ const ReceiptView = React.memo(props => {
             }}
             localization={{
                 body: {
-                    emptyDataSourceMessage: 'Không tìm thấy phiếu thu hoặc sever gặp lỗi'
+                    emptyDataSourceMessage: 'Không tìm thấy phiếu thu'
                 },
                 toolbar: {
                     searchTooltip: 'Tìm kiếm',

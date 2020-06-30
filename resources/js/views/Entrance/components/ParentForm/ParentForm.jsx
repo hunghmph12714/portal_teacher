@@ -68,6 +68,7 @@ const RelationshipOptions = React.memo(props => {
     
     return( 
         <Select
+            className="relationship-select"
             value = {props.selected_relationship}
             name = "selected_relationship"
             placeholder="Quan hệ khách hàng"

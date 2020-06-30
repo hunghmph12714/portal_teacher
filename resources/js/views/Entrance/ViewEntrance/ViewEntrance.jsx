@@ -276,7 +276,7 @@ class ViewEntrance extends React.Component{
                     ]}
                     localization={{
                         body: {
-                            emptyDataSourceMessage: 'Không tìm thấy ghi danh hoặc sever gặp lỗi'
+                            emptyDataSourceMessage: 'Không tìm thấy ghi danh'
                         },
                         toolbar: {
                             searchTooltip: 'Tìm kiếm',
