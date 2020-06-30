@@ -19,7 +19,7 @@ class UpdateStudentSession extends Migration
             $table->integer('btvn_max')->default(0);
             $table->integer('btvn_score')->default(0);
             $table->integer('btvn_complete')->default(0);
-            $table->string('comment')->nullabl();
+            $table->string('comment')->nullable();
         });
     }
 
