@@ -178,7 +178,7 @@ class DialogCreate extends React.Component {
                 open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title"
             >
                 <DialogTitle id="form-dialog-title">Thêm học sinh</DialogTitle>
-            <DialogContent>
+            <DialogContent className="dialog-create-student">
                 <DialogContentText>
                     Vui lòng điền đầy đủ thông tin cần thiết (*)
                 </DialogContentText>

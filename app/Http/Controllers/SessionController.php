@@ -81,10 +81,12 @@ class SessionController extends Controller
         $class = Classes::find($class_id);
         $fee_per_session = 0;
         foreach($sessions as $s){
+            // print_r($s);
+            // echo ("</pre>");
             $month = date('m-Y', strtotime($s['date']));
             if(!array_key_exists($month, $fees)){
-                $fees[$month]['amount'] = 0;
-                $fees[$month]['count'] = 0;
+                $fees[$month]['amount'] = $s['fee'];
+                $fees[$month]['count'] = 1;
             }
             else{
                 $fees[$month]['amount'] += $s['fee'];

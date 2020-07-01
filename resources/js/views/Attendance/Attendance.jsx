@@ -70,7 +70,7 @@ const ClassSelect = React.memo(props => {
 })
 const SessionDateSelect = React.memo(props => {
     const {selected_class} = props
-    const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
+    const Vndate = ['','Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const [sessions, setSessions] = useState([])
     const [tmp_sessions, setTmpSession] = useState([])
     const fetchData = async() => {

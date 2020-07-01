@@ -230,6 +230,16 @@ class ClassController extends Controller
         }
         return response()->json($classes);
     }
+    protected function getClassById($class_id){
+        $result = Classes::where('classes.id',$class_id)->
+                        select('classes.id as id','classes.name as name','code',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                        'student_number','open_date','classes.active as status',
+                        'config','classes.fee as fee')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->first();
+        return response()->json($result);
+    }
     protected function createClass(Request $request){
         $rules = [
             'code' => 'required',

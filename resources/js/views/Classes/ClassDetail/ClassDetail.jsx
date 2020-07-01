@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { ListSession, ListStudent } from '../components';
+const baseUrl = window.Laravel.baseUrl
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -38,15 +39,30 @@ class ClassDetail extends React.Component{
         super(props)
         this.state = {
             value: 1,
-            class_id: 1,
+            selected_class: {}
         }
+    }
+    componentDidMount = () => {
+      this.getClassInfo()
     }
     handleChange = (event, newValue) => {
         this.setState({value: newValue})
     };
+    getClassInfo = () => {
+      axios.get(baseUrl+ '/class/getbyid/' + this.props.match.params.id)
+        .then(response => {
+          this.setState({
+            selected_class: response.data
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        }) 
+    }
     render(){
         return (
             <div className="root-class-detail">
+                <h2 className="class-title">Lớp {this.state.selected_class.name}</h2>
                 <AppBar position="static">
                     <Tabs value={this.state.value} onChange={this.handleChange} aria-label="simple tabs example" indicatorColor="primary">
                         <Tab label="Thông tin lớp học" {...a11yProps(0)} />
