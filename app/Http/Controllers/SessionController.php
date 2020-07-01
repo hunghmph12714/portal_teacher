@@ -81,8 +81,7 @@ class SessionController extends Controller
         $class = Classes::find($class_id);
         $fee_per_session = 0;
         foreach($sessions as $s){
-            // print_r($s);
-            // echo ("</pre>");
+            
             $month = date('m-Y', strtotime($s['date']));
             if(!array_key_exists($month, $fees)){
                 $fees[$month]['amount'] = $s['fee'];
@@ -182,7 +181,7 @@ class SessionController extends Controller
         $students = Classes::find($request->class_id)->activeStudents;
         $this->generateAttendances($sessions, $students);
         $this->generateTransactions($sessions, $students, $request->class_id);
-        return response()->json($students);
+        return response()->json(count($sessions));
     }
     protected function addSession(Request $request){
         $rules = ['class_id' => 'required', 
