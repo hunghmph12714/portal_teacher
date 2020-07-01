@@ -191,7 +191,7 @@ class ClassController extends Controller
         if($student_id){
             $checkExisting = StudentClass::where('class_id', $request['class_id'])->where('student_id', $student_id)->first();
             if($checkExisting){
-                return response()->json('Học sinh đã tồn tại trong lớp', 422);
+                return response()->json('Học sinh đã tồn tại trong lớp', 418);
             }
             else{
                 $sc['student_id'] = $student_id;

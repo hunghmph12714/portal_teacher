@@ -142,9 +142,13 @@ class DialogCreate extends React.Component {
                 this.props.enqueueSnackbar('Thêm học sinh thành công', { 
                     variant: 'success',
                 });
+                this.props.handleClose()
             })
             .catch(err => {                
-                // console.log("create entrance bug: " + err.response.data)
+                // console.log("create entrance bug: " + err.response.data)ư
+                if(err.response.status == 418){
+                    this.props.enqueueSnackbar(err.response.data , {variant: 'error'})
+                }
                 let variant = ''
                 let response = err.response
                 if(response.status == 404){

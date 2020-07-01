@@ -28,6 +28,7 @@ const ListStudent = (props) => {
     const { class_id } = props
     const [data, setData] = useState([]);
     const [ openDialog, setOpen ] = useState(false);
+    const [reload, setReload] = useState(false)
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -44,12 +45,13 @@ const ListStudent = (props) => {
 
         }
         fetchData()
-    }, [])
+    }, [reload])
     function openCreateDialog(){
         setOpen(true)
     }
     function closeCreateDialog(){
         setOpen(false)
+        setReload(!reload)
     }
     return (
         <React.Fragment>
