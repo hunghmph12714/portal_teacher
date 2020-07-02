@@ -417,7 +417,7 @@ class ViewEntrance extends React.Component{
                           // let brief = rowData.center.split(':')[0]
                           return (
                             <Tooltip title={rowData.center}>
-                              <Chip variant="outlined" label={brief} size="small" />
+                              <Chip variant="outlined" label={rowData.center} size="small" />
                             </Tooltip> 
                           )
                         },
