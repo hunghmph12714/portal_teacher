@@ -74,8 +74,8 @@ class DialogCreate extends React.Component {
                 student_gender: newValue.gender,
                 student_grade: newValue.grade,
     
-                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.p_name},
-                parent_phone: newValue.p_phone,
+                parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.p_phone},
+                parent_name: newValue.p_name,
                 parent_email: newValue.p_email,
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
@@ -91,13 +91,13 @@ class DialogCreate extends React.Component {
         // console.log(newValue)
         if(!newValue ||newValue.__isNew__){
             this.setState({
-                parent_name: newValue
+                parent_phone: newValue
             }) 
         }
         else{
             this.setState({                
-                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.fullname},
-                parent_phone: newValue.phone,
+                parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.phone},
+                parent_name: newValue.fullname,
                 parent_email: newValue.email,
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
@@ -229,7 +229,7 @@ class DialogCreate extends React.Component {
                                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                         <KeyboardDatePicker
                                             autoOk
-                                            className="input-date"
+                                            className="input-date input-text"
                                             variant="inline"
                                             inputVariant="outlined"
                                             format="dd/MM/yyyy"
@@ -247,6 +247,7 @@ class DialogCreate extends React.Component {
                                     <Checkbox checked={this.state.create_fee} onChange={this.handleChecked} name="create_fee" disabled={this.state.status == 'active'}/>
                                 }
                                 label="Khởi tạo học phí"
+                                className="input-text"
                             />
                             </Grid>
                         </Grid>

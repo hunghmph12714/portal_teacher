@@ -54,7 +54,7 @@ const findParents = (inputValue) => {
         .then(response => {
             return response.data.map(parent => {
                 parent.value = parent.pid
-                parent.label = parent.fullname
+                parent.label = parent.phone
                 parent.custom = 1
                 return parent
             })
@@ -69,12 +69,12 @@ const promptTextCreator = (value) => {
     return 'Tạo mới '+value
 }
 const checkValidCreate = (inputValue, selectValue, selectOptions) => {
-    if(inputValue == "" || !isNaN(inputValue)){
+    if(inputValue == ""){
         return false
     }else return true
 }
 const ParentSearch = props => {
-    const {parent_name, handleParentChange} = props
+    const {parent_phone, handleParentChange} = props
     return (
         <AsyncCreatableSelect
             components={{ Option: CustomOption }}
@@ -82,9 +82,9 @@ const ParentSearch = props => {
             loadOptions={inputValue => throttleOptions(inputValue.replace(/\s|[(]|[)]|[-]/g, ''))}
             autosize={true}
             isClearable
-            placeholder={'Họ tên phụ huynh (tìm theo SĐT)'}
-            name="parent_name"
-            value = {parent_name}
+            placeholder={'Số điện thoại phụ huynh(*)'}
+            name="parent_phone"
+            value = {parent_phone}
             onChange = {handleParentChange}
             formatCreateLabel = {promptTextCreator}
             isValidNewOption = {checkValidCreate}

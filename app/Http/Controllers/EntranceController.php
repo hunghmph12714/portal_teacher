@@ -89,9 +89,9 @@ class EntranceController extends Controller
         $request['entrance_date'] = ($request['entrance_date']) ? date('Y-m-d H:i:m', $request['entrance_date']) : null;
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', $request['student_dob']) : null;
         $p = [];
-        $p['fullname'] = $request['parent_name']['label'];
+        $p['fullname'] = $request['parent_name'];
         $p['relationship_id'] = $request['selected_relationship']['value'];
-        $p['phone'] = $request['parent_phone'];
+        $p['phone'] = $request['parent_phone']['label'];
         $p['email'] = $request['parent_email'];
         $p['note'] = $request['parent_note'];
         $p['alt_fullname'] = $request['parent_alt_name'];
@@ -99,7 +99,7 @@ class EntranceController extends Controller
         $p['alt_phone'] = $request['parent_alt_phone'];
 
         //Check parent exist
-        if($request['parent_name']['__isNew__']){
+        if($request['parent_phone']['__isNew__']){
         // New parent
             $parent = Parents::create($p);
 
@@ -115,10 +115,10 @@ class EntranceController extends Controller
         else{
         //Existed parent
             //Update parent 
-            Parents::find($request['parent_name']['value'])->update($p);
+            Parents::find($request['parent_phone']['value'])->update($p);
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
-                $parent_id = $request['parent_name']['value'];
+                $parent_id = $request['parent_phone']['value'];
                 $student = $this->handleCreateStudent($parent_id, $request);
             //Create Entrance
                 foreach($request['entrance_courses'] as $entrance_course){
@@ -204,8 +204,8 @@ class EntranceController extends Controller
             $p = Parents::find($request->parent_id);
             if($p){
                 $p->relationship_id = $request->selected_relationship['value'];
-                $p->fullname = $request->parent_name['label'];
-                $p->phone = $request->parent_phone;
+                $p->fullname = $request->parent_name;
+                $p->phone = $request->parent_phone['label'];
                 $p->email = $request->parent_email;
                 $p->note = $request->parent_note;
                 $p->alt_fullname = $request->parent_alt_name;

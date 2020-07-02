@@ -83,10 +83,17 @@ const ParentForm = props => {
 
         <Grid container spacing={3} className="container-grid" {...rest}>                
             <Grid item md={12} lg={4} sm={12} xs={12}>
-                <ParentSearch
-                    parent_name = {state.parent_name}
-                    handleParentChange = {handleParentChange}
-                />
+                <TextField  label="Họ tên phụ huynh" 
+                    className = "input-text"
+                    variant="outlined"
+                    size="small"
+                    type="text"
+                    fullWidth
+                    margin = "dense"
+                    name = 'parent_name'
+                    value = {state.parent_name}
+                    onChange = {onChange}
+                /> 
                 
                 <TextField  label="Tên phụ huynh 2" 
                     className = "input-text"
@@ -105,18 +112,10 @@ const ParentForm = props => {
                 />
             </Grid>
             <Grid item md={12} lg={4} sm={12} xs={12}>
-                <TextField  label="Số điện thoại(*)" 
-                    className = "input-text"
-                    variant="outlined"
-                    size="small"
-                    type="text"
-                    fullWidth
-                    margin = "dense"
-                    name = 'parent_phone'
-                    value = {state.parent_phone}
-                    onChange = {onChangePhone}
-                />    
-
+                <ParentSearch
+                    parent_phone = {state.parent_phone}
+                    handleParentChange = {handleParentChange}
+                />
                 <TextField  label="Số điện thoại 2" 
                     className = "input-text"
                     variant="outlined"

@@ -145,9 +145,9 @@ class ClassController extends Controller
         $request = $request->toArray();
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', strtotime($request['student_dob'])) : null;
         $p = [];
-        $p['fullname'] = $request['parent_name']['label'];
+        $p['fullname'] = $request['parent_name'];
         $p['relationship_id'] = $request['selected_relationship']['value'];
-        $p['phone'] = $request['parent_phone'];
+        $p['phone'] = $request['parent_phone']['label'];
         $p['email'] = $request['parent_email'];
         $p['note'] = $request['parent_note'];
         $p['alt_fullname'] = $request['parent_alt_name'];
@@ -155,7 +155,7 @@ class ClassController extends Controller
         $p['alt_phone'] = $request['parent_alt_phone'];
         $student_id = NULL;
         //Check parent exist
-        if($request['parent_name']['__isNew__']){
+        if($request['parent_phone']['__isNew__']){
         // New parent
             $parent = Parents::create($p);
 
@@ -169,10 +169,10 @@ class ClassController extends Controller
         else{
         //Existed parent
             //Update parent 
-            Parents::find($request['parent_name']['value'])->update($p);
+            Parents::find($request['parent_phone']['value'])->update($p);
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
-                $parent_id = $request['parent_name']['value'];
+                $parent_id = $request['parent_phone']['value'];
                 $student = $this->handleCreateStudent($parent_id, $request);
                 $student_id = $student->id;
             //Add student to Class
