@@ -13,37 +13,37 @@
         text-align: center;
     }
     .header-right{
-        font-size: 15px;
+        font-size: 17px;
     }
     .header{
         margin-bottom: 12px;
     }
     .header-middle{
-        font-size: 15px;
+        font-size: 17px;
         text-transform: uppercase;
     }
     .phieu-chi{
-        font-size: 22px;
+        font-size: 24px;
     }
     .date{
-        font-size: 15px;
+        font-size: 17px;
     }
     .detail{
         padding-left: 25px;
     }
     .detail p {margin-bottom: 0.4rem !important;}
     .sign b{
-        font-size: 14px;
+        font-size: 16px;
     }
     .sign i{
-        font-size: 12px;
+        font-size: 14px;
     }
     .sign .sign-name{
-        font-size: 12px;
+        font-size: 14px;
     }
     .info{
         margin-bottom: 20px;
-        font-size: 15px;
+        font-size: 17px;
     }
 </style>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -62,7 +62,7 @@
                     <img src="/public/images/logos/logo-1.png" alt="logo" width="150px">
                 </div>
                 <div class="col-sm centered header-middle">
-                    <b> Công ty đầu tư và phát triển Việt Tinh Hoa </b>
+                    <b> Công ty cổ phần đầu tư và phát triển Việt Tinh Hoa </b>
                     
                 </div>
                 <div class="col-sm centered header-right">

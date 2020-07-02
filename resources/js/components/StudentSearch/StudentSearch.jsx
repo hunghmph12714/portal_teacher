@@ -74,7 +74,6 @@ const StudentSearch = props => {
     return (
         <AsyncCreatableSelect
             components={{ Option: CustomOption }}
-            cacheOptions
             loadOptions={inputValue => throttleOptions((/\d/.test(inputValue))?inputValue.replace(/\s|[(]|[)]|[-]/g, '') : inputValue)}
             autosize={true}
             isClearable
