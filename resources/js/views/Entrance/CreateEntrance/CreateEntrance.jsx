@@ -102,6 +102,11 @@ class CreateEntrance extends React.Component {
             [e.target.name] : e.target.value
         })
     };
+    onChangePhone = e => {
+        this.setState({
+            [e.target.name] : e.target.value.replace(/\s|[(]|[)]|[-]/g, '')
+        })
+    };
     handleDateChange = date => {
         this.setState({ student_dob: date });
     };
@@ -175,6 +180,7 @@ class CreateEntrance extends React.Component {
                             state = {this.state}
                             handleEntranceDateChange = {this.handleEntranceDateChange} 
                             onChange = {this.onChange}
+                            onChangePhone = {this.onChangePhone}
                             handleChange = {this.handleChange}
                         />
                         <Box flexDirection="row-reverse" display="flex">

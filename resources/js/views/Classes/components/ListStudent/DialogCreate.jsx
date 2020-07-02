@@ -121,6 +121,11 @@ class DialogCreate extends React.Component {
             this.setState({ create_fee : true })
         }
     };
+    onChangePhone = e => {
+        this.setState({
+            [e.target.name] : e.target.value.replace(/\s|[(]|[)]|[-]/g, '')
+        })
+    }
     handleDateChange = date => {
         this.setState({ student_dob: date });
     };
@@ -188,6 +193,7 @@ class DialogCreate extends React.Component {
                         handleStudentChange = {this.handleStudentChange} 
                         handleDateChange = {this.handleDateChange}
                         onChange = {this.onChange}
+                        onChangePhone = {this.onChangePhone}
                         handleChange = {this.handleChange}
                     />
                     <Divider/>                        
@@ -196,6 +202,7 @@ class DialogCreate extends React.Component {
                         state = {this.state}
                         handleParentChange = {this.handleParentChange} 
                         onChange = {this.onChange}
+                        onChangePhone = {this.onChangePhone}
                         handleChange = {this.handleChange}
                     />
                     <Divider/>

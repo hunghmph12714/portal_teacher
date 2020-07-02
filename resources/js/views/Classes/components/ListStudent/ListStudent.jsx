@@ -206,8 +206,8 @@ const ListStudent = (props) => {
                             (                              
                             <Typography variant="body2" component="p">
                                 <b>{rowData.parent.pname}</b> 
-                                <br />{rowData.parent.phone} 
-                                <br />{rowData.parent.email}
+                                <br/>{rowData.parent.phone} 
+                                <br/>{rowData.parent.email}
                             </Typography>                              
                             ),
                         renderGroup: (pname, groupData) => (
@@ -249,11 +249,11 @@ const ListStudent = (props) => {
                             padding: '0px',
                         },
                         render: rowData => {
-                            return (                              
-                            <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.entrance_date} size="small" />                         
+                            return (                      
+                                <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.entrance_date} size="small" />                         
                             )
                         },
-                        renderGroup: (entrance_date, groupData) => (                            
+                        renderGroup: (entrance_date, groupData) => (                     
                             <Chip variant="outlined" label={entrance_date} size="small" />
                         )                
                     },

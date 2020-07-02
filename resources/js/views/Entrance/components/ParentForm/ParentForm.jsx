@@ -78,7 +78,7 @@ const RelationshipOptions = React.memo(props => {
         />)
 })
 const ParentForm = props => {
-    const { state, handleParentChange, onChange, handleChange, ...rest } = props;
+    const { state, handleParentChange, onChange, handleChange, onChangePhone ,...rest } = props;
     return (
 
         <Grid container spacing={3} className="container-grid" {...rest}>                
@@ -114,7 +114,7 @@ const ParentForm = props => {
                     margin = "dense"
                     name = 'parent_phone'
                     value = {state.parent_phone}
-                    onChange = {onChange}
+                    onChange = {onChangePhone}
                 />    
 
                 <TextField  label="Số điện thoại 2" 
@@ -126,7 +126,7 @@ const ParentForm = props => {
                     margin = "dense"
                     name = 'parent_alt_phone'
                     value = {state.parent_alt_phone}
-                    onChange = {onChange}
+                    onChange = {onChangePhone}
                 /> 
                 <TextField  label="Ghi chú" 
                     className = "input-text"

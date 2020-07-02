@@ -1,5 +1,6 @@
 import React , {useState, useEffect} from 'react'
 import './Attendance.scss'
+import { AttendanceForm } from './components'
 import axios from 'axios'
 import { withSnackbar } from 'notistack';
 import Select , { components }  from "react-select";
@@ -21,26 +22,7 @@ const customChip = (color = '#ccc') => ({
   color: '#000',
   fontSize: '12px',
 })
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 
 const ClassSelect = React.memo(props => {
     const {center, course} = props
@@ -82,7 +64,7 @@ const SessionDateSelect = React.memo(props => {
             c.from = format(new Date(c.from), 'HH:mm')
             c.to = format(new Date(c.to), 'HH:mm')
             c.time = c.from + '-' + c.to
-            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.from, selected: -1}
+            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.time, selected: -1}
         })
         setSessions(data)
         setTmpSession(data)
@@ -480,279 +462,17 @@ class Attendance extends React.Component{
                 />
                 ) : ('')}
                 {this.state.selected_session ? (
-                    <Dialog 
-                        open={this.state.open_attendance} onClose={this.handleCloseAttendance} aria-labelledby="form-dialog-title"
-                        fullWidth
-                        maxWidth='xl'>
-                    <DialogTitle id="form-dialog-title">Điểm danh học sinh</DialogTitle>
-                    <DialogContent>
-                    <DialogContentText>
-                        <Table className='' aria-label="simple table"  size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>STT</TableCell>
-                                    <TableCell>Học sinh</TableCell>
-                                    <TableCell align="center">
-                                        Có mặt<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceChange(0, s.value)} checked={s.selected==0}/>
-                                                    </Tooltip>
-                                                )
-                                            })
-                                        }
-                                    </TableCell>
-                                    <TableCell align="center">Muộn<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceChange(1, s.value)} checked={s.selected==1}/>
-                                                    </Tooltip>
-                                                )
-                                            })
-                                        }
-
-                                    </TableCell>
-                                    <TableCell align="center">Có phép<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceChange(2, s.value)} checked={s.selected==2}/>
-                                                    </Tooltip>
-                                                )
-                                            })
-                                        }</TableCell>
-                                    <TableCell align="center">Không phép<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceChange(3, s.value)} checked={s.selected==3}/>
-                                                    </Tooltip>
-                                                )
-                                            })
-                                        }</TableCell>
-                                    <TableCell align="center">Chưa điểm danh<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceChange(4, s.value)} checked={s.selected==4}/>
-                                                    </Tooltip>
-                                                )
-                                            })
-                                        }</TableCell>
-                                    <TableCell align="center">Bài tập trên lớp<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>                                                       
-                                                        <TextField
-                                                            className="score_input"
-                                                            placeholder="Tổng điểm"
-                                                            name="max_score"                                                          
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
-                                                        />
-                                                    </Tooltip>  
-                                                )
-                                            })
-                                        }
-                                    </TableCell>
-                                    <TableCell align="center">Bài tập về nhà<br/>
-                                        {
-                                            this.state.selected_session.map(s => {
-                                                return (
-                                                    <Tooltip title={s.label} arrow>                                                       
-                                                        <TextField
-                                                            className="score_input"
-                                                            placeholder="Tổng điểm"
-                                                            name="max_score"                                                          
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
-                                                        />
-                                                    </Tooltip>  
-                                                )
-                                            })
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {this.state.selected_data.map((row, index) => (
-                                <TableRow key={row.key}>
-                                    <TableCell component="th" scope="row">
-                                        {index+1}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="body2" component="p">                                    
-                                            <b>{row.student.sname}</b>
-                                            <br /> {row.student.dob}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                // console.log(session_info)
-                                                return (
-                                                    
-                                                    <Tooltip title={session_info[0].label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'present')} 
-                                                        checked={s.attendance=='present'}/>
-                                                    </Tooltip>
-                                                    
-                                                )
-                                            })
-                                        }
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                // console.log(session_info)
-                                                return (
-                                                    
-                                                    <Tooltip title={session_info[0].label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'late')} 
-                                                        checked={s.attendance=='late'}/>
-                                                    </Tooltip>                                                    
-                                                )
-                                                
-                                            })
-                                        }
-                                        
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                // console.log(session_info)
-                                                return (
-                                                    
-                                                    <Tooltip title={session_info[0].label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'absence')} 
-                                                        checked={s.attendance=='absence'}/>
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }
-                                        
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                // console.log(session_info)
-                                                return (
-                                                    
-                                                    <Tooltip title={session_info[0].label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'n_absence')} 
-                                                        checked={s.attendance=='n_absence'}/>
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }
-                                        
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                // console.log(session_info)
-                                                return (
-                                                    
-                                                    <Tooltip title={session_info[0].label} arrow>
-                                                        <Checkbox onChange={() => this.onAttendanceStudentChange(row.student.sid, s.session_id, 'holding')} 
-                                                        checked={s.attendance=='holding'}/>
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }                                        
-                                    </TableCell> 
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                return (
-                                                    <Tooltip title={session_info[0].label} arrow>                                                       
-                                                        <TextField
-                                                            className="score_input"
-                                                            value={s.score}
-                                                            name = {'score_'+s.session_id} 
-                                                            key = {'score_'+s.session_id} 
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onChange={(e) => this.onScoreStudentChange(row.student.sid, s.session_id, e)}
-                                                        />
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }                                        
-                                    </TableCell> 
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                return (
-                                                    <Tooltip title={session_info[0].label} arrow>                                                       
-                                                        <TextField
-                                                            className="score_input"
-                                                            value={s.btvn_score}
-                                                            name = {'btvn_score'+s.session_id} 
-                                                            key = {'btvn_score'+s.session_id} 
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onChange={(e) => this.onBtvnScoreChange(row.student.sid, s.session_id, e)}
-                                                        />
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }                                        
-                                    </TableCell> 
-                                    <TableCell align="center">
-                                        {
-                                            row.attendance.map(s => {
-                                                let session_info = this.state.selected_session.filter(ss=>ss.value == s.session_id)
-                                                return (
-                                                    <Tooltip title={session_info[0].label} arrow>                                                       
-                                                        <TextField
-                                                            className="btvn_complete"
-                                                            value={s.btvn_complete}
-                                                            name = {'btvn_complete'+s.session_id} 
-                                                            key = {'btvn_complete'+s.session_id} 
-                                                            variant="outlined"
-                                                            size="small"
-                                                            onChange={(e) => this.onBtvnCompleteChange(row.student.sid, s.session_id, e)}
-                                                        />
-                                                    </Tooltip>                                                    
-                                                )
-                                            })
-                                        }                                        
-                                    </TableCell> 
-                                </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
-                    </DialogContentText>
-                    
-                    </DialogContent>
-                    <DialogActions>
-                    <Button onClick={this.handleCloseAttendance} color="primary">
-                        Hủy
-                    </Button>
-                    <Button onClick={this.handleSubmitAttendance} color="primary">
-                        Lưu
-                    </Button>
-                    </DialogActions>
-                </Dialog>
-            
+                    <AttendanceForm
+                        open_attendance = {this.state.open_attendance}
+                        handleCloseAttendance = {this.handleCloseAttendance}
+                        selected_session = {this.state.selected_session}
+                        selected_data = {this.state.selected_data}
+                        onAttendanceChange = {this.onAttendanceChange}
+                        onScoreStudentChange = {this.onScoreStudentChange}
+                        onAttendanceStudentChange = {this.onAttendanceStudentChange}
+                        onScoreStudentChange = {this.onScoreStudentChange}
+                        onBtvnScoreChange = {this.onBtvnScoreChange}
+                    />            
                 ): ('')}
                 
             </div>

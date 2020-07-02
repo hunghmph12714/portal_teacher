@@ -79,7 +79,7 @@ const ParentSearch = props => {
         <AsyncCreatableSelect
             components={{ Option: CustomOption }}
             cacheOptions
-            loadOptions={inputValue => throttleOptions(inputValue)}
+            loadOptions={inputValue => throttleOptions(inputValue.replace(/\s|[(]|[)]|[-]/g, ''))}
             autosize={true}
             isClearable
             placeholder={'Họ tên phụ huynh (tìm theo SĐT)'}

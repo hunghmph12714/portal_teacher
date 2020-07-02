@@ -39,7 +39,7 @@ const loadOptions = (type, inputValue) => {
 const debouncedLoadOptions = throttle(loadOptions, wait)
 
 const StudentForm = props => {
-    const { state, handleDateChange, handleStudentChange, onChange, handleChange, ...rest } = props;
+    const { state, handleDateChange, handleStudentChange, onChange,onChangePhone , handleChange, ...rest } = props;
     return (
         <Grid container spacing={3} className="container-grid" {...rest}>                
             <Grid item md={12} lg={4} sm={12} xs={12}>
@@ -122,7 +122,7 @@ const StudentForm = props => {
                     margin = "dense"
                     name = 'student_phone'
                     value = {state.student_phone}
-                    onChange = {onChange}
+                    onChange = {onChangePhone}
                 />    
             </Grid>
         </Grid>

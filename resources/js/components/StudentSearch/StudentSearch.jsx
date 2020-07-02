@@ -75,7 +75,7 @@ const StudentSearch = props => {
         <AsyncCreatableSelect
             components={{ Option: CustomOption }}
             cacheOptions
-            loadOptions={inputValue => throttleOptions(inputValue)}
+            loadOptions={inputValue => throttleOptions(inputValue.replace(/\s|[(]|[)]|[-]/g, ''))}
             autosize={true}
             isClearable
             placeholder={'Học sinh (tìm theo tên HS hoặc SĐT PH)'}
