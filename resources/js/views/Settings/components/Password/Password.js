@@ -11,19 +11,23 @@ import {
   Button,
   TextField
 } from '@material-ui/core';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
-
+const baseUrl = window.Laravel.baseUrl
 const Password = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [values, setValues] = useState({
     password: '',
-    confirm: ''
+    confirm: '',
+    current_password: '',
   });
 
   const handleChange = event => {
@@ -32,31 +36,57 @@ const Password = props => {
       [event.target.name]: event.target.value
     });
   };
-
+  function updatePassword() {
+    axios.post(baseUrl+ '/user/password', values)
+      .then(response => {
+        enqueueSnackbar('Cập nhật mật khẩu thành công', {variant: 'success'})
+      })
+      .catch(err => {
+        console.log(err.response)
+        if(err.response.status == 422){
+          enqueueSnackbar('Mật khẩu xác nhận không khớp', {variant: 'error'})
+        }
+        if(err.response.status == 400){
+          enqueueSnackbar('Mật khẩu cũ không chính xác', {variant: 'error'})
+        }
+        
+      })
+  }
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
+      style={{ marginTop: '1rem' }}
     >
       <form>
         <CardHeader
-          subheader="Update password"
-          title="Password"
+          subheader="Cập nhật mật khẩu"
+          title="Mật khẩu"
         />
         <Divider />
         <CardContent>
           <TextField
             fullWidth
-            label="Password"
+            label="Mật khẩu hiện tại"
+            name="current_password"
+            onChange={handleChange}
+            type="password"
+            value={values.current_password}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Mật khẩu mới"
             name="password"
             onChange={handleChange}
+            style={{ marginTop: '1rem' }}
             type="password"
             value={values.password}
             variant="outlined"
           />
           <TextField
             fullWidth
-            label="Confirm password"
+            label="Xác nhận mật khẩu"
             name="confirm"
             onChange={handleChange}
             style={{ marginTop: '1rem' }}
@@ -70,8 +100,9 @@ const Password = props => {
           <Button
             color="primary"
             variant="outlined"
+            onClick={updatePassword}
           >
-            Update
+            Thay đổi mật khẩu
           </Button>
         </CardActions>
       </form>

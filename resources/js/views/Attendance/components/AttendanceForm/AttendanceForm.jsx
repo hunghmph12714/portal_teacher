@@ -257,7 +257,8 @@ class AttendanceForm extends React.Component{
                                                 fullWidth
                                                 rows={1}
                                                 variant="outlined"
-                                            />                                       
+                                            />    
+                                                                               
                                         )
                                     })
                                 }                                        

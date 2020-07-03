@@ -6,7 +6,7 @@ import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
 import { AccountProfile, AccountDetails } from './components';
-
+import { Password } from '../Settings/components';
 
 class Account extends React.Component {
   constructor(props){
@@ -59,6 +59,7 @@ class Account extends React.Component {
             xs={12}
           >
             <AccountProfile successNotification={this.successNotification} errorNotification={this.errorNotification}/>
+            <Password/>
           </Grid>
           <Grid
             item
@@ -68,6 +69,7 @@ class Account extends React.Component {
             xs={12}
           >
             <AccountDetails  successNotification={this.successNotification} errorNotification={this.errorNotification}/>
+            
           </Grid>
         </Grid>
       </div>

@@ -25,7 +25,7 @@ Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 Route::group(['middleware' => ['auth']], function() {
-    
+    //Password Change
     //Import database 
     // Route::get('/import-db', 'ClassController@importDB');
     Route::get('/get-schools', 'ClassController@getSchool');
@@ -40,6 +40,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/user', 'UserController@getUser');
     Route::post('/user/uploadAvatar', 'UserController@updateAvatar');
     Route::post('/user/update-profile', 'UserController@updateProfile');
+    Route::post('/user/password', 'UserController@updatePassword');
+    Route::get('/settings', function(){
+        return view('welcome');
+    });
 //CENTER MANAGEMENT
     Route::get('/centers', function(){
         return view('welcome');

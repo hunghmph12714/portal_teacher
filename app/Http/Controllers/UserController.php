@@ -76,4 +76,24 @@ class UserController extends Controller
             return response()->json($user);
         }
     }
+    protected function updatePassword(Request $request){
+        $rules = [
+            'current_password' => 'required',
+            'password' => 'required|same:password',
+            'confirm' => 'required|same:password',
+        ];
+        $this->validate($request, $rules);
+        $user = auth()->user();
+        $current_password = $user->password;
+        if(Hash::check($request->current_password, $current_password))
+        {           
+            $user->password = Hash::make($request->password);
+            $user->save();
+            return response()->json('ok', 200);
+        }
+        else
+        {           
+            return response()->json('Sai mật khẩu', 400);   
+        }
+    }
 }
