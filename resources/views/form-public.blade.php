@@ -4,7 +4,28 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '566336567649816');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel Code -->
+<noscript>
+  <img height="1" width="1" style="display:none" 
+       src="https://www.facebook.com/tr?id={your-pixel-id-goes-here}&ev=PageView&noscript=1"/>
+</noscript>
+<!-- End Facebook Pixel Code -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
@@ -124,6 +145,7 @@
                     <label for="note">Ghi chú</label>
                     <textarea rows="4" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
                 </div>
+                <input type="hidden" name="url" id= "url"> 
             </div>
             
             
@@ -141,7 +163,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" crossorigin="anonymous"></script>
     
     <script>
+        
         $( document ).ready(function() {
+            console.log(document.referrer)
+            $('#url').val(document.referrer)
             var schools = {!! json_encode($schools, JSON_HEX_TAG) !!};
             $('#datepicker').datepicker({
                 format: "dd/mm/yyyy"

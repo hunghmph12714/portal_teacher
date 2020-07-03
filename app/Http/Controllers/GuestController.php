@@ -29,7 +29,7 @@ class GuestController extends Controller
         }
         return response()->json($courses);
     }
-    public function createEntrance($student, $center, $course, $note){
+    public function createEntrance($student, $center, $course, $note,  $source){
         $e['student_id'] = $student->id;
         $e['center_id'] = $center;
         $e['course_id'] = $course;
@@ -38,7 +38,7 @@ class GuestController extends Controller
         $init_step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first();        
         $e['step_id'] = ($init_step->id) ? $init_step->id : null;
         $e['step_updated_at'] = date("Y-m-d H:i:s");
-
+        $e['source'] = $source;
         $init_status = Status::where('type', 'Quy trình đầu vào')->orderBy('id', 'asc')->first();
         $e['status_id'] = ($init_status->id) ? $init_status->id : null;
         
@@ -49,7 +49,13 @@ class GuestController extends Controller
             'pname' => 'required|string', 'sname'=>'required|string', 'pphone' => 'required|string', 'pemail'=> 'required|string'
         ];
         $this->validate($request, $rules);
-
+        //Check nguồn dữ liệu
+        $query = ['utm_medium' => '', 'utm_source'=>'', 'utm_campaign'=>''];
+        $url = parse_url($request->url);
+        if(array_key_exists('query',$url)){
+            parse_str($url['query'], $query);
+        }
+        $source = ($query['utm_campaign'] == "") ? '' : $query['utm_campaign'] . " | ". $query['utm_source'] . " | " . $query['utm_medium'];
         //chuẩn hóa dữ liệu
         $pphone = str_replace('(','', str_replace(')','', str_replace('-','',$request->pphone)));
         $dob = date('Y-m-d', strtotime(str_replace('/','-', $request->dob)));
@@ -62,7 +68,7 @@ class GuestController extends Controller
             if($s){//Đã tồn tại học sinh
                 //Tạo mới ghi danh
                 foreach($request->course as $c){
-                    $this->createEntrance($s, $request->center, $c, $request->note);
+                    $this->createEntrance($s, $request->center, $c, $request->note, $source);
                 }                
             }
             else{
@@ -73,7 +79,7 @@ class GuestController extends Controller
                 $student['relationship_id'] = $p->relationship_id;
                 $student = Student::create($student);
                 foreach($request->course as $c){
-                    $this->createEntrance($student, $request->center, $c, $request->note);
+                    $this->createEntrance($student, $request->center, $c, $request->note,  $source);
                 } 
             }
         }else{
@@ -92,10 +98,10 @@ class GuestController extends Controller
             $student = Student::create($student);
 
             foreach($request->course as $c){
-                $this->createEntrance($student, $request->center, $c, $request->note);
+                $this->createEntrance($student, $request->center, $c, $request->note,  $source);
             } 
         }
-        return "Cảm ơn quý phụ huynh đã đăng ký, trung tâm sẽ liên hệ trong thời gian sớm nhất";
+        return redirect('https://vietelite.edu.vn/dangkythanhcong/');
         // return response()->json($request->toArray());
     }
 }

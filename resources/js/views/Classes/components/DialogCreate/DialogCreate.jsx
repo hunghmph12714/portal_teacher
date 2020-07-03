@@ -388,10 +388,10 @@ class DialogCreate extends React.Component {
             let config = [...prevState.config]
             while(c < totalClass*totalSession){
                 if(type == 'from'){
-                    config[c].from = time.getTime()
+                    config[c].from = (time) ? time.getTime() : ''
                 }
                 if(type == 'to') {
-                    config[c].to = time.getTime()
+                    config[c].to = (time) ? time.getTime() : ''
                 }
                 c = c + totalSession
             }

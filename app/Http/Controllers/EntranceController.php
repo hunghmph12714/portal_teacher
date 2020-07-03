@@ -166,7 +166,7 @@ class EntranceController extends Controller
         // $entrances = Entrance::all();
         //     return response()->json($entrances);
         $entrances = Entrance::Select(
-            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at',
+            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at', 'source',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
