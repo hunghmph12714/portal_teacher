@@ -55,8 +55,8 @@ class StudentController extends Controller
                             ->select('parents.fullname as pname','relationships.name as rname','parents.phone'
                                 ,'parents.email','parents.alt_fullname','parents.alt_email','parents.alt_phone'
                                 ,'relationships.color', 'relationships.id as rid')
-                            ->leftJoin('relationships','parents.relationship_id','relationships.id')->first()->toArray();
-                $result[$key]['parent'] = $parent;
+                            ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
+                $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
             }
         }
         return response()->json($result);
@@ -231,5 +231,30 @@ class StudentController extends Controller
                 $c->forceDelete();
             }
         }
+    }
+    public function normalPhone(){
+        $parents = Parents::all();
+        foreach($parents as $p){
+            
+            if (strpos($p->phone, '(') !== false) {
+                
+                // $ex = Parents::where('phone', $p->phone)->first();
+                // if($ex){
+                //     // $ex->forceDelete();
+                //     print_r($ex->toArray());
+                //     echo "<pre>";
+                // }
+            }
+            $p->phone = str_replace('(', '', str_replace(')','', str_replace('-','', str_replace(' ','', $p->phone))));
+            $p->save();
+        }
+        // $student = Student::all();
+        // foreach($student as $s) {
+        //     $check_p  = Parents::find($s->parent_id);
+        //     if(!$check_p){
+        //         $s->parent_id = 0;
+        //         $s->save();
+        //     }
+        // }
     }
 }

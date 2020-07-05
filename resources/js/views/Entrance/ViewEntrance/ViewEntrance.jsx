@@ -78,226 +78,7 @@ const MessageInput = props => {
      
   )
 }
-const c = [
-    {
-      title: "",
-      field: "action",
-      filtering: false,
-      disableClick: true,
-      sorting: false,
-      headerStyle: {
-          padding: '0px',
-          width: '90px',
-      },
-      cellStyle: {
-          width: '90px',
-          padding: '0px',
-      },
-      render: rowData => (
-          <div style = {{display: 'block'}}>
-              {/* {rowData.tableData.id} */}
-              <Tooltip title="Chỉnh sửa" arrow>
-                <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                  <EditOutlinedIcon fontSize='inherit' />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Xóa ghi danh" arrow>
-                <IconButton onClick={() => {
-                  if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                    this.handleDeleteEntrance(rowData.eid, rowData.tableData.id)}
-                  }>
-                <DeleteForeverIcon fontSize='inherit' />
-                </IconButton>
-              </Tooltip>                                
-          </div>
-      )
-    },
-  //Học sinh
-    {
-      title: "Học sinh",
-      field: "sname",
-      headerStyle: {
-          padding: '0px',
-          fontWeight: '600',
-      },
-      cellStyle: {
-          padding: '0px',
-      },
-      render: rowData => {
-        return (                                
-          <Typography variant="body2" component="p">                                    
-              <b>{rowData.sname}</b>
-              <br /> {rowData.dob}
-          </Typography>
-          
-        )
-      },
-      
-      renderGroup: (sname, groupData) => (
-        <Chip variant="outlined" label={sname} size="small" />      
-      )
-    },
-  //Phụ huynh
-    {
-      title: "Phụ huynh",
-      field: "pname",
-      headerStyle: {
-          padding: '0px',
-          fontWeight: '600',
-      },
-      cellStyle: {
-          padding: '3px 0px',
-      },
-      render: rowData => 
-        (                              
-          <Typography variant="body2" component="p">
-              <b>{rowData.pname}</b> 
-              <br />{rowData.phone} 
-              <br />{rowData.pemail}
-          </Typography>                              
-        ),
-      renderGroup: (pname, groupData) => (
-        <Chip variant="outlined" label={pname} size="small" />       
-      )
 
-    },
-  //Quan hệ
-    {
-      title: "Quan hệ",
-      field: "rname",
-      headerStyle: {
-          padding: '0px',
-          width: '120px',
-          fontWeight: '600',
-      },
-      cellStyle: {
-          padding: '0px',
-          width: '120px',
-      },
-      render: rowData => {
-        return (                              
-          <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
-        )
-      },
-      renderGroup: (rname, groupData) => (                            
-        <Chip variant="outlined" label={rname} size="small" />
-      )                
-    },
-  //Trung tâm
-    {
-      title: "Cơ sở",
-      field: "center",         
-      headerStyle: {
-          padding: '0px',
-          width: '90px',
-          fontWeight: '600',
-      },  
-      cellStyle: {
-          padding: '0px 8px 0px 0px',
-          width: '90px',
-      },
-      render: rowData => {
-        // let brief = rowData.center.split(':')[0]
-        return (
-          <Tooltip title={rowData.center}>
-            <Chip variant="outlined" label={rowData.center} size="small" />
-          </Tooltip> 
-        )
-      },
-      renderGroup: (center, groupData) => (                            
-        <Chip variant="outlined" label={center} size="small" />
-      )  
-    },
-  // Khóa học
-    {
-        title: "Khóa học",
-        field: "course",
-        headerStyle: {
-            padding: '0px',
-            fontWeight: '600',
-        },
-        cellStyle: {
-            padding: '0px',
-        },
-    },                  
-  //Lịch KTDV
-    {
-      title: "Lịch KTDV",
-      field: "test_time",
-      headerStyle: {
-          padding: '0px',
-          fontWeight: '600',
-      },
-      cellStyle: {
-          padding: '0px',
-      },                            
-    },
-  //
-    {
-    title: "Bài làm",
-    field: "test_answers",     
-    grouping: false,                   
-    headerStyle: {
-        padding: '0px',
-        fontWeight: '600',                      
-    },
-    cellStyle: {
-        padding: '0px',
-    },
-    render: rowData => {                    
-      return (rowData.test_answers) ? (
-        <Button variant="contained" color="secondary" onClick = {() => this.handleOpenAnswerDialog(rowData)}>
-          Kiểm tra
-        </Button>
-      ): ("")
-    } 
-  },
-  {
-    title: "Số điểm",
-    field: "test_score",
-    headerStyle: {
-        padding: '0px',
-        fontWeight: '600',
-    },
-    cellStyle: {
-        padding: '0px',
-    },
-  },
-  {
-    title: "Nhận xét",
-    field: "test_note",
-    headerStyle: {
-        padding: '0px',
-        fontWeight: '600',
-    },
-    cellStyle: {
-        padding: '0px',
-    },
-  },
-  {
-    title: "Trạng thái",
-    field: "status",
-    headerStyle: {
-        padding: '0px',
-        fontWeight: '600',
-    },
-    cellStyle: {
-        padding: '0px',
-    },
-  },
-  {
-    title: "Nguồn",
-    field: "source",
-    headerStyle: {
-        padding: '0px',
-        fontWeight: '600',
-    },
-    cellStyle: {
-        padding: '0px',
-    },
-  },
-
-]
 class ViewEntrance extends React.Component{
     constructor(props){
         super(props)
@@ -313,7 +94,7 @@ class ViewEntrance extends React.Component{
             message: '',
         }
     }
-   
+
     componentDidMount() {      
       this.getStep();
       this.getEntrance();
@@ -515,7 +296,237 @@ class ViewEntrance extends React.Component{
                           placeholder: 'Kéo tên cột vào đây để nhóm'
                         }
                     }}
-                    columns={c}
+                    columns={[
+                      {
+                        title: "",
+                        field: "action",
+                        filtering: false,
+                        disableClick: true,
+                        sorting: false,
+                        headerStyle: {
+                            padding: '0px',
+                            width: '90px',
+                        },
+                        cellStyle: {
+                            width: '90px',
+                            padding: '0px',
+                        },
+                        render: rowData => (
+                            <div style = {{display: 'block'}}>
+                                {/* {rowData.tableData.id} */}
+                                <Tooltip title="Chỉnh sửa" arrow>
+                                  <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
+                                    <EditOutlinedIcon fontSize='inherit' />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Xóa ghi danh" arrow>
+                                  <IconButton onClick={() => {
+                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                                      this.handleDeleteEntrance(rowData.eid, rowData.tableData.id)}
+                                    }>
+                                  <DeleteForeverIcon fontSize='inherit' />
+                                  </IconButton>
+                                </Tooltip>                                
+                            </div>
+                        )
+                      },
+                    //Học sinh
+                      {
+                        title: "Học sinh",
+                        field: "sname",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                        render: rowData => {
+                          return (                                
+                            <Typography variant="body2" component="p">                                    
+                                <b>{rowData.sname}</b>
+                                <br /> {rowData.dob}
+                            </Typography>
+                            
+                          )
+                        },
+                        
+                        renderGroup: (sname, groupData) => (
+                          <Chip variant="outlined" label={sname} size="small" />      
+                        )
+                      },
+                    //Phụ huynh
+                      {
+                        title: "Phụ huynh",
+                        field: "pname",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '3px 0px',
+                        },
+                        render: rowData => 
+                          (                              
+                            <Typography variant="body2" component="p">
+                                <b>{rowData.pname}</b> 
+                                <br />{rowData.phone} 
+                                <br />{rowData.pemail}
+                            </Typography>                              
+                          ),
+                        renderGroup: (pname, groupData) => (
+                          <Chip variant="outlined" label={pname} size="small" />       
+                        )
+                  
+                      },
+                    //Quan hệ
+                      {
+                        title: "Quan hệ",
+                        field: "rname",
+                        headerStyle: {
+                            padding: '0px',
+                            width: '120px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                            width: '120px',
+                        },
+                        render: rowData => {
+                          return (                              
+                            <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
+                          )
+                        },
+                        renderGroup: (rname, groupData) => (                            
+                          <Chip variant="outlined" label={rname} size="small" />
+                        )                
+                      },
+                    //Trung tâm
+                      {
+                        title: "Cơ sở",
+                        field: "center",         
+                        headerStyle: {
+                            padding: '0px',
+                            width: '90px',
+                            fontWeight: '600',
+                        },  
+                        cellStyle: {
+                            padding: '0px 8px 0px 0px',
+                            width: '90px',
+                        },
+                        render: rowData => {
+                          // let brief = rowData.center.split(':')[0]
+                          return (
+                            <Tooltip title={rowData.center}>
+                              <Chip variant="outlined" label={rowData.center} size="small" />
+                            </Tooltip> 
+                          )
+                        },
+                        renderGroup: (center, groupData) => (                            
+                          <Chip variant="outlined" label={center} size="small" />
+                        )  
+                      },
+                    // Khóa học
+                      {
+                          title: "Khóa học",
+                          field: "course",
+                          headerStyle: {
+                              padding: '0px',
+                              fontWeight: '600',
+                          },
+                          cellStyle: {
+                              padding: '0px',
+                          },
+                      },                  
+                    //Lịch KTDV
+                      {
+                        title: "Lịch KTDV",
+                        field: "test_time",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },                            
+                      },
+                    //
+                      {
+                      title: "Bài làm",
+                      field: "test_answers",     
+                      grouping: false,                   
+                      headerStyle: {
+                          padding: '0px',
+                          fontWeight: '600',                      
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                      render: rowData => {                    
+                        return (rowData.test_answers) ? (
+                          <Button variant="contained" color="secondary" onClick = {() => this.handleOpenAnswerDialog(rowData)}>
+                            Kiểm tra
+                          </Button>
+                        ): ("")
+                      } 
+                    },
+                    {
+                      title: "Số điểm",
+                      field: "test_score",
+                      headerStyle: {
+                          padding: '0px',
+                          fontWeight: '600',
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                    },
+                    {
+                      title: "Nhận xét",
+                      field: "test_note",
+                      headerStyle: {
+                          padding: '0px',
+                          fontWeight: '600',
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                    },
+                    // {
+                    //   title: "Trạng thái",
+                    //   field: "status",
+                    //   headerStyle: {
+                    //       padding: '0px',
+                    //       fontWeight: '600',
+                    //   },
+                    //   cellStyle: {
+                    //       padding: '0px',
+                    //   },
+                    // },
+                    {
+                      title: "Ngày tạo",
+                      field: "created_at",
+                      headerStyle: {
+                        padding: '0px',
+                        fontWeight: '600',
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                    },  
+                    {
+                      title: "Nguồn",
+                      field: "source",
+                      headerStyle: {
+                          padding: '0px',
+                          fontWeight: '600',
+                      },
+                      cellStyle: {
+                          padding: '0px',
+                      },
+                    },
+                  
+                    ]}
                   detailPanel={rowData => {
                     let messages = (rowData.message)?rowData.message : []
                     let content = ''

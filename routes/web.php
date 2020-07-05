@@ -11,7 +11,7 @@
 |
 */
 
-
+Route::get('/parent/chuan', 'StudentController@normalPhone');
 Route::get('/', function () {
     return view('welcome');
 });
