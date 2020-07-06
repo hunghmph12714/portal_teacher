@@ -73,6 +73,8 @@ class CreateEntrance extends React.Component {
     }
     handleParentChange = (newValue) => {
         // console.log(newValue)
+        newValue.label = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
+            newValue.value = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
         if(!newValue ||newValue.__isNew__){
             this.setState({
                 parent_phone: newValue

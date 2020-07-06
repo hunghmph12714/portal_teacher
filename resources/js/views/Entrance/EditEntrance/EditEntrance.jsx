@@ -152,6 +152,8 @@ class EditEntrance extends React.Component {
     }
     handleParentChange = (newValue) => {
         if(!newValue ||newValue.__isNew__){
+            newValue.label = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
+            newValue.value = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
             this.setState({
                 parent_phone: newValue,
                 student_changed: true

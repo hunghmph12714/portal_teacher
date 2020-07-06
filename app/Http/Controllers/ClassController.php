@@ -204,6 +204,66 @@ class ClassController extends Controller
         }
         return response()->json('ok');
     }
+    protected function editStudentInClass(Request $request){
+        $rules = ['class_id' => 'required', 'student_id'=>'required', 'sc_id' => 'required'];
+        $this->validate($request, $rules);
+        //Edit student and parent info
+        $student = Student::find($request->student_id);
+            if($student){
+                $student->relationship_id = $request->selected_relationship['value'];
+                $student->fullname = $request->student_name['label'];
+                $student->school = $request->student_school['label'];
+                $student->grade = $request->student_grade;
+                $student->email = $request->student_email;
+                $student->phone = $request->student_phone;
+                $student->dob = ($request->student_dob) ? date('Y-m-d', strtotime($request->student_dob)) : null;
+                $student->gender = $request->student_gender;
+                $student->parent_id = $request->parent_id;
+                $student->save();
+            }
+            //Check parent exist
+            if($request->parent_phone['__isNew__']){
+                $r = $request->toArray();
+                $p = [];
+                $p['fullname'] = $r['parent_name'];
+                $p['relationship_id'] = $r['selected_relationship']['value'];
+                $p['phone'] = $r['parent_phone']['label'];
+                $p['email'] = $r['parent_email'];
+                $p['note'] = $r['parent_note'];
+                $p['alt_fullname'] = $r['parent_alt_name'];
+                $p['alt_email'] = $r['parent_alt_email'];
+                $p['alt_phone'] = $r['parent_alt_phone'];
+                $parent = Parents::create($p);
+                $student->parent_id = $parent->id;
+                $student->save();
+            }
+        if(!$request['parent_phone']['__isNew__']){
+            $p = Parents::find($request->parent_id);
+            if($p){
+                $p->relationship_id = $request->selected_relationship['value'];
+                $p->fullname = $request->parent_name;
+                $p->phone = $request->parent_phone['label'];
+                $p->email = $request->parent_email;
+                $p->note = $request->parent_note;
+                $p->alt_fullname = $request->parent_alt_name;
+                $p->alt_email = $request->parent_alt_email;
+                $p->alt_phone = $request->parent_alt_phone;
+                $p->save();
+            }
+        }
+
+        //Edit status 
+        $sc = StudentClass::find($request->sc_id);
+        if($sc){
+            $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
+            $sc->status = $request->status;
+            if($sc->status == 'droped'){
+                $sc->drop_time = date('Y-m-d', strtotime($rquest->drop_date));
+            }
+            $sc->save();
+        }
+        
+    }
     protected function getClass($center_id, $course_id){
         $center_operator = ($center_id == '-1')? '!=': '=';
         $center_value = ($center_id == '-1')? NULL: $center_id;

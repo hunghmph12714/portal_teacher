@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/class/find', 'ClassController@findClass');
     Route::get('/class/getbyid/{class_id}', 'ClassController@getClassById');
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
+    Route::post('/class/edit-student', 'ClassController@editStudentInClass');
 //SETTING-RELATIONSHIP
     Route::get('/settings/relationship', function(){
         return view('welcome');

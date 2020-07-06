@@ -49,8 +49,10 @@ const initState = {
     
     selected_relationship: '',
 
+    sc_id: '',
     status: '',
     active_date: new Date(),
+    drop_date: null,
     create_fee : true,         
 
 }
@@ -81,8 +83,10 @@ class DialogCreate extends React.Component {
                 parent_note: nextProps.student.pnote,
                 selected_relationship: {__isNew__: false, label: nextProps.student.rname, value: nextProps.student.rid, color: nextProps.student.color},
 
+                sc_id: nextProps.student.id,
                 status: nextProps.student.status,
-
+                active_date: new Date(nextProps.student.entrance_date),
+                drop_date : (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
             })
         }
         if(nextProps.type == 'create'){
@@ -138,6 +142,7 @@ class DialogCreate extends React.Component {
     
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
                 parent_note : (newValue.note)?newValue.note:'',
+                parent_id : newValue.pid
             }) 
         }
     }
@@ -170,7 +175,22 @@ class DialogCreate extends React.Component {
     handleActiveDateChange = date => {
         this.setState({ active_date : date });
     }
-    
+    handleDropDate = date => {
+        this.setState({ drop_date: date});
+    }
+    handleSubmitEdit = (e) => {
+        e.preventDefault();
+        let data = this.state
+        data.class_id = this.props.class_id
+        axios.post(baseUrl + '/class/edit-student', data)
+            .then(response => {
+
+            })
+            .catch(err => {
+
+            })
+        
+    }
     handleDialogCreate = (e) => {
         e.preventDefault();
         let data = this.state
@@ -211,7 +231,7 @@ class DialogCreate extends React.Component {
             
             <Dialog 
                 fullWidth 
-                maxWidth='lg'
+                maxWidth='xl'
                 scroll='paper'
                 open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title"
             >
@@ -254,6 +274,7 @@ class DialogCreate extends React.Component {
                                         <MenuItem value={'active'}>Hoạt động</MenuItem>
                                         <MenuItem value={'waiting'}>Chờ học</MenuItem>
                                         <MenuItem value={'retain'}>Bảo lưu</MenuItem>
+                                        <MenuItem value={'droped'}>Nghỉ học</MenuItem>
                                     </Select>
                                 </FormControl>    
                             </Grid>
@@ -273,6 +294,25 @@ class DialogCreate extends React.Component {
                                         />                     
                                     </MuiPickersUtilsProvider>     
                                 </div>
+                                {
+                                    this.state.status == 'droped'? (
+                                        <div className="date-time">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    autoOk
+                                                    className="input-date input-text"
+                                                    variant="inline"
+                                                    inputVariant="outlined"
+                                                    format="dd/MM/yyyy"
+                                                    placeholder="Ngày nghỉ học"
+                                                    views={["year", "month", "date"]}
+                                                    value={this.state.drop_date}
+                                                    onChange={this.handleDropDate}
+                                                />                     
+                                            </MuiPickersUtilsProvider>     
+                                        </div>
+                                    ):''
+                                }
                             </Grid>
                             <Grid item md={4} sm={12}> 
                             <FormControlLabel

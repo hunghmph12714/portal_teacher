@@ -38,9 +38,9 @@ const ListStudent = (props) => {
                     let date = new Date(r.dob)
                     r.dob_format = format(date , 'dd/MM/yyyy')      
                     r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
-                    r.status = r.detail.status                    
+                    const d = r.detail                  
                     const o = r.parent
-                    let a = Object.assign(r, o)
+                    let a = Object.assign(r, o, d)
                     return a
                 })
             )
@@ -49,7 +49,8 @@ const ListStudent = (props) => {
         fetchData()
     }, [reload])
     function openCreateDialog(){
-        setOpen(true)
+        setType('create')
+        setOpen(true)        
     }
     function closeCreateDialog(){
         setOpen(false)
@@ -145,7 +146,7 @@ const ListStudent = (props) => {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Xóa học sinh" arrow>
-                                    <IconButton onClick={() => {
+                                    <IconButton disabled onClick={() => {
                                     if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
                                         this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
                                     }>
