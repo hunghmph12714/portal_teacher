@@ -36,12 +36,12 @@ const ListStudent = (props) => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
             setData(response.data.map(r => {
                     let date = new Date(r.dob)
-                    r.dob = format(date , 'dd/MM/yyyy')      
-                    r.entrance_date = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
-                    r.status = r.detail.status
-                    r.pname = r.parent.pname
-                    r.rname = r.parent.rname
-                    return r
+                    r.dob_format = format(date , 'dd/MM/yyyy')      
+                    r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
+                    r.status = r.detail.status                    
+                    const o = r.parent
+                    let a = Object.assign(r, o)
+                    return a
                 })
             )
 
@@ -191,7 +191,7 @@ const ListStudent = (props) => {
                             return (                                
                             <Typography variant="body2" component="p">                                    
                                 <b>{rowData.fullname}</b>
-                                <br /> {rowData.dob}
+                                <br /> {rowData.dob_format}
                             </Typography>                            )
                         },
                         
@@ -213,9 +213,9 @@ const ListStudent = (props) => {
                         render: rowData => 
                             (                              
                             <Typography variant="body2" component="p">
-                                <b>{rowData.parent.pname}</b> 
-                                <br/>{rowData.parent.phone} 
-                                <br/>{rowData.parent.email}
+                                <b>{rowData.pname}</b> 
+                                <br/>{rowData.pphone} 
+                                <br/>{rowData.pemail}
                             </Typography>                              
                             ),
                         renderGroup: (pname, groupData) => (
@@ -238,7 +238,7 @@ const ListStudent = (props) => {
                         },
                         render: rowData => {
                             return (                              
-                            <Chip style={customChip(rowData.parent.color)} variant="outlined" label={rowData.rname} size="small" />                         
+                            <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
                             )
                         },
                         renderGroup: (rname, groupData) => (                            
@@ -248,7 +248,7 @@ const ListStudent = (props) => {
                     //Ngày nhập học
                     {
                         title: "Ngày nhập học",
-                        field: "entrance_date",
+                        field: "entrance_date_format",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
@@ -258,11 +258,11 @@ const ListStudent = (props) => {
                         },
                         render: rowData => {
                             return (                      
-                                <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.entrance_date} size="small" />                         
+                                <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.entrance_date_format} size="small" />                         
                             )
                         },
-                        renderGroup: (entrance_date, groupData) => (                     
-                            <Chip variant="outlined" label={entrance_date} size="small" />
+                        renderGroup: (entrance_date_format, groupData) => (                     
+                            <Chip variant="outlined" label={entrance_date_format} size="small" />
                         )                
                     },
                     //Trạng thái

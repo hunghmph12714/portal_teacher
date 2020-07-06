@@ -28,58 +28,66 @@ import {
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 const baseUrl = window.Laravel.baseUrl
+const initState = {
+    schools: [],
+    student_id: '',
+    student_name: '',
+    student_dob: new Date(),
+    student_school: '',
+    student_grade: '',
+    student_gender: 'Khác',
+    student_email: '',
+    student_phone: '',
 
+    parent_name: '',
+    parent_alt_name: '',
+    parent_email: '',
+    parent_alt_email: '',
+    parent_phone: '',
+    parent_alt_phone: '',
+    parent_note: '',
+    
+    selected_relationship: '',
+
+    status: '',
+    active_date: new Date(),
+    create_fee : true,         
+
+}
 class DialogCreate extends React.Component {    
     constructor(props){
         super(props)        
-        this.state = {
-            schools: [],
-            student_id: '',
-            student_name: '',
-            student_dob: new Date(),
-            student_school: '',
-            student_grade: '',
-            student_gender: 'Khác',
-            student_email: '',
-            student_phone: '',
-
-            parent_name: '',
-            parent_alt_name: '',
-            parent_email: '',
-            parent_alt_email: '',
-            parent_phone: '',
-            parent_alt_phone: '',
-            parent_note: '',
-            
-            selected_relationship: '',
-
-            status: '',
-            active_date: new Date(),
-            create_fee : true,         
-
-        }
+        this.state = initState
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        this.setState({
-            student_id: nextProps.student.id,
-            student_name: {__isNew__: false, label: nextProps.student.fullname, value: nextProps.student.id},
-            student_dob: new Date(),
-            student_school: {label: nextProps.student.school, value: nextProps.student.school},
-            student_grade: nextProps.student.grade,
-            student_gender: nextProps.student.gender,
-            student_email: nextProps.student.semail,
-            student_phone: nextProps.student.sphone,
+        if(nextProps.type == 'edit'){
+            this.setState({
+                student_id: nextProps.student.id,
+                student_name: {__isNew__: false, label: nextProps.student.fullname, value: nextProps.student.id},
+                student_dob: new Date(nextProps.student.dob),
+                student_school: {label: nextProps.student.school, value: nextProps.student.school},
+                student_grade: nextProps.student.grade,
+                student_gender: nextProps.student.gender,
+                student_email: nextProps.student.semail,
+                student_phone: nextProps.student.sphone,
+    
+                parent_id: nextProps.student.parent_id,
+                parent_name: nextProps.student.pname,
+                parent_alt_name: nextProps.student.alt_pname,
+                parent_email: nextProps.student.pemail,
+                parent_alt_email: nextProps.student.alt_pemail,
+                parent_phone:  {__isNew__: false, label: nextProps.student.pphone, value: nextProps.student.pphone},
+                parent_alt_phone: nextProps.student.alt_phone,
+                parent_note: nextProps.student.pnote,
+                selected_relationship: {__isNew__: false, label: nextProps.student.rname, value: nextProps.student.rid, color: nextProps.student.color},
 
-            parent_id: nextProps.student.pid,
-            parent_name: {__isNew__: false, label: nextProps.student.pname, value: nextProps.student.pid},
-            parent_alt_name: nextProps.student.alt_pname,
-            parent_email: nextProps.student.pemail,
-            parent_alt_email: nextProps.student.alt_pemail,
-            parent_phone: nextProps.student.phone,
-            parent_alt_phone: nextProps.student.alt_phone,
-            parent_note: nextProps.student.pnote,
-            selected_relationship: {__isNew__: false, label: nextProps.student.rname, value: nextProps.student.rid, color: nextProps.student.color},
-        })
+                status: nextProps.student.status,
+
+            })
+        }
+        if(nextProps.type == 'create'){
+            this.setState(initState)
+        }
     }
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
@@ -114,7 +122,7 @@ class DialogCreate extends React.Component {
         // console.log(newValue)
         if(!newValue ||newValue.__isNew__){
             this.setState({
-                parent_phone: newValue
+                parent_phone: newValue.replace(/\s|[(]|[)]|[-]/g, '')
             }) 
         }
         else{

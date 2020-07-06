@@ -153,64 +153,74 @@ const DefaultConfig = React.memo( props => {
     }
     return <React.Fragment>{classes}</React.Fragment>
 })
+const initState = {
+    name: "",
+    code: "",
+    open_date: new Date(),
+    fee: "",
+    note:"",
+    session_per_class: 0,
+    class_per_week: 0,
+    centers : [],
+    center_selected: '',
+    courses: [],
+    course_selected: '',
+    teachers: [],
+    rooms: [],
+    config: [],
+    days : [{value: 0, label:'Thứ 2'},{value: 1, label:'Thứ 3'},{value: 2, label:'Thứ 4'},{value: 3, label:'Thứ 5'},{value: 4, label:'Thứ 6'},{value: 5, label:'Thứ 7'},{value: 6, label:'Chủ nhật'},]
+} 
 class DialogCreate extends React.Component {
     constructor(props){
         super(props)      
-        this.state = {
-            name: "",
-            code: "",
-            open_date: new Date(),
-            fee: "",
-            note:"",
-            session_per_class: 0,
-            class_per_week: 0,
-            centers : [],
-            center_selected: '',
-            courses: [],
-            course_selected: '',
-            teachers: [],
-            rooms: [],
-            config: [],
-            days : [{value: 0, label:'Thứ 2'},{value: 1, label:'Thứ 3'},{value: 2, label:'Thứ 4'},{value: 3, label:'Thứ 5'},{value: 4, label:'Thứ 6'},{value: 5, label:'Thứ 7'},{value: 6, label:'Chủ nhật'},]
-        }  
+        this.state = initState 
     }
     UNSAFE_componentWillReceiveProps(nextProps){
-        const course = this.state.courses.filter(c => {
-            return c.label == nextProps.class.course
-        })
-        const center = this.state.centers.filter(c => {
-            return c.label == nextProps.class.center
-        })
-        let conf = []
-        let class_per_week = 0
-        let session_per_class = 0
-        if(nextProps.class.config) {
-            const configs = JSON.parse(nextProps.class.config)
-            let dates = configs.map(c => {
-                return c.date.value
+        if(nextProps.dialogType=='edit'){
+            const course = this.state.courses.filter(c => {
+                return c.label == nextProps.class.course
             })
-            let distinc_date = [...new Set(dates)]
-            conf = configs.map(c => {
-                c.from = c.from*1000
-                c.to = c.to*1000
-                return c
+            const center = this.state.centers.filter(c => {
+                return c.label == nextProps.class.center
             })
-            class_per_week = distinc_date.length
-            session_per_class = dates.length/distinc_date.length
+            let conf = []
+            let class_per_week = 0
+            let session_per_class = 0
+            if(nextProps.class.config) {
+                const configs = JSON.parse(nextProps.class.config)
+                let dates = configs.map(c => {
+                    return c.date.value
+                })
+                let distinc_date = [...new Set(dates)]
+                conf = configs.map(c => {
+                    c.from = c.from*1000
+                    c.to = c.to*1000
+                    return c
+                })
+                class_per_week = distinc_date.length
+                session_per_class = dates.length/distinc_date.length
+            }
+            this.setState({
+                name: (nextProps.class.name)?nextProps.class.name:'',
+                code: (nextProps.class.code)?nextProps.class.code:'',
+                open_date: nextProps.class.open_date ? new Date(nextProps.class.open_date) : null,
+                fee: (nextProps.class.fee)?nextProps.class.fee:'',
+                note: nextProps.class.note,
+                course_selected : course[0],
+                center_selected : center[0],
+                session_per_class: session_per_class    ,
+                class_per_week: class_per_week,
+                config: conf
+                 
+            })
         }
-        this.setState({
-            name: (nextProps.class.name)?nextProps.class.name:'',
-            code: (nextProps.class.code)?nextProps.class.code:'',
-            open_date: nextProps.class.open_date ? new Date(nextProps.class.open_date) : null,
-            fee: (nextProps.class.fee)?nextProps.class.fee:'',
-            note: nextProps.class.note,
-            course_selected : course[0],
-            center_selected : center[0],
-            session_per_class: session_per_class    ,
-            class_per_week: class_per_week,
-            config: conf
-             
-        })
+        if(nextProps.dialogType=='create'){
+            this.setState(initState)
+            this.getCenters()
+            this.getCourses()
+            this.getTeacher()  
+        }
+        
     }
     componentDidMount () {
         this.getCenters()
