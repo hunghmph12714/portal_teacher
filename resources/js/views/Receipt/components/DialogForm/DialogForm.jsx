@@ -305,7 +305,7 @@ class DialogForm extends React.Component {
                 
                 <DialogContent>
                         <form noValidate autoComplete="on">
-                                <h2>Lập phiếu chi</h2>
+                                <h2>Lập phiếu thu</h2>
                                 <Grid container spacing={2} id="receipt-form">
                                     <Grid item xs={12} sm={3}>
                                         <FormLabel color="primary">Cơ sở</FormLabel>
@@ -315,7 +315,7 @@ class DialogForm extends React.Component {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Tên người nhận</FormLabel>
+                                        <FormLabel color="primary">Tên người nộp</FormLabel>
                                         <TextField
                                             fullWidth
                                             value={this.state.name}
