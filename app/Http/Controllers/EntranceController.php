@@ -230,7 +230,6 @@ class EntranceController extends Controller
                 $p->alt_phone = $request->parent_alt_phone;
                 $p->save();
             }
-            
         }
         //Edit Entrance
         if($request->entrance_changed){

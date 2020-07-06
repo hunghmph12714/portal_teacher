@@ -145,6 +145,7 @@ class EditEntrance extends React.Component {
     
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
                 parent_note : (newValue.note)?newValue.note:'',
+                student_changed: true
 
             }) 
         }        
@@ -154,6 +155,7 @@ class EditEntrance extends React.Component {
         if(!newValue ||newValue.__isNew__){
             this.setState({
                 parent_phone: newValue,
+                student_changed: true
             }) 
         }
         else{
@@ -167,6 +169,7 @@ class EditEntrance extends React.Component {
                 parent_id : newValue.pid,
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
                 parent_note : (newValue.note)?newValue.note:'',
+                student_changed: true
             }) 
         }
     }
