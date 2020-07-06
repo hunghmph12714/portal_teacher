@@ -229,7 +229,6 @@ class EntranceController extends Controller
                 $p->alt_email = $request->parent_alt_email;
                 $p->alt_phone = $request->parent_alt_phone;
                 $p->save();
-
             }
             
         }
