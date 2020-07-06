@@ -196,6 +196,8 @@ class PaperController extends Controller
 
         //Create new Receipt
         $receipt = Paper::create($p);
+        $receipt->created_at = date('Y-m-d', strtotime($request->receipt_time));
+        $receipt->save();
         foreach($request->transactions as $transaction){
             $this->addTransaction($transaction, $receipt->id);
         }
