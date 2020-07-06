@@ -132,7 +132,7 @@ class Attendance extends React.Component{
                     console.log(err)
                 })
         }
-    }
+    } 
     handleChange = (newValue , event)=> {
         this.setState({
             [event.name]: newValue
@@ -237,6 +237,25 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
+    onAttendanceNoteStudentChange = (student_id, session_id, e) => {
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            // console.log(session_id)
+                            a.attendance_note = e.target.value
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
     render(){
         return(
             <div className="root-attendance">
@@ -249,7 +268,7 @@ class Attendance extends React.Component{
                             center = {-1}
                         />
                     </Grid>
-                    <Grid item lg={7} sm={12} xs={12}>
+                    <Grid item lg={8} sm={12} xs={12}>
                         <SessionDateSelect 
                             selected_class = {this.state.selected_class}
                             selected_session = {this.state.selected_session}
@@ -472,6 +491,9 @@ class Attendance extends React.Component{
                         onAttendanceStudentChange = {this.onAttendanceStudentChange}
                         onScoreStudentChange = {this.onScoreStudentChange}
                         onBtvnScoreChange = {this.onBtvnScoreChange}
+                        onAttendanceNoteStudentChange = {this.onAttendanceNoteStudentChange}
+                        handleSubmitAttendance={this.handleSubmitAttendance}
+                        handleCloseAttendance={this.handleCloseAttendance}
                     />            
                 ): ('')}
                 

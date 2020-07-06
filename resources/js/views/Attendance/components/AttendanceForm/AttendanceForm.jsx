@@ -1,4 +1,5 @@
 import React from 'react'
+import './AttendanceForm.scss'
 import axios from 'axios'
 import { withSnackbar } from 'notistack';
 import Select , { components }  from "react-select";
@@ -109,7 +110,7 @@ class AttendanceForm extends React.Component{
                                     })
                                 }
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell align="center" className="note-head">
                                 Ghi chú điểm danh <br/> (Lý do nghỉ - Thời gian đi muộn)                               
                             </TableCell>
                             {/* <TableCell align="center">Bài tập trên lớp<br/>
@@ -243,20 +244,20 @@ class AttendanceForm extends React.Component{
                                 }
                                 
                             </TableCell>
-                            <TableCell align="center">
+                            <TableCell align="center" className="note">
                                 {
                                     row.attendance.map(s => {
                                         let session_info = this.props.selected_session.filter(ss=>ss.value == s.session_id)
                                         // console.log(session_info)
                                         return (
                                             <TextField
+                                                className="note-detail"
                                                 label = {session_info[0].time}
                                                 key = {session_info[0].time}
-                                                multiline                                                
                                                 size='small'
                                                 fullWidth
-                                                rows={1}
                                                 variant="outlined"
+                                                onChange = {(e) => this.props.onAttendanceNoteStudentChange(row.student.sid, s.session_id,e)}
                                             />    
                                                                                
                                         )
@@ -331,10 +332,10 @@ class AttendanceForm extends React.Component{
             
             </DialogContent>
             <DialogActions>
-            <Button onClick={this.handleCloseAttendance} color="primary">
+            <Button onClick={this.props.handleCloseAttendance} color="primary">
                 Hủy
             </Button>
-            <Button onClick={this.handleSubmitAttendance} color="primary">
+            <Button onClick={this.props.handleSubmitAttendance} color="primary">
                 Lưu
             </Button>
             </DialogActions>

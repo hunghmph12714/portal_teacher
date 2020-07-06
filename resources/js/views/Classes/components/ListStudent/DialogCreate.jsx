@@ -34,6 +34,7 @@ class DialogCreate extends React.Component {
         super(props)        
         this.state = {
             schools: [],
+            student_id: '',
             student_name: '',
             student_dob: new Date(),
             student_school: '',
@@ -57,6 +58,28 @@ class DialogCreate extends React.Component {
             create_fee : true,         
 
         }
+    }
+    UNSAFE_componentWillReceiveProps(nextProps){
+        this.setState({
+            student_id: nextProps.student.id,
+            student_name: {__isNew__: false, label: nextProps.student.fullname, value: nextProps.student.id},
+            student_dob: new Date(),
+            student_school: {label: nextProps.student.school, value: nextProps.student.school},
+            student_grade: nextProps.student.grade,
+            student_gender: nextProps.student.gender,
+            student_email: nextProps.student.semail,
+            student_phone: nextProps.student.sphone,
+
+            parent_id: nextProps.student.pid,
+            parent_name: {__isNew__: false, label: nextProps.student.pname, value: nextProps.student.pid},
+            parent_alt_name: nextProps.student.alt_pname,
+            parent_email: nextProps.student.pemail,
+            parent_alt_email: nextProps.student.alt_pemail,
+            parent_phone: nextProps.student.phone,
+            parent_alt_phone: nextProps.student.alt_phone,
+            parent_note: nextProps.student.pnote,
+            selected_relationship: {__isNew__: false, label: nextProps.student.rname, value: nextProps.student.rid, color: nextProps.student.color},
+        })
     }
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
@@ -150,7 +173,7 @@ class DialogCreate extends React.Component {
                 this.props.handleClose()
             })
             .catch(err => {                
-                // console.log("create entrance bug: " + err.response.data)ư
+                // console.log("create student bug: " + err.response.data)ư
                 if(err.response.status == 418){
                     this.props.enqueueSnackbar(err.response.data , {variant: 'error'})
                 }
@@ -256,9 +279,15 @@ class DialogCreate extends React.Component {
                 <Button onClick={this.props.handleClose} color="primary">
                     Hủy bỏ
                 </Button>
-                <Button onClick={this.handleDialogCreate} color="primary" id="btn-save">
-                    Xác nhận
-                </Button>
+                {(this.props.type == 'edit') ?  
+                    (<Button onClick={this.handleSubmitEdit} color="primary" id="btn-save">
+                        Lưu
+                    </Button>)
+                    : 
+                    (<Button onClick={this.handleDialogCreate} color="primary" id="btn-save">
+                        Xác nhận
+                    </Button>)}
+                
                 
             </DialogActions>
         </Dialog>

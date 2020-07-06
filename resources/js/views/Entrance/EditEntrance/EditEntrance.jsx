@@ -95,11 +95,11 @@ class EditEntrance extends React.Component {
             student_phone: nextProps.entrance.sphone,
 
             parent_id: nextProps.entrance.pid,
-            parent_name: {__isNew__: false, label: nextProps.entrance.pname, value: nextProps.entrance.pid},
+            parent_name: nextProps.entrance.pname,
             parent_alt_name: nextProps.entrance.alt_pname,
             parent_email: nextProps.entrance.pemail,
             parent_alt_email: nextProps.entrance.alt_pemail,
-            parent_phone: nextProps.entrance.phone,
+            parent_phone: {__isNew__: false, label: nextProps.entrance.phone, value: nextProps.entrance.pid},
             parent_alt_phone: nextProps.entrance.alt_phone,
             parent_note: nextProps.entrance.pnote,
             selected_relationship: {__isNew__: false, label: nextProps.entrance.rname, value: nextProps.entrance.rid, color: nextProps.entrance.color},
@@ -136,8 +136,8 @@ class EditEntrance extends React.Component {
                 student_gender: newValue.gender,
                 student_grade: newValue.grade,
     
-                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.p_name},
-                parent_phone: newValue.p_phone,
+                parent_name: newValue.p_name,
+                parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.p_phone},
                 parent_email: newValue.p_email,
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
@@ -150,16 +150,16 @@ class EditEntrance extends React.Component {
         }        
     }
     handleParentChange = (newValue) => {
-        // console.log(newValue)
+        console.log(newValue)
         if(!newValue ||newValue.__isNew__){
             this.setState({
-                parent_name: newValue
+                parent_phone: newValue
             }) 
         }
         else{
             this.setState({                
-                parent_name: {__isNew__: false, value: newValue.pid, label: newValue.fullname},
-                parent_phone: newValue.phone,
+                parent_name: newValue.fullname,
+                parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.phone},
                 parent_email: newValue.email,
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
@@ -278,7 +278,7 @@ class EditEntrance extends React.Component {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                     >
-                                    <Typography>{this.state.parent_name.label}</Typography>
+                                    <Typography>{this.state.parent_name}</Typography>
                                     </ExpansionPanelSummary>
                                     <ExpansionPanelDetails>
                                     <ParentForm

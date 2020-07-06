@@ -28,7 +28,9 @@ const ListStudent = (props) => {
     const { class_id } = props
     const [data, setData] = useState([]);
     const [ openDialog, setOpen ] = useState(false);
-    const [reload, setReload] = useState(false)
+    const [reload, setReload] = useState(false);
+    const [type, setType] = useState('create');
+    const [selected_data, setSelectedData] = useState([]);
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -51,7 +53,13 @@ const ListStudent = (props) => {
     }
     function closeCreateDialog(){
         setOpen(false)
+        setSelectedData([])
         setReload(!reload)
+    }
+    function handleOpenEditDialog(rowData){
+        setOpen(true)
+        setType('edit')
+        setSelectedData(rowData)
     }
     return (
         <React.Fragment>
@@ -114,39 +122,39 @@ const ListStudent = (props) => {
                     }}
                 columns={[
                     //Actions
-                    // {
-                    //     title: "",
-                    //     field: "action",
-                    //     filtering: false,
-                    //     disableClick: true,
-                    //     sorting: false,
-                    //     headerStyle: {
-                    //         padding: '0px',
-                    //         width: '140px',
-                    //     },
-                    //     cellStyle: {
-                    //         width: '114px',
-                    //         padding: '0px',
-                    //     },
-                    //     render: rowData => (
-                    //         <div style = {{display: 'block'}}>
-                    //             {/* {rowData.tableData.id} */}
-                    //             <Tooltip title="Chỉnh sửa" arrow>
-                    //                 <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                    //                 <EditOutlinedIcon fontSize='inherit' />
-                    //                 </IconButton>
-                    //             </Tooltip>
-                    //             <Tooltip title="Xóa học sinh" arrow>
-                    //                 <IconButton onClick={() => {
-                    //                 if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                    //                     this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                    //                 }>
-                    //                 <DeleteForeverIcon fontSize='inherit' />
-                    //                 </IconButton>
-                    //             </Tooltip>                                
-                    //         </div>
-                    //     )
-                    // },
+                    {
+                        title: "",
+                        field: "action",
+                        filtering: false,
+                        disableClick: true,
+                        sorting: false,
+                        headerStyle: {
+                            padding: '0px',
+                            width: '80px',
+                        },
+                        cellStyle: {
+                            width: '80px',
+                            padding: '0px 5px 0px 0px',
+                        },
+                        render: rowData => (
+                            <div style = {{display: 'block'}}>
+                                {/* {rowData.tableData.id} */}
+                                <Tooltip title="Chỉnh sửa" arrow>
+                                    <IconButton onClick={() => {handleOpenEditDialog(rowData)}}>
+                                    <EditOutlinedIcon fontSize='inherit' />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Xóa học sinh" arrow>
+                                    <IconButton onClick={() => {
+                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                    }>
+                                    <DeleteForeverIcon fontSize='inherit' />
+                                    </IconButton>
+                                </Tooltip>                                
+                            </div>
+                        )
+                    },
                     //STT
                     {
                         title: "STT",
@@ -278,6 +286,8 @@ const ListStudent = (props) => {
                 open = {openDialog}
                 handleClose = {closeCreateDialog}
                 class_id = {class_id}
+                type = {type}
+                student = {selected_data}
             />
         </React.Fragment>
     )
