@@ -238,7 +238,7 @@ class ClassController extends Controller
                 $student->parent_id = $parent->id;
                 $student->save();
             }
-        if(!$request['parent_phone']['__isNew__']){
+        if(!$request->parent_phone['__isNew__']){
             $p = Parents::find($request->parent_id);
             if($p){
                 $p->relationship_id = $request->selected_relationship['value'];
