@@ -59,12 +59,14 @@ class PaperController extends Controller
         $p['amount'] = $request->amount;
         $p['user_created_id'] = auth()->user()->id;
         $p['note'] = $request->note;
-        $p['created_at'] = date('Y-m-d', $this->jsDate($request->payment_time));
+        $p['created_at'] = date('Y-m-d', strtotime($request->payment_time));
         $p['status'] = NULL;
         $p['address'] = $request->address;
 
         //Create new Payment
         $payment = Paper::create($p);
+        $payment->created_at = date('Y-m-d', strtotime($request->payment_time));
+        $payment->save();
         foreach($request->transactions as $transaction){
             $this->addTransaction($transaction, $payment->id);
         }
@@ -188,7 +190,7 @@ class PaperController extends Controller
         $p['amount'] = $request->amount;
         $p['user_created_id'] = auth()->user()->id;
         $p['note'] = $request->note;
-        $p['created_at'] = date('Y-m-d', $this->jsDate($request->receipt_time));
+        $p['created_at'] = date('Y-m-d', strtotime($request->receipt_time));
         $p['status'] = NULL;
         $p['address'] = $request->address;
 

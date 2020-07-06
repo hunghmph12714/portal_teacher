@@ -33,7 +33,7 @@ const initState = {
     address:'',
     description: '', 
     center: [],   
-    payment_time: new Date,
+    payment_time: new Date(),
     remaining_amount: '',
     transaction_count: 0,
     transactions: [],
