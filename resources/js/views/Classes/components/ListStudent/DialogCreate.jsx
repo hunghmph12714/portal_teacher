@@ -121,8 +121,10 @@ class DialogCreate extends React.Component {
     handleParentChange = (newValue) => {
         // console.log(newValue)
         if(!newValue ||newValue.__isNew__){
+            newValue.label = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
+            newValue.value = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
             this.setState({
-                parent_phone: newValue.replace(/\s|[(]|[)]|[-]/g, '')
+                parent_phone: newValue
             }) 
         }
         else{
