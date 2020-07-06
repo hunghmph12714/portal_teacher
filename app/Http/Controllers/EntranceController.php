@@ -182,9 +182,9 @@ class EntranceController extends Controller
         return response()->json($entrances);
     }
     protected function editEntrance(Request $request){
-        $rules = ['student_id' => 'required', 'entrance_id' => 'required', 'parent_id' => 'required'];
+        $rules = ['student_id' => 'required', 'entrance_id' => 'required'];
         $this->validate($request, $rules);
-       
+        
         // Edit Student and Parent
         if($request->student_changed){
             $student = Student::find($request->student_id);
@@ -197,10 +197,27 @@ class EntranceController extends Controller
                 $student->phone = $request->student_phone;
                 $student->dob = ($request->student_dob) ? date('Y-m-d', strtotime($request->student_dob)) : null;
                 $student->gender = $request->student_gender;
+                $student->parent_id = $request->parent_id;
+                $student->save();
+            }
+            //Check parent exist
+            if($request->parent_phone['__isNew__']){
+                $r = $request->toArray();
+                $p = [];
+                $p['fullname'] = $r['parent_name'];
+                $p['relationship_id'] = $r['selected_relationship']['value'];
+                $p['phone'] = $r['parent_phone']['label'];
+                $p['email'] = $r['parent_email'];
+                $p['note'] = $r['parent_note'];
+                $p['alt_fullname'] = $r['parent_alt_name'];
+                $p['alt_email'] = $r['parent_alt_email'];
+                $p['alt_phone'] = $r['parent_alt_phone'];
+                $parent = Parents::create($p);
+                $student->parent_id = $parent->id;
                 $student->save();
             }
         }
-        if($request->parent_changed){
+        if($request->parent_changed && !$request['parent_phone']['__isNew__']){
             $p = Parents::find($request->parent_id);
             if($p){
                 $p->relationship_id = $request->selected_relationship['value'];
@@ -212,7 +229,9 @@ class EntranceController extends Controller
                 $p->alt_email = $request->parent_alt_email;
                 $p->alt_phone = $request->parent_alt_phone;
                 $p->save();
+
             }
+            
         }
         //Edit Entrance
         if($request->entrance_changed){

@@ -153,7 +153,7 @@ class EditEntrance extends React.Component {
         console.log(newValue)
         if(!newValue ||newValue.__isNew__){
             this.setState({
-                parent_phone: newValue
+                parent_phone: newValue,
             }) 
         }
         else{
@@ -164,7 +164,7 @@ class EditEntrance extends React.Component {
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
                 parent_alt_phone: newValue.alt_phone,
-    
+                parent_id : newValue.pid,
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
                 parent_note : (newValue.note)?newValue.note:'',
             }) 
