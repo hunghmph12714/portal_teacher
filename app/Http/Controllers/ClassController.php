@@ -205,7 +205,7 @@ class ClassController extends Controller
         return response()->json('ok');
     }
     protected function editStudentInClass(Request $request){
-        $rules = ['class_id' => 'required', 'student_id'=>'required', 'sc_id' => 'required'];
+        $rules = ['class_id' => 'required', 'student_id'=>'required'];
         $this->validate($request, $rules);
         //Edit student and parent info
         $student = Student::find($request->student_id);
@@ -218,8 +218,9 @@ class ClassController extends Controller
                 $student->phone = $request->student_phone;
                 $student->dob = ($request->student_dob) ? date('Y-m-d', strtotime($request->student_dob)) : null;
                 $student->gender = $request->student_gender;
-                $student->parent_id = $request->parent_id;
+                $student->parent_id = $request->parent_id;                
                 $student->save();
+                print_r($student->toArray());
             }
             //Check parent exist
             if($request->parent_phone['__isNew__']){
@@ -253,12 +254,12 @@ class ClassController extends Controller
         }
 
         //Edit status 
-        $sc = StudentClass::find($request->sc_id);
+        $sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->class_id)->first();
         if($sc){
             $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
             $sc->status = $request->status;
             if($sc->status == 'droped'){
-                $sc->drop_time = date('Y-m-d', strtotime($rquest->drop_date));
+                $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
             }
             $sc->save();
         }

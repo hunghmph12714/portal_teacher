@@ -49,7 +49,6 @@ const initState = {
     
     selected_relationship: '',
 
-    sc_id: '',
     status: '',
     active_date: new Date(),
     drop_date: null,
@@ -83,7 +82,6 @@ class DialogCreate extends React.Component {
                 parent_note: nextProps.student.pnote,
                 selected_relationship: {__isNew__: false, label: nextProps.student.rname, value: nextProps.student.rid, color: nextProps.student.color},
 
-                sc_id: nextProps.student.id,
                 status: nextProps.student.status,
                 active_date: new Date(nextProps.student.entrance_date),
                 drop_date : (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
@@ -184,10 +182,15 @@ class DialogCreate extends React.Component {
         data.class_id = this.props.class_id
         axios.post(baseUrl + '/class/edit-student', data)
             .then(response => {
-
+                this.props.enqueueSnackbar('Sửa học sinh thành công', { 
+                    variant: 'success',
+                });
+                this.props.handleClose()
             })
             .catch(err => {
-
+                this.props.enqueueSnackbar('Có lỗi, vui lòng thử lại', { 
+                    variant: 'error',
+                });
             })
         
     }

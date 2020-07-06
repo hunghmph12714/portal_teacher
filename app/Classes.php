@@ -16,7 +16,7 @@ class Classes extends Model
         return $this->belongsToMany('App\Student','student_class','class_id','student_id')
                     ->as('detail')
                     ->using('App\StudentClass')
-                    ->withPivot('status', 'entrance_date','stats','drop_time','id')
+                    ->withPivot('status', 'entrance_date','stats','drop_time')
                     ->withTimestamps();
     }
     public function activeStudents(){
