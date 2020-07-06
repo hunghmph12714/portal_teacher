@@ -186,8 +186,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
         
         // Edit Student and Parent
-        if($request->student_changed){
-            $student = Student::find($request->student_id);
+        $student = Student::find($request->student_id);
             if($student){
                 $student->relationship_id = $request->selected_relationship['value'];
                 $student->fullname = $request->student_name['label'];
@@ -212,11 +211,11 @@ class EntranceController extends Controller
                 $p['alt_fullname'] = $r['parent_alt_name'];
                 $p['alt_email'] = $r['parent_alt_email'];
                 $p['alt_phone'] = $r['parent_alt_phone'];
+                print_r($p);
                 $parent = Parents::create($p);
                 $student->parent_id = $parent->id;
                 $student->save();
             }
-        }
         if($request->parent_changed && !$request['parent_phone']['__isNew__']){
             $p = Parents::find($request->parent_id);
             if($p){

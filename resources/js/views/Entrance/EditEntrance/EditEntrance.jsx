@@ -151,7 +151,6 @@ class EditEntrance extends React.Component {
         }        
     }
     handleParentChange = (newValue) => {
-        console.log(newValue)
         if(!newValue ||newValue.__isNew__){
             this.setState({
                 parent_phone: newValue,
