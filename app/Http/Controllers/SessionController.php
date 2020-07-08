@@ -74,6 +74,7 @@ class SessionController extends Controller
             $s_a['sessions'] = [];
             foreach($sessions as $s){
                 //Với mỗi ca học 
+                //Check xem ca học đó có điều chỉnh học phí không ?
                 $ss['session_id'] = $s['id'];
                 $sc = StudentClass::where('class_id', $s['class_id'])->where('student_id', $st->id)->first();
                 if($sc){
@@ -104,6 +105,7 @@ class SessionController extends Controller
         foreach($student_attendance as $sa){
             $fees = [];            
             $fee_per_session = 0;
+            //Dồn all session vào 1 tháng
             foreach($sa['sessions'] as $s){
                 $month = date('m-Y', strtotime($s['date']));
                 if(!array_key_exists($month, $fees)){
@@ -115,6 +117,8 @@ class SessionController extends Controller
                     $fees[$month]['count']++;
                 }
                 $fee_per_session = $s['fee'];
+                // Kiểm tra có điều chỉnh học phí tại ca học này không ? 
+                $this->applyFeeAdjustment($s['id'], $sa['student']['id']);
             }
             foreach($fees as $key => $fee){
                 if($fee != 0){
@@ -129,7 +133,7 @@ class SessionController extends Controller
                         $t['user'] = auth()->user()->id;
                         $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
                         Transaction::create($t);
-                        //Check Discount
+                        //Check Discount of student
                         $discounts = Discount::where('student_class_id', $s->pivot['id'])
                                             ->where('status', 'active')
                                             ->where('max_use','>',0)
@@ -157,6 +161,30 @@ class SessionController extends Controller
                         }
                     } 
                 }
+            }
+        }
+    }
+    protected function applyFeeAdjustment($session_id, $student_id){
+        $session = Session::find($session_id);
+        if($session){
+            $discount = Discount::where('class_id', $session->class_id)->whereNull('student_class_id')
+                ->where('active_at','<=',$session->date)->where('expired_at', '>=', $session->date)->get();
+            foreach($discount as $d){
+                if($d->amount < 0){
+                    $t['debit'] = Account::Where('level_2', '511')->first()->id;
+                    $t['credit'] = Account::Where('level_2', '131')->first()->id;
+                }
+                else{
+                    $t['debit'] = Account::Where('level_2', '131')->first()->id;
+                    $t['credit'] = Account::Where('level_2', '3387')->first()->id;
+                }
+                $t['amount'] = abs($d->amount);
+                $t['time'] = Date('Y-m-d', strtotime($session->date));
+                $t['student_id'] = $student_id; 
+                $t['class_id'] = $d->class_id;
+                $t['user'] = auth()->user()->id;
+                $t['content'] = $d->content;
+                Transaction::create($t);
             }
         }
     }
@@ -308,6 +336,7 @@ class SessionController extends Controller
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);
     }
+    
     protected function applyAdjustment(Request $request){
          $rules = ['discount_id' => 'required'];
          $this->validate($request, $rules);

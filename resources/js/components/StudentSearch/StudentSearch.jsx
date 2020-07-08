@@ -17,6 +17,7 @@ const customChip = (color = '#ccc') => ({
     border: '1px solid ' + color,
     color: color,
     fontSize: '12px',
+    marginRight: '5px'
 })
 const CustomOption = props => {
     const { data, innerRef, innerProps } = props;
@@ -39,8 +40,17 @@ const CustomOption = props => {
                         <br />
                             Số điện thoại: {data.p_phone}
                         </Typography>
-                    </Grid>
-                </Grid>          
+                    </Grid>                    
+                </Grid>
+                <Grid container spacing={2} className="search-grid">
+                    <Grid item md={12} sm={12}>
+                        <Typography variant="body2" component="p">
+                            <b>Lớp: </b>{data.classes.map(c => {
+                                return (<Chip style={customChip('adadc9')} variant="outlined" color="secondary" label={c.code} size="small" />)
+                            })}
+                        </Typography>                        
+                    </Grid>          
+                </Grid>       
             </CardContent>
         </Card>      
     ) : <components.Option {...props} />

@@ -18,6 +18,7 @@ class StudentController extends Controller
         return response()->json($schools);
     }
     public function findStudents($key){
+        $s = [];
         if(ctype_digit($key)){
             //check parent phone
             $s = Parents::where('parents.phone', 'LIKE', '%'.$key.'%')->select(
@@ -25,19 +26,25 @@ class StudentController extends Controller
                 'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('students','parents.id','students.parent_id')
-            ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')->limit(10)->get()->toArray();
+            ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
+            ->limit(10)->get()->toArray();
+            
             return response()->json($s);
         }
         else{
             //check student full name
-            $students = Student::where('students.fullname', 'LIKE', '%'.$key.'%')->select(
+            $s = Student::where('students.fullname', 'LIKE', '%'.$key.'%')->select(
                 'students.id as sid','students.fullname as s_name', 'school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
                 'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('parents','students.parent_id','parents.id')
-                ->leftJoin('relationships', 'students.relationship_id', 'relationships.id')->limit(10)->get()->toArray();
-            return response()->json($students);
+            ->leftJoin('relationships', 'students.relationship_id', 'relationships.id')
+            ->limit(10)->get()->toArray();
         }
+        foreach($s as $key=>$student){
+            $s[$key]['classes'] = Student::find($student['sid'])->classes;
+        }
+        return response()->json($s);
     }
     protected function getStudents(Request $request){
         $rules = [

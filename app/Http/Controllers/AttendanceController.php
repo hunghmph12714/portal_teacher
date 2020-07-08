@@ -42,6 +42,11 @@ class AttendanceController extends Controller
                     $sa->attendance = $a['attendance'];
                     $sa->score = $a['score'];
                     $sa->attendance_note = $a['attendance_note'];
+                    $sa->max_score = $a['max_score'];
+                    $sa->btvn_max = $a['btvn_max'];
+                    $sa->btvn_score = $a['btvn_score'];
+                    $sa->btvn_complete = $a['btvn_complete'];
+                    $sa->comment = $a['comment'];
                     $sa->save();
                 }
             }

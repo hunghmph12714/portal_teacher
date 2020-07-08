@@ -1,6 +1,6 @@
 import React , {useState, useEffect} from 'react'
 import './Attendance.scss'
-import { AttendanceForm } from './components'
+import { AttendanceForm, ScoreForm } from './components'
 import axios from 'axios'
 import { withSnackbar } from 'notistack';
 import Select , { components }  from "react-select";
@@ -106,6 +106,7 @@ class Attendance extends React.Component{
             selected_class : null,
             selected_session: [],
             open_attendance: false,
+            open_score: false,
             selected_data : [],
         }
     }
@@ -149,6 +150,25 @@ class Attendance extends React.Component{
             })
     }
     handleSubmitAttendance = () => {
+        axios.post(baseUrl+'/attendance/edit', {attendance: this.state.selected_data})
+            .then(response => {
+                this.setState({open_attendance: false, selected_data: [], open_score: false})
+            })
+            .catch(err => {
+            })
+    }
+
+    handleOpenScore = (event, data) => {
+        this.setState({open_score: true, selected_data: data})
+    }
+    handleCloseScore = ( ) => {
+        this.setState({open_score: false, selected_data: []})
+        axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: this.state.selected_session})
+            .then(response=> {
+                this.setState({data: response.data})
+            })
+    }
+    handleSubmitScore = () => {
         axios.post(baseUrl+'/attendance/edit', {attendance: this.state.selected_data})
             .then(response => {
                 this.setState({open_attendance: false, selected_data: []})
@@ -237,6 +257,80 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
+    onMaxScoreChange =  (session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                d.attendance = d.attendance.map(a => {
+                    if(a.session_id == session_id){
+                        // console.log(session_id)
+                        a.max_score = e.target.value
+                    }
+                    return a
+                })
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
+    onBtvnCompleteChange =  (student_id, session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            // console.log(session_id)
+                            a.btvn_complete = e.target.value
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
+    onCommentChange =  (student_id, session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                if(d.student.sid == student_id){
+                    d.attendance = d.attendance.map(a => {
+                        if(a.session_id == session_id){
+                            // console.log(session_id)
+                            a.comment = e.target.value
+                        }
+                        return a
+                    })
+                }
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
+    onBtvnMaxScoreChange =  (session_id , e) =>{
+        e.persist()
+        this.setState(prevState => {
+            let selected_data = [...prevState.selected_data]
+            selected_data = selected_data.map( d => {
+                d.attendance = d.attendance.map(a => {
+                    console.log(a.session_id)
+                    console.log(session_id)
+                    if(a.session_id == session_id){
+                        console.log(session_id)
+                        a.btvn_max = e.target.value
+                    }
+                    return a
+                })
+                return d
+            })
+            return {...prevState, selected_data}
+        })
+    }
     onAttendanceNoteStudentChange = (student_id, session_id, e) => {
         e.persist()
         this.setState(prevState => {
@@ -296,7 +390,13 @@ class Attendance extends React.Component{
                             icon: () => <AccessibilityNewIcon />,
                             tooltip: 'Điểm danh học sinh',
                             text: 'Điểm danh',
-                            onClick: (event,data) => this.handleOpenAttendance(event,data),
+                            onClick: (event,data) => this.handleOpenAttendance(event, data),
+                        },
+                        {
+                            icon: () => <AccessibilityNewIcon />,
+                            tooltip: 'Tình hình học tập',
+                            text: 'Tình hình học tập',
+                            onClick: (event,data) => this.handleOpenScore(event, data),
                         },
                     ]}
                     localization={{
@@ -414,7 +514,7 @@ class Attendance extends React.Component{
                         }               
                     },
                     //Điểm danh
-                      {
+                    {
                         title: "Điểm danh",
                         field: "attendance",         
                         headerStyle: {
@@ -433,28 +533,28 @@ class Attendance extends React.Component{
                             )
                           })                          
                         }
-                      },
+                    },
                     // Ghi chú
-                      {
-                          title: "Ghi chú",
-                          field: "note",
-                          headerStyle: {
-                              padding: '0px',
-                              fontWeight: '600',
-                          },
-                          cellStyle: {
-                              padding: '0px',
-                          },
-                          render: rowData => {
-                            return rowData.attendance.map(a => {
-                              return (
-                                  <Tooltip title={a.session_id}>
-                                    <span>{a.attendance_note}</span>    
-                                  </Tooltip> 
-                              )
-                            })                          
-                          }
-                      },                  
+                    {
+                        title: "Ghi chú",
+                        field: "note",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                        render: rowData => {
+                        return rowData.attendance.map(a => {
+                            return (
+                                <Tooltip title={a.session_id}>
+                                <span>{a.attendance_note}</span>    
+                                </Tooltip> 
+                            )
+                        })                          
+                        }
+                    },                  
                     //Điểm 
                     {
                         title: "Điểm",
@@ -470,7 +570,49 @@ class Attendance extends React.Component{
                             return rowData.attendance.map(a => {
                                 return (
                                     <Tooltip title={a.session_id}>
-                                        <span>{a.score}</span>  
+                                        <Chip variant="outlined" label={a.score + '/' + a.max_score} size="small"  className="attendance" />
+                                    </Tooltip> 
+                                )
+                            })                          
+                        }                          
+                    },
+                    //Bài tập về nhà
+                    {
+                        title: "Bài về nhà",
+                        field: "btvn_score",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },  
+                        render: rowData => {
+                            return rowData.attendance.map(a => {
+                                return (
+                                    <Tooltip title={a.session_id}>
+                                        <Chip variant="outlined" label={a.btvn_score + '/' + a.btvn_complete + '/' + a.btvn_max} size="small"  className="attendance" />
+                                    </Tooltip>
+                                )
+                            })                          
+                        }                          
+                    },
+                    //Điểm 
+                    {
+                        title: "Nhận xét",
+                        field: "comment",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },  
+                        render: rowData => {
+                            return rowData.attendance.map(a => {
+                                return (
+                                    <Tooltip title={a.session_id}>
+                                        <Chip variant="outlined" label={a.comment} size="small"  className="attendance" />
                                     </Tooltip> 
                                 )
                             })                          
@@ -494,7 +636,30 @@ class Attendance extends React.Component{
                         onAttendanceNoteStudentChange = {this.onAttendanceNoteStudentChange}
                         handleSubmitAttendance={this.handleSubmitAttendance}
                         handleCloseAttendance={this.handleCloseAttendance}
-                    />            
+                    />   
+                              
+                ): ('')}
+                {this.state.selected_session ? (
+                    <ScoreForm
+                    open_score = {this.state.open_score}
+                    handleCloseScore = {this.handleCloseScore}
+                    selected_session = {this.state.selected_session}
+                    selected_data = {this.state.selected_data}
+                    onAttendanceChange = {this.onAttendanceChange}
+                    onScoreStudentChange = {this.onScoreStudentChange}
+                    onAttendanceStudentChange = {this.onAttendanceStudentChange}
+                    onScoreStudentChange = {this.onScoreStudentChange}
+                    onMaxScoreChange = {this.onMaxScoreChange}
+
+                    onBtvnScoreChange = {this.onBtvnScoreChange}
+                    onBtvnMaxScoreChange = {this.onBtvnMaxScoreChange}
+                    onBtvnCompleteChange = {this.onBtvnCompleteChange}
+                    onCommentChange = {this.onCommentChange}
+                    
+                    onAttendanceNoteStudentChange = {this.onAttendanceNoteStudentChange}
+                    handleSubmitAttendance={this.handleSubmitAttendance}
+                />    
+                              
                 ): ('')}
                 
             </div>

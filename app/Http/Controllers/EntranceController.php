@@ -178,7 +178,7 @@ class EntranceController extends Controller
          ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
          ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
          ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
-         ->orderBy('priority','desc')->get();
+         ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
         return response()->json($entrances);
     }
     protected function editEntrance(Request $request){
@@ -261,8 +261,6 @@ class EntranceController extends Controller
                        
             }
         } 
-        
-        // print_r($test->toArray());
     }   
     protected function enrollStudent($class_id, $student_id, $entrance_date){
         //Enroll Student to class
@@ -271,19 +269,7 @@ class EntranceController extends Controller
         $enroll['class_id'] = $class_id;
         $enroll['entrance_date'] = $entrance_date;
         $sc = StudentClass::create($enroll);
-        //Enroll Student to session of class
-
-        // $sessions = Session::where('class_id', $class_id)->whereDate('date','>=', $entrance_date)->get();
-        // foreach($sessions as $s){
-        //     $input['student_id'] = $student_id;
-        //     $input['session_id'] = $s->id;
-        //     $input['type'] = 'official';
-        //     StudentSession::insert($input);
-        // }
-        // $sessions = $sessions->toArray();
-        // $students = Student::where('id', $student_id)->get();
-        // $this->generateTransactions($sessions, $students, $class_id);
-        // print_r($seessions->toArray());
+        
     }
     public function generateTransactions($sessions, $students, $class_id){
         $fees = [];
