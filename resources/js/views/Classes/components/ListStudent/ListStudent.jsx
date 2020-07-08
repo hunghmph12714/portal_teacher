@@ -37,7 +37,8 @@ const ListStudent = (props) => {
             setData(response.data.map(r => {
                     let date = new Date(r.dob)
                     r.dob_format = format(date , 'dd/MM/yyyy')      
-                    r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')              
+                    r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
+                    r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''           
                     const d = r.detail                  
                     const o = r.parent
                     let a = Object.assign(r, o, d)
@@ -264,6 +265,26 @@ const ListStudent = (props) => {
                         },
                         renderGroup: (entrance_date_format, groupData) => (                     
                             <Chip variant="outlined" label={entrance_date_format} size="small" />
+                        )                
+                    },
+                    //Ngày nghi học
+                    {
+                        title: "Ngày nghỉ học",
+                        field: "drop_date_format",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                        render: rowData => {
+                            return (                      
+                                <Chip style={customChip('#fefefe')} variant="outlined" label={rowData.drop_date_format} size="small" />                         
+                            )
+                        },
+                        renderGroup: (drop_date_format, groupData) => (                     
+                            <Chip variant="outlined" label={drop_date_format} size="small" />
                         )                
                     },
                     //Trạng thái

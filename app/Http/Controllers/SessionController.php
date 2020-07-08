@@ -68,25 +68,33 @@ class SessionController extends Controller
     }
     public function generateAttendances($sessions, $students){
         $student_attendance = [];
-        
+
         foreach($students as $st){
             $s_a['student'] = $st->toArray();
             $s_a['sessions'] = [];
             foreach($sessions as $s){
-                $ss['session_id'] = $s['id'];                
+                //Với mỗi ca học 
+                $ss['session_id'] = $s['id'];
                 $sc = StudentClass::where('class_id', $s['class_id'])->where('student_id', $st->id)->first();
                 if($sc){
-                    if($s['date'] > $sc->entrance_date){
-                        $ss['student_id'] = $st->id;
-                        $ss['type'] = 'official';                        
-                        StudentSession::create($ss);
-                        array_push($s_a['sessions'], $s);
+                    $at = $sc->entrance_date;
+                    $dt = $sc->drop_time;
+                    if($s['date'] > $at){ //
+                        if(!$dt || $dt > $s['date']){
+                            // echo $dt. ' - '.$s['date'];
+                            // echo "<br>";
+                            $ss['student_id'] = $st->id;
+                            $ss['type'] = 'official';                        
+                            StudentSession::create($ss);
+                            array_push($s_a['sessions'], $s);
+                        }
+                        
                     }
                 }
             }
             if(sizeof($s_a['sessions']) != 0){
                 array_push($student_attendance, $s_a);
-            }            
+            }
         }
         return $student_attendance;
 
@@ -191,10 +199,12 @@ class SessionController extends Controller
         $to_date = date('Y-m-d', $request->to_date);
         $sessions = $this->generateSessionFromConfig($from_date, $to_date, $request->class_id);
         
-        $students = Classes::find($request->class_id)->activeStudents;
+
+        $students = Classes::find($request->class_id)->students;
         $sa = $this->generateAttendances($sessions, $students);
         $this->generateTransactions($request->class_id, $sa);
         return response()->json(count($sessions));
+        // return response()->json($sa);
     }
     protected function addSession(Request $request){
         $rules = ['class_id' => 'required', 
@@ -297,5 +307,39 @@ class SessionController extends Controller
     protected function deleteSession(Request $request){
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);
+    }
+    protected function applyAdjustment(Request $request){
+         $rules = ['discount_id' => 'required'];
+         $this->validate($request, $rules);
+
+        $discount = Discount::find($request->discount_id);
+        if($discount){
+            $session = Session::where('class_id', $discount->class_id)->where('date', '>=', $discount->active_at)->where('date','<=', $discount->expired_at)
+                ->get();
+            foreach($session as $s){
+                $students = $s->students;
+                foreach($students as $ss){
+                    if($discount->amount < 0){
+                        $t['debit'] = Account::Where('level_2', '511')->first()->id;
+                        $t['credit'] = Account::Where('level_2', '131')->first()->id;
+                        
+                    }
+                    else{
+                        $t['debit'] = Account::Where('level_2', '131')->first()->id;
+                        $t['credit'] = Account::Where('level_2', '3387')->first()->id;
+                    }
+                    $t['amount'] = abs($discount->amount);
+                    $t['time'] = Date('Y-m-d', strtotime($s->date));
+                    $t['student_id'] = $ss->id;
+                    $t['class_id'] = $discount->class_id;
+                    $t['user'] = auth()->user()->id;
+                    $t['content'] = $discount->content;
+                    Transaction::create($t);
+                }
+            }
+            $discount->status = 'expired';
+            $discount->save();
+            return response()->json();
+        }
     }
 }

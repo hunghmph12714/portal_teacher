@@ -8,5 +8,5 @@ class Discount extends Model
 {
     //
     public $table = 'discounts';
-    protected $fillable = ['id','student_class_id','active_at','expired_at','percentage','amount','max_use','status'];
+    protected $fillable = ['id','student_class_id','active_at','expired_at','percentage','amount','max_use','status','class_id','content'];
 }

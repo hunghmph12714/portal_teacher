@@ -114,9 +114,8 @@ const Sidebar = props => {
         },
         {
           title: 'Học phí',
-          href: '/fee'
-        }
-        
+          href: '/fee',
+        }        
       ]
     },
     {
@@ -141,6 +140,10 @@ const Sidebar = props => {
           title: 'Phiếu thu',
           href: '/receipt',
         },
+        {
+          title: 'Điều chỉnh HP',
+          href: '/fee-adjust'
+        }
       ]
     },
     {

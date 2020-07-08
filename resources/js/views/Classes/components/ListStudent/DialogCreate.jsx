@@ -303,6 +303,7 @@ class DialogCreate extends React.Component {
                                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                                 <KeyboardDatePicker
                                                     autoOk
+                                                    minDate = {this.state.active_date}
                                                     className="input-date input-text"
                                                     variant="inline"
                                                     inputVariant="outlined"

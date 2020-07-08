@@ -103,6 +103,7 @@ class Discount extends React.Component{
                     field: "student",
                     headerStyle: {
                         fontWeight: '600',
+                        width: '25%',
                     },
                     cellStyle: {
                     },
@@ -225,10 +226,10 @@ class Discount extends React.Component{
                     type: "numeric",
                     headerStyle: {
                         fontWeight: '600',
-                        width: '9%',
+                        width: '5%',
                     },
                     cellStyle: {
-                        width: '9%',
+                        width: '5%',
                     }
                 },
             //Status
@@ -238,10 +239,10 @@ class Discount extends React.Component{
                     lookup: {'active': 'Đã kích hoạt', 'deactive': 'Vô hiệu hóa','expired': 'Hết hạn'},
                     headerStyle: {
                         fontWeight: '600',
-                        width: '10%',
+                        width: '8%',
                     },
                     cellStyle: {
-                        width: '10%',
+                        width: '8%',
                     }
                 }
             ],
@@ -321,7 +322,7 @@ class Discount extends React.Component{
             })
     }
     deleteDiscount = (oldData) => {
-        return axios.post(baseUrl+ '/discount/delete', {id: oldData.id})
+        return axios.post(baseUrl+ '/discount/delete', {id: oldData.did})
             .then(response => {
                 this.props.enqueueSnackbar('Xóa thành công', {
                     variant: 'success'
@@ -364,7 +365,7 @@ class Discount extends React.Component{
                             actions: ''
                         },
                         body: {
-                          emptyDataSourceMessage: 'Không tìm thấy quy trình',
+                          emptyDataSourceMessage: 'Không tìm thấy ưu đãi',
                           editRow:{
                             deleteText: 'Bạn có chắc muốn xóa dòng này ?',
                             cancelTooltip: 'Đóng',

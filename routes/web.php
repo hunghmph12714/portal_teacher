@@ -105,6 +105,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/class/getbyid/{class_id}', 'ClassController@getClassById');
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
+
+    //Điều chỉnh học phí
+    Route::get('/fee-adjust', function(){
+        return view('welcome');
+    });
+    Route::post('/adjustfee/create', 'DiscountController@createAdjustFee');
+    Route::get('/adjustfee/get', 'DiscountController@getAdjustFee');
+    Route::post('/adjustfee/edit', 'DiscountController@editAdjustFee');
+    Route::post('/adjustfee/delete', 'DiscountController@deleteAdjustFee');
+    Route::post('/adjustfee/apply', 'SessionController@applyAdjustment');
+    
 //SETTING-RELATIONSHIP
     Route::get('/settings/relationship', function(){
         return view('welcome');

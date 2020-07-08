@@ -43,6 +43,7 @@ class CreateSession extends React.Component{
     }
     render(){
         const last_session = (this.props.selectedClass.last_session)?new Date(this.props.selectedClass.last_session) : ''
+        
         return (
             <Dialog open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Thêm ca học lớp {this.props.selectedClass.code}</DialogTitle>
@@ -75,7 +76,7 @@ class CreateSession extends React.Component{
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             autoOk
-                            minDate = {last_session}
+                            minDate = {(last_session == '') ? null : last_session.setDate(last_session.getDate() + 1)}
                             className="input-date"
                             variant="inline"
                             inputVariant="outlined"

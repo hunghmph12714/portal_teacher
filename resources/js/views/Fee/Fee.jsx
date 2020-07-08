@@ -299,7 +299,7 @@ class Fee extends React.Component{
             parent_note : (newValue.note)?newValue.note:'',
         }) 
     }
-    onChange = e => {     
+    onChange = e => {      
         this.setState({
             [e.target.name] : e.target.value
         })
