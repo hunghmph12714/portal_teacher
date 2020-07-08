@@ -79,7 +79,7 @@ class SessionController extends Controller
                 if($sc){
                     $at = $sc->entrance_date;
                     $dt = $sc->drop_time;
-                    if($s['date'] > $at){ //
+                    if($s['date'] >= $at){ //
                         if(!$dt || $dt > $s['date']){
                             // echo $dt. ' - '.$s['date'];
                             // echo "<br>";
