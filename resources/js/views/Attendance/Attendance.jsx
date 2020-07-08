@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import 'react-notifications-component/dist/theme.css'
 import Chip from '@material-ui/core/Chip';
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew';
-
+import AssessmentIcon from '@material-ui/icons/Assessment';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -393,7 +393,7 @@ class Attendance extends React.Component{
                             onClick: (event,data) => this.handleOpenAttendance(event, data),
                         },
                         {
-                            icon: () => <AccessibilityNewIcon />,
+                            icon: () => <AssessmentIcon />,
                             tooltip: 'Tình hình học tập',
                             text: 'Tình hình học tập',
                             onClick: (event,data) => this.handleOpenScore(event, data),
