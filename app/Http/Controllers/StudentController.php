@@ -33,7 +33,6 @@ class StudentController extends Controller
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
             ->limit(10)->get()->toArray();
             
-            return response()->json($s);
         }
         else{
             //check student full name

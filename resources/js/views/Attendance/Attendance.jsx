@@ -476,9 +476,8 @@ class Attendance extends React.Component{
                                                         if (window.confirm('Học sinh không có điểm trên lớp! Tiếp tục gửi email?')) 
                                                             this.handleSendEmail(rowData.attendance)
                                                             return;
-
                                                     }
-                                                    
+                                                    this.handleSendEmail(rowData.attendance)
                                                     }}
                                                     >                                                    
                                                     <MailOutlineIcon fontSize='inherit' />
