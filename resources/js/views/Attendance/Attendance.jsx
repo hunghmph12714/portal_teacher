@@ -9,13 +9,14 @@ import { format } from 'date-fns'
 import {
     Tooltip,
   } from "@material-ui/core";
-import { Grid } from '@material-ui/core';
+import { Grid, IconButton } from '@material-ui/core';
 import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
 import 'react-notifications-component/dist/theme.css'
 import Chip from '@material-ui/core/Chip';
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew';
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -142,12 +143,15 @@ class Attendance extends React.Component{
     handleOpenAttendance = (event, data) => {
         this.setState({open_attendance : true, selected_data: data})
     }
-    handleCloseAttendance = ( ) => {
-        this.setState({open_attendance: false, selected_data: []})
+    handleUpdate = () => {
         axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: this.state.selected_session})
             .then(response=> {
                 this.setState({data: response.data})
-            })
+        })
+    }
+    handleCloseAttendance = ( ) => {
+        this.setState({open_attendance: false, selected_data: []})
+        this.handleUpdate
     }
     handleSubmitAttendance = () => {
         axios.post(baseUrl+'/attendance/edit', {attendance: this.state.selected_data})
@@ -350,6 +354,13 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
+    handleSendEmail = (rowData ) => {
+        console.log(rowData)
+        axios.post(baseUrl + '/attendance/send-email', {student_session_id: rowData.map(r => r.id)})
+            .then(response => {
+                this.handleUpdate
+            })
+    }
     render(){
         return(
             <div className="root-attendance">
@@ -418,39 +429,48 @@ class Attendance extends React.Component{
                         }
                     }}
                     columns={[
-                    //   {
-                    //     title: "",
-                    //     field: "action",
-                    //     filtering: false,
-                    //     disableClick: true,
-                    //     sorting: false,
-                    //     headerStyle: {
-                    //         padding: '0px',
-                    //         width: '90px',
-                    //     },
-                    //     cellStyle: {
-                    //         width: '90px',
-                    //         padding: '0px',
-                    //     },
-                    //     render: rowData => (
-                    //         <div style = {{display: 'block'}}>
-                    //             {/* {rowData.tableData.id} */}
-                    //             <Tooltip title="Chỉnh sửa" arrow>
-                    //               <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                    //                 <EditOutlinedIcon fontSize='inherit' />
-                    //               </IconButton>
-                    //             </Tooltip>
-                    //             <Tooltip title="Xóa ghi danh" arrow>
-                    //               <IconButton onClick={() => {
-                    //                 if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                    //                   this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                    //                 }>
-                    //               <DeleteForeverIcon fontSize='inherit' />
-                    //               </IconButton>
-                    //             </Tooltip>                                
-                    //         </div>
-                    //     )
-                    //   },
+                      {
+                        title: "",
+                        field: "action",
+                        filtering: false,
+                        disableClick: true,
+                        sorting: false,
+                        headerStyle: {
+                            padding: '0px',
+                            width: '40px',
+                        },
+                        cellStyle: {
+                            width: '40px',
+                            padding: '0px',
+                        },
+                        render: rowData => (
+                            <div style = {{display: 'block'}}>
+                                {/* {rowData.tableData.id} */}
+                                {
+                                    (!rowData.attendance[0].logs.sent_user)? (
+                                        <Tooltip title="Gửi email" arrow>
+                                            <IconButton onClick={() => {
+                                                if (window.confirm('Gửi email cho phụ huynh ?')) 
+                                                    this.handleSendEmail(rowData.attendance)}
+                                                }
+                                                >
+                                                <MailOutlineIcon fontSize='inherit' />
+                                            </IconButton>
+                                        </Tooltip>
+                                    ):(
+                                        <Tooltip 
+                                            title={rowData.attendance[0].logs.sent_user + ' đã gửi email ' + format(new Date(rowData.attendance[0].logs.sent_time * 1000), 'd/M/yyyy HH:mm')} arrow>
+                                            <span>
+                                                <IconButton disabled>
+                                                    <MailOutlineIcon fontSize='inherit' />
+                                                </IconButton>
+                                            </span>
+                                        </Tooltip>
+                                    )
+                                }                      
+                            </div>
+                        )
+                      },
 
                     //Học sinh
                       {

@@ -8,6 +8,7 @@ class StudentSession extends Pivot
 {
     //
     public $table = 'student_session';
-    protected $fillable = ['student_id','session_id','attendance','type','score','note','attendance_note'];
+    protected $fillable = ['student_id','session_id','attendance','type','score','note','attendance_note','logs','max_score','btvn_score','btvn_max','btvn_complete','comment'];
+    protected $casts = ['logs' => 'array'];
     public $incrementing = true;
 }

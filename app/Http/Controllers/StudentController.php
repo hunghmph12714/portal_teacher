@@ -9,7 +9,11 @@ use App\Student;
 use App\Classes;
 use App\Account;
 use App\Transaction;
+use App\Center;
 use App\Session;
+use App\Teacher;
+use App\StudentSession;
+use Mail;
 class StudentController extends Controller
 {
     //
@@ -263,5 +267,38 @@ class StudentController extends Controller
         //         $s->save();
         //     }
         // }
+    }
+    public function testMail(){
+        $ids = [1,2];
+        $datas = [];
+        foreach($ids as $key=>$id){
+            $data = [];
+            $student_session = StudentSession::find($id);        
+            if($student_session){
+    
+                $data['student'] = Student::find($student_session->student_id);
+                $data['parent'] = Parents::find($data['student']->parent_id);
+    
+                $data['session'] = Session::find($student_session->session_id);
+                $data['class'] = Classes::find($data['session']->class_id)->code;
+    
+                $data['center'] = Center::find($data['session']->center_id);
+                $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
+    
+                $data['student_session'] = $student_session;
+            }
+            $datas[$key]  = $data;
+        }
+        $d = array('datas'=>$datas);
+        // return view('emails.thht', compact('datas'));
+        $to_email = $datas[0]['parent']->email;        
+        $to_name = '';
+        Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
+            $message->to($to_email, $to_name)
+                    ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
+            $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
+        });
+        return response()->json();
+
     }
 }

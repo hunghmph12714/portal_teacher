@@ -236,6 +236,14 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::post('/fee/gather', 'PaperController@gatherFee');
+
+//Email
+    Route::get('/send', 'StudentController@testMail');
+    Route::post('/attendance/send-email', 'AttendanceController@sendEmail');
+    Route::get('/e', function(){
+        return view('emails.thht');
+    });
+    
 });
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');

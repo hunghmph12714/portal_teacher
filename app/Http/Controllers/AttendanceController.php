@@ -7,6 +7,12 @@ use App\Classes;
 use App\Student;
 use App\Parents;
 use App\Session;
+use App\Center;
+use App\Schools;
+use App\Account;
+use App\Transaction;
+use App\Teacher;
+use Mail;
 use App\StudentSession;
 class AttendanceController extends Controller
 {
@@ -47,10 +53,61 @@ class AttendanceController extends Controller
                     $sa->btvn_score = $a['btvn_score'];
                     $sa->btvn_complete = $a['btvn_complete'];
                     $sa->comment = $a['comment'];
+                    
+                    $logs = ($sa->logs)?$sa->logs:[];
+                    
+                    $time = strtotime(date('d-m-Y H:i:m'));
+                    $user = auth()->user()->name;
+                    array_push($logs, ['time'=> $time , 'user' => $user]);
+                    $sa->logs = $logs;
+
                     $sa->save();
                 }
             }
         }
         print_r($request->attendance);
+    }
+
+    public function sendEmail(Request $request){
+        $rules = ['student_session_id' => 'required'];
+        $this->validate($request, $rules);
+        
+        
+        $ids = $request->student_session_id;
+        $datas = [];
+        foreach($ids as $key=>$id){
+            $data = [];
+            $student_session = StudentSession::find($id);     
+            $logs = $student_session->logs;
+            $logs['sent_user'] = auth()->user()->name;
+            $logs['sent_time'] = strtotime(date('d-m-Y H:i:m'));
+            $student_session->logs = $logs;
+            $student_session->save();
+            if($student_session){
+    
+                $data['student'] = Student::find($student_session->student_id);
+                $data['parent'] = Parents::find($data['student']->parent_id);
+    
+                $data['session'] = Session::find($student_session->session_id);
+                $data['class'] = Classes::find($data['session']->class_id)->code;
+    
+                $data['center'] = Center::find($data['session']->center_id);
+                $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
+    
+                $data['student_session'] = $student_session;
+            }
+            $datas[$key]  = $data;
+        }
+        $d = array('datas'=>$datas);
+        // return view('emails.thht', compact('datas'));
+        $to_email = $datas[0]['parent']->email;        
+        $to_name = '';
+        Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
+            $message->to($to_email, $to_name)
+                    ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
+            $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
+        });
+        return response()->json();
+
     }
 }
