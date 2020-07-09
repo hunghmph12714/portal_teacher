@@ -173,7 +173,7 @@ class EntranceController extends Controller
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
             'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message'
         )->where('entrances.step_id', $sig, $step)
-        ->leftJoin('students','student_id','students.id')->leftJoin('parents','students.parent_id','parents.id')
+        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
         ->leftJoin('relationships','parents.relationship_id','relationships.id')
          ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
          ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
