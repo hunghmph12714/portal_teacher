@@ -102,12 +102,20 @@ class AttendanceController extends Controller
         // return view('emails.thht', compact('datas'));
         $to_email = $datas[0]['parent']->email;        
         $to_name = '';
-        Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
-            $message->to($to_email, $to_name)
-                    ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
-            $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
-        });
-        return response()->json();
+        try{
+            Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
+                $message->to($to_email, $to_name)
+                        ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
+                $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
+            });
+            return response()->json(200);
+        }
+        catch(\Exception $e){
+            // Get error here
+            return response()->json(418);
+        }
+        
+        
 
     }
 }

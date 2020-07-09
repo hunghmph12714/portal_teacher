@@ -45,10 +45,10 @@
                 @endswitch
             </li>
             <li>
-                Điểm trên lớp: {{$data['student_session']->score}} / {{$data['student_session']->max_score}}
+                Điểm trên lớp (nếu có): {{$data['student_session']->score}} / {{$data['student_session']->max_score}}
             </li>
             <li>
-                Nhận xét: {{$data['student_session']->comment}}
+                Nhận xét (nếu có): {{$data['student_session']->comment}}
             </li>
 
         </ul>

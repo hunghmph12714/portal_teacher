@@ -17,6 +17,7 @@ import Chip from '@material-ui/core/Chip';
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import CircularProgress from '@material-ui/core/CircularProgress';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -109,6 +110,7 @@ class Attendance extends React.Component{
             open_attendance: false,
             open_score: false,
             selected_data : [],
+            loading_email: false,
         }
     }
     handleClassChange = (newValue , event) => {
@@ -354,11 +356,16 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
-    handleSendEmail = (rowData ) => {
-        console.log(rowData)
+    handleSendEmail = (rowData )=> {
+        this.setState({loading_email: true})
         axios.post(baseUrl + '/attendance/send-email', {student_session_id: rowData.map(r => r.id)})
             .then(response => {
                 this.handleUpdate
+                this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
+                this.setState({loading_email: false})
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng thử lại', {variant: 'error'})
             })
     }
     render(){
@@ -446,17 +453,39 @@ class Attendance extends React.Component{
                         render: rowData => (
                             <div style = {{display: 'block'}}>
                                 {/* {rowData.tableData.id} */}
-                                {
-                                    (!rowData.attendance[0].logs.sent_user)? (
-                                        <Tooltip title="Gửi email" arrow>
-                                            <IconButton onClick={() => {
-                                                if (window.confirm('Gửi email cho phụ huynh ?')) 
-                                                    this.handleSendEmail(rowData.attendance)}
-                                                }
-                                                >
-                                                <MailOutlineIcon fontSize='inherit' />
-                                            </IconButton>
-                                        </Tooltip>
+                                {                 
+                                                 
+                                    (!rowData.attendance[0].logs.sent_user )? (
+                                        (this.state.loading_email) ? (
+                                            <CircularProgress/>
+                                        ):(
+                                            <Tooltip title="Gửi email" arrow>                                                
+                                                <IconButton onClick={() => {
+                                                    if(rowData.attendance[0].attendance == 'holding'){
+                                                        if (window.confirm('Học sinh chưa được điểm danh! Tiếp tục gửi email?')) 
+                                                            this.handleSendEmail(rowData.attendance)
+                                                            return;
+                                                    }
+                                                    if(!rowData.attendance[0].btvn_complete||!rowData.attendance[0].btvn_score||!rowData.attendance[0].btvn_max){
+                                                        if (window.confirm('Học sinh không có điểm BTVN! Tiếp tục gửi email?')) 
+                                                            this.handleSendEmail(rowData.attendance)
+                                                            return;
+
+                                                    }
+                                                    if(!rowData.attendance[0].max_score||!rowData.attendance[0].score){
+                                                        if (window.confirm('Học sinh không có điểm trên lớp! Tiếp tục gửi email?')) 
+                                                            this.handleSendEmail(rowData.attendance)
+                                                            return;
+
+                                                    }
+                                                    
+                                                    }}
+                                                    >                                                    
+                                                    <MailOutlineIcon fontSize='inherit' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                        
                                     ):(
                                         <Tooltip 
                                             title={rowData.attendance[0].logs.sent_user + ' đã gửi email ' + format(new Date(rowData.attendance[0].logs.sent_time * 1000), 'd/M/yyyy HH:mm')} arrow>
@@ -509,7 +538,7 @@ class Attendance extends React.Component{
                             <Typography variant="body2" component="p">
                                 <b>{rowData.student.pname}</b> 
                                 <br />{rowData.student.phone} 
-                                <br />{rowData.student.pemail}
+                                <br />{rowData.student.email}
                             </Typography>                              
                           )
 
