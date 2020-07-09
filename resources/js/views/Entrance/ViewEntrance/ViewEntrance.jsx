@@ -234,6 +234,7 @@ class ViewEntrance extends React.Component{
                     data={this.state.data}
                     options={{
                         pageSize: 10,
+                        pageSizeOptions: [20, 50, 200],
                         grouping: true,
                         filtering: true,
                         exportButton: true,
