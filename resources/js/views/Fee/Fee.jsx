@@ -27,6 +27,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import NumberFormat from 'react-number-format';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DoneIcon from '@material-ui/icons/Done';
 
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
@@ -135,11 +137,11 @@ const NameText = React.memo(props => {
 })
 const ListFee = React.memo(props => {
     const [fees, setFee] = useState([])
-    
+    const [show_all, setAll] = useState(false)
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
-            const r  = await axios.post(baseUrl + '/fee/get', {student_id: props.student_id})
+            const r  = await axios.post(baseUrl + '/fee/get', {student_id: props.student_id, show_all: show_all})
             let data = r.data
             sum = data.filter( t => {
                 if(t.id < 0 && t.id != -9999){
@@ -151,7 +153,7 @@ const ListFee = React.memo(props => {
             setFee(data)
         }
         fetchData()
-    }, [props.reload])
+    }, [props.reload, show_all])
     return (
         <MaterialTable
             title= "Bảng kê Học Phí học sinh"
@@ -211,7 +213,14 @@ const ListFee = React.memo(props => {
                 {                                  
                     icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
                     onClick: (evt, data) => props.submitFeeGather(data)
-                }
+                },
+                {                                  
+                    icon: () => (show_all) ? (<DoneIcon/>) : (<DoneAllIcon/>),
+                    tooltip: 'Xem toàn bộ lịch sử giao dịch',
+                    isFreeAction: true,
+                    text: 'Xem toàn bộ',
+                    onClick: (evt) => {setAll(!show_all)},
+                },
             ]}
         />
     )

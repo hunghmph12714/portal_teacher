@@ -84,7 +84,7 @@ class StudentController extends Controller
     }
 
     protected function getFee(Request $request){
-        $rules = ['student_id' => 'required'];
+        $rules = ['student_id' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
 
         $student_id = $request->student_id;
@@ -95,62 +95,64 @@ class StudentController extends Controller
         $result = [];
         $id = -1;
         foreach($classes as $class){            
-            $transactions = Transaction::where('student_id', $student_id)
-                                        ->where('transactions.class_id', $class->id)
-                                        ->Select(
-                                            'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
-                                            'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
-                                            'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
-                                            'students.id as sid', 'students.fullname as sname','students.dob', 
-                                            'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                                            'users.id as uid','users.name as uname'
-                                        )
-                                        ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
-                                        ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
-                                        ->leftJoin('students','transactions.student_id','students.id')
-                                        ->leftJoin('classes','transactions.class_id','classes.id')
-                                        ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-                                        ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')
-                                        ->get();
             
-            foreach($transactions as $key => $t){
-                $month = Date('m-Y', strtotime($t->time));                
-                if(!array_key_exists($month, $result)){
-                    // echo $month."<br>";
-                    $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
-                    $result[$month]['id'] = --$id;
-                    $result[$month]['parent_id'] = '';                    
-                    $tarray = $t->toArray();
-                    $tarray['month'] = $month;
-                    $tarray['parent_id'] = $id;
-                    $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
-                    $tarray['time'] = Date('d/m/Y', strtotime($t->time));
-                    array_push($result, $tarray);
-                    $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
-                    $result[$month]['month'] = $month;
-                    $result[$month]['content'] = 'Tổng tiền tháng '.$month;
-                    $result[$month]['cname'] = '';
-                }
-                else{
-                    $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
-                    $tarray = $t->toArray();
-                    $tarray['month'] = $month;
-                    $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
-                    $tarray['parent_id'] = $result[$month]['id'];
-                    $tarray['time'] = Date('d/m/Y', strtotime($t->time));
-                    array_push($result, $tarray);
-                }
+        }
+        $transactions = Transaction::where('student_id', $student_id)
+                                    // ->where('transactions.class_id', $class->id)
+                            ->Select(
+                                'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
+                                'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                                'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                                'students.id as sid', 'students.fullname as sname','students.dob', 
+                                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                                'users.id as uid','users.name as uname'
+                            )
+                            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                            ->leftJoin('students','transactions.student_id','students.id')
+                            ->leftJoin('classes','transactions.class_id','classes.id')
+                            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')
+                            ->get();
+        
+        foreach($transactions as $key => $t){
+            $month = Date('m-Y', strtotime($t->time));                
+            if(!array_key_exists($month, $result)){
+                // echo $month."<br>";
+                $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
+                $result[$month]['id'] = --$id;
+                $result[$month]['parent_id'] = '';                    
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $tarray['parent_id'] = $id;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                array_push($result, $tarray);
+                $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
+                $result[$month]['month'] = $month;
+                $result[$month]['content'] = 'Tổng tiền tháng '.$month;
+                $result[$month]['cname'] = '';
             }
-            
+            else{
+                $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['parent_id'] = $result[$month]['id'];
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                array_push($result, $tarray);
+            }
         }
         $neutral = [];
-        foreach($result as $r){
-            if($r['amount'] == 0){
-                array_push($neutral, $r['id'] );
+        if($request->show_all){
+            foreach($result as $r){
+                if($r['amount'] == 0){
+                    array_push($neutral, $r['id'] );
+                }
             }
         }
-        $result = array_filter($result, function($v, $k) use ($neutral){
-            return ($v['amount'] != 0) && !in_array($v['parent_id'] , $neutral);
+        $result = array_filter($result, function($v, $k) use ($neutral, $request){
+            return (!in_array($v['parent_id'] , $neutral));
         }, ARRAY_FILTER_USE_BOTH);
         
         return response()->json(array_values($result));

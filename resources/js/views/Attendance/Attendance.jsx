@@ -618,7 +618,7 @@ class Attendance extends React.Component{
                             return rowData.attendance.map(a => {
                                 return (
                                     <Tooltip title={a.session_id}>
-                                        <Chip variant="outlined" label={a.score + '/' + a.max_score} size="small"  className="attendance" />
+                                        <Chip variant="outlined" label={a.score&&a.max_score ? a.score + '/' + a.max_score : ''} size="small"  className="attendance" />
                                     </Tooltip> 
                                 )
                             })                          
@@ -639,7 +639,7 @@ class Attendance extends React.Component{
                             return rowData.attendance.map(a => {
                                 return (
                                     <Tooltip title={a.session_id}>
-                                        <Chip variant="outlined" label={a.btvn_score + '/' + a.btvn_complete + '/' + a.btvn_max} size="small"  className="attendance" />
+                                        <Chip variant="outlined" label={a.btvn_complete ? a.btvn_score + '/' + a.btvn_complete + '/' + a.btvn_max: ''} size="small"  className="attendance" />
                                     </Tooltip>
                                 )
                             })                          
