@@ -144,7 +144,9 @@ class StudentController extends Controller
             }
         }
         $neutral = [];
-        if($request->show_all){
+        if(
+            
+            $request->show_all){
             foreach($result as $r){
                 if($r['amount'] == 0){
                     array_push($neutral, $r['id'] );

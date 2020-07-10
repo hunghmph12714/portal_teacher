@@ -37,7 +37,7 @@ const ListSession = (props) => {
             disableClick: true,
             sorting: false,
             headerStyle: {
-                padding: '0px',
+                padding: '0px', 
                 width: '140px',
             },
             cellStyle: {
@@ -169,7 +169,7 @@ const ListSession = (props) => {
                 padding: '0px',
             },
             render: rowData => {                    
-              return (rowData.document || rowData.exercice) ? (
+              return (rowData.document.length != 0 || rowData.exercice.length != 0) ? (
                 <FolderOpenIcon  onClick = {() => handleOpenDocument(rowData)}/>
                 
               ): ("")
@@ -217,6 +217,7 @@ const ListSession = (props) => {
     }
     function handleCloseSessionDialog(){
       setOpen(false)
+      setSelectedSession([])
       setFetchData(!fetchData)
     }
     function handleCreateSession(){
@@ -234,10 +235,14 @@ const ListSession = (props) => {
             const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
             setData(response.data.map(r => {
                     let date = new Date(r.date)
+                    r.from_full = r.from
+                    r.to_full = r.to
                     r.date = format(date , 'dd-MM-yyyy')
                     r.day = format(date, 'i') 
                     r.from = format(new Date(r.from), 'HH:mm')
                     r.to = format(new Date(r.to), 'HH:mm')
+                    r.document = (r.document)?r.document:'',
+                    r.exercice = (r.exercice)?r.exercice:'',
                     r.time = r.from + ' - ' + r.to
                     return r
                 })

@@ -61,7 +61,7 @@ const DialogDocument = props => {
                     </Typography>
                     <div>
                         <List dense>
-                            {document.split(',').map(doc => {
+                            {(document)? document.split(',').map(doc => {
                                 return(
                                 <ListItem >
                                     <ListItemIcon>
@@ -70,7 +70,7 @@ const DialogDocument = props => {
                                     <a href={doc} download> Tải về </a>
                                 </ListItem>
                                 )
-                            })}
+                            }): ''}
                             
                         </List>
                     </div>
@@ -81,7 +81,7 @@ const DialogDocument = props => {
                     </Typography>
                     <div >
                     <List dense>
-                            {exercice.split(',').map(doc => {
+                            {(exercice) ? exercice.split(',').map(doc => {
                                 return(
                                 <ListItem >
                                     <ListItemIcon>
@@ -90,7 +90,7 @@ const DialogDocument = props => {
                                     <a href={doc} download> Tải về </a>
                                 </ListItem>
                                 )
-                            })}
+                            }): ''}
                         </List>
                     </div>
                     </Grid>

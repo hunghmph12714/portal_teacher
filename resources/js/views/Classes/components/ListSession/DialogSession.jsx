@@ -122,16 +122,25 @@ class DialogSession extends React.Component {
             center: '',
             teachers: [],
             rooms: [],
+            btvn_content: '',
+            content: '',
             status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
         //d
         let s = nextProps.session
-        console.log(nextProps.session)
+        this.getRoom(nextProps.session.ctid)
         this.setState({
             room : {label: s.rname, value: s.rid},
             center : {label: s.ctname, value: s.ctid},
+            from_date: new Date(s.from_full),
+            to_date: new Date(s.to_full),
+            note: s.note,
+            teacher: { label: s.tname, value: s.tid},
+            fee: s.fee,
+            document: (s.document) ? s.document.split(',') : [],
+            exercice: (s.exercice) ? s.exercice.split(',') : [],
         })
     }    
    
@@ -229,6 +238,8 @@ class DialogSession extends React.Component {
         fd.append('fee', this.state.fee)
         fd.append('student_involved', this.state.student_involved)
         fd.append('transaction_involved', this.state.transaction_involved)
+        fd.append('btvn_content', this.state.btvn_content)
+        fd.append('content', this.state.content)
         axios.post(baseUrl+'/session/add', fd)
             .then(response => {
                 this.props.enqueueSnackbar('Thêm buổi học thành công', {
@@ -246,7 +257,7 @@ class DialogSession extends React.Component {
                 fullWidth 
                 TransitionComponent={Transition}
                 keepMounted
-                maxWidth='lg'
+                maxWidth='xl'
                 scroll='paper'
                 open={this.props.open} onClose={this.props.handleCloseDialog} aria-labelledby="form-dialog-title"
             >
@@ -378,13 +389,23 @@ class DialogSession extends React.Component {
                                 md={12}
                                 lg={6} 
                             >
+                                <TextField  label="Nội dung bài tập về nhà" 
+                                    variant="outlined"
+                                    size="medium"
+                                    type="text"
+                                    fullWidth
+                                    margin = "dense"
+                                    name = 'btvn_content'
+                                    value = {this.state.btvn_content}
+                                    onChange = {this.onChange}
+                                />
                                 <div className = 'upload'>
                                     <DropzoneArea 
                                         onChange={this.handleDocumentUpload}
                                         acceptedFiles = {['image/*', 'application/pdf','application/msword']}
                                         filesLimit = {5}
                                         maxFileSize = {10000000}
-                                        initialFiles = {this.state.document.slice(0,5)}
+                                        initialFiles = {['/public/document/35_exercice_0_1594369300.pdf']}
                                         dropzoneText = "Kéo thả tài liệu buổi học (Ảnh, PDF, Word)"
                                     />
                                 </div>
@@ -394,17 +415,26 @@ class DialogSession extends React.Component {
                                 md={12}
                                 lg={6}
                             >
+                                <TextField  label="Nội dung bài học" 
+                                    variant="outlined"
+                                    size="medium"
+                                    type="text"
+                                    fullWidth
+                                    margin = "dense"
+                                    name = 'content'
+                                    value = {this.state.content}
+                                    onChange = {this.onChange}
+                                />
                                 <div className = 'upload'>
                                     <DropzoneArea 
                                         onChange={this.handleExerciceUpload}
                                         acceptedFiles = {['image/*', 'application/pdf','application/msword']}
                                         filesLimit = {5}
                                         maxFileSize = {10000000}
-                                        initialFiles = {this.state.exercice.slice(0,5)}
+                                        initialFiles = {this.state.exercice}
                                         dropzoneText = "Kéo thả bài tập về nhà (Ảnh, PDF, Word)"
                                     />
                                 </div>
-                                
                             </Grid>
                         </Grid>
                     </form>

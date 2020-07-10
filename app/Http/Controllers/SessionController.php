@@ -287,6 +287,8 @@ class SessionController extends Controller
         }
         $session->document = $document;
         $session->exercice = $exercice;
+        $session->btvn_content = $request->btvn_content;
+        $session->content = $request->content;
         $session->save();
         //Add student to session
         if($request->student_involved){
@@ -317,9 +319,7 @@ class SessionController extends Controller
                     }
                 }
             }
-        }
-        //return response()->json($session);
-        // print_r($input);        
+        }      
     }
     protected function checkDate(Request $request){
         $date = date('Y-m-d', $request->date);
