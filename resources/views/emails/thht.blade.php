@@ -18,7 +18,7 @@
             </li>
 
         </ul>
-        <h4>Thông tin buổi học: </h4>
+        <h4>Kết quả học trên lớp: </h4>
         <ul>
             <li>
                 Điểm danh: 
@@ -50,8 +50,33 @@
             <li>
                 Nhận xét (nếu có): {{$data['student_session']->comment}}
             </li>
-
         </ul>
+        <h4>Thông tin buổi học: </h4>
+        <ul>
+            <li>
+                Nội dung ca học: <b>{{$data['session']->content}}</b>
+            </li>
+            <li>
+                Tài liệu ca học (nếu có):
+                @if($data['session']->document != '')
+                    @foreach(explode(',', $data['session']->document) as $d)
+                        <a href="{{$d}}" download style="margin-right: 5px;"> Tải về </a> 
+                    @endforeach
+                @endif
+            </li>
+            <li>
+                Bài tập về nhà: <b>{{$data['session']->btvn_content}}</b>
+            </li>
+            <li>
+                File bài tập về nhà (nếu có): 
+                @if($data['session']->exercice != '')
+                    @foreach(explode(',', $data['session']->exercice) as $d)
+                        <a href="{{$d}}" download style="margin-right: 5px;"> Tải về </a> 
+                    @endforeach
+                @endif
+            </li>
+        </ul>
+
     @endforeach
     Mọi thắc mắc quý phụ huynh vui lòng liên hệ hotline cơ sở {{$datas[0]['center']->name}}: {{$datas[0]['center']->phone}}
 

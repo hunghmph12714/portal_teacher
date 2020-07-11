@@ -87,7 +87,7 @@ class AttendanceController extends Controller
     
                 $data['student'] = Student::find($student_session->student_id);
                 $data['parent'] = Parents::find($data['student']->parent_id);
-    
+                
                 $data['session'] = Session::find($student_session->session_id);
                 $data['class'] = Classes::find($data['session']->class_id)->code;
     

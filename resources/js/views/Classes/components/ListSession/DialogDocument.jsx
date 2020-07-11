@@ -80,7 +80,7 @@ const DialogDocument = props => {
                         Bài tập về nhà
                     </Typography>
                     <div >
-                    <List dense>
+                        <List dense>
                             {(exercice) ? exercice.split(',').map(doc => {
                                 return(
                                 <ListItem >

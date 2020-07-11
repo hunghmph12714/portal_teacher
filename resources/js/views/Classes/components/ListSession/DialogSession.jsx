@@ -11,6 +11,12 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import FolderIcon from '@material-ui/icons/Folder';
+
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Divider from '@material-ui/core/Divider';
 import {
@@ -116,7 +122,9 @@ class DialogSession extends React.Component {
             teacher: "",
             note: "",
             document: [],
+            old_document: [],
             exercice: [],
+            old_exercice: [],
             fee: "",
             centers : [],
             center: '',
@@ -131,16 +139,22 @@ class DialogSession extends React.Component {
         //d
         let s = nextProps.session
         this.getRoom(nextProps.session.ctid)
+        console.log(s.document)
         this.setState({
             room : {label: s.rname, value: s.rid},
             center : {label: s.ctname, value: s.ctid},
-            from_date: new Date(s.from_full),
-            to_date: new Date(s.to_full),
-            note: s.note,
+            from_date: (s.from_full) ? new Date(s.from_full) : new Date(),
+            to_date: (s.to_full) ? new Date(s.to_full) : new Date(),
+            note: s.note ? s.note : '',
             teacher: { label: s.tname, value: s.tid},
             fee: s.fee,
-            document: (s.document) ? s.document.split(',') : [],
-            exercice: (s.exercice) ? s.exercice.split(',') : [],
+            btvn_content: (s.btvn_content)?s.btvn_content:'',
+            content: (s.content) ? s.content: '',
+            document: [],
+            exercice: [],
+            old_document: (s.document) ? s.document.split(',') : [],
+            old_exercice: (s.exercice) ? s.exercice.split(',') : [],
+            
         })
     }    
    
@@ -217,6 +231,20 @@ class DialogSession extends React.Component {
             [e.target.name] : !this.state[e.target.name]
         })
     }
+    deleteExercice = (doc) => {
+        this.setState(prevState => {
+            let old_exercice = prevState.old_exercice            
+            old_exercice = old_exercice.filter(e => e != doc)
+            return {...prevState, old_exercice}
+        })
+    }
+    deleteDocument = (doc) => {
+        this.setState(prevState => {
+            let old_document = prevState.old_document
+            old_document = old_document.filter(e => e != doc)
+            return {...prevState, old_document}
+        })
+    }
     handleAddSession = (e) => {
         e.preventDefault();
         let fd = new FormData()
@@ -230,27 +258,48 @@ class DialogSession extends React.Component {
         fd.append('exercice_count', this.state.exercice.length)
         fd.append('center_id', this.state.center.value)
         fd.append('class_id', this.props.class_id)
-        fd.append('room_id', this.state.room.value)
+        fd.append('room_id', (this.state.room.value)?this.state.room.value:0)
         fd.append('from_date', this.state.from_date.getTime()/1000)
         fd.append('to_date', this.state.to_date.getTime()/1000)
-        fd.append('teacher_id', this.state.teacher.value)
+        fd.append('teacher_id', (this.state.teacher.value)?this.state.teacher.value:0)
         fd.append('note', this.state.note)
         fd.append('fee', this.state.fee)
         fd.append('student_involved', this.state.student_involved)
         fd.append('transaction_involved', this.state.transaction_involved)
         fd.append('btvn_content', this.state.btvn_content)
         fd.append('content', this.state.content)
-        axios.post(baseUrl+'/session/add', fd)
+        
+        if(this.props.dialogType == 'create'){
+            axios.post(baseUrl+'/session/add', fd)
             .then(response => {
                 this.props.enqueueSnackbar('Thêm buổi học thành công', {
                     variant: 'success'
                 })
+                this.props.handleCloseDialog()
             })
             .catch(err => {
                 console.log(err)
             })
         
+        }
+        if(this.props.dialogType == 'edit'){
+            fd.append('old_exercice', this.state.old_exercice.join(','))
+            fd.append('old_document', this.state.old_document.join(','))
+            fd.append('ss_id', this.props.session.sid)
+            axios.post(baseUrl +'/session/edit' , fd)
+                .then(response => {
+                    this.props.enqueueSnackbar('Sửa buổi học thành công', {
+                        variant: 'success'
+                    })
+                    this.props.handleCloseDialog()
+                })
+                .catch(err => {
+                    
+                })
+        }
+        
     }
+
     render(){
         return (
             <Dialog 
@@ -307,18 +356,22 @@ class DialogSession extends React.Component {
                                     />
         
                                 </FormControl> 
-                                <FormControl fullWidth variant="outlined" margin="dense">
-                                    <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
-                                    <OutlinedInput
-                                        value={this.state.fee}
-                                        name = "fee"
-                                        onChange={this.onChange}
-                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
-                                        labelWidth={70}
-                                        inputComponent = {NumberFormatCustom}
-                                    >
-                                    </OutlinedInput>
-                                </FormControl>
+                                {
+                                    this.props.dialogType == 'create' ? (
+                                        <FormControl fullWidth variant="outlined" margin="dense">
+                                            <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
+                                            <OutlinedInput
+                                                value={this.state.fee}
+                                                name = "fee"
+                                                onChange={this.onChange}
+                                                startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                labelWidth={70}
+                                                inputComponent = {NumberFormatCustom}
+                                            >
+                                            </OutlinedInput>
+                                        </FormControl>
+                                    ): ''
+                                }
                                 
                             </Grid>
                             <Grid
@@ -362,25 +415,29 @@ class DialogSession extends React.Component {
                                     value = {this.state.note}
                                     onChange = {this.onChange}
                                 />
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={this.state.student_involved} onChange={this.handleCheckBoxChange} name="student_involved" />}
-                                        label="Thêm học sinh hiện hữu vào buổi học"
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                        <Checkbox
-                                            checked={this.state.transaction_involved && this.state.student_involved}
-                                            onChange={this.handleCheckBoxChange}
-                                            name="transaction_involved"
-                                            disabled = {!this.state.student_involved}
-                                            color="primary"
-                                        />
-                                        }
-                                        label="Tạo công nợ"
-                                    /> 
-                                </FormGroup>
-
+                                {
+                                    this.props.dialogType == 'create' ? (
+                                        <FormGroup row>
+                                            <FormControlLabel
+                                                control={<Checkbox checked={this.state.student_involved} onChange={this.handleCheckBoxChange} name="student_involved" />}
+                                                label="Thêm học sinh hiện hữu vào buổi học"
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                <Checkbox
+                                                    checked={this.state.transaction_involved && this.state.student_involved}
+                                                    onChange={this.handleCheckBoxChange}
+                                                    name="transaction_involved"
+                                                    disabled = {!this.state.student_involved}
+                                                    color="primary"
+                                                />
+                                                }
+                                                label="Tạo công nợ"
+                                            /> 
+                                        </FormGroup>    
+                                    ): ''
+                                }
+                               
                             </Grid>
                         </Grid>
                     <h5>Tài liệu và Bài tập về nhà</h5>
@@ -399,14 +456,34 @@ class DialogSession extends React.Component {
                                     value = {this.state.btvn_content}
                                     onChange = {this.onChange}
                                 />
+                                {
+                                    (this.state.old_exercice.length != 0 && this.props.dialogType == 'edit') ? (
+                                        <List dense>
+                                            {this.state.old_exercice.map(doc => {
+                                                return(
+                                                <ListItem >
+                                                    <ListItemIcon>
+                                                        <FolderIcon />
+                                                    </ListItemIcon>
+                                                    {
+                                                        <span> {doc.replace('/public/document/', '')}</span>
+                                                    }
+                                                    <a href={doc} download className="a_document">Tải về</a>
+                                                    <a href="#" onClick={() => this.deleteExercice(doc)} className="a_document">Xóa</a>
+                                                </ListItem>
+                                                )
+                                            })}
+                                        </List>
+                                    ): ''
+                                }
                                 <div className = 'upload'>
                                     <DropzoneArea 
-                                        onChange={this.handleDocumentUpload}
+                                        onChange={this.handleExerciceUpload}
                                         acceptedFiles = {['image/*', 'application/pdf','application/msword']}
                                         filesLimit = {5}
+                                        initialFiles= {[]}
                                         maxFileSize = {10000000}
-                                        initialFiles = {['/public/document/35_exercice_0_1594369300.pdf']}
-                                        dropzoneText = "Kéo thả tài liệu buổi học (Ảnh, PDF, Word)"
+                                        dropzoneText = "Kéo thả tài bài tập về nhà (Ảnh, PDF, Word)"
                                     />
                                 </div>
                                 
@@ -425,14 +502,34 @@ class DialogSession extends React.Component {
                                     value = {this.state.content}
                                     onChange = {this.onChange}
                                 />
+                                {
+                                    (this.state.old_document.length != 0  && this.props.dialogType == 'edit') ? (
+                                        <List dense>
+                                            {this.state.old_document.map(doc => {
+                                                return(
+                                                <ListItem >
+                                                    <ListItemIcon>
+                                                        <FolderIcon />
+                                                    </ListItemIcon>
+                                                    {
+                                                        <span> {doc.replace('/public/document/', '')}</span>
+                                                    }
+                                                    <a href={doc} download className="a_document">Tải về</a>
+                                                    <a href="#" onClick={() => this.deleteDocument(doc)} className="a_document">Xóa</a>
+                                                </ListItem>
+                                                )
+                                            })}
+                                        </List>
+                                    ): ''
+                                }
                                 <div className = 'upload'>
                                     <DropzoneArea 
-                                        onChange={this.handleExerciceUpload}
+                                        onChange={this.handleDocumentUpload}
                                         acceptedFiles = {['image/*', 'application/pdf','application/msword']}
                                         filesLimit = {5}
+                                        initialFiles= {[]}
                                         maxFileSize = {10000000}
-                                        initialFiles = {this.state.exercice}
-                                        dropzoneText = "Kéo thả bài tập về nhà (Ảnh, PDF, Word)"
+                                        dropzoneText = "Kéo thả tài liệu buổi học(Ảnh, PDF, Word)"
                                     />
                                 </div>
                             </Grid>
@@ -449,7 +546,7 @@ class DialogSession extends React.Component {
                                 Tạo mới buổi học
                             </Button>
                         ) : (
-                            <Button onClick={this.handleEditTeacher} color="primary" id="btn-save">
+                            <Button onClick={this.handleAddSession} color="primary" id="btn-save">
                                 Lưu thay đổi
                             </Button>
                         )

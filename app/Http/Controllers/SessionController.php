@@ -200,7 +200,7 @@ class SessionController extends Controller
             $sessions = Classes::find($request->class_id)->sessions()->
                 select('sessions.id as sid','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
                     'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.stats','sessions.document','sessions.exercice','sessions.note','sessions.status')->
+                    'sessions.stats','sessions.document','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->
@@ -212,8 +212,58 @@ class SessionController extends Controller
         }
     }
     protected function editSession(Request $request){
-        $rules = ['class_id' => 'required'];
+        $rules = ['ss_id' => 'required', 
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'fee' => 'required'
+        ];
         $this->validate($request, $rules);
+
+        $session = Session::find($request->ss_id);
+        if($session){
+            $session->teacher_id = $request->teacher_id;
+            $session->center_id = $request->center_id;
+            $session->room_id = $request->room_id;
+            $session->date = date('Y-m-d', $request->from_date);
+            $session->from = date('Y-m-d H:i:00', $request->from_date);
+            $session->to = date('Y-m-d H:i:00', $request->to_date);
+            $session->note = $request->note;
+
+            $document = $request->old_document;
+            //Upload document
+            for($i = 0 ; $i < $request->document_count; $i++){
+                if($request->has('document'.$i)){
+                    $ans = $request->file('document'.$i);
+                    $name = $session->id."_document_".$i."_".time();
+                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0 && $document == ''){
+                        $document = str_replace(',','',$path);
+                    }else{
+                        $document = $document.",".str_replace(',','',$path);
+                    } 
+                }
+            }
+            $exercice = $request->old_exercice;
+            for($i = 0 ; $i < $request->exercice_count ; $i++){
+                if($request->has('exercice'.$i)){
+                    $ans = $request->file('exercice'.$i);
+                    $name = $session->id."_exercice_".$i."_".time();
+                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0 && $exercice == ''){
+                        $exercice = str_replace(',','',$path);
+                    }else{
+                        $exercice = $exercice.",". str_replace(',','',$path);
+                    } 
+                }
+            }
+            $session->document = $document;
+            $session->exercice = $exercice;
+            $session->btvn_content = $request->btvn_content;
+            $session->content = $request->content;
+            $session->save();
+        }
     }
     protected function createSession(Request $request){
        $rules = [
@@ -247,7 +297,6 @@ class SessionController extends Controller
         $input['center_id'] = $request->center_id;
         $input['room_id'] = $request->room_id;
         $input['status'] = ($request->student_involved && $request->transaction_involved) ? '1' : '0';
-        print($input['status']);
         $input['date'] = date('Y-m-d', $request->from_date);
         $input['from'] = date('Y-m-d H:i:00', $request->from_date);
         $input['to'] = date('Y-m-d H:i:00', $request->to_date);
@@ -281,7 +330,7 @@ class SessionController extends Controller
                 if($i == 0){
                     $exercice = str_replace(',','',$path);
                 }else{
-                    $exercice = $document.",". str_replace(',','',$path);
+                    $exercice = $exercice.",". str_replace(',','',$path);
                 } 
             }
         }

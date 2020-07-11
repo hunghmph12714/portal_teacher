@@ -293,15 +293,15 @@ class StudentController extends Controller
             $datas[$key]  = $data;
         }
         $d = array('datas'=>$datas);
-        // return view('emails.thht', compact('datas'));
-        $to_email = $datas[0]['parent']->email;        
-        $to_name = '';
-        Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
-            $message->to($to_email, $to_name)
-                    ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
-            $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
-        });
-        return response()->json();
+        return view('emails.thht', compact('datas'));
+        // $to_email = $datas[0]['parent']->email;        
+        // $to_name = '';
+        // Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
+        //     $message->to($to_email, $to_name)
+        //             ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
+        //     $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
+        // });
+        // return response()->json();
 
     }
 }
