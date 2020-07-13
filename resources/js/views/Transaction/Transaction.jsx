@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import './Transaction.scss'
-import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
-import { AccountSearch, TransactionForm } from './components';
+import { Grid, TextField, FormLabel, Paper,Tooltip, IconButton
+} from '@material-ui/core';
+import { AccountSearch, TransactionForm, DialogTransaction } from './components';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+
 import { withSnackbar } from 'notistack'
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import NumberFormat from 'react-number-format';
-import { format } from 'date-fns'
+import { format, isThisSecond } from 'date-fns'
 import SendIcon from '@material-ui/icons/Send';
 import { StudentSearch } from '../../components';
 import {
@@ -47,72 +50,7 @@ function NumberFormatCustom(props) {
         />
     );
 }
-const ClassSelect = React.memo(props => {
-    const {center, course, student} = props
-    const [classes, setClasses] = useState([])
-    useEffect(() => {
-        const fetchData = async() => {
-            var r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
-            if(student){
-                r = await axios.post(baseUrl + '/class/student', {'student_id': student.value})
-            }
-            setClasses(r.data.map(c => {
-                return {label: c.code + ' - ' +c.name, value: c.id}
-            }))        
-            
-        }
-        fetchData()
-    }, [student])
-    
-    return( 
-        <Select
-            key = "class-select"
-            value = {props.selected_class}
-            name = "selected_class"
-            placeholder="Chọn lớp"
-            isClearable
-            options={classes}
-            onChange={props.handleChange}
-        />)
-})
-const SessionDateSelect = React.memo(props => {
-    const {selected_class} = props
-    const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
-    const [sessions, setSessions] = useState([])
-    const [tmp_sessions, setTmpSession] = useState([])
-    const fetchData = async() => {
-        const r = await axios.post(baseUrl + '/session/get', {class_id: selected_class.value, from_date: -1, to_date: -1})
-        let data = r.data.map(c => {
-            let date = new Date(c.date)
-            c.date = format(date , 'd/M/yyyy')
-            c.day = format(date, 'i') 
-            c.from = format(new Date(c.from), 'HH:mm')
-            c.to = format(new Date(c.to), 'HH:mm')
-            c.time = c.from + '-' + c.to
-            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.sid, date : c.date, time: c.from, selected: -1}
-        })
-        setSessions(data)
-        setTmpSession(data)
-    }
-    useEffect(() => {        
-        if(selected_class){
-            fetchData()            
-        }
-    }, [props.selected_class])
-    
-    return( 
-        <div className = "select-input">
-            <Select                
-                key = "session-select"                
-                value = {props.selected_session}
-                name = "selected_session"
-                placeholder="Chọn Ca học"
-                options={sessions}
-                onChange={props.handleChange}
-            />                 
-        </div>
-    )
-})
+
 const TransactionView = React.memo(props => {
     const {reload} = props
     const [data, setData] = useState([])
@@ -146,7 +84,7 @@ const TransactionView = React.memo(props => {
                     isFreeAction: true,
                     text: 'Thêm giao dịch',
                     onClick: (event) => {
-                        this.props.history.push('/entrance/create')
+                        props.handleOpenCreate()
                     },
                 },
             ]}
@@ -175,6 +113,40 @@ const TransactionView = React.memo(props => {
                 }
             }}
             columns={[
+            //Actions
+                {
+                    title: "",
+                    field: "action",
+                    filtering: false,
+                    disableClick: true,
+                    sorting: false,
+                    headerStyle: {
+                        padding: '0px',
+                        width: '80px',
+                    },
+                    cellStyle: {
+                        width: '80px',
+                        padding: '0px 5px 0px 0px',
+                    },
+                    render: rowData => (
+                        <div style = {{display: 'block'}}>
+                            {/* {rowData.tableData.id} */}
+                            <Tooltip title="Chỉnh sửa" arrow>
+                                <IconButton onClick={() => {props.handleOpenEdit(rowData)}}>
+                                <EditOutlinedIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>
+                            {/* <Tooltip title="Xóa học sinh" arrow>
+                                <IconButton disabled onClick={() => {
+                                if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                                    this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                }>
+                                <DeleteForeverIcon fontSize='inherit' />
+                                </IconButton>
+                            </Tooltip>                                 */}
+                        </div>
+                    )
+                },
             //Thời  gian thực hiện giao dịch
                 {
                     title: "Thời gian",
@@ -389,124 +361,42 @@ const TransactionView = React.memo(props => {
             
             }}
                 
-            />
+        />
     )
 })
 class Transaction extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            debit: [],
-            credit: [],
-            time: new Date(),
-            student : null,
-            amount :'',
-            content:'',
-            selected_class: [],
-            selected_session: null,
-            tags: [],
+            open_dialog : false,
+            dialog_type : 'create',
+            selected_transaction : '',
             reload: false,
         }
     }
     
-    onChange = (e) => {
-        this.setState({
-            [e.target.name] : e.target.value
-        })
+    handleOpenCreateDialog = () => {
+        this.setState({ open_dialog: true, dialog_type : 'create', selected_transaction: '' })
     }
-    handleDebitChange = (newValue) => {
-        this.setState({ debit: newValue })
+    handleOpenEditDialog = (transaction) => {        
+        this.setState({ open_dialog: true, dialog_type : 'edit', selected_transaction: transaction.id})
     }
-    handleCreditChange = (newValue) => {
-        this.setState({ credit: newValue })
-    }
-    handleDateChange = date => {
-        this.setState({ time: date });
-    };
-    handleStudentChange = (newValue) => {
-        if(!newValue || newValue.__isNew__){
-            this.setState({
-                student: newValue
-            }) 
-        }
-        else{
-            this.setState({
-                student: {__isNew__: false, value: newValue.value, label: newValue.label},                
-            }) 
-        }        
-    }
-    handleClassChange = (newValue , event) => {
-        if(this.state.selected_class != newValue){
-            this.setState({selected_session: []})
-            this.setState({
-                selected_class : (newValue)?newValue:[],                
-            })
-        }  
-    }
-    handleSessionChange = (newValue) => {
-        if(this.state.selected_session != newValue){
-            this.setState({
-                selected_session: (newValue) ? newValue:[],
-            })            
-        }
-    } 
-    handleTagChange = (newValue) => {
-        this.setState({tags: newValue});
-    }
-    onSubmitTransaction = (event) => {
-        event.preventDefault()
-        let data = this.state
-        data.time = data.time.getTime()/1000
-        this.setState({time: new Date(data.time*1000)})
-        axios.post(baseUrl + '/transaction/add', this.state)
-            .then(response => {
-                this.setState({ reload: !this.state.reload })
-                this.props.enqueueSnackbar('Tạo giao dịch thành công!', {
-                    variant: 'success'
-                })
-                
-            })
-            .catch(err => {
-                this.props.enqueueSnackbar('Có lỗi xảy ra !', {
-                    variant: 'error'
-                })
-            })
+    handleCloseDialog =  () => {
+        this.setState({ open_dialog : false, reload: !this.state.reload })
     }
     render(){
         return(
             <React.Fragment>
-                <div className="root-transaction">
-                <form noValidate autoComplete="on" className="transaction-form">
-                    <TransactionForm
-                        debit = {this.state.debit}
-                        credit = {this.state.credit}
-                        time = {this.state.time}
-                        student = {this.state.student}
-                        amount = {this.state.amount}
-                        content = {this.state.content}
-                        selected_class = {this.state.selected_class}
-                        selected_session = {this.state.selected_session}
-                        tags = {this.state.tags}
-
-                        onChange = { this.onChange }
-                        handleDateChange = {this.handleDateChange}
-                        handleDebitChange = { this.handleDebitChange }
-                        handleCreditChange = {this.handleCreditChange}
-                        handleDateChange = {this.handleDateChange}
-                        handleStudentChange = {this.handleStudentChange}
-                        handleClassChange = {this.handleClassChange}
-                        handleSessionChange = {this.handleSessionChange}
-                        handleTagChange = {this.handleTagChange}
-                        handleAmountChange = {this.onChange}
-                        handleContentChange = {this.onChange}
-                        submitButton = {true}
-                        onSubmitTransaction = {this.onSubmitTransaction}                   
-                    />
-                </form>
-                    
-                </div>
+                <DialogTransaction 
+                    open= {this.state.open_dialog}
+                    handleClose = {this.handleCloseDialog}
+                    dialogType = {this.state.dialog_type}
+                    transaction_id = {this.state.selected_transaction}
+                />
                 <TransactionView
                     reload = {this.state.reload}
+                    handleOpenCreate = {this.handleOpenCreateDialog}
+                    handleOpenEdit = {this.handleOpenEditDialog}
                 />
             </React.Fragment>
         )

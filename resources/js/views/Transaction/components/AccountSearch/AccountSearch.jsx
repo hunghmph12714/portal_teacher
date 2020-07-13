@@ -14,7 +14,7 @@ import NumberFormat from 'react-number-format';
 
 const baseUrl = window.Laravel.baseUrl
 
-const wait = 1000;
+const wait = 0;
 const customChip = (color = '#33300') => ({
     border: '1px solid ' + color,
     color: color,
