@@ -114,8 +114,5 @@ class AttendanceController extends Controller
             // Get error here
             return response()->json(418);
         }
-        
-        
-
     }
 }

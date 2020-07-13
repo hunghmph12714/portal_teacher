@@ -86,7 +86,7 @@ class GuestController extends Controller
             $relationship = Relationship::orderBy('weight', 'asc')->first();          
             $parent['fullname'] = $request->pname;
             $parent['phone'] = $pphone;
-            $parent['email'] = $request->email;
+            $parent['email'] = $request->pemail;
             $parent['relationship_id'] = $relationship->id;
             $parent = Parents::create($parent);
 
