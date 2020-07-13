@@ -298,7 +298,7 @@ const ListStudent = (props) => {
                         cellStyle: {
                             padding: '0px',
                         },
-                        lookup: {'active': 'Đang học', 'droped': 'Đã nghỉ', 'waiting': 'Đang chờ', 'retain': 'Bảo lưu'},
+                        lookup: {'active': 'Đang học', 'droped': 'Đã nghỉ', 'waiting': 'Đang chờ', 'retain': 'Bảo lưu','transfer': 'Chuyển lớp'},
                           
                     }                 
                     

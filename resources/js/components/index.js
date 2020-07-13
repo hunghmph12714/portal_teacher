@@ -6,3 +6,4 @@ export { default as Label } from './Label';
 export { default as Navigation } from './Navigation';
 export { default as StudentSearch } from './StudentSearch';
 export { default as ParentSearch } from './ParentSearch';
+export { default as ClassSearch } from './ClassSearch';

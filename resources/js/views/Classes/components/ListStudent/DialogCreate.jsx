@@ -1,4 +1,5 @@
 import React , { useState, useEffect } from 'react';
+import { ClassSearch } from '../../../../components';
 import './DialogCreate.scss'
 import axios from 'axios';
 import _ from "lodash";
@@ -13,6 +14,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
 import { StudentForm, ParentForm } from '../../../Entrance/components';
 import { withSnackbar } from 'notistack';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -27,6 +29,7 @@ import {
 } from "@material-ui/pickers";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
 const baseUrl = window.Laravel.baseUrl
 const initState = {
     schools: [],
@@ -52,9 +55,14 @@ const initState = {
     status: '',
     active_date: new Date(),
     drop_date: null,
-    create_fee : true,         
-
+    drop_reason: '',
+    create_fee : true,      
+    transfer_date : null,   
+    new_active_date: null,
+    transfer_class : null,
+    transfer_reason: '',
 }
+
 class DialogCreate extends React.Component {    
     constructor(props){
         super(props)        
@@ -85,6 +93,7 @@ class DialogCreate extends React.Component {
                 status: nextProps.student.status,
                 active_date: new Date(nextProps.student.entrance_date),
                 drop_date : (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
+                transfer_date: (nextProps.student.transfer_date) ? new Date(nextProps.student.transfer_date) : null,
             })
         }
         if(nextProps.type == 'create'){
@@ -176,6 +185,15 @@ class DialogCreate extends React.Component {
     handleDropDate = date => {
         this.setState({ drop_date: date});
     }
+    handleTransferDate = date => {
+        this.setState({ transfer_date: date});
+    }
+    handleNewActiveDateChange = date => {
+        this.setState({ new_active_date: date });
+    }
+    onTranferClassChange = newValue => {
+        this.setState({ transfer_class: newValue })
+    }
     handleSubmitEdit = (e) => {
         e.preventDefault();
         let data = this.state
@@ -235,11 +253,12 @@ class DialogCreate extends React.Component {
             <Dialog 
                 fullWidth 
                 maxWidth='xl'
-                scroll='paper'
+                scroll='body'
                 open={this.props.open} onClose={this.props.handleClose} aria-labelledby="form-dialog-title"
+                classes={{ paperScrollPaper: 'dialog-with-select' }}
             >
                 <DialogTitle id="form-dialog-title">Thêm học sinh</DialogTitle>
-            <DialogContent className="dialog-create-student">
+            <DialogContent className="dialog-create-student dialog-with-select">
                 <DialogContentText>
                     Vui lòng điền đầy đủ thông tin cần thiết (*)
                 </DialogContentText>
@@ -278,6 +297,7 @@ class DialogCreate extends React.Component {
                                         <MenuItem value={'waiting'}>Chờ học</MenuItem>
                                         <MenuItem value={'retain'}>Bảo lưu</MenuItem>
                                         <MenuItem value={'droped'}>Nghỉ học</MenuItem>
+                                        <MenuItem value={'transfer'}>Chuyển lớp</MenuItem>
                                     </Select>
                                 </FormControl>    
                             </Grid>
@@ -317,15 +337,100 @@ class DialogCreate extends React.Component {
                                         </div>
                                     ):''
                                 }
-                            </Grid>
-                            <Grid item md={4} sm={12}> 
-                            <FormControlLabel
-                                control = {
-                                    <Checkbox checked={this.state.create_fee} onChange={this.handleChecked} name="create_fee" disabled={this.state.status == 'active'}/>
+                                
+                                {
+                                    this.state.status == 'transfer'? (
+                                        <Grid container alignItems="center" spacing={2}>
+                                            <Grid item md={12} sm={12}>
+                                                <ClassSearch 
+                                                    selected_class = {this.state.transfer_class}
+                                                    handleChange={newValue => {this.onTranferClassChange(newValue)}}
+                                                    course = {-1}
+                                                    center = {-1}
+                                                />
+                                            </Grid>
+                                            <Grid item md={6} sm={12}>
+                                                <div className="date-time">
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                        <KeyboardDatePicker
+                                                            autoOk
+                                                            minDate = {this.state.active_date}
+                                                            className="input-date input-text"
+                                                            variant="inline"
+                                                            inputVariant="outlined"
+                                                            format="dd/MM/yyyy"
+                                                            placeholder="Ngày chuyển lớp"
+                                                            views={["year", "month", "date"]}
+                                                            value={this.state.transfer_date}
+                                                            onChange={this.handleTransferDate}
+                                                        />      
+                                                    </MuiPickersUtilsProvider>     
+                                                </div>
+                                            </Grid>
+                                            <Grid item md={6} sm={12}>
+                                            <div className="date-time">
+                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                        <KeyboardDatePicker
+                                                            autoOk
+                                                            minDate = {this.state.active_date}
+                                                            className="input-date input-text"
+                                                            variant="inline"
+                                                            inputVariant="outlined"
+                                                            format="dd/MM/yyyy"
+                                                            placeholder="Ngày nhập lớp mới"
+                                                            views={["year", "month", "date"]}
+                                                            value={this.state.new_active_date}
+                                                            onChange={this.handleNewActiveDateChange}
+                                                        />      
+                                                    </MuiPickersUtilsProvider>     
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                    ):''
                                 }
-                                label="Khởi tạo học phí"
-                                className="input-text"
-                            />
+                                
+                            </Grid>
+                            <Grid item md={4} sm={12}>
+                            {
+                                (this.state.status == 'active') ? (
+                                    <FormControlLabel
+                                        control = {
+                                            <Checkbox checked={this.state.create_fee} onChange={this.handleChecked} name="create_fee" disabled={this.state.status == 'active'}/>
+                                        }
+                                        label="Khởi tạo học phí"
+                                        className="input-text"
+                                    />
+                                ):(
+                                    ''
+                                )
+                            }
+                            {
+                                this.state.status == 'droped'? (
+                                    <TextField 
+                                        id="outlined-basic" 
+                                        label="Lý do nghỉ học" 
+                                        variant="outlined" size="small"
+                                        name="drop_reason"
+                                        fullWidth
+                                        className="text-input"
+                                        value={this.state.drop_reason}
+                                        onChange={this.onChange}/>
+                                ):''
+                            }
+                            
+                            {
+                                this.state.status == 'transfer'? (
+                                    <TextField 
+                                        id="outlined-basic" 
+                                        label="Lý do chuyển lớp" 
+                                        variant="outlined" size="small"
+                                        name="transfer_reason"
+                                        fullWidth
+                                        className="text-input"
+                                        value={this.state.transfer_reason}
+                                        onChange={this.onChange}/>
+                                ):''
+                            }
                             </Grid>
                         </Grid>
             </DialogContent>

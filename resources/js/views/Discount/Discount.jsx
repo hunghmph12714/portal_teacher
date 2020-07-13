@@ -146,10 +146,10 @@ class Discount extends React.Component{
                     editComponent : props => {
                             return (
                                 <ClassSelect 
-                                selected_class = {props.value}
-                                handleChange={newValue => {props.onChange(newValue)}}
-                                course = {-1}
-                                center = {-1}
+                                    selected_class = {props.value}
+                                    handleChange={newValue => {props.onChange(newValue)}}
+                                    course = {-1}
+                                    center = {-1}
                             />
                         )
                     }

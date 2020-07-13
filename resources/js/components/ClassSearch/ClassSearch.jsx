@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState , useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { throttle } from "lodash";
 import './ClassSearch.scss';
@@ -12,86 +12,31 @@ import CreatableSelect from 'react-select/creatable';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 const baseUrl = window.Laravel.baseUrl
 
-const wait = 1000;
-const customChip = (color = '#ccc') => ({
-    border: '1px solid ' + color,
-    color: color,
-    fontSize: '12px',
-})
-const CustomOption = props => {
-    const { data, innerRef, innerProps } = props;
-    return data.custom ? (
-        <Card className= "search-card" ref={innerRef} {...innerProps}>
-            <CardContent>
-                <Chip style={customChip(data.color)} variant="outlined" color="secondary" label={data.r_name} size="small" />
-                <Grid container spacing={2} className="search-grid">
-                    <Grid item md={6} sm={12}> 
-                        <Typography variant="body2" component="p">
-                            <b>Học sinh: </b>{data.s_name}
-                            <br />
-                            Ngày sinh: {data.dob}
-                        </Typography>
-                    </Grid>
-                    
-                    <Grid item md={6} sm={12}> 
-                        <Typography variant="body2" component="p">
-                            <b>Phụ huynh: </b>{data.p_name}
-                        <br />
-                            Số điện thoại: {data.p_phone}
-                        </Typography>
-                    </Grid>
-                </Grid>          
-            </CardContent>
-        </Card>      
-    ) : <components.Option {...props} />
-};
-const findClasss = (inputValue, student_id) => {
-    return axios.post(baseUrl + '/class/find/', {key: inputValue, student_id: student_id })
-        .then(response => {
-            return response.data.map(c => {
-                c.value = c.cid
-                c.label = c.cname
-                c.custom = 1
-                return c
-            })
-        })
-        .catch(err => {
-            console.log('find class bug: ' + err.response.data)
-        })
-}
-
-const throttleOptions = throttle(findClasss, wait)
-const promptTextCreator = (value) => {
-    return 'Tạo mới '+value
-}
-const checkValidCreate = (inputValue, selectValue, selectOptions) => {
-    if(inputValue == "" || !isNaN(inputValue)){
-        return false
-    }else return true
-}
-const ClassSearch = props => {
+const ClassSearch = React.memo(props => {
+    const {center, course} = props
+    const [classes, setClasses] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            setClasses(r.data.map(c => {
+                    // console.log(c)
+                    return {label: c.code + ' - ' +c.name, value: c.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
     
-    const {class_name, handleClassChange, student_id} = props
-    return (
-        <AsyncCreatableSelect
-            components = {{ Option: CustomOption }}
-            cacheOptions
-            loadOptions = {inputValue => throttleOptions(inputValue, student_id)}
-            autosize={true}
+    return( 
+        <Select
+            key = "class-select"
+            value = {props.selected_class}
+            name = "selected_class"
+            placeholder="Chọn lớp"
             isClearable
-            placeholder = {'Chọn lớp'}
-            name="class_name"
-            value = {class_name}
-            onChange = {handleClassChange}
-            formatCreateLabel = {promptTextCreator}
-            isValidNewOption = {checkValidCreate}
-            className="input-text"
-        />
-    )
-}
-ClassSearch.propTypes = {
-  className: PropTypes.string,
-  
-};
+            options={classes}
+            onChange={props.handleChange}
+        />)
+})
 
 export default ClassSearch;
