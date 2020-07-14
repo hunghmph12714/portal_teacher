@@ -238,7 +238,7 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::post('/fee/gather', 'PaperController@gatherFee');
-
+    Route::post('/fee/normalize', 'StudentController@normalizeFee');
 //Email
     Route::get('/send', 'StudentController@testMail');
     Route::post('/attendance/send-email', 'AttendanceController@sendEmail');

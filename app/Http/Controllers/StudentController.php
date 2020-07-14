@@ -88,17 +88,17 @@ class StudentController extends Controller
         $this->validate($request, $rules);
 
         $student_id = $request->student_id;
+        return response()->json($this->generateFee($student_id, $request->show_all, true));
+    }
+    protected function generateFee($student_id, $show_all, $show_detail){
         $student = Student::find($student_id);
         $classes = $student->classes;
         
         $acc = Account::where('level_2','131')->first();
         $result = [];
         $id = -1;
-        foreach($classes as $class){            
-            
-        }
+        
         $transactions = Transaction::where('student_id', $student_id)
-                                    // ->where('transactions.class_id', $class->id)
                             ->Select(
                                 'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
                                 'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
@@ -120,6 +120,7 @@ class StudentController extends Controller
             if(!array_key_exists($month, $result)){
                 // echo $month."<br>";
                 $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
+                $result[$month]['count_transaction'] = 1;
                 $result[$month]['id'] = --$id;
                 $result[$month]['parent_id'] = '';                    
                 $tarray = $t->toArray();
@@ -127,7 +128,9 @@ class StudentController extends Controller
                 $tarray['parent_id'] = $id;
                 $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
                 $tarray['time'] = Date('d/m/Y', strtotime($t->time));
-                array_push($result, $tarray);
+                if($show_detail){
+                    array_push($result, $tarray);
+                }                
                 $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
                 $result[$month]['month'] = $month;
                 $result[$month]['content'] = 'Tổng tiền tháng '.$month;
@@ -137,29 +140,70 @@ class StudentController extends Controller
                 $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
                 $tarray = $t->toArray();
                 $tarray['month'] = $month;
+                $result[$month]['count_transaction'] ++ ;
                 $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
                 $tarray['parent_id'] = $result[$month]['id'];
                 $tarray['time'] = Date('d/m/Y', strtotime($t->time));
-                array_push($result, $tarray);
+                if($show_detail){
+                    array_push($result, $tarray);
+                }             
             }
         }
         $neutral = [];
-        if(
-            
-            $request->show_all){
+        if($show_all){
             foreach($result as $r){
                 if($r['amount'] == 0){
                     array_push($neutral, $r['id'] );
                 }
             }
         }
-        $result = array_filter($result, function($v, $k) use ($neutral, $request){
+        $result = array_filter($result, function($v, $k) use ($neutral){
             return (!in_array($v['parent_id'] , $neutral));
         }, ARRAY_FILTER_USE_BOTH);
         
-        return response()->json(array_values($result));
+        return array_values($result);
     }
-    
+    protected function normalizeFee(Request $request){
+        $rules = ['student_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student_id = $request->student_id;
+        $result =$this->generateFee($student_id, false, false);
+        // return response()->json($this->generateFee($student_id, false, false));
+        foreach($result as $key => &$r){
+            if($r['amount'] < 0 && $r['count_transaction'] > 1) {
+                //Tao giao dich can doi 
+                $t['debit'] = Account::where('level_2','131')->first()->id;
+                $t['credit'] = Account::where('level_2', '111')->first()->id;
+                $t['amount'] = -$r['amount'];
+                $t['time'] = date('Y-m-d', strtotime('28-'.$r['month']));
+                $t['student_id'] = $student_id;
+                $t['content'] = 'Chuyển học phí dư có';
+                $t['user'] = auth()->user()->id;
+                Transaction::create($t);
+
+                $dt['debit'] = Account::where('level_2','111')->first()->id;
+                $dt['credit'] = Account::where('level_2', '131')->first()->id;
+                $dt['amount'] = -$r['amount'];
+                if($key == sizeof($result)-1){
+                    $dt['time'] = date('Y-m-d', strtotime("+1 month", strtotime('28-'.$r['month'])));
+                    $result[$key]['amount'] = 0;
+                }else{
+                    $dt['time'] = date('Y-m-d', strtotime('28-'.$result[$key+1]['month']));
+                    $result[$key+1]['amount'] += $r['amount'];
+                    $result[$key]['amount'] = 0;
+                    $result[$key+1]['count_transaction']++;
+                }                
+                $dt['student_id'] = $student_id;
+                $dt['content'] = 'Nhận học phí dư có';
+                $dt['user'] = auth()->user()->id;
+                Transaction::create($dt);
+                
+            }
+        }
+        return response()->json('done');
+
+    }
     protected function importStudent(){
         if (($handle = fopen(public_path()."/hs.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {

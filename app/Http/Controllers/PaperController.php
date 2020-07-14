@@ -479,4 +479,5 @@ class PaperController extends Controller
         return response()->json(200);
         
     }
+    
 }

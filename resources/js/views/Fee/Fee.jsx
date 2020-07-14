@@ -13,6 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { colors } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
+import CachedIcon from '@material-ui/icons/Cached';
 import orange from '@material-ui/core/colors/orange';
 import { format } from 'date-fns'
 import {
@@ -221,6 +222,13 @@ const ListFee = React.memo(props => {
                     text: 'Xem toàn bộ',
                     onClick: (evt) => {setAll(!show_all)},
                 },
+                {                                  
+                    icon: () => <CachedIcon/>,
+                    tooltip: 'Chuẩn hóa học phí',
+                    isFreeAction: true,
+                    text: 'Chuẩn hóa học phí',
+                    onClick: (evt) => {props.normalize()},
+                },
             ]}
         />
     )
@@ -331,7 +339,6 @@ class Fee extends React.Component{
         this.setState({reload : !this.state.reload})
     }
     submitFeeGather = (data) => {
-        console.log(data)
         this.setState({
             open: true,
             selected_fee: data,
@@ -356,6 +363,12 @@ class Fee extends React.Component{
                 this.setState({open: false})
                 this.props.enqueueSnackbar('Đã thu học phí', {variant: 'success'})
                 setTimeout(this.props.history.push('/receipt'), 1000)
+            })
+    }
+    normalize = () => {
+        axios.post(baseUrl + '/fee/normalize', {student_id: this.state.student_id})
+            .then(response => {
+                this.setState({reload : !this.state.reload})
             })
     }
     render(){
@@ -389,6 +402,7 @@ class Fee extends React.Component{
                             <ListFee
                                 submitFeeGather = {this.submitFeeGather}
                                 student_id = {this.state.student_id}
+                                normalize = {this.normalize}
                                 reload = {this.state.reload}
                             />
                         </Grid>
