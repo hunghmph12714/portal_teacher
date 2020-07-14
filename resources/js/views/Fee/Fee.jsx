@@ -331,11 +331,13 @@ class Fee extends React.Component{
         this.setState({reload : !this.state.reload})
     }
     submitFeeGather = (data) => {
+        console.log(data)
         this.setState({
             open: true,
             selected_fee: data,
+            
             selected_amount : data.filter( t => {
-                if(t.id < 0 && t.id != -9999){
+                if(t.id > 0){
                     return t.amount
                 }} ).map(x => x.amount).reduce((acc, tr) => acc + parseInt(tr), 0)
         })

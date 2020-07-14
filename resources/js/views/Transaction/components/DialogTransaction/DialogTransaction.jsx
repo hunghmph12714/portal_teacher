@@ -78,8 +78,8 @@ class DialogTransaction extends React.Component{
 
             })
         this.setState({
-            debit: {label: data.debit_level_2 + ': ' + data.debit_name, value: data.debit_id},
-            credit: {label: data.credit_level_2 + ': '+data.credit_name, value: data.credit_id},
+            debit: {label: data.debit_level_2 + ': ' + data.debit_name, value: data.debit_id, id: data.debit_id},
+            credit: {label: data.credit_level_2 + ': '+data.credit_name, value: data.credit_id, id: data.credit_id},
             content: data.content,
             time: new Date(data.time),
             student: {label: data.sname, value: data.sid},

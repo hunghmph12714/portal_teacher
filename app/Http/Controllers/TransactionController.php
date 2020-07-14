@@ -103,7 +103,32 @@ class TransactionController extends Controller
     protected function editTransaction(Request $request){
         $rules = ['transaction_id' => 'required'];
         $this->validate($request, $rules);
-
+        $t = Transaction::find($request->transaction_id);
+        if($t){
+            $t->credit = $request->credit['id'];
+            $t->debit = $request->debit['id'];
+            $t->amount = $request->amount;
+            $t->time = date('Y-m-d H:i:m', strtotime($request->time));
+            $t->content = ($request->content)?$request->content:NULL;
+            $t->student_id = ($request->student)?$request->student['value']:NULL;
+            $t->class_id = ($request->selected_class) ? $request->selected_class['value']:NULL;
+            $t->session_id = ($request->selected_session) ? $request->selected_session['value']:NULL;
+            $t->user = auth()->user()->id;
+            $t->save();
+            
+            $tags = [];
+            foreach($request->tags as $tag){
+                if(array_key_exists('__isNew__', $tag)){
+                    $tag = Tag::create(['name'=>$tag['value']]);
+                    $t->tags()->attach($tag->id);
+                }
+                else{
+                    $t->tags()->syncWithoutDetaching($tag['value']);
+                }
+            }
+            return response()->json($t);
+        }
+        
         
     }
     public function generate(){
