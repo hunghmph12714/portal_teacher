@@ -24,7 +24,10 @@ class AttendanceController extends Controller
         $sessions = array_column($request->sessions, 'value');        
         $attendances = StudentSession::whereIn('session_id', $sessions)->get();
         $result = [];
-        foreach($attendances as $s){            
+        foreach($attendances as $s){
+            if($s->logs){
+                $s->logs = [];
+            }     
             $result[$s->student_id]['attendance'][] = $s;
             if(sizeof($result[$s->student_id]['attendance']) == 1 ){
                 $result[$s->student_id]['student'] = Student::where('students.id',$s->student_id)
