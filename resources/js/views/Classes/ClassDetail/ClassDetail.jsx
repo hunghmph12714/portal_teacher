@@ -77,7 +77,7 @@ class ClassDetail extends React.Component{
                     <ListSession class_id={this.props.match.params.id}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2}>
-                  <ListStudent class_id={this.props.match.params.id}/>
+                  <ListStudent class_id={this.props.match.params.id} class_name={this.state.selected_class.name}/>
                 </TabPanel>
             </div>
         )

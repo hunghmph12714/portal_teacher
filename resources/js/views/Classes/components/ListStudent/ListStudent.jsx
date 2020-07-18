@@ -14,7 +14,7 @@ import {
   } from "@material-ui/core";
 import MaterialTable from "material-table";
 import Chip from '@material-ui/core/Chip';
-
+import { CsvBuilder } from 'filefy';
 
 const baseUrl = window.Laravel.baseUrl
 const customChip = (color = '#ccc') => ({
@@ -22,10 +22,12 @@ const customChip = (color = '#ccc') => ({
     color: '#000',
     fontSize: '12px',
   })
-
+const exportCsv = (columnList, initialData) => {
+    
+};
 const ListStudent = (props) => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
-    const { class_id } = props
+    const { class_id, class_name } = props
     const [data, setData] = useState([]);
     const [ openDialog, setOpen ] = useState(false);
     const [reload, setReload] = useState(false);
@@ -87,6 +89,17 @@ const ListStudent = (props) => {
                     },
                     filterCellStyle: {
                         paddingLeft: '0px'
+                    },
+                    exportCsv: (c, d) => {
+                        const cols = ['ID','Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','SĐT 2','Email 2','Ngày nhập học','Ngày nghỉ','Trạng thái'];
+                        const data = d.map(dt => [dt.student_id, dt.fullname,dt.dob_format ,dt.pname, dt.pphone,dt.pemail,dt.alt_phone, dt.alt_email, dt.entrance_date_format, dt.drop_date_format, dt.status]);
+                        console.log(data)
+                        const builder = new CsvBuilder('DSHS lớp '+ class_name + '.csv');
+                        builder
+                        .setDelimeter(',')
+                        .setColumns(cols)
+                        .addRows(data)
+                        .exportFile();
                     }
                 }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
