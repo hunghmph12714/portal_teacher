@@ -44,6 +44,7 @@ class DiscountController extends Controller
             $input['percentage'] = $request->percentage ? $request->percentage : NULL;
             $input['amount'] = $request->amount ? $request->amount : NULL;
             $input['status'] = $request->status;
+            $input['max_use'] = $request->max_use;
             // print_r($input);
             $discount = Discount::create($input);
         }else{

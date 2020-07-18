@@ -79,22 +79,7 @@ const Sidebar = props => {
         }
       ]
     },
-    {
-      title: 'Nhận sự',
-      href: '#',
-      icon: <PeopleIcon />,
-      children: [
-        {
-          title: 'Giáo viên',
-          href: '/teachers',
-        },
-        {
-          title: 'Lương tối thiểu',
-          href: '/base-salary',
-        }
-
-      ]
-    },
+    
     {
       title: 'Công tác học sinh',
       href: '#',
@@ -150,6 +135,22 @@ const Sidebar = props => {
       title: 'Tài khoản',
       href: '/account',
       icon: <AssignmentIndIcon />
+    },
+    {
+      title: 'Nhận sự',
+      href: '#',
+      icon: <PeopleIcon />,
+      children: [
+        {
+          title: 'Giáo viên',
+          href: '/teachers',
+        },
+        {
+          title: 'Lương tối thiểu',
+          href: '/base-salary',
+        }
+
+      ]
     },
     {
       title: 'Cài đặt',

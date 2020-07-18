@@ -123,7 +123,8 @@ class SessionController extends Controller
             foreach($fees as $key => $fee){
                 if($fee != 0){
                     $s = Student::find($sa['student']['id']);
-                    if($s){
+                    $sc = StudentClass::where('student_id', $s->id)->where('class_id', $class_id)->first();
+                    if($s && $sc){
                         $t['debit'] = Account::Where('level_2', '131')->first()->id;
                         $t['credit'] = Account::Where('level_2', '3387')->first()->id;
                         $t['amount'] = $fee['amount'];
@@ -134,10 +135,11 @@ class SessionController extends Controller
                         $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
                         Transaction::create($t);
                         //Check Discount of student
-                        $discounts = Discount::where('student_class_id', $s->pivot['id'])
+                        $discounts = Discount::where('student_class_id', $sc->id)
                                             ->where('status', 'active')
                                             ->where('max_use','>',0)
-                                            ->where('expired_at', '>', $t['time'])->get();
+                                            ->where('expired_at', '>', $t['time'])->get()->toArray();
+
                         foreach($discounts as $d){
                             //Check discount available
                             $dt['credit'] = Account::Where('level_2', '131')->first()->id;
