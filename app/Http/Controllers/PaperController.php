@@ -461,20 +461,46 @@ class PaperController extends Controller
         $p['address'] = '';
         // print_r($p);
         $p = Paper::create($p);
-        foreach($request->transactions as $key => $value){
-            if($value['id'] > 0){
-                $t['debit'] = $request->account;
-                $t['credit'] = Account::where('level_2', '131')->first()->id;
-                $t['amount'] = $value['amount'];
-                $t['time'] = date('Y-m-d H:i:m', strtotime('01-'.$value['month']));
-                $t['content'] = 'Cân đối học phí '. $value['month'];
-                $t['student_id'] = $request->student['id'];
-                $t['class_id'] = $value['cid'];
-                $t['session_id'] = NULL;
-                $t['user'] = auth()->user()->id;
-                $t['paper_id'] = $p->id;                
-                Transaction::create($t);
+        $sumOfMonth = array();      
+        $randomClass = '';  
+        foreach($request->transactions as $key => $v){
+            if($v['id'] > 0){
+                $month = $v['month'];
+                $cid = (array_key_exists('cid', $v))?($v['cid'])? $v['cid'] : '-1' :'-1';
+                $sumOfMonth[$month]['total_amount'][] = $v['amount'];
+                if($cid == '-1'){
+                    $sumOfMonth[$month]['other_amount'][] = $v['amount'];
+                }else{
+                    $sumOfMonth[$month]['class'][$cid]['amount'][] = $v['amount'];
+                    $sumOfMonth[$month]['class'][$cid]['debit'] = $request->account;
+                    $sumOfMonth[$month]['class'][$cid]['credit'] = Account::where('level_2', '131')->first()->id;
+                    $sumOfMonth[$month]['class'][$cid]['time'] = date('Y-m-t', strtotime('01-'.$v['month']));
+                    $sumOfMonth[$month]['class'][$cid]['content'] = 'Thu học phí '. $v['month'];
+                    $sumOfMonth[$month]['class'][$cid]['student_id'] = $request->student['id'];
+                    $sumOfMonth[$month]['class'][$cid]['class_id'] = (array_key_exists('cid', $v))?$v['cid']:NULL;
+                    $sumOfMonth[$month]['class'][$cid]['session_id'] = NULL;
+                    $sumOfMonth[$month]['class'][$cid]['user'] = auth()->user()->id;
+                    $sumOfMonth[$month]['class'][$cid]['paper_id'] = $p->id;
+                }
+                
             }
+        }
+        print_r($sumOfMonth);
+        foreach($sumOfMonth as $key => $sum){
+            if(array_sum($sum['total_amount']) > 0){
+                $other_fee = array_key_exists('other_amount', $sum) ? array_sum($sum['other_amount']) : 0;
+                foreach($sum['class'] as $cid => $c){
+                    $c['amount'] = array_sum($c['amount']) + $other_fee;
+                    if($c['amount'] > 0){
+                        Transaction::create($c);
+                        $other_fee = 0;
+                    }
+                    else{
+                        $other_fee = $c['amount'];
+                    }
+                }
+            }
+                    
         }
         return response()->json(200);
         

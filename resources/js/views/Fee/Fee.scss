@@ -44,3 +44,8 @@
 .MuiDialogContent-root{
     z-index: 999;
 }
+tr[level="0"]{
+    td:last-child{
+        font-weight: 600 !important;
+    }
+}

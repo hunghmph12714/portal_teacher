@@ -138,7 +138,7 @@ const NameText = React.memo(props => {
 })
 const ListFee = React.memo(props => {
     const [fees, setFee] = useState([])
-    const [show_all, setAll] = useState(false)
+    const [show_all, setAll] = useState(true)
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
@@ -353,17 +353,25 @@ class Fee extends React.Component{
         this.setState({open: false})
     }
     handleReceiptCreate = () => {
-        axios.post(baseUrl + '/fee/gather', {
-            transactions: this.state.selected_fee,
-            center: this.state.center,
-            name: this.state.name,
-            account: this.state.account, student: {id: this.state.student_id, name: this.state.student_name}
-        })
-            .then(repsonse => {
-                this.setState({open: false})
-                this.props.enqueueSnackbar('Đã thu học phí', {variant: 'success'})
-                setTimeout(this.props.history.push('/receipt'), 1000)
+        if(this.state.selected_amount > 0){
+            axios.post(baseUrl + '/fee/gather', {
+                transactions: this.state.selected_fee,
+                center: this.state.center,
+                name: this.state.name,
+                account: this.state.account, student: {id: this.state.student_id, name: this.state.student_name}
             })
+                .then(repsonse => {
+                    this.setState({open: false})
+                    this.props.enqueueSnackbar('Đã thu học phí', {variant: 'success'})
+                    setTimeout(this.props.history.push('/receipt'), 1000)
+                })
+                .catch(err => {
+                    this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng thử lại', {variant: 'error'})
+                })
+        }
+        else{
+            this.props.enqueueSnackbar('Số tiền thu không thể âm, vui lòng kiểm tra lại', {variant: 'error'})
+        }
     }
     normalize = () => {
         axios.post(baseUrl + '/fee/normalize', {student_id: this.state.student_id})
@@ -440,7 +448,7 @@ class Fee extends React.Component{
                         Hủy
                     </Button>
                     <Button onClick={this.handleReceiptCreate} color="primary">
-                        Tạo phiếu thu
+                        Thu học phí
                     </Button>
                     </DialogActions>
                 </Dialog>
