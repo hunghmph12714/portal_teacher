@@ -38,7 +38,7 @@ class ClassDetail extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            value: 1,
+            value: 2,
             selected_class: {}
         }
     }

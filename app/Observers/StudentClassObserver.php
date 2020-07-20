@@ -117,7 +117,7 @@ class StudentClassObserver
             $student->sessions()->sync($sessions_id);
             $students = Student::where('id', $student->id)->first();
             //Create fee (transaction)
-            // $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+            $this->generateTransactions($sessions, $students,  $studentClass->class_id);
 
         }
         $class = Classes::find($studentClass->class_id);

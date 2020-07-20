@@ -28,7 +28,7 @@ const CustomOption = props => {
                 <Grid container spacing={2} className="search-grid">
                     <Grid item md={6} sm={12}> 
                         <Typography variant="body2" component="p">
-                            <b>Học sinh: </b>{data.s_name}
+                            <b>Học sinh: </b>{data.sid + '-' +data.s_name}
                             <br />
                             Ngày sinh: {data.dob}
                         </Typography>
