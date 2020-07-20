@@ -168,15 +168,19 @@ class StudentController extends Controller
         $this->validate($request, $rules);
 
         $student_id = $request->student_id;
-        $result =$this->generateFee($student_id, false, false);
+        $result = $this->generateFee($student_id, false, false);
         // return response()->json($this->generateFee($student_id, false, false));
+        usort($result, function($a, $b) {
+            return $a['amount'] <=> $b['amount'];
+        });
+        // print_r($result);
         foreach($result as $key => &$r){
             if($r['amount'] < 0 && $r['count_transaction'] > 1) {
                 //Tao giao dich can doi 
                 $t['debit'] = Account::where('level_2','131')->first()->id;
                 $t['credit'] = Account::where('level_2', '111')->first()->id;
                 $t['amount'] = -$r['amount'];
-                $t['time'] = date('Y-m-d', strtotime('28-'.$r['month']));
+                $t['time'] = date('Y-m-t', strtotime('01-'.$r['month']));
                 $t['student_id'] = $student_id;
                 $t['content'] = 'Chuyển học phí dư có';
                 $t['user'] = auth()->user()->id;
@@ -189,16 +193,15 @@ class StudentController extends Controller
                     $dt['time'] = date('Y-m-d', strtotime("+1 month", strtotime('28-'.$r['month'])));
                     $result[$key]['amount'] = 0;
                 }else{
-                    $dt['time'] = date('Y-m-d', strtotime('28-'.$result[$key+1]['month']));
+                    $dt['time'] = date('Y-m-t', strtotime('01-'.$result[$key+1]['month']));
                     $result[$key+1]['amount'] += $r['amount'];
                     $result[$key]['amount'] = 0;
                     $result[$key+1]['count_transaction']++;
-                }                
+                }
                 $dt['student_id'] = $student_id;
                 $dt['content'] = 'Nhận học phí dư có';
                 $dt['user'] = auth()->user()->id;
-                Transaction::create($dt);
-                
+                Transaction::create($dt);                
             }
         }
         return response()->json('done');
@@ -208,7 +211,6 @@ class StudentController extends Controller
         if (($handle = fopen(public_path()."/hs.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
                 $num = count($data);
-               
                 $parent_phone = $this->validPhone($data[4]);
                 if($parent_phone){
                     //Check parent exist 
@@ -253,9 +255,7 @@ class StudentController extends Controller
                         $student['school'] = $data[2];
                         $student['relationship_id'] = 1;
                         Student::create($student);
-                        // echo "<pre>";
-                        // print_r($student);
-                        // echo "</pre>";
+                        
                     }
                 }
             }

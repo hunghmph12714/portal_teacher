@@ -392,7 +392,7 @@ class Fee extends React.Component{
                         </Grid>
                         <Grid item lg={5} sm={12} xs={12}>
                             <ParentSearch
-                                parent_name = {this.state.parent_name}
+                                parent_phone = {this.state.parent_phone}
                                 handleParentChange = {this.handleParentChange}
                             />
                         </Grid>
