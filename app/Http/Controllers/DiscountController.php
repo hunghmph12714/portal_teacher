@@ -92,7 +92,88 @@ class DiscountController extends Controller
         }
 
     }
-
+    protected function applyDiscount2($discount, $student_id){
+        $session = Session::find($session_id);
+        if($session){
+            $discount = Discount::where('class_id', $session->class_id)->whereNull('student_class_id')
+                ->where('active_at','<=',$session->date)->where('expired_at', '>=', $session->date)->get();
+            foreach($discount as $d){
+                $t['debit'] = Account::Where('level_2', '511')->first()->id;
+                $t['credit'] = Account::Where('level_2', '131')->first()->id;
+                $t['amount'] = abs($d->amount);
+                $t['time'] = Date('Y-m-d', strtotime($session->date));
+                $t['student_id'] = $student_id; 
+                $t['class_id'] = $d->class_id;
+                $t['user'] = auth()->user()->id;
+                $t['content'] = $d->content;
+                Transaction::create($t);
+            }
+        }
+    }
+    protected function applyDiscount($discount_id){
+        $discount = Discount::find($discount_id);
+        if($discount){
+            $student_class = StudentClass::find($discount->student_class_id);
+            if($student_class){
+                $acc = Account::where('level_2','131')->first();
+        $result = [];
+        $id = -1;
+        
+        $transactions = Transaction::Where('student_id', $student_id)->where()
+                            ->Select(
+                                'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
+                                'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                                'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                                'students.id as sid', 'students.fullname as sname','students.dob', 
+                                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                                'users.id as uid','users.name as uname'
+                            )
+                            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                            ->leftJoin('students','transactions.student_id','students.id')
+                            ->leftJoin('classes','transactions.class_id','classes.id')
+                            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')
+                            ->get();
+        
+        foreach($transactions as $key => $t){
+            $month = Date('m-Y', strtotime($t->time));                
+            if(!array_key_exists($month, $result)){
+                // echo $month."<br>";
+                $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
+                $result[$month]['count_transaction'] = 1;
+                $result[$month]['id'] = --$id;
+                $result[$month]['parent_id'] = '';                    
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $tarray['parent_id'] = $id;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                if($show_detail){
+                    array_push($result, $tarray);
+                }                
+                $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
+                $result[$month]['month'] = $month;
+                $result[$month]['content'] = 'Tổng tiền tháng '.$month;
+                $result[$month]['cname'] = '';
+            }
+            else{
+                $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $result[$month]['count_transaction'] ++ ;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['parent_id'] = $result[$month]['id'];
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                if($show_detail){
+                    array_push($result, $tarray);
+                }             
+            }
+        }
+                
+            }
+        }
+    }
     protected function createAdjustFee(Request $request){
         $rules = ['code' => 'required'];
         $this->validate($request, $rules);
