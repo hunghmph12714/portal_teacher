@@ -92,212 +92,7 @@ class ViewEntrance extends React.Component{
             selectedEntrance: '',
             loaded: false,
             message: '',
-        }
-    }
-
-    componentDidMount() {      
-      this.getStep();
-      this.getEntrance();
-    }
-    getEntrance = () => {
-      // console.log(this.state.steps)
-      axios.get(baseUrl + "/get-entrance/-1 ")
-        .then(response => {
-          let r = {}
-          r = response.data.map(d => {
-            d.test_answers = (d.test_answers)?d.test_answers.split(','):null
-            return d
-          })
-          this.setState({
-            data: r,
-            loaded: true,
-          })
-        })
-    }
-    getStep = () =>{
-      axios.post(window.Laravel.baseUrl + "/step/get", {type: 'Quy trình đầu vào'})
-        .then(response => {
-            this.setState({
-                steps: response.data
-            })
-        })
-        .catch(err => {
-            console.log('step bug: ' + err)
-        })
-    }
-    handleStep = step => () => {
-      let step_id = this.state.steps[step].id
-      axios.get(baseUrl + '/get-entrance/'+step_id)
-        .then(response => {
-          this.setState({
-            data: response.data,
-          })
-        })
-        .catch(err => {
-          console.log(err.response.data)
-        })
-      this.setState({activeStep : step})
-    };
-    handleOpenEditDialog = (rowData) => {
-      Object.keys(rowData).map(function(key, index) {        
-        if(!rowData[key] && key!='test_answers') rowData[key] = ''
-      });
-      if(typeof rowData.test_answers == 'string'){
-        rowData.test_answers = rowData.test_answers.split(',')
-      }
-    
-      this.setState({
-        open_edit: true,
-        selectedEntrance: rowData
-      })
-      // console.log(rowData)
-    }
-    handleCloseDialogCreate = () => {
-      this.setState({open_edit : false, selectedEntrance : ''})
-    }
-    handleOpenAnswerDialog = (rowData) => {
-      if(typeof rowData.test_answers == 'string'){
-        rowData.test_answers = rowData.test_answers.split(',')
-      }
-      this.setState({answers : rowData.test_answers, open_answers: true})
-    }
-    handleCloseAnswerDialog = () => {
-      this.setState({open_answers : false})
-    }
-    handleDeleteEntrance = (id, rowId) => {
-      console.log(id)
-      axios.post(baseUrl + '/entrance/delete', {id: id})
-        .then(response => { 
-          this.setState(prevState => {
-            const data = [...prevState.data]
-            data.splice(rowId, 1);
-            return {...prevState, data}
-          })
-          this.props.enqueueSnackbar('Xóa thành công ghi danh', {
-            variant: 'success'
-          })
-        })
-        .catch(err => {
-          console.log('Xóa ghi danh bug: '+ err)
-        })
-    }
-    updateTable = ( entrance ) => {
-      let step_id = this.state.steps[this.state.activeStep].id
-      axios.get(baseUrl + '/get-entrance/'+step_id)
-        .then(response => {
-          this.setState({
-            data: response.data,
-          })
-        })
-        .catch(err => {
-          console.log(err.response.data)
-        })
-    }   
-    updateMessage = ( entrance_id, messages ) => {
-      this.setState( prevState => {
-        let data = prevState.data
-        data.map( e => {
-          if(e.eid == entrance_id ){
-            e.message = messages
-          }
-          return e
-        })
-        return {...prevState , data}
-      })
-    }
-    render(){      
-        return(          
-          <React.Fragment>  
-            {!this.state.loaded ? (
-              <LinearProgress  className="loading"/>
-            ): (
-              <React.Fragment> 
-                <div className="root-entrance">
-                  <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
-                    {this.state.steps.map((step, index) => {                  
-                      return (
-                        <Step key={step.name}>
-                          <StepButton
-                            onClick={this.handleStep(index)}
-                            // completed={isStepComplete(index)}
-                          >
-                            {step.name}
-                          </StepButton>
-                        </Step>
-                      );
-                    })}
-                  </Stepper>
-                </div>
-                <div className="root-entrance">
-                  <MaterialTable
-                    title="Danh sách ghi danh"
-                    data={this.state.data}
-                    options={{
-                        pageSize: 10,
-                        pageSizeOptions: [20, 50, 200],
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,
-                        rowStyle: rowData => {
-                          let today = new Date()
-                          if(rowData.test_time){
-                            let test_time = (rowData.test_time) ? rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
-                            if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
-                              return {backgroundColor: yellow[200]}
-                            }
-                          }
-                          
-                          if(rowData.priority >= 8){
-                            return {backgroundColor: colors.orange[300],}
-                          }
-                          if(rowData.priority >= 6){
-                            return {backgroundColor: colors.orange[200],}
-                          }
-                          if(rowData.priority >= 4){
-                            return {backgroundColor: colors.orange[100],}
-                          }
-                          
-                          
-                          return {padding: '0px',}
-                        },
-                        filterCellStyle: {
-                          paddingLeft: '0px'
-                        }
-                    }}
-                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                    actions={[                       
-                        {
-                            icon: () => <AddBoxIcon />,
-                            tooltip: 'Thêm mới ghi danh',
-                            isFreeAction: true,
-                            text: 'Thêm ghi danh',
-                            onClick: (event) => {
-                                this.props.history.push('/entrance/create')
-                            },
-                        },
-                    ]}
-                    localization={{
-                        body: {
-                            emptyDataSourceMessage: 'Không tìm thấy ghi danh'
-                        },
-                        toolbar: {
-                            searchTooltip: 'Tìm kiếm',
-                            searchPlaceholder: 'Tìm kiếm',
-                            nRowsSelected: '{0} hàng được chọn'
-                        },
-                        pagination: {
-                            labelRowsSelect: 'dòng',
-                            labelDisplayedRows: ' {from}-{to} của {count}',
-                            firstTooltip: 'Trang đầu tiên',
-                            previousTooltip: 'Trang trước',
-                            nextTooltip: 'Trang tiếp theo',
-                            lastTooltip: 'Trang cuối cùng'
-                        },
-                        grouping: {
-                          placeholder: 'Kéo tên cột vào đây để nhóm'
-                        }
-                    }}
-                    columns={[
+            columns: [
                       {
                         title: "",
                         field: "action",
@@ -527,7 +322,213 @@ class ViewEntrance extends React.Component{
                       },
                     },
                   
+                    ]
+        }
+    }
+
+    componentDidMount() {      
+      this.getStep();
+      this.getEntrance();
+    }
+    getEntrance = () => {
+      // console.log(this.state.steps)
+      axios.get(baseUrl + "/get-entrance/-1 ")
+        .then(response => {
+          let r = {}
+          r = response.data.map(d => {
+            d.test_answers = (d.test_answers)?d.test_answers.split(','):null
+            return d
+          })
+          this.setState({
+            data: r,
+            loaded: true,
+          })
+        })
+    }
+    getStep = () =>{
+      axios.post(window.Laravel.baseUrl + "/step/get", {type: 'Quy trình đầu vào'})
+        .then(response => {
+            this.setState({
+                steps: response.data
+            })
+        })
+        .catch(err => {
+            console.log('step bug: ' + err)
+        })
+    }
+    handleStep = step => () => {
+      let step_id = this.state.steps[step].id
+      axios.get(baseUrl + '/get-entrance/'+step_id)
+        .then(response => {
+          this.setState({
+            data: response.data,
+          })
+        })
+        .catch(err => {
+          console.log(err.response.data)
+        })
+      this.setState({activeStep : step})
+    };
+    handleOpenEditDialog = (rowData) => {
+      Object.keys(rowData).map(function(key, index) {        
+        if(!rowData[key] && key!='test_answers') rowData[key] = ''
+      });
+      if(typeof rowData.test_answers == 'string'){
+        rowData.test_answers = rowData.test_answers.split(',')
+      }
+    
+      this.setState({
+        open_edit: true,
+        selectedEntrance: rowData
+      })
+      // console.log(rowData)
+    }
+    handleCloseDialogCreate = () => {
+      this.setState({open_edit : false, selectedEntrance : ''})
+    }
+    handleOpenAnswerDialog = (rowData) => {
+      if(typeof rowData.test_answers == 'string'){
+        rowData.test_answers = rowData.test_answers.split(',')
+      }
+      this.setState({answers : rowData.test_answers, open_answers: true})
+    }
+    handleCloseAnswerDialog = () => {
+      this.setState({open_answers : false})
+    }
+    handleDeleteEntrance = (id, rowId) => {
+      console.log(id)
+      axios.post(baseUrl + '/entrance/delete', {id: id})
+        .then(response => { 
+          this.setState(prevState => {
+            const data = [...prevState.data]
+            data.splice(rowId, 1);
+            return {...prevState, data}
+          })
+          this.props.enqueueSnackbar('Xóa thành công ghi danh', {
+            variant: 'success'
+          })
+        })
+        .catch(err => {
+          console.log('Xóa ghi danh bug: '+ err)
+        })
+    }
+    updateTable = ( entrance ) => {
+      let step_id = this.state.steps[this.state.activeStep].id
+      axios.get(baseUrl + '/get-entrance/'+step_id)
+        .then(response => {
+          this.setState({
+            data: response.data,
+          })
+        })
+        .catch(err => {
+          console.log(err.response.data)
+        })
+    }   
+    updateMessage = ( entrance_id, messages ) => {
+      this.setState( prevState => {
+        let data = prevState.data
+        data.map( e => {
+          if(e.eid == entrance_id ){
+            e.message = messages
+          }
+          return e
+        })
+        return {...prevState , data}
+      })
+    }
+    render(){      
+        return(          
+          <React.Fragment>  
+            {!this.state.loaded ? (
+              <LinearProgress  className="loading"/>
+            ): (
+              <React.Fragment> 
+                <div className="root-entrance">
+                  <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
+                    {this.state.steps.map((step, index) => {                  
+                      return (
+                        <Step key={step.name}>
+                          <StepButton
+                            onClick={this.handleStep(index)}
+                            // completed={isStepComplete(index)}
+                          >
+                            {step.name}
+                          </StepButton>
+                        </Step>
+                      );
+                    })}
+                  </Stepper>
+                </div>
+                <div className="root-entrance">
+                  <MaterialTable
+                    title="Danh sách ghi danh"
+                    data={this.state.data}
+                    options={{
+                        pageSize: 10,
+                        pageSizeOptions: [20, 50, 200],
+                        grouping: true,
+                        filtering: true,
+                        exportButton: true,
+                        rowStyle: rowData => {
+                          let today = new Date()
+                          if(rowData.test_time){
+                            let test_time = (rowData.test_time) ? rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
+                            if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
+                              return {backgroundColor: yellow[200]}
+                            }
+                          }
+                          
+                          if(rowData.priority >= 8){
+                            return {backgroundColor: colors.orange[300],}
+                          }
+                          if(rowData.priority >= 6){
+                            return {backgroundColor: colors.orange[200],}
+                          }
+                          if(rowData.priority >= 4){
+                            return {backgroundColor: colors.orange[100],}
+                          }
+                          
+                          
+                          return {padding: '0px',}
+                        },
+                        filterCellStyle: {
+                          paddingLeft: '0px'
+                        }
+                    }}
+                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                    actions={[                       
+                        {
+                            icon: () => <AddBoxIcon />,
+                            tooltip: 'Thêm mới ghi danh',
+                            isFreeAction: true,
+                            text: 'Thêm ghi danh',
+                            onClick: (event) => {
+                                this.props.history.push('/entrance/create')
+                            },
+                        },
                     ]}
+                    localization={{
+                        body: {
+                            emptyDataSourceMessage: 'Không tìm thấy ghi danh'
+                        },
+                        toolbar: {
+                            searchTooltip: 'Tìm kiếm',
+                            searchPlaceholder: 'Tìm kiếm',
+                            nRowsSelected: '{0} hàng được chọn'
+                        },
+                        pagination: {
+                            labelRowsSelect: 'dòng',
+                            labelDisplayedRows: ' {from}-{to} của {count}',
+                            firstTooltip: 'Trang đầu tiên',
+                            previousTooltip: 'Trang trước',
+                            nextTooltip: 'Trang tiếp theo',
+                            lastTooltip: 'Trang cuối cùng'
+                        },
+                        grouping: {
+                          placeholder: 'Kéo tên cột vào đây để nhóm'
+                        }
+                    }}
+                    columns={this.state.columns}
                   detailPanel={rowData => {
                     let messages = (rowData.message)?rowData.message : []
                     let content = ''

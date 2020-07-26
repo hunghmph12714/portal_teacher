@@ -47,6 +47,182 @@ function NumberFormatCustom(props) {
 const ReceiptView = React.memo(props => {
     const {reload, handleOpenCreateDialog, handleOpenEditDialog, handleDeleteReceipt} = props
     const [data, setData] = useState([])
+    const [columns, setColumns] = useState([
+        {
+            title: "",
+            className: "action",
+            field: "action",
+            disableClick: true,
+            sorting: false,
+            filtering: false,
+            headerStyle: {
+                padding: '0px',
+                width: '130px',
+            },
+            cellStyle: {
+                width: '130px',
+                padding: '0px',
+            },
+            render: rowData => (
+                <div style = {{display: 'block'}}>
+                    <Tooltip title="Hạch toán" arrow>
+                        <span>
+                            <IconButton onClick={() => {handleOpenEditDialog(rowData)}} disabled = {rowData.amount == rowData.transactions.map(t => t.amount).reduce((acc, cur) => {return acc+cur} , 0)}>
+                                <PostAddIcon fontSize='inherit' />
+                            </IconButton>
+                        </span>                                
+                    </Tooltip>
+                    <Tooltip title="Chỉnh sửa" arrow>
+                        <IconButton onClick={() => {handleOpenEditDialog(rowData)}}>
+                            <EditIcon fontSize='inherit' />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa phiếu thu" arrow>
+                        <IconButton onClick={() => {
+                            if (window.confirm('Xóa phiếu thu?')) 
+                            handleDeleteReceipt(rowData.id)}
+                        }>
+                        <DeleteIcon fontSize='inherit' />
+                        </IconButton>
+                    </Tooltip>    
+                    <Tooltip title="In phiếu thu" arrow>
+                        <IconButton onClick={() => {
+                            window.open('/paper/print/' + rowData.id, '_blank')
+                        }}>
+                        <PrintIcon fontSize='inherit' />
+                        </IconButton>
+                    </Tooltip>                            
+                </div>
+            )
+        },
+    //Số phiếu thu
+        {
+            title: "ID",
+            field: "receipt_number",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                width: '100px'
+            },
+            cellStyle: {
+                padding: '0px',
+                width: '100px'
+            },
+            render: rowData => {
+                return (
+                    <span>
+                        PT{rowData.receipt_number}
+                    </span>
+                )
+            }
+        },
+    //Thời  gian chứng từ
+        {
+            title: "Chứng từ",
+            field: "created_at",
+            grouping: false,
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                width: '130px',
+            },
+            cellStyle: {
+                padding: '0px',
+                width: '130px',
+            },
+            render: rowData => (<span> {format(new Date(rowData.created_at) , 'd/M/yyyy')} </span>)
+        },
+    //Số tiền  
+        {
+            title: "Số tiền",
+            field: "amount",
+            type: "currency", 
+            grouping: false,
+            headerStyle: {
+                padding: '0px 0px',
+                fontWeight: '600',
+                width: '80px',
+                textAlign: 'right',
+            },
+            cellStyle: {
+                padding: '0px 15px 0px 0px',
+                width: '80px',
+                
+            },
+            render: rowData => {
+                return (                                
+                    <Typography variant="body2" component="p">                                    
+                        <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                    </Typography>
+                )
+            },                            
+            
+        },
+    //Cơ sở
+        {
+            title: "Cơ sở",
+            field: "ctname",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+    // Người nhận
+        {
+            title: "Người nộp",
+            field: "name",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+    // Địa chỉ
+        {
+            title: "Địa chỉ",
+            field: "address",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+    // Lý do
+        {
+            title: "Lý do",
+            field: "description",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+    //Nguoi tạo
+        {
+        title: "Người tạo",
+        field: "uname",
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+            width: '100px',
+            },
+        cellStyle: {
+            padding: '0px',
+            width: '100px',
+            },
+       
+        },
+    
+    ])
     useEffect(() => {
         const fetchData = async() => {
             var r = await axios.get(baseUrl + '/receipt/get')            
@@ -104,182 +280,7 @@ const ReceiptView = React.memo(props => {
                     placeholder: 'Kéo tên cột vào đây để nhóm'
                 }
             }}
-            columns={[
-                {
-                    title: "",
-                    className: "action",
-                    field: "action",
-                    disableClick: true,
-                    sorting: false,
-                    filtering: false,
-                    headerStyle: {
-                        padding: '0px',
-                        width: '130px',
-                    },
-                    cellStyle: {
-                        width: '130px',
-                        padding: '0px',
-                    },
-                    render: rowData => (
-                        <div style = {{display: 'block'}}>
-                            <Tooltip title="Hạch toán" arrow>
-                                <span>
-                                    <IconButton onClick={() => {handleOpenEditDialog(rowData)}} disabled = {rowData.amount == rowData.transactions.map(t => t.amount).reduce((acc, cur) => {return acc+cur} , 0)}>
-                                        <PostAddIcon fontSize='inherit' />
-                                    </IconButton>
-                                </span>                                
-                            </Tooltip>
-                            <Tooltip title="Chỉnh sửa" arrow>
-                                <IconButton onClick={() => {handleOpenEditDialog(rowData)}}>
-                                    <EditIcon fontSize='inherit' />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Xóa phiếu thu" arrow>
-                                <IconButton onClick={() => {
-                                    if (window.confirm('Xóa phiếu thu?')) 
-                                    handleDeleteReceipt(rowData.id)}
-                                }>
-                                <DeleteIcon fontSize='inherit' />
-                                </IconButton>
-                            </Tooltip>    
-                            <Tooltip title="In phiếu thu" arrow>
-                                <IconButton onClick={() => {
-                                    window.open('/paper/print/' + rowData.id, '_blank')
-                                }}>
-                                <PrintIcon fontSize='inherit' />
-                                </IconButton>
-                            </Tooltip>                            
-                        </div>
-                    )
-                },
-            //Số phiếu thu
-                {
-                    title: "ID",
-                    field: "receipt_number",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                        width: '100px'
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                        width: '100px'
-                    },
-                    render: rowData => {
-                        return (
-                            <span>
-                                PT{rowData.receipt_number}
-                            </span>
-                        )
-                    }
-                },
-            //Thời  gian chứng từ
-                {
-                    title: "Chứng từ",
-                    field: "created_at",
-                    grouping: false,
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                        width: '130px',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                        width: '130px',
-                    },
-                    render: rowData => (<span> {format(new Date(rowData.created_at) , 'd/M/yyyy')} </span>)
-                },
-            //Số tiền  
-                {
-                    title: "Số tiền",
-                    field: "amount",
-                    type: "currency", 
-                    grouping: false,
-                    headerStyle: {
-                        padding: '0px 0px',
-                        fontWeight: '600',
-                        width: '80px',
-                        textAlign: 'right',
-                    },
-                    cellStyle: {
-                        padding: '0px 15px 0px 0px',
-                        width: '80px',
-                        
-                    },
-                    render: rowData => {
-                        return (                                
-                            <Typography variant="body2" component="p">                                    
-                                <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
-                            </Typography>
-                        )
-                    },                            
-                    
-                },
-            //Cơ sở
-                {
-                    title: "Cơ sở",
-                    field: "ctname",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                },
-            // Người nhận
-                {
-                    title: "Người nộp",
-                    field: "name",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                },
-            // Địa chỉ
-                {
-                    title: "Địa chỉ",
-                    field: "address",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                },
-            // Lý do
-                {
-                    title: "Lý do",
-                    field: "description",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                    },
-                },
-            //Nguoi tạo
-                {
-                title: "Người tạo",
-                field: "uname",
-                headerStyle: {
-                    padding: '0px',
-                    fontWeight: '600',
-                    width: '100px',
-                    },
-                cellStyle: {
-                    padding: '0px',
-                    width: '100px',
-                    },
-               
-                },
-            
-            ]}
+            columns={columns}
             detailPanel={rowData => {
             return (
                 <MaterialTable 
