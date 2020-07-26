@@ -119,10 +119,11 @@ class StudentClassObserver
             //Create fee (transaction)
             $this->generateTransactions($sessions, $students,  $studentClass->class_id);
 
-        }
-        $class = Classes::find($studentClass->class_id);
-        $class->student_number++;
-        $class->save();
+            $class = Classes::find($studentClass->class_id);
+            $class->student_number++;
+            $class->save();
+        }        
+        
     }
 
     /**
@@ -134,6 +135,20 @@ class StudentClassObserver
     public function updated(StudentClass $studentClass)
     {
         //
+        if($studentClass->getOriginal('status') == 'waiting'){
+            if($studentClass->status == 'active'){
+                $student = Student::find($studentClass->student_id);
+                if($student){
+                    //Create attendance for that student
+                    $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
+                    $sessions_id = array_column($sessions->toArray(), 'id');
+                    $student->sessions()->sync($sessions_id);
+                    $students = Student::where('id', $student->id)->first();
+                    //Create fee (transaction)
+                    $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+                }
+            }
+        }
     }
 
     /**

@@ -197,8 +197,7 @@ class ClassController extends Controller
                 $sc['student_id'] = $student_id;
                 $sc['class_id'] = $request['class_id'];
                 $sc['status'] = $request['status'];
-                $sc['entrance_date'] = date('Y-m-d', strtotime($request['active_date']));
-                
+                $sc['entrance_date'] = date('Y-m-d', strtotime($request['active_date']));                
                 $sc = StudentClass::create($sc);
             }
         }
@@ -291,7 +290,7 @@ class ClassController extends Controller
                 // waiting -> active
                 if($request->status == 'active'){
                     $sc->status = $request->status;
-                    $sc->active_date = date('Y-m-d', strtotime($request->active));
+                    $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
                 }
             }
             $sc->save();
