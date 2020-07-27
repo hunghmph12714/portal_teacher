@@ -230,14 +230,16 @@ class DialogSession extends React.Component {
             [e.target.name] : !this.state[e.target.name]
         })
     }
-    deleteExercice = (doc) => {
+    deleteExercice = (doc, e) => {
+        e.preventDefault();
         let old = this.state.old_exercice
         old = old.filter(e => e != doc)
         this.setState({
             old_exercice: old
         })
     }
-    deleteDocument = (doc) => {
+    deleteDocument = (doc, e) => {
+        e.preventDefault();
         this.setState(prevState => {
             let old_document = prevState.old_document
             old_document = old_document.filter(e => e != doc)
@@ -468,7 +470,7 @@ class DialogSession extends React.Component {
                                                         <span> {doc.replace('/public/document/', '')}</span>
                                                     }
                                                     <a href={doc} download className="a_document">Tải về</a>
-                                                    <a href="#" onClick={() => this.deleteExercice(doc)} className="a_document">Xóa</a>
+                                                    <a href="#" onClick={(e) => this.deleteExercice(doc, e)} className="a_document">Xóa</a>
                                                 </ListItem>
                                                 )
                                             })}
@@ -514,7 +516,7 @@ class DialogSession extends React.Component {
                                                         <span> {doc.replace('/public/document/', '')}</span>
                                                     }
                                                     <a href={doc} download className="a_document">Tải về</a>
-                                                    <a href="#" onClick={() => this.deleteDocument(doc)} className="a_document">Xóa</a>
+                                                    <a href="#" onClick={(e) => this.deleteDocument(doc, e)} className="a_document">Xóa</a>
                                                 </ListItem>
                                                 )
                                             })}
