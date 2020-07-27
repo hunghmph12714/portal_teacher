@@ -139,7 +139,6 @@ class DialogSession extends React.Component {
         //d
         let s = nextProps.session
         this.getRoom(nextProps.session.ctid)
-        console.log(s.document)
         this.setState({
             room : {label: s.rname, value: s.rid},
             center : {label: s.ctname, value: s.ctid},
@@ -232,10 +231,10 @@ class DialogSession extends React.Component {
         })
     }
     deleteExercice = (doc) => {
-        this.setState(prevState => {
-            let old_exercice = prevState.old_exercice            
-            old_exercice = old_exercice.filter(e => e != doc)
-            return {...prevState, old_exercice}
+        let old = this.state.old_exercice
+        old = old.filter(e => e != doc)
+        this.setState({
+            old_exercice: old
         })
     }
     deleteDocument = (doc) => {

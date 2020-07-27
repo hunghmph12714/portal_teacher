@@ -334,7 +334,7 @@ class StudentController extends Controller
     
                 $data['student_session'] = $student_session;
             }
-            $datas[$key]  = $data;
+            $datas[$key]  =  $data;
         }
         $d = array('datas'=>$datas);
         return view('emails.thht', compact('datas'));

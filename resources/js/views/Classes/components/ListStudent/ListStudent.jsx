@@ -40,7 +40,7 @@ const ListStudent = (props) => {
                     let date = new Date(r.dob)
                     r.dob_format = format(date , 'dd/MM/yyyy')      
                     r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
-                    r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''           
+                    r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''
                     const d = r.detail                  
                     const o = r.parent
                     let a = Object.assign(r, o, d)

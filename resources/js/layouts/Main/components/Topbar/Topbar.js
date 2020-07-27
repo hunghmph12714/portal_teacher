@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Topbar.scss'
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -9,6 +10,7 @@ import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import axios from 'axios';
 import auth from '../../../../auth'
+import { StudentSearch } from '../../../../components'
 const useStyles = makeStyles(theme => ({
   root: {
     boxShadow: 'none'
@@ -27,7 +29,10 @@ const Topbar = props => {
   const { className, onSidebarOpen, ...rest } = props;
 
   const classes = useStyles();
+  const [student_name, setStudentName] = useState('');
+  const handleStudentChange = () => {
 
+  }
   const [notifications] = useState([]);
   const signOut = () => {
     axios.post(window.Laravel.baseUrl + "/logout")
@@ -54,6 +59,14 @@ const Topbar = props => {
         </RouterLink>
         <div className={classes.flexGrow} />
         {/* <Hidden mdDown> */}
+          <span className="search-bar">
+            <StudentSearch
+              student_name={student_name}
+              handleStudentChange={handleStudentChange}
+              className='search-bar'
+            />
+          </span>
+          
           <IconButton color="inherit">
             <Badge
               badgeContent={notifications.length}

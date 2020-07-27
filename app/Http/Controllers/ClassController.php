@@ -265,8 +265,8 @@ class ClassController extends Controller
                     }
                     $sc->transfer_date = date('Y-m-d', strtotime($request->transfer_date));
                     $stats = ($sc->stats) ? $sc->stats : [];
-                    array_push($stats, ['transfer_reason' => $request->transfer_reason]);
-                    $sc->stats = $stats;
+                    $stats['transfer_reason'] = $request->transfer_reason;
+                    $sc->stats = $stats; 
                     //Check exsisting studnet in class 
                     $check_sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->transfer_class['value'])->first();
                     if($check_sc){
@@ -292,6 +292,14 @@ class ClassController extends Controller
                     $sc->status = $request->status;
                     $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
                 }
+                if($request->status == 'droped'){
+                    $sc->status = $request->status;
+                    $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
+                    $stats = ($sc->stats) ? $sc->stats : [];                    
+                    $stats['drop_reason'] = $request->drop_reason;                  
+                    $sc->stats = $stats;
+                }
+                
             }
             $sc->save();
         }

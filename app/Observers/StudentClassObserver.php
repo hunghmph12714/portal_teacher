@@ -149,6 +149,9 @@ class StudentClassObserver
                 }
             }
         }
+        if($studentClass->getOriginal('status') == 'active'){
+            
+        }
     }
 
     /**
@@ -182,5 +185,6 @@ class StudentClassObserver
     public function forceDeleted(StudentClass $studentClass)
     {
         //
+        
     }
 }
