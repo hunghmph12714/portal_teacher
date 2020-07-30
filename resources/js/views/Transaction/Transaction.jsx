@@ -21,6 +21,7 @@ import Button from '@material-ui/core/Button';
 import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Chip from '@material-ui/core/Chip';
 
 const customChip = (color) => ({
@@ -136,14 +137,14 @@ const TransactionView = React.memo(props => {
                                 <EditOutlinedIcon fontSize='inherit' />
                                 </IconButton>
                             </Tooltip>
-                            {/* <Tooltip title="Xóa học sinh" arrow>
-                                <IconButton disabled onClick={() => {
-                                if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                    this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                            <Tooltip title="Vô hiệu hóa giao dịch" arrow>
+                                <IconButton onClick={() => {
+                                if (window.confirm('Bạn có muốn vô hiệu hóa giao dịch này ? ')) 
+                                    props.handleDeleteTransaction(rowData.id, rowData.tableData.id)}
                                 }>
                                 <DeleteForeverIcon fontSize='inherit' />
                                 </IconButton>
-                            </Tooltip>                                 */}
+                            </Tooltip>                                
                         </div>
                     )
                 },
@@ -245,7 +246,7 @@ const TransactionView = React.memo(props => {
                             color = '#fdeab5';
                         }
                         return (
-                            <span> >> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
+                            <span> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
                         )
                     }
                 },          
@@ -374,7 +375,16 @@ class Transaction extends React.Component {
             reload: false,
         }
     }
-    
+    handleDeleteTransaction = (id, table_id) => {
+        axios.post(baseUrl + '/transaction/delete', {id: id})
+            .then(response => {
+                this.props.enqueueSnackbar('Xóa thành công', {variant: 'success'})
+                this.setState({ reload: !this.state.reload })
+            })            
+            .catch(err => {
+                
+            })
+    }
     handleOpenCreateDialog = () => {
         this.setState({ open_dialog: true, dialog_type : 'create', selected_transaction: '' })
     }
@@ -397,6 +407,7 @@ class Transaction extends React.Component {
                     reload = {this.state.reload}
                     handleOpenCreate = {this.handleOpenCreateDialog}
                     handleOpenEdit = {this.handleOpenEditDialog}
+                    handleDeleteTransaction = {this.handleDeleteTransaction}
                 />
             </React.Fragment>
         )

@@ -62,7 +62,7 @@ class TransactionController extends Controller
             ->leftJoin('students','transactions.student_id','students.id')
             ->leftJoin('classes','transactions.class_id','classes.id')
             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->take(100)
+            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
             ->get();
         $x = $transactions->toArray();
         foreach($transactions as $key => $t){
@@ -130,6 +130,16 @@ class TransactionController extends Controller
         }
         
         
+    }
+    protected function deleteTransaction(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+        
+        $transaction = Transaction::find($request->id);
+        if($transaction){
+            $transaction->forceDelete();
+        }
+        return response()->json('ok');
     }
     public function generate(){
         for($i = 0 ; $i < 100000 ; $i++){

@@ -201,6 +201,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/transaction/get-id', 'TransactionController@getTransactionbyId');
     Route::get('/transaction/test', 'TransactionController@getTransaction');
     Route::get('/transaction/generate', 'TransactionController@generate');
+    Route::post('/transaction/delete', 'TransactionController@deleteTransaction');
 //Discount
     Route::get('/discount', function(){
         return view('welcome');

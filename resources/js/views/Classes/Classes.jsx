@@ -131,6 +131,30 @@ class Classes extends React.Component{
                 padding: '0px',
             },
           },
+          {
+            title: "Lớp Online",
+            field: "online_id",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            disableClick: true,
+          },
+          {
+            title: "Mật khẩu Online",
+            field: "password",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            disableClick: true,
+          },
           
           ]
         }

@@ -50,8 +50,8 @@ class StudentClassObserver
         foreach($sessions as $s){
             $month = date('m-Y', strtotime($s['date']));
             if(!array_key_exists($month, $fees)){
-                $fees[$month]['amount'] = 0;
-                $fees[$month]['count'] = 0;
+                $fees[$month]['amount'] = $s['fee'];
+                $fees[$month]['count'] = 1;
             }
             else{
                 $fees[$month]['amount'] += $s['fee'];

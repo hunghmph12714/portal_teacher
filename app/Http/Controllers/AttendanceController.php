@@ -35,8 +35,8 @@ class AttendanceController extends Controller
                             'students.fullname as sname', 'dob',
                             'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone','parents.relationship_id as rid',
                             'relationships.name as rname','relationships.color')
-                    ->join('parents', 'students.parent_id','parents.id')
-                    ->join('relationships','parents.relationship_id', 'relationships.id')->first();                
+                    ->leftJoin('parents', 'students.parent_id','parents.id')
+                    ->leftJoin('relationships','parents.relationship_id', 'relationships.id')->first();                
             }
         }
         return response()->json(array_values($result));

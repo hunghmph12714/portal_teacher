@@ -394,7 +394,7 @@ class Attendance extends React.Component{
                     title="Danh sách học sinh"
                     data={this.state.data}
                     options={{
-                        pageSize: 10,
+                        pageSize: 50,
                         selection: true,
                         exportButton: true,
                         rowStyle: rowData => {},

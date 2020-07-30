@@ -316,7 +316,7 @@ class ClassController extends Controller
                         select('classes.id as id','classes.name as name','code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
-                        'config','classes.fee as fee')->
+                        'config','classes.fee as fee','online_id','password')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
         $classes = $result->toArray();
@@ -357,7 +357,7 @@ class ClassController extends Controller
         $result = Classes::where('classes.id', $class->id)->
                         select('classes.id as id','classes.name as name','code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                        'student_number','open_date','classes.active as status',
+                        'student_number','open_date','classes.active as status','online_id','password',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->first()->toArray();
@@ -384,11 +384,13 @@ class ClassController extends Controller
             $class->center_id = $request->center_id;
             $class->course_id = $request->course_id;
             $class->open_date = date('Y-m-d', strtotime($request->open_date));
+            $class->online_id = $request->online_id;
+            $class->password = $request->password;
             $class->save();
             $result = Classes::where('classes.id', $class->id)->
                         select('classes.id as id','classes.name as name','code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                        'student_number','open_date','classes.active as status',
+                        'student_number','open_date','classes.active as status','online_id','password',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->first()->toArray();

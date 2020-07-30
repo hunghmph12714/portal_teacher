@@ -168,6 +168,8 @@ const initState = {
     teachers: [],
     rooms: [],
     config: [],
+    online_id: '',
+    password: '',
     days : [{value: 0, label:'Thứ 2'},{value: 1, label:'Thứ 3'},{value: 2, label:'Thứ 4'},{value: 3, label:'Thứ 5'},{value: 4, label:'Thứ 6'},{value: 5, label:'Thứ 7'},{value: 6, label:'Chủ nhật'},]
 } 
 class DialogCreate extends React.Component {
@@ -208,10 +210,11 @@ class DialogCreate extends React.Component {
                 note: nextProps.class.note,
                 course_selected : course[0],
                 center_selected : center[0],
-                session_per_class: session_per_class    ,
+                session_per_class: session_per_class,
                 class_per_week: class_per_week,
-                config: conf
-                 
+                config: conf,
+                online_id: nextProps.class.online_id,
+                password: nextProps.class.password,                
             })
         }
         if(nextProps.dialogType=='create'){
@@ -339,6 +342,8 @@ class DialogCreate extends React.Component {
             open_date : this.state.open_date.getTime()/1000,
             note : (this.state.note)?this.state.note:'',
             fee : this.state.fee,
+            online_id: this.state.online_id,
+            password: this.state.password,
         }
         axios.post(url, data)
             .then(response => {
@@ -375,6 +380,8 @@ class DialogCreate extends React.Component {
             open_date : this.state.open_date,
             note : (this.state.note)?this.state.note:'',
             fee : this.state.fee,
+            online_id: this.state.online_id,
+            password: this.state.password,
         }
         axios.post(url, data)
             .then(response => {
@@ -614,7 +621,28 @@ class DialogCreate extends React.Component {
                                         value = {this.state.note}
                                         onChange = {this.onChange}
                                     />  
-
+                                    <TextField  label="Link học online" 
+                                        variant="outlined"
+                                        size="medium"
+                                        type="text"
+                                        fullWidth
+                                        helperText="Link học online"
+                                        margin = "dense"
+                                        name = 'online_id'
+                                        value = {this.state.online_id}
+                                        onChange = {this.onChange}
+                                    />
+                                    <TextField  label="Password lớp online" 
+                                        variant="outlined"
+                                        size="medium"
+                                        type="text"
+                                        fullWidth
+                                        helperText="Password lớp online"
+                                        margin = "dense"
+                                        name = 'password'
+                                        value = {this.state.password}
+                                        onChange = {this.onChange}
+                                    />
                                 </Grid>
                             </Grid>
                         <h5>Lịch học theo tuần</h5>
