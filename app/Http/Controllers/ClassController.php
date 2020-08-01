@@ -197,7 +197,8 @@ class ClassController extends Controller
                 $sc['student_id'] = $student_id;
                 $sc['class_id'] = $request['class_id'];
                 $sc['status'] = $request['status'];
-                $sc['entrance_date'] = date('Y-m-d', strtotime($request['active_date']));                
+                $sc['entrance_date'] = date('Y-m-d', strtotime($request['active_date']));
+                            
                 $sc = StudentClass::create($sc);
             }
         }
@@ -300,6 +301,12 @@ class ClassController extends Controller
                     $sc->stats = $stats;
                 }
                 
+            }
+            if($sc->status == 'droped'){
+                $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
+                $stats = ($sc->stats) ? $sc->stats : [];                    
+                $stats['drop_reason'] = $request->drop_reason;                  
+                $sc->stats = $stats;
             }
             $sc->save();
         }

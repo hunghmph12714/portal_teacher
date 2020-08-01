@@ -33,6 +33,7 @@ class SessionController extends Controller
         $from_date = new DateTime($from);
         $to_date = new DateTime($to);
         $interval = DateInterval::createFromDateString('1 day');
+        $to_date = $to_date->modify('+1 day'); 
         $period = new DatePeriod($from_date, $interval, $to_date);
         $class = Classes::find($class_id);
         $sessions = [];
@@ -80,8 +81,9 @@ class SessionController extends Controller
                 if($sc){
                     $at = $sc->entrance_date;
                     $dt = $sc->drop_time;
-                    if($s['date'] >= $at){ //
-                        if(!$dt || $dt > $s['date']){
+                    $tt = $sc->transfer_date;
+                    if($s['date'] >= $at && ($sc->status == 'active' || $sc->status == 'droped')){ //
+                        if(!$dt || $dt >= $s['date'] || $tt >= $s['date']){
                             // echo $dt. ' - '.$s['date'];
                             // echo "<br>";
                             $ss['student_id'] = $st->id;
@@ -89,6 +91,7 @@ class SessionController extends Controller
                             StudentSession::create($ss);
                             array_push($s_a['sessions'], $s);
                         }
+                       
                         
                     }
                 }

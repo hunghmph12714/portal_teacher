@@ -134,7 +134,7 @@ class StudentClassObserver
      */
     public function updated(StudentClass $studentClass)
     {
-        //
+        
         if($studentClass->getOriginal('status') == 'waiting'){
             if($studentClass->status == 'active'){
                 $student = Student::find($studentClass->student_id);
