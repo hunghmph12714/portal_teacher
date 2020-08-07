@@ -31,7 +31,7 @@ class StudentController extends Controller
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('students','parents.id','students.parent_id')
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
-            ->limit(10)->get()->toArray();
+            ->limit(20)->get()->toArray();
             
         }
         else{
@@ -41,8 +41,8 @@ class StudentController extends Controller
                 'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('parents','students.parent_id','parents.id')
-            ->leftJoin('relationships', 'students.relationship_id', 'relationships.id')
-            ->limit(10)->get()->toArray();
+            ->leftJoin('relationships', 'students.relationship_id', 'relationships.id')->orderBy('sid', 'DESC')
+            ->limit(20)->get()->toArray();
         }
         foreach($s as $key=>$student){
             $s[$key]['classes'] = Student::find($student['sid'])->classes;

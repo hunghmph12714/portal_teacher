@@ -177,18 +177,23 @@ class DiscountController extends Controller
     protected function createAdjustFee(Request $request){
         $rules = ['code' => 'required'];
         $this->validate($request, $rules);
-
-        if(array_key_exists('value', $request->code)){
-            $input['class_id'] = $request->code['value'];
+        if($request->amount && $request->percentage){
+            return response()->json('Chọn số tiền hoặc phần trăm', 402);
         }
-        
-        $input['active_at'] = date('Y-m-d', strtotime($request->active_at));
-        $input['expired_at'] = date('Y-m-d', strtotime($request->expired_at));
-        $input['content'] = $request->content;
-        $input['amount'] = $request->amount ? $request->amount : NULL;
-        $input['status'] = 'active';
+        foreach($request->code as $c){
+            if(array_key_exists('value', $c)){
+                $input['class_id'] = $c['value'];
+            }
+            $input['active_at'] = date('Y-m-d', strtotime($request->active_at));
+            $input['expired_at'] = date('Y-m-d', strtotime($request->expired_at));
+            $input['content'] = $request->content;
+            $input['amount'] = $request->amount ? $request->amount : NULL;
+            $input['percentage'] = $request->percentage ? $request->percentage : NULL;            
+            $input['status'] = 'active';
+            $discount = Discount::create($input);
 
-        $discount = Discount::create($input);
+        }       
+
         return response()->json('ok', 200);
     }
     protected function getAdjustFee(){
@@ -202,6 +207,7 @@ class DiscountController extends Controller
         }
         return response()->json($discounts);
     }
+   
     protected function editAdjustFee(Request $request){
         $rules = [
             'did'=>'required',
@@ -214,6 +220,7 @@ class DiscountController extends Controller
             $d->active_at = date('Y-m-d', strtotime($request->active_at));
             $d->expired_at = date('Y-m-d', strtotime($request->expired_at));
             $d->amount = $request->amount;
+            $d->percentage = $request->percentage;
             $d->content = $request->content;
             if(!is_string($request->code)){
                 $d['class_id'] = $request->code['value'];

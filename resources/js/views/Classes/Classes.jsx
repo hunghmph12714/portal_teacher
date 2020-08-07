@@ -92,6 +92,7 @@ class Classes extends React.Component{
               cellStyle: {
                   padding: '0px',
               },             
+              // defaultGroupOrder: 2
           },
           {
               title: "Học phí",
@@ -121,6 +122,34 @@ class Classes extends React.Component{
             },
           },
           {
+            title: "Đã nghỉ",
+            field: "droped_number",
+            type: "number",
+            filtering: false,
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+          },
+          {
+            title: "Đang chờ",
+            field: "waiting_number",
+            type: "number",
+            filtering: false,
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+          },
+          {
             title: "Khai giảng",
             field: "open_date",
             headerStyle: {
@@ -131,30 +160,30 @@ class Classes extends React.Component{
                 padding: '0px',
             },
           },
-          {
-            title: "Lớp Online",
-            field: "online_id",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-            disableClick: true,
-          },
-          {
-            title: "Mật khẩu Online",
-            field: "password",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-            disableClick: true,
-          },
+          // {
+          //   title: "Lớp Online",
+          //   field: "online_id",
+          //   headerStyle: {
+          //       padding: '0px',
+          //       fontWeight: '600',
+          //   },
+          //   cellStyle: {
+          //       padding: '0px',
+          //   },
+          //   disableClick: true,
+          // },
+          // {
+          //   title: "Mật khẩu Online",
+          //   field: "password",
+          //   headerStyle: {
+          //       padding: '0px',
+          //       fontWeight: '600',
+          //   },
+          //   cellStyle: {
+          //       padding: '0px',
+          //   },
+          //   disableClick: true,
+          // },
           
           ]
         }

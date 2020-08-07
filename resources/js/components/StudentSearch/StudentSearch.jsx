@@ -13,7 +13,7 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 const baseUrl = window.Laravel.baseUrl
 
 const wait = 1000;
-const customChip = (color = '#ccc') => ({
+const customChip = (color) => ({
     border: '1px solid ' + color,
     color: color,
     fontSize: '12px',
@@ -39,6 +39,8 @@ const CustomOption = props => {
                             <b>Phụ huynh: </b>{data.p_name}
                         <br />
                             Số điện thoại: {data.p_phone}
+                            <br />
+                           Email: {data.p_email}
                         </Typography>
                     </Grid>                    
                 </Grid>
@@ -46,7 +48,9 @@ const CustomOption = props => {
                     <Grid item md={12} sm={12}>
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
-                                return (<Chip style={customChip('adadc9')} variant="outlined" color="secondary" label={c.code} size="small" />)
+                                
+                                let cl = (c.pivot.status == 'active')? '' : ((c.pivot.status == 'droped') ? '#adadc9' : (c.pivot.status == 'waiting') ? '#b22222' : '#000000')
+                                return (<Chip style={customChip(cl)} variant="outlined" color="secondary" label={c.code} size="small" title={c.pivot.status}/>)
                             })}
                         </Typography>                        
                     </Grid>          

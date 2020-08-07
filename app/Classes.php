@@ -8,7 +8,7 @@ class Classes extends Model
 {
     //
     public $table = 'classes';
-    protected $fillable = ['id','center_id','course_id','code','document','active','config','fee','open_date','name','note','student_number','adjust_fee','online_id','password'];
+    protected $fillable = ['id','center_id','course_id','code','document','active','config','fee','open_date','name','note','student_number','adjust_fee','online_id','password','droped_number','waiting_number','transfer_number'];
     protected $casts = ['adjust_fee' => 'array'];
     public function sessions(){
         return $this->hasMany('App\Session','class_id','id');
@@ -21,6 +21,23 @@ class Classes extends Model
                     ->withTimestamps();
     }
     public function activeStudents(){
-        return $this->belongsToMany('App\Student','student_class','class_id','student_id')->wherePivot('status', 'active')->withPivot('id','status', 'entrance_date','stats');
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+            ->wherePivot('status', 'active')
+            ->withPivot('id','status', 'entrance_date','stats');
+    }
+    public function dropedStudents(){
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+            ->wherePivot('status', 'droped')
+            ->withPivot('id','status', 'entrance_date','stats');
+    }
+    public function waitingStudents(){
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+            ->wherePivot('status', 'waiting')
+            ->withPivot('id','status', 'entrance_date','stats');
+    }
+    public function transferStudents(){
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+            ->wherePivot('status', 'transfer')
+            ->withPivot('id','status', 'entrance_date','stats');
     }
 }

@@ -70,6 +70,7 @@ const ClassSelect = React.memo(props => {
     
     return( 
         <Select
+            isMulti= {props.isMulti}
             key = "class-select"
             value = {props.selected_class}
             name = "selected_class"
@@ -132,8 +133,12 @@ class AdjustFee extends React.Component{
                     field: "code",
                     headerStyle: {
                         fontWeight: '600',
+                        padding: '0px',
+                        width: '25%'
                     },
                     cellStyle: {
+                        width: '25%',
+                        padding: '0px',
                     },
                     render: rowData => {
                         return (
@@ -144,6 +149,7 @@ class AdjustFee extends React.Component{
                             return (
                                 <ClassSelect 
                                     selected_class = {props.value}
+                                    isMulti = {true}
                                     handleChange = {newValue => {props.onChange(newValue)}}
                                     course = {-1}
                                     center = {-1}
@@ -174,6 +180,16 @@ class AdjustFee extends React.Component{
                     }
 
                 },
+                {
+                    title: "%",
+                    field: "percentage",
+                    type: "numeric",
+                    headerStyle: {
+                        fontWeight: '600',
+                    },
+                    cellStyle: {
+                    },
+                },
             // Active date
                 {
                     title: "Hiệu lực",
@@ -181,10 +197,8 @@ class AdjustFee extends React.Component{
                     type: "date",
                     headerStyle: {
                         fontWeight: '600',
-                        width: '10%',
                     },
                     cellStyle: {
-                        width: '10%',
                     },
 
                 },
@@ -195,10 +209,8 @@ class AdjustFee extends React.Component{
                     type: "date",
                     headerStyle: {
                         fontWeight: '600',
-                        width: '10%',
                     },
                     cellStyle: {
-                        width: '10%',
                     }
                 },
                 {
@@ -206,10 +218,8 @@ class AdjustFee extends React.Component{
                     field: "content",
                     headerStyle: {
                         fontWeight: '600',
-                        width: '20%',
                     },
                     cellStyle: {
-                        width: '20%',
                     }
                 },
            
@@ -220,10 +230,8 @@ class AdjustFee extends React.Component{
                     lookup: {'active': 'Khởi tạo', 'deactive': 'Đã tắt','expired': 'Đã áp dụng'},
                     headerStyle: {
                         fontWeight: '600',
-                        width: '10%',
                     },
                     cellStyle: {
-                        width: '10%',
                     },
                     editable: 'never',
 

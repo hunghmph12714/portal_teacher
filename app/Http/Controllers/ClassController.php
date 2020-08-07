@@ -205,7 +205,7 @@ class ClassController extends Controller
         return response()->json('ok');
     }
     protected function editStudentInClass(Request $request){
-        $rules = ['class_id' => 'required', 'student_id'=>'required'];
+        $rules = ['class_id' => 'required', 'student_id'=>'                    '];
         $this->validate($request, $rules);
         //Edit student and parent info
         $student = Student::find($request->student_id);
@@ -256,53 +256,31 @@ class ClassController extends Controller
         //Edit status 
         $sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->class_id)->first();
         if($sc){
+            $sc->status = $request->status;
             $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
-            if($sc->status == 'active'){
-                $sc->status = $request->status;
-                //active -> transfer
-                if($sc->status == 'transfer'){
-                    if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
-                        return response()->json('Vui lòng điền đầy đủ *', 442);
-                    }
-                    $sc->transfer_date = date('Y-m-d', strtotime($request->transfer_date));
-                    $stats = ($sc->stats) ? $sc->stats : [];
-                    $stats['transfer_reason'] = $request->transfer_reason;
-                    $sc->stats = $stats; 
-                    //Check exsisting studnet in class 
-                    $check_sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->transfer_class['value'])->first();
-                    if($check_sc){
-                        return response()->json('Học sinh đã tồn tại trong lớp mới', 442);
-                    }else{
-                        $new_sc['student_id'] = $request->student_id;
-                        $new_sc['class_id'] = $request->transfer_class['value'];
-                        $new_sc['status'] = 'active';
-                        $new_sc['entrance_date'] = date('Y-m-d', strtotime($request->new_active_date));                    
-                        $new_sc = StudentClass::create($new_sc);
-                    }
-                    
+            if($sc->status == 'transfer'){
+                if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
+                    return response()->json('Vui lòng điền đầy đủ *', 442);
                 }
-                // active -> drop
-                if($sc->status == 'droped'){
-                    $sc->status = $request->status;
-                    $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
-                }
-            }
-            if($sc->status == 'waiting'){
-                // waiting -> active
-                if($request->status == 'active'){
-                    $sc->status = $request->status;
-                    $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
-                }
-                if($request->status == 'droped'){
-                    $sc->status = $request->status;
-                    $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
-                    $stats = ($sc->stats) ? $sc->stats : [];                    
-                    $stats['drop_reason'] = $request->drop_reason;                  
-                    $sc->stats = $stats;
+                $sc->transfer_date = date('Y-m-d', strtotime($request->transfer_date));
+                $stats = ($sc->stats) ? $sc->stats : [];
+                $stats['transfer_reason'] = $request->transfer_reason;
+                $sc->stats = $stats; 
+                //Check exsisting studnet in class 
+                $check_sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->transfer_class['value'])->first();
+                if($check_sc){
+                    return response()->json('Học sinh đã tồn tại trong lớp mới', 442);
+                }else{
+                    $new_sc['student_id'] = $request->student_id;
+                    $new_sc['class_id'] = $request->transfer_class['value'];
+                    $new_sc['status'] = 'active';
+                    $new_sc['entrance_date'] = date('Y-m-d', strtotime($request->new_active_date));                    
+                    $new_sc = StudentClass::create($new_sc);
                 }
                 
             }
-            if($sc->status == 'droped'){
+            if($request->status == 'droped'){
+                $sc->status = $request->status;
                 $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
                 $stats = ($sc->stats) ? $sc->stats : [];                    
                 $stats['drop_reason'] = $request->drop_reason;                  
@@ -323,7 +301,7 @@ class ClassController extends Controller
                         select('classes.id as id','classes.name as name','code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
-                        'config','classes.fee as fee','online_id','password')->
+                        'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
         $classes = $result->toArray();
