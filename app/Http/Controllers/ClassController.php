@@ -263,6 +263,7 @@ class ClassController extends Controller
                     return response()->json('Vui lòng điền đầy đủ *', 442);
                 }
                 $sc->transfer_date = date('Y-m-d', strtotime($request->transfer_date));
+                $sc->drop_time = date('Y-m-d', strtotime($request->transfer_date));
                 $stats = ($sc->stats) ? $sc->stats : [];
                 $stats['transfer_reason'] = $request->transfer_reason;
                 $sc->stats = $stats; 

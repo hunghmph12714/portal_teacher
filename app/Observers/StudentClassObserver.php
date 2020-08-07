@@ -180,7 +180,7 @@ class StudentClassObserver
             }
         }
         if($studentClass->getOriginal('status') == 'active'){
-            if($studentClass->status == 'droped'){
+            if($studentClass->status == 'droped' || $studentClass->status == 'transfer'){
                 $sessions = Session::where('class_id', $studentClass->class_id)
                                     ->whereDate('date','>=', $studentClass->drop_time)->get();
                 $sessions_id = array_column($sessions->toArray(), 'id');
@@ -225,7 +225,7 @@ class StudentClassObserver
                     $input['student_id'] = $studentClass->student_id;
                     $input['class_id'] = $studentClass->class_id;
                     $input['user'] = auth()->user()->id;
-                    $input['content'] = 'Hoàn tiền học phí do nghỉ học từ ngày: ' . $s->date;
+                    $input['content'] = 'Hoàn tiền học phí do nghỉ học từ ngày: ' . $studentClass->drop_time;
                     Transaction::create($input);
                 }
             }

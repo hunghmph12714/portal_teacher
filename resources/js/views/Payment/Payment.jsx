@@ -63,6 +63,7 @@ const PaymentView = React.memo(props => {
                 pageSize: 20,
                 grouping: true,
                 filtering: true,
+                pageSizeOptions: [20, 50, 100],
                 exportButton: true,
                 rowStyle: rowData => {                          
                 },
