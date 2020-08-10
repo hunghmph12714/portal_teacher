@@ -288,6 +288,8 @@ class StudentClassObserver
     public function forceDeleted(StudentClass $studentClass)
     {
         //
+        $student = Student::where($studentClass->student_id);
+        $sessions = Session::where('class_id', $studentClass->class_id)->get();
         
     }
 }

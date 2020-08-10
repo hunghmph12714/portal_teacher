@@ -68,6 +68,7 @@ const TransactionView = React.memo(props => {
             data={data}
             options={{
                 pageSize: 20,
+                pageSizeOptions: [20, 50, 100],
                 grouping: true,
                 filtering: true,
                 exportButton: true,

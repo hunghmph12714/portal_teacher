@@ -119,4 +119,15 @@ class AttendanceController extends Controller
             return response()->json(418);
         }
     }
+    public function delete(){
+        $s = StudentSession::all();
+        $i = 0;
+        foreach($s as $ss){
+            $student = Student::find($ss->student_id);
+            $session = Session::find($ss->session_id);
+            if(!$student || !$session){
+                $ss->forceDelete();
+            }
+        }
+    }
 }

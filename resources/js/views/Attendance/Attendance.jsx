@@ -689,24 +689,24 @@ class Attendance extends React.Component{
                 ): ('')}
                 {this.state.selected_session ? (
                     <ScoreForm
-                    open_score = {this.state.open_score}
-                    handleCloseScore = {this.handleCloseScore}
-                    selected_session = {this.state.selected_session}
-                    selected_data = {this.state.selected_data}
-                    onAttendanceChange = {this.onAttendanceChange}
-                    onScoreStudentChange = {this.onScoreStudentChange}
-                    onAttendanceStudentChange = {this.onAttendanceStudentChange}
-                    onScoreStudentChange = {this.onScoreStudentChange}
-                    onMaxScoreChange = {this.onMaxScoreChange}
+                        open_score = {this.state.open_score}
+                        handleCloseScore = {this.handleCloseScore}
+                        selected_session = {this.state.selected_session}
+                        selected_data = {this.state.selected_data}
+                        onAttendanceChange = {this.onAttendanceChange}
+                        onScoreStudentChange = {this.onScoreStudentChange}
+                        onAttendanceStudentChange = {this.onAttendanceStudentChange}
+                        onScoreStudentChange = {this.onScoreStudentChange}
+                        onMaxScoreChange = {this.onMaxScoreChange}
 
-                    onBtvnScoreChange = {this.onBtvnScoreChange}
-                    onBtvnMaxScoreChange = {this.onBtvnMaxScoreChange}
-                    onBtvnCompleteChange = {this.onBtvnCompleteChange}
-                    onCommentChange = {this.onCommentChange}
-                    
-                    onAttendanceNoteStudentChange = {this.onAttendanceNoteStudentChange}
-                    handleSubmitAttendance={this.handleSubmitAttendance}
-                />    
+                        onBtvnScoreChange = {this.onBtvnScoreChange}
+                        onBtvnMaxScoreChange = {this.onBtvnMaxScoreChange}
+                        onBtvnCompleteChange = {this.onBtvnCompleteChange}
+                        onCommentChange = {this.onCommentChange}
+                        
+                        onAttendanceNoteStudentChange = {this.onAttendanceNoteStudentChange}
+                        handleSubmitAttendance={this.handleSubmitAttendance}
+                    />    
                               
                 ): ('')}
                 

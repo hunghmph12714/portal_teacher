@@ -262,3 +262,4 @@ Route::get('/testtime',function(){
     echo date('Y:m:d H:i:m', strtotime('2020-06-15T03:23:20.775Z'));
 });
 // 
+Route::get('/delete-attendance', 'AttendanceController@delete');
