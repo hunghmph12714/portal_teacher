@@ -128,6 +128,10 @@ const Sidebar = props => {
         {
           title: 'Điều chỉnh HP',
           href: '/fee-adjust'
+        },
+        {
+          title: 'Báo cáo tài chính',
+          href : '/report/financial'
         }
       ]
     },

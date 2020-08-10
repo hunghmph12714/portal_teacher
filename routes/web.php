@@ -246,6 +246,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/e', function(){
         return view('emails.thht');
     });
+//Bao cao tai chinh 
+    Route::get('/report/financial', function(){
+        return view('welcome');
+    });
+    Route::get('/report/get-financial', 'ReportController@getFinancial');
     
 });
 // Route::get('/create-use', function(){
