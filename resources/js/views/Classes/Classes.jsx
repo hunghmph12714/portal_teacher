@@ -249,9 +249,9 @@ class Classes extends React.Component{
     handleCreateSession = (from_date, to_date, class_id) => {
       let data = {class_id: class_id, from_date: from_date.getTime()/1000, to_date: to_date.getTime()/1000}
       // console.log(data)
+      this.handleCloseCreateSession()
       axios.post(baseUrl+'/session/create', data)
         .then(response => {
-          this.handleCloseCreateSession()
           this.props.enqueueSnackbar('Thêm thành công '+ response.data+' ca học', { 
             variant: 'success',
           });
