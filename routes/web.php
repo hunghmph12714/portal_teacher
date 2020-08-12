@@ -251,8 +251,10 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::get('/report/get-financial', 'ReportController@getFinancial');
-    
+//Danh sach hoc sinh
+    // Route::get('/student/list', 'ClassController@listStudent');
 });
+//
 // Route::get('/create-use', function(){
 //     return Hash::make('12345Bay');
 // });

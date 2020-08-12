@@ -493,4 +493,19 @@ class ClassController extends Controller
         print_r($schools);
         echo "<pre>";
     }
+    public function listStudent(){
+        $classes = Classes::where('student_number', '>' , 1)->get();
+        $fp = fopen('file.csv', 'w');
+        foreach($classes as $c){
+            $students = $c->activeStudents;
+            foreach($students as $s){
+                $parent = Parents::find($s->parent_id);
+                if($parent){
+                    $result = [$c->code, $parent->email];
+                    fputcsv($fp, $result);
+                }
+                
+            }
+        }
+    }
 }

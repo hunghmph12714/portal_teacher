@@ -219,6 +219,7 @@ const Financial = (props) => {
   return (
     <SpreadSheet
         sheets={sheets}
+        onChange = {setSheets}
       
     />
   )

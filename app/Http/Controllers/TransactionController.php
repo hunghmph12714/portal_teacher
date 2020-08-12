@@ -7,6 +7,9 @@ use App\Account;
 use DB;
 use App\Transaction;
 use App\Tag;
+use App\Student;
+use App\Classes;
+
 class TransactionController extends Controller
 {
     //
@@ -45,11 +48,17 @@ class TransactionController extends Controller
     }
     protected function getTransaction(Request $request){
         $rules = [
-            
+            'page' => 'required',
+            'per_page' => 'required',
         ];
         $this->validate($request, $rules);
-        $result = [];
-        $transactions = Transaction::Select(
+        $offset = $request->page * ($request->per_page);
+        $result = ['data' => []];
+        $transactions = null;
+        if(empty($request->filter)){
+            $result['page'] = $request->page;
+            $result['total'] = Transaction::all()->count();
+            $transactions = Transaction::Select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
@@ -57,26 +66,65 @@ class TransactionController extends Controller
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
                 'users.id as uid','users.name as uname'
             )
-            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
-            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
-            ->leftJoin('students','transactions.student_id','students.id')
-            ->leftJoin('classes','transactions.class_id','classes.id')
-            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
-            ->get();
-        $x = $transactions->toArray();
-        foreach($transactions as $key => $t){
-            $tags = $t->tags()->get();
-            $result[$key] = $x[$key];
-            $result[$key]['tags'] = $tags->toArray();
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->offset($offset)->limit($request->per_page)
+                ->get();
+            
         }
+        else{
+            $result['page'] = $request->page;
+            
+            // print_r($request->filter);
+            foreach($request->filter as $f){
+                $sname = '';
+                if($f['column']['field'] == 'sname'){     
+                    $sname = $f['value'];               
+                                                     
+                }
+                
+                $transactions = Transaction::Select(
+                    'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+                    'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                    'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                    'students.id as sid', 'students.fullname as sname','students.dob', 
+                    'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                    'users.id as uid','users.name as uname'
+                )
+                    ->whereHas('students', function($q) use($sname) {
+                        $q->where('fullname', 'like', '%'.$sname.'%');
+                    })
+                    ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                    ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                    ->leftJoin('students','transactions.student_id','students.id')
+                    ->leftJoin('classes','transactions.class_id','classes.id')
+                    ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                    ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')->offset($offset)->limit($request->per_page)
+                    ->get();
+            }
+        }
+        if($transactions){
+            $x = $transactions->toArray();
+            foreach($transactions as $key => $t){
+                $tags = $t->tags()->get();
+                $result['data'][$key] = $x[$key];
+                $result['data'][$key]['tags'] = $tags->toArray();
+            }
+        }
+        
         return response()->json($result);
+        
+        
     }
     protected function getTransactionbyId(Request $request){
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
 
         $result = [];
+        
         $transactions = Transaction::Where('transactions.id', $request->id)->Select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',

@@ -14,5 +14,8 @@ class Transaction extends Model
     public function tags(){
         return $this->morphToMany('App\Tag', 'taggable');
     }
+    public function students(){
+        return $this->belongsTo('App\Student', 'student_id');
+    }
     
 }
