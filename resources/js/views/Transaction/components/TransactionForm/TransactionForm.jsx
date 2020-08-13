@@ -12,6 +12,8 @@ import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
+
 import Select , { components }  from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import Button from '@material-ui/core/Button';
@@ -162,7 +164,7 @@ const TransactionForm = props => {
                 </Grid>
                 <Grid item xs={12} sm={2}>
                     <FormLabel color="primary">Ngày </FormLabel> <br/>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
                         <KeyboardDatePicker
                             autoOk
                             fullWidth

@@ -13,6 +13,7 @@ import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -366,7 +367,8 @@ class DialogForm extends React.Component {
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
                                         <FormLabel color="primary">Ngày chứng từ</FormLabel>
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                             <KeyboardDatePicker
                                                 autoOk
                                                 fullWidth

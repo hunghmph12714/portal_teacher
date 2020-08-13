@@ -50,7 +50,8 @@ const StudentForm = props => {
                 <Grid container spacing={2}>
                     <Grid item md={6} sm={12}>
                         <div className="date-time">
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                 <KeyboardDatePicker
                                     autoOk
                                     className="input-date"

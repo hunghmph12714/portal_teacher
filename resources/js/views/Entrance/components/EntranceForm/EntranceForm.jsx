@@ -77,7 +77,8 @@ const EntranceForm = props => {
             </Grid>
             <Grid item md={12} lg={3} sm={12} xs={12}>
                 <div className="date-time">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                         <KeyboardDateTimePicker
                             minutesStep= {15}
                             value={state.entrance_date}                            

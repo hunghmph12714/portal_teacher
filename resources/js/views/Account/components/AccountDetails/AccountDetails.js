@@ -149,7 +149,8 @@ class AccountDetails extends React.Component{
                     xs={12}
                   >
                    <div className="date-time">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                       <KeyboardDatePicker
                         autoOk
                         className="input-date"

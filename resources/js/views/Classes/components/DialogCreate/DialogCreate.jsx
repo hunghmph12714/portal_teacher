@@ -595,7 +595,8 @@ class DialogCreate extends React.Component {
                                         onChange = {this.onChange}
                                     />  
                                     <div className="date-time">
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                         <KeyboardDatePicker
                                             autoOk
                                             className="input-date"

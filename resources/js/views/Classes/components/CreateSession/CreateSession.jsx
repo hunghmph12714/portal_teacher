@@ -73,7 +73,8 @@ class CreateSession extends React.Component{
                         /> 
                     </FormGroup>
                     <div className="date-time">
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                         <KeyboardDatePicker
                             autoOk
                             minDate = {(last_session == '') ? null : last_session.setDate(last_session.getDate() + 1)}
@@ -91,7 +92,8 @@ class CreateSession extends React.Component{
                     </div>
                     
                     <div className="date-time">
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                         <KeyboardDatePicker
                             autoOk
                             minDate={this.state.from_date}

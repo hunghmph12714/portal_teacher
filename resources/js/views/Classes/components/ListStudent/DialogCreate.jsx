@@ -304,7 +304,8 @@ class DialogCreate extends React.Component {
                             </Grid>
                             <Grid item md={4} sm={12}> 
                                 <div className="date-time">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                         <KeyboardDatePicker
                                             autoOk
                                             className="input-date input-text"
@@ -321,7 +322,8 @@ class DialogCreate extends React.Component {
                                 {
                                     this.state.status == 'droped'? (
                                         <div className="date-time">
-                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                                 <KeyboardDatePicker
                                                     autoOk
                                                     minDate = {this.state.active_date}
@@ -352,7 +354,8 @@ class DialogCreate extends React.Component {
                                             </Grid>
                                             <Grid item md={6} sm={12}>
                                                 <div className="date-time">
-                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                                         <KeyboardDatePicker
                                                             autoOk
                                                             minDate = {this.state.active_date}
@@ -370,7 +373,8 @@ class DialogCreate extends React.Component {
                                             </Grid>
                                             <Grid item md={6} sm={12}>
                                             <div className="date-time">
-                                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                                         <KeyboardDatePicker
                                                             autoOk
                                                             minDate = {this.state.active_date}

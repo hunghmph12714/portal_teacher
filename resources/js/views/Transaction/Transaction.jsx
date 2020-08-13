@@ -8,6 +8,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import { withSnackbar } from 'notistack'
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+
 import NumberFormat from 'react-number-format';
 import { format, isThisSecond } from 'date-fns'
 import SendIcon from '@material-ui/icons/Send';
@@ -16,6 +17,7 @@ import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
 import Select , { components }  from "react-select";
 import Button from '@material-ui/core/Button';
 import MaterialTable from "material-table";

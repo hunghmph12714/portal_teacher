@@ -7,6 +7,7 @@ import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
 
 const baseUrl = window.Laravel.baseUrl
 
@@ -73,7 +74,8 @@ const EnrollForm = props => {
             </Grid>
             <Grid item md={12} lg={6} sm={12} xs={12}>
                 <div className="date-time">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                         <KeyboardDatePicker
                             autoOk
                             minDate = {new Date()}

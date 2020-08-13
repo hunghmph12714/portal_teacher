@@ -13,6 +13,7 @@ import {
     KeyboardDatePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
 import Select , { components }  from "react-select";
 import Button from '@material-ui/core/Button';
 import MaterialTable from "material-table";

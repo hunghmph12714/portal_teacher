@@ -337,7 +337,8 @@ class DialogSession extends React.Component {
                                     />
                                 </FormControl>                                   
                                 <div className="date-time">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                         <KeyboardDateTimePicker
                                             minutesStep= {15}
                                             value={this.state.from_date}                            
@@ -390,7 +391,8 @@ class DialogSession extends React.Component {
         
                                 </FormControl> 
                                 <div className="date-time">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
                                     <KeyboardDateTimePicker
                                         minutesStep= {15}
                                         value={this.state.to_date}                            
