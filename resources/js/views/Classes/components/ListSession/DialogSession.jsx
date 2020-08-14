@@ -27,6 +27,7 @@ import {
   } from "@material-ui/pickers";
 import  DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import {format, subDays } from 'date-fns';
+import vi from "date-fns/locale/vi";
 
 import NumberFormat from 'react-number-format';
 

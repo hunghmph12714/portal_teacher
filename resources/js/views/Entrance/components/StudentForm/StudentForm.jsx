@@ -4,6 +4,8 @@ import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
