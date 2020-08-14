@@ -4,6 +4,8 @@ import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Select , { components }  from "react-select";
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 import {DropzoneArea} from 'material-ui-dropzone'
 const baseUrl = window.Laravel.baseUrl
 

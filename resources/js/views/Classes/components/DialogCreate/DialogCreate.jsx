@@ -18,6 +18,8 @@ import {
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
 import  DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 import {format, subDays } from 'date-fns';
 
 import NumberFormat from 'react-number-format';

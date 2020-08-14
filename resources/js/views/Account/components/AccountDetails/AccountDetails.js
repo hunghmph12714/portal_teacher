@@ -14,6 +14,8 @@ import {
   TextField
 } from '@material-ui/core';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 import Icofont from "react-icofont";
 import {
   KeyboardTimePicker,

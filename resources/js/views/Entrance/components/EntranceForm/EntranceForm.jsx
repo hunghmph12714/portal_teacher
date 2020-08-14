@@ -3,6 +3,8 @@ import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Select , { components }  from "react-select";
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 const baseUrl = window.Laravel.baseUrl
 
 import {
@@ -77,7 +79,7 @@ const EntranceForm = props => {
             </Grid>
             <Grid item md={12} lg={3} sm={12} xs={12}>
                 <div className="date-time">
-                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
 
                         <KeyboardDateTimePicker
                             minutesStep= {15}

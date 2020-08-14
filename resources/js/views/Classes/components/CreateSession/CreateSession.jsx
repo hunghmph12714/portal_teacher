@@ -19,6 +19,8 @@ import {
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
 import  DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+
 const baseUrl = window.Laravel.baseUrl
 class CreateSession extends React.Component{
     constructor(props){
