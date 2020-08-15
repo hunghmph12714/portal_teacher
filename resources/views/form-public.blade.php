@@ -113,7 +113,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
             <div class="form-row">                
                 <div class="form-group col-md-3">
                 <label for="center">Cơ sở</label>
-                    <select id="center" class="form-control" name="center" required>
+                    <Select className = "select-box" id="center" class="form-control" name="center" required>
                         <option value="" hidden selected>Chọn cơ sở đăng ký</option>
                         @foreach($centers as $key => $value)
                             <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
@@ -122,7 +122,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
                 </div>
                 <div class="form-group col-md-3">
                     <label for="grade">Chọn khối</label>
-                    <select id="grade" class="form-control" name="grade" required>
+                    <Select className = "select-box" id="grade" class="form-control" name="grade" required>
                         <option value=""  hidden selected>Chọn khối lớp</option>
 
                         <option value="3">Khối 3</option>

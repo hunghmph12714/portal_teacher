@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import './TransactionForm.scss'
 import axios from 'axios'
 import { Grid, TextField, FormLabel, Paper   } from '@material-ui/core';
 import { AccountSearch } from '../../components';
@@ -67,7 +68,7 @@ const ClassSelect = React.memo(props => {
     }, [student])
     
     return( 
-        <Select
+        <Select className = "select-box"
             key = "class-select"
             value = {props.selected_class}
             name = "selected_class"
@@ -104,7 +105,7 @@ const SessionDateSelect = React.memo(props => {
     
     return( 
         <div className = "select-input">
-            <Select                
+            <Select className = "select-box"                
                 key = "session-select"                
                 value = {props.selected_session}
                 name = "selected_session"
@@ -147,7 +148,7 @@ const TransactionForm = props => {
     handleAmountChange, handleContentChange} = props
     return(
         <React.Fragment>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className="account-select">
                 <Grid item xs={12} sm={4}>
                     <FormLabel color="primary">Tài khoản nợ</FormLabel>
                     <AccountSearch

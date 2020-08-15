@@ -69,7 +69,8 @@ const ClassSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select
+        <Select className = "select-box"
+            className="select-box"
             isMulti= {props.isMulti}
             key = "class-select"
             value = {props.selected_class}

@@ -89,7 +89,7 @@ const StudentForm = props => {
                     name="student_school"
                     value={state.student_school}
                     formatCreateLabel={promptTextCreator} 
-                    className="input-text"    
+                    className="select-box"    
                 />
 
                 <TextField  label="Lớp học"  

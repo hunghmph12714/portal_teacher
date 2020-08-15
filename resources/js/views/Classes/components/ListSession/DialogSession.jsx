@@ -77,8 +77,8 @@ const CenterSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select
-            className="select-box-1"
+        <Select className = "select-box"
+            className="select-box"
             key = "center-select"
             value = {props.center}
             name = "center"
@@ -101,8 +101,8 @@ const TeacherSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select
-            className="select-box-1"
+        <Select className = "select-box"
+            className="select-box"
             key = "center-select"
             value = {props.teacher}
             name = "teacher"
@@ -383,7 +383,7 @@ class DialogSession extends React.Component {
                                 lg={6}
                             >
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <Select
+                                    <Select className = "select-box"
                                         value={this.state.room}
                                         onChange={this.handleRoomChange}
                                         options={this.state.rooms}

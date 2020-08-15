@@ -99,13 +99,16 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/class/:id', function(){
         return view('welcome');
     });
+
+    Route::get('/class/report', 'ClassController@getReport');
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');
     Route::post('/class/find', 'ClassController@findClass');
     Route::get('/class/getbyid/{class_id}', 'ClassController@getClassById');
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
-
+    
+    
     //Điều chỉnh học phí
     Route::get('/fee-adjust', function(){
         return view('welcome');

@@ -11,6 +11,9 @@ use App\Schools;
 use App\Student;
 use App\Parents;
 use App\StudentClass;
+use App\Transaction;
+use App\Account;
+use App\Tag;
 use App\StudentSession;
 use Illuminate\Http\Request;
 
@@ -507,5 +510,65 @@ class ClassController extends Controller
                 
             }
         }
+    }
+    
+    protected function getReport(){
+        $class_id = 11;
+        $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
+        $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
+        $class = Classes::find($class_id);
+        $result = [];
+        if($class){  
+            //session
+            $sessions = Session::whereBetween('date',[$from, $to])->where('class_id', $class_id)->get();
+            $students = $class->students;
+            foreach($students as $s){
+                $parent = Parents::find($s->parent_id);
+                $r['fullname'] = $s->fullname;
+                $r['pname'] = $parent->fullname;
+                $r['dob'] = date('d-m-Y', strtotime($s->dob));
+                $r['phone'] = $parent->phone; $r['email'] = $parent->email; 
+
+                $transactions = Transaction::where('class_id', $class_id)->where('student_id', $s->id)->whereBetween('time',[$from, $to])->get();
+                $r['hp'] = 0;
+                $r['dd'] = 0;
+                $r['no'] = 0;
+                $r['gc'] = 0;
+                foreach($transactions as $t){
+                    //hp 
+                    $acc_no = Account::where('level_2', '131')->first()->id;
+                    $dtcth = Account::where('level_2','3387')->first()->id;
+                    $dt = Account::where('level_2', '511')->first()->id;
+                    
+                    // print_r($t->debit);
+                    if($t->debit == $acc_no){
+                        $r['hp'] += $t->amount;
+                    }
+                    if(($t->debit == $dtcth || $t->debit == $dt) && $t->credit == $acc_no){
+                        $r['hp'] -= $t->amount;
+                    }
+                    //DD
+                    $acc = Account::where('type','equity')->get('id')->toArray();
+                    
+                    if(in_array($t->debit, array_column($acc, 'id')) && $t->credit == $acc_no){
+                        $r['dd'] += $t->amount;
+                    }
+                    //giữ chỗ
+                    $tag = Tag::where('name', 'Giữ chỗ')->first()->id;
+                    $t_tag = $t->tags->toArray();
+                    if($t_tag){
+                        foreach($t_tag as $tt){
+                            if($tt['id'] == $tag){
+                                $r['gc'] += $t->amount;
+                            }
+                        }
+                    }
+                }
+                $r['attendance'] = $s->sessions;
+                $r['no'] = $r['hp'] - $r['dd'] + $r['gc'];
+                $result[] = $r;
+            }
+        }
+        return response()->json($result);
     }
 }

@@ -66,7 +66,7 @@ const MinSalarySelect = React.memo(props => {
     }, [])    
     return(        
         <div className = "select-input">
-            <Select                
+            <Select className = "select-box"                
                 key = "session-select"
                 isMulti
                 value = {props.min_salary}

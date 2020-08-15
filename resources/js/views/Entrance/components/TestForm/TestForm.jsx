@@ -28,7 +28,7 @@ const UserSelect = React.memo(props => {
     // }, [])
     
     return( 
-        <Select
+        <Select className = "select-box"
             key = "user-select"
             value = {props.test_user}
             name = "test_user"

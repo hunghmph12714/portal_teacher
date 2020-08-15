@@ -108,7 +108,7 @@ const DefaultConfig = React.memo( props => {
                         </Grid>
                         <Grid item lg={3} md={12}>
                             <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select
+                                <Select className = "select-box"
                                     value={props.config[current_node].teacher}
                                     onChange={props.onChangeTeacher(current_node)}
                                     options={props.teachers}
@@ -119,7 +119,7 @@ const DefaultConfig = React.memo( props => {
                         </Grid>
                         <Grid item lg={3} md={12}>
                             <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select
+                                <Select className = "select-box"
                                     value={props.config[current_node].room}
                                     onChange={props.onChangeRoom(current_node)}
                                     options={props.rooms}
@@ -137,7 +137,7 @@ const DefaultConfig = React.memo( props => {
                     <Grid container spacing={4} key = {'class_'+i}>
                         <Grid item md={12} lg={3}>
                             <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select
+                                <Select className = "select-box"
                                     value={props.config[i*props.session_per_class].date}
                                     onChange={props.onChangeDay(i)}
                                     options={props.days}
@@ -489,7 +489,8 @@ class DialogCreate extends React.Component {
                                     lg={6}
                                 >
                                     <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                        <Select
+                                        <Select className = "select-box"
+                                            className="select-box"
                                             value={this.state.center_selected}
                                             onChange={this.handleCenterChange}
                                             options={this.state.centers}
@@ -576,7 +577,7 @@ class DialogCreate extends React.Component {
                                     lg={6}
                                 >
                                     <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                        <Select
+                                        <Select className = "select-box"
                                             value={this.state.course_selected}
                                             onChange={this.handleCourseChange}
                                             options={this.state.courses}

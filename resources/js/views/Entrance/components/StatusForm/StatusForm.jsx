@@ -26,7 +26,7 @@ const StepSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select
+        <Select className = "select-box"
             className= "select-box"
             key = "step-select"
             value = {props.entrance_step}
@@ -51,7 +51,7 @@ const StatusSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select
+        <Select className = "select-box"
             key = "status-select"
             value = {props.entrance_status}
             name = "entrance_status"

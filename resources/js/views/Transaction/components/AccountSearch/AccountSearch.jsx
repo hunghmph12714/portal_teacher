@@ -84,7 +84,7 @@ const AccountSearch = props => {
             onChange = {handleAccountChange}
             formatCreateLabel = {promptTextCreator}
             isValidNewOption = {checkValidCreate}
-            className="input-text"
+            className="select-box-account"
         />
     )
 }

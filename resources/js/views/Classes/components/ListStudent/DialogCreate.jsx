@@ -288,9 +288,9 @@ class DialogCreate extends React.Component {
                         <Grid container spacing={3}>
                             <Grid item md={4} sm={12}>
                                 <FormControl variant="outlined" size="small" fullWidth className="input-text">
-                                    <InputLabel className="input-text">Trạng thái</InputLabel>
-                                    <Select
-                                        className="input-text"
+                                    <InputLabel className="select-box">Trạng thái</InputLabel>
+                                    <Select className = "select-box"
+                                        className="select-box"
                                         name="status"
                                         value={this.state.status}
                                         onChange={this.onChange}

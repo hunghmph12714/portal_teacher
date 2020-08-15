@@ -67,7 +67,7 @@ const RelationshipOptions = React.memo(props => {
     }, [])
     
     return( 
-        <Select
+        <Select className = "select-box"
             className="relationship-select"
             value = {props.selected_relationship}
             name = "selected_relationship"

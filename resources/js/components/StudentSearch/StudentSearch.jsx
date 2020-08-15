@@ -97,7 +97,7 @@ const StudentSearch = props => {
             onChange = {handleStudentChange}
             formatCreateLabel = {promptTextCreator}
             isValidNewOption = {checkValidCreate}
-            className="input-text"
+            className="select-box"
         />
     )
 }

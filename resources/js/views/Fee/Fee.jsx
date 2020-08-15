@@ -74,7 +74,7 @@ const CenterSelect = React.memo(props => {
         <FormControl variant="outlined" size="small" className="select-box"  
         fullWidth>
             <InputLabel>Cơ sở</InputLabel>
-            <Select
+            <Select className = "select-box-margin"
                 id="select-outlined"
                 value={props.receipt_center}
                 name="receipt_center"
@@ -107,7 +107,7 @@ const AccountSelect = React.memo(props => {
             size="small"
             fullWidth>
             <InputLabel id="demo-simple-select-outlined-label">Phương thức thanh toán</InputLabel>
-            <Select
+            <Select className = "select-box-margin"
                 id="select-outlined-2"
                 name="account"
                 value={props.account}
@@ -125,7 +125,7 @@ const NameText = React.memo(props => {
 
     return (
         <TextField
-            className="select-box"
+            className="select-box-margin"
             variant="outlined"
             label="Tên người nộp"
             value={props.name}
