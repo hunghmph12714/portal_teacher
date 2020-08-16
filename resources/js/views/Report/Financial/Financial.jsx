@@ -143,19 +143,19 @@ const NameText = React.memo(props => {
 
 const Financial = (props) => {
   const [sheets, setSheets] = useState([{name: 'Sheet 1',
-  cells: {
-      2: {
-          1: {text: 'Khối',bold: true},
-          2: {text: 'Lớp',bold: true},
-          3: {text: 'Cần đóng T8', bold:true},
-          4: {text: 'Đã đóng T8', bold:true},
-          5: {text: 'Còn nợ T8', bold:true},
-          6: {text: 'Cần đóng T9', bold:true},
-          7: {text: 'Đã đóng T9', bold:true},
-          8: {text: 'Nợ T9', bold:true},
-      },
-  },
-  id: 1}])
+    cells: {
+        2: {
+            1: {text: 'Khối',bold: true},
+            2: {text: 'Lớp',bold: true},
+            3: {text: 'Cần đóng T8', bold:true},
+            4: {text: 'Đã đóng T8', bold:true},
+            5: {text: 'Còn nợ T8', bold:true},
+            6: {text: 'Cần đóng T9', bold:true},
+            7: {text: 'Đã đóng T9', bold:true},
+            8: {text: 'Nợ T9', bold:true},
+        },
+    },
+    id: 1}])
   useEffect(() => {
     async function fetchJSON () {
       const resource = await axios.get(baseUrl + '/report/get-financial')
@@ -215,9 +215,9 @@ const Financial = (props) => {
     }
     fetchJSON()
   }, [])
-  console.log(sheets)
   return (
     <SpreadSheet
+        className = "sheet"
         sheets={sheets}
         onChange = {setSheets}
       

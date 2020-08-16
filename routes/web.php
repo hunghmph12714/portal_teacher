@@ -100,7 +100,7 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
 
-    Route::get('/class/report', 'ClassController@getReport');
+    Route::get('/class/report/{class_id}', 'ClassController@getReport');
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');
     Route::post('/class/find', 'ClassController@findClass');

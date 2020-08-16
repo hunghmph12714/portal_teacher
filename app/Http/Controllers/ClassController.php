@@ -512,15 +512,15 @@ class ClassController extends Controller
         }
     }
     
-    protected function getReport(){
-        $class_id = 11;
+    protected function getReport($class_id){
         $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
         $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
         $class = Classes::find($class_id);
+        $sessions = Session::whereBetween('date',[$from, $to])->where('class_id', $class_id)->get();
         $result = [];
         if($class){  
             //session
-            $sessions = Session::whereBetween('date',[$from, $to])->where('class_id', $class_id)->get();
+            
             $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
@@ -564,11 +564,46 @@ class ClassController extends Controller
                         }
                     }
                 }
-                $r['attendance'] = $s->sessions;
+                $r['attendance'] = [];
                 $r['no'] = $r['hp'] - $r['dd'] + $r['gc'];
+
+                //Attendance
+                foreach($sessions as $ss){
+                    $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
+                    if($attendance){
+                        switch ($attendance->attendance) {
+                            case 'present':
+                                # code...
+                                $r['attendance'][] = 'x';
+                                break;                            
+                            case 'late':
+                                # code...
+                                $r['attendance'][] = 'x';
+                                break;                            
+                            case 'absence':
+                                # code...
+                                $r['attendance'][] = 'p';
+                                break;                            
+                            case 'n_absence':
+                                # code...
+                                $r['attendance'][] = 'kp';
+                                break;                            
+                            case 'holding':
+                                # code...
+                                $r['attendance'][] = '-';
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }                        
+                    }
+                    else{
+                        $r['attendance'][] = '-';
+                    }
+                }
                 $result[] = $r;
             }
         }
-        return response()->json($result);
+        return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
     }
 }

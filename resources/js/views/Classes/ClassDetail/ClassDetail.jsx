@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { ListSession, ListStudent } from '../components';
+import { ListSession, ListStudent, ListAttendance } from '../components';
 const baseUrl = window.Laravel.baseUrl
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -71,7 +71,7 @@ class ClassDetail extends React.Component{
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                    Item One
+                  <ListAttendance class_id={this.props.match.params.id}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                     <ListSession class_id={this.props.match.params.id}/>
