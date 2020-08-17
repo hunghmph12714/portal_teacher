@@ -48,14 +48,14 @@ const ListAttendance = (props) => {
             id: 1,
             
             filterViews: [
-            {
-                bounds: {
-                top: 1,
-                bottom: students.length + 1,
-                left: 1,
-                right: 7+sessions.length,
+                {
+                    bounds: {
+                    top: 1,
+                    bottom: students.length + 1,
+                    left: 1,
+                    right: 7+sessions.length,
+                    }
                 }
-            }
             ]
         }
         
@@ -91,7 +91,6 @@ const ListAttendance = (props) => {
         className = "sheet"
         sheets={sheets}
         onChange = {setSheets}
-      
     />
   )
 }
