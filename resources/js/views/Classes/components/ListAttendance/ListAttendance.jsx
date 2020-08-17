@@ -23,13 +23,7 @@ const ListAttendance = (props) => {
     const [sheets, setSheets] = useState([{name: 'Sheet 1',
     cells: {
         1: {
-            1: {text: 'Tên học sinh',bold: true},
-            2: {text: 'Ngày sinh',bold: true},
-            3: {text: 'Email', bold:true},
-            4: {text: 'Điện thoại', bold:true},
-            5: {text: 'Học phí', bold:true},
-            6: {text: 'Đã đóng', bold:true},
-            7: {text: 'Còn nợ', bold:true},            
+            1: {}            
         },
     },
     id: 1}])
