@@ -84,6 +84,7 @@ const ListAttendance = (props) => {
         sheet.cells[2 + students.length][5] = { text: '=SUM(E2:E'+(students.length+1) +')',datatype: 'number', format: '#,##0'}
         setSheets([sheet])
     }
+    
     fetchJSON()
   }, [])
   return (

@@ -12,5 +12,8 @@ class Session extends Model
     public function students(){
         return $this->belongsToMany('App\Student', 'student_session', 'session_id', 'student_id');
     }
+    public function transactions(){
+        return $this->belongsToMany('App\Transaction', 'transaction_sessions', 'session_id', 'transaction_id');
+    }
     
 }//s

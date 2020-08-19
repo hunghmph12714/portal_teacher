@@ -69,7 +69,6 @@ class SessionController extends Controller
     }
     public function generateAttendances($sessions, $students){
         $student_attendance = [];
-
         foreach($students as $st){
             $s_a['student'] = $st->toArray();
             $s_a['sessions'] = [];
@@ -91,8 +90,6 @@ class SessionController extends Controller
                             StudentSession::create($ss);
                             array_push($s_a['sessions'], $s);
                         }
-                       
-                        
                     }
                 }
             }
@@ -114,10 +111,12 @@ class SessionController extends Controller
                 if(!array_key_exists($month, $fees)){
                     $fees[$month]['amount'] = $s['fee'];
                     $fees[$month]['count'] = 1;
+                    $fees[$month]['session_id'][] = $s['id'];
                 }
                 else{
                     $fees[$month]['amount'] += $s['fee'];
                     $fees[$month]['count']++;
+                    $fees[$month]['session_id'][] = $s['id'];
                 }
                 $fee_per_session = $s['fee'];
                 // Kiểm tra có điều chỉnh học phí tại ca học này không ? 
@@ -159,7 +158,9 @@ class SessionController extends Controller
                         $t['class_id'] = $class_id;
                         $t['user'] = auth()->user()->id;
                         $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
-                        Transaction::create($t);
+                        $created_transaction = Transaction::create($t);
+                        $created_transaction->tags()->syncWithoutDetaching([7]);
+                        $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
                         //Apply adjust 
                         foreach($fee['adjust'] as $a => $adjust){
                             $total_adjust += $adjust['amount'];
@@ -177,7 +178,9 @@ class SessionController extends Controller
                             $ta['class_id'] = $class_id;
                             $ta['user'] = auth()->user()->id;
                             $ta['content'] = $adjust['content'];
-                            Transaction::create($ta);
+                            $created_transaction = Transaction::create($ta);
+                            $created_transaction->tags()->syncWithoutDetaching([8]);
+                            $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
                         }
                         //Check Discount of student
                         $discounts = Discount::where('student_class_id', $sc->id)
@@ -204,12 +207,48 @@ class SessionController extends Controller
                                 $discount->max_use= $discount->max_use - 1;
                                 $discount->save();
                             }
-                            Transaction::create($dt);
+                            $created_transaction = Transaction::create($dt);
+                            $created_transaction->tags()->syncWithoutDetaching([9]);
+                            $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
                         }
-                    } 
+                    }
                 }
             }
         }
+    }
+    protected function reGenerateFee(){
+        $classes = Classes::where('student_number', '>', 0)->get();
+        foreach($classes as $c){
+            // $sessions = Session::where('class_id', $c->id)->whereBetween()
+            $students = $c->students;
+            foreach($students as $s){
+                $result = [];
+                $entrance_date = strtotime($s->detail['entrance_date']);
+                $first_date = strtotime('01-08-2020');
+                $from = date('Y-m-d', ($entrance_date > $first_date) ? $entrance_date : $first_date);
+                
+                if($s->detail['status'] == 'active'){
+                    $to = date('Y-m-d', strtotime('30-09-2020'));
+                }
+                if($s->detail['status'] == 'waiting'){
+                    continue;
+                }
+                if($s->detail['status'] == 'droped' || $s->detail['status'] == 'transfer'){
+                    $to = date('Y-m-d', strtotime($s->detail['drop_time']));
+                }
+                if($s->detail['status'] == 'retain') continue;
+                $sessions = Session::where('class_id', $c->id)->whereBetween('date', [$from, $to])->get();
+                $sa['student'] = $s->toArray();
+                $sa['sessions'] = $sessions;
+                $result[] = $sa;
+
+                $this->generateTransactions($c->id, $result);
+                // print_r($sessions->toArray());
+                // echo "<pre>";
+            }
+        }
+        // $transactions = Transaction::where('content', 'like', '%Điều chỉnh học%')->orWhere('content','like','%Học phí lớp%')
+        //     ->orWhere('content','like','%Giảm học phí ONLINE%')->orWhere('content','like','%HỖ TRỢ%')->orWhere('content','like','%Miễn giảm học phí%')->forceDelete();
     }
     protected function getSession(Request $request){
         $rules = [

@@ -17,5 +17,9 @@ class Transaction extends Model
     public function students(){
         return $this->belongsTo('App\Student', 'student_id');
     }
+    public function sessions(){
+        return $this->belongsToMany('App\Session', 'transaction_session', 'transaction_id', 'session_id');
+    }
+    
     
 }

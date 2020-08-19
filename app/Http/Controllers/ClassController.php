@@ -497,17 +497,16 @@ class ClassController extends Controller
         echo "<pre>";
     }
     public function listStudent(){
-        $classes = Classes::where('student_number', '>' , 1)->get();
+        $classes = Classes::where('student_number', '>' , 0)->get();
         $fp = fopen('file.csv', 'w');
         foreach($classes as $c){
-            $students = $c->activeStudents;
+            $students = $c->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
                 if($parent){
-                    $result = [$c->code, $parent->email];
+                    $result = [$c->code, $s->fullname, $s->dob, $parent->email, $parent->phone, $parent->fullname, $s->detail['status']];
                     fputcsv($fp, $result);
-                }
-                
+                }                
             }
         }
     }
@@ -524,6 +523,9 @@ class ClassController extends Controller
             $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
+                if(!parent){
+                    continue;
+                }
                 $r['fullname'] = $s->fullname;
                 $r['pname'] = $parent->fullname;
                 $r['dob'] = date('d-m-Y', strtotime($s->dob));
@@ -606,4 +608,32 @@ class ClassController extends Controller
         }
         return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
     }
+    protected function reGenerateFee(){
+        $classes = Classes::where('student_number', '>', 0)->get();
+        foreach($classes as $c){
+            // $sessions = Session::where('class_id', $c->id)->whereBetween()
+            $students = $c->students;
+            foreach($students as $s){
+                
+                $entrance_date = strtotime($s->detail['entrance_date']);
+                $first_date = strtotime('01-08-2020');
+                $from = date('Y-m-d', ($entrance_date > $first_date) ? $entrance_date : $first_date);
+                $to = date('Y-m-d', strtotime('30-09-2020'));
+
+                $sessions = Session::where('class_id', $c->id)->whereBetween('date', [$from, $to])->get();
+                foreach($sessions as $ss){
+                    if($ss->fee == 0){
+                        echo $c->code;
+                        echo "<pre>";
+                        print_r($ss->toArray());
+                        echo "<pre>";
+                    }
+                }
+                // print_r($sessions->toArray());
+                // echo "<pre>";
+
+            }
+        }
+    }
+    
 }
