@@ -523,7 +523,7 @@ class ClassController extends Controller
             $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
-                if(!parent){
+                if(!$parent){
                     continue;
                 }
                 $r['fullname'] = $s->fullname;

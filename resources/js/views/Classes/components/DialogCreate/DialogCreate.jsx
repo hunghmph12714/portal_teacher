@@ -625,7 +625,7 @@ class DialogCreate extends React.Component {
                                         value = {this.state.note}
                                         onChange = {this.onChange}
                                     />  
-                                    <TextField  label="Link học online" 
+                                    {/* <TextField  label="Link học online" 
                                         variant="outlined"
                                         size="medium"
                                         type="text"
@@ -646,7 +646,7 @@ class DialogCreate extends React.Component {
                                         name = 'password'
                                         value = {this.state.password}
                                         onChange = {this.onChange}
-                                    />
+                                    /> */}
                                 </Grid>
                             </Grid>
                         <h5>Lịch học theo tuần</h5>
