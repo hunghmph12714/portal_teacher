@@ -101,13 +101,14 @@ Route::group(['middleware' => ['auth']], function() {
     });
 
     Route::get('/class/report/{class_id}', 'ClassController@getReport');
+    Route::get('/score/report/{class_id}', 'ClassController@getScoreReport');
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');
     Route::post('/class/find', 'ClassController@findClass');
     Route::get('/class/getbyid/{class_id}', 'ClassController@getClassById');
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
-    
+
     
     //Điều chỉnh học phí
     Route::get('/fee-adjust', function(){
@@ -256,6 +257,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/report/get-financial', 'ReportController@getFinancial');
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
+    // Route::get('/teacher/list', 'ClassController@listTeacher');
 });
 //
 // Route::get('/create-use', function(){

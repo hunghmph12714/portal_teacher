@@ -6,7 +6,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { ListSession, ListStudent, ListAttendance } from '../components';
+import { ListSession, ListStudent, ListAttendance, ListScore } from '../components';
 const baseUrl = window.Laravel.baseUrl
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -68,6 +68,7 @@ class ClassDetail extends React.Component{
                         <Tab label="Thông tin lớp học" {...a11yProps(0)} />
                         <Tab label="Lịch học" {...a11yProps(1)} />
                         <Tab label="Danh sách học sinh" {...a11yProps(2)} />
+                        <Tab label="Tình hình học tập" {...a11yProps(3)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
@@ -78,6 +79,9 @@ class ClassDetail extends React.Component{
                 </TabPanel>
                 <TabPanel value={this.state.value} index={2}>
                   <ListStudent class_id={this.props.match.params.id} class_name={this.state.selected_class.name}/>
+                </TabPanel>
+                <TabPanel value={this.state.value} index={3}>
+                  <ListScore class_id={this.props.match.params.id} class_name={this.state.selected_class.name}/>
                 </TabPanel>
             </div>
         )

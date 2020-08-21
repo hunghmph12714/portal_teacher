@@ -15,6 +15,8 @@ use App\Transaction;
 use App\Account;
 use App\Tag;
 use App\StudentSession;
+use App\Teacher;
+use App\Center;
 use Illuminate\Http\Request;
 
 class ClassController extends Controller
@@ -510,7 +512,35 @@ class ClassController extends Controller
             }
         }
     }
-    
+    public function listTeacher(){
+        $classes = Classes::where('student_number', '>' , 0)->get();
+        $fp = fopen('teachers.csv', 'w');
+        foreach($classes as $c){
+            // $students = $c->students;
+            // foreach($students as $s){
+            //     $parent = Parents::find($s->parent_id);
+            //     if($parent){
+            //         $result = [$c->code, $s->fullname, $s->dob, $parent->email, $parent->phone, $parent->fullname, $s->detail['status']];
+            //         fputcsv($fp, $result);
+            //     }                
+            // }
+            if(is_array($c->config)){
+                foreach($c->config as $cc){
+                    $teacher_id = is_array($cc['teacher']) ? $cc['teacher']['value'] : 0;
+                    $teacher = Teacher::find($teacher_id);
+                    $tname = ($teacher) ? $teacher->name : '';
+                    $temail = ($teacher) ? $teacher->email : '';
+                    $tphone = ($teacher) ? $teacher->phone : '';
+                    
+                    $date = (is_array($cc['date']) && array_key_exists('label',$cc['date'])) ? $cc['date']['label'] : 0;
+                    $center = Center::find($c->center_id);
+                    $center = ($center) ? $center->name : '';
+                    $result = [$c->id, $c->code, $center , $date , $c->fee, $c->student_number, $c->droped_number, $c->waiting_number,$teacher_id, $tname, $temail, $tphone];
+                    fputcsv($fp, $result);
+                }
+            }
+        }
+    }
     protected function getReport($class_id){
         $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
         $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
@@ -601,6 +631,80 @@ class ClassController extends Controller
                     }
                     else{
                         $r['attendance'][] = '-';
+                    }
+                }
+                $result[] = $r;
+            }
+        }
+        return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
+    }
+    protected function getScoreReport($class_id){
+        $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
+        $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
+        $class = Classes::find($class_id);
+        $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
+        whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->get();
+        $result = [];
+        if($class){  
+            //session
+            
+            $students = $class->students;
+            foreach($students as $s){
+                $parent = Parents::find($s->parent_id);
+                if(!$parent){
+                    continue;
+                }
+                $r['fullname'] = $s->fullname;
+                $r['pname'] = $parent->fullname;
+                $r['dob'] = date('d-m-Y', strtotime($s->dob));
+                $r['phone'] = $parent->phone; $r['email'] = $parent->email; 
+
+                $r['attendance'] = [];
+                $r['score'] = [];
+                //Attendance
+                foreach($sessions as $ss){
+                    $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
+                    if($attendance){
+                        switch ($attendance->attendance) {
+                            case 'present':
+                                # code...
+                                $r['attendance'][] = 'x';
+                                break;                            
+                            case 'late':
+                                # code...
+                                $r['attendance'][] = 'x';
+                                break;                            
+                            case 'absence':
+                                # code...
+                                $r['attendance'][] = 'p';
+                                break;                            
+                            case 'n_absence':
+                                # code...
+                                $r['attendance'][] = 'kp';
+                                break;                            
+                            case 'holding':
+                                # code...
+                                $r['attendance'][] = '-';
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        $r['score']['btvn_max'][] = $attendance->btvn_max;
+                        $r['score']['btvn_complete'][]  = $attendance->btvn_complete;
+                        $r['score']['btvn_score'][]  = $attendance->btvn_score;
+                        $r['score']['max_score'][]  = $attendance->max_score;
+                        $r['score']['score'][]  = $attendance->score;
+                        $r['score']['comment'][] = $attendance->comment; 
+                    }
+                    else{
+                        $r['attendance'][] = '';
+                        $r['score']['btvn_max'][] = '';
+                        $r['score']['btvn_complete'][]  ='';
+                        $r['score']['btvn_score'][]  = '';
+                        $r['score']['max_score'][]  ='';
+                        $r['score']['score'][]  ='';
+                        $r['score']['comment'][] = '';
                     }
                 }
                 $result[] = $r;
