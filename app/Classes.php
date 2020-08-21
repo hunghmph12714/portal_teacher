@@ -9,7 +9,7 @@ class Classes extends Model
     //
     public $table = 'classes';
     protected $fillable = ['id','center_id','course_id','code','document','active','config','fee','open_date','name','note','student_number','adjust_fee','online_id','password','droped_number','waiting_number','transfer_number'];
-    protected $casts = ['adjust_fee' => 'array', 'config' => 'array'];
+    protected $casts = ['adjust_fee' => 'array'];
     public function sessions(){
         return $this->hasMany('App\Session','class_id','id');
     }
