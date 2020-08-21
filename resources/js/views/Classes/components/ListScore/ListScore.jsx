@@ -98,7 +98,7 @@ const ListScore = (props) => {
                 sheet.cells[rowIndex][8+t] = {text: student.score['btvn_score'][k]}
                 sheet.cells[rowIndex][9+t] = {text: student.score['score'][k]}
                 sheet.cells[rowIndex][10+t] = {text: student.score['max_score'][k]}
-                sheet.cells[rowIndex][11+t] = {text: student.score['comment'][k]}                
+                sheet.cells[rowIndex][11+t] = {text: student.score['comment'][k]}     
 
                 t+=7
             }

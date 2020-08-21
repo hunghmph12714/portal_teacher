@@ -347,7 +347,7 @@ class Classes extends React.Component{
                       }}
                     columns={this.state.columns}
                     detailPanel={rowData => {
-                      let configs = JSON.parse(rowData.config)
+                      let configs = rowData.config
                       if(!configs){
                         return( <span> Chưa cài đặt lịch học </span>)
                       }

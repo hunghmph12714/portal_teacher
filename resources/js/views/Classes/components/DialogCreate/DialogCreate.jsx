@@ -191,7 +191,7 @@ class DialogCreate extends React.Component {
             let class_per_week = 0
             let session_per_class = 0
             if(nextProps.class.config) {
-                const configs = JSON.parse(nextProps.class.config)
+                const configs = nextProps.class.config
                 let dates = configs.map(c => {
                     return c.date.value
                 })
