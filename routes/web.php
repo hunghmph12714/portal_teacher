@@ -184,6 +184,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
     Route::post('/attendance/edit', 'AttendanceController@editAttendance');
+    Route::post('/attendance/cell-edit', 'AttendanceController@cellEdit');
 //Accounts
     Route::get('/finaccount', function(){
         return view('welcome');

@@ -645,9 +645,7 @@ class ClassController extends Controller
         $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
         whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->get();
         $result = [];
-        if($class){  
-            //session
-            
+        if($class){            
             $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
@@ -661,6 +659,8 @@ class ClassController extends Controller
 
                 $r['attendance'] = [];
                 $r['score'] = [];
+                $r['id'] = $s->id;
+                $r['status'] = $s->detail['status'];
                 //Attendance
                 foreach($sessions as $ss){
                     $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
