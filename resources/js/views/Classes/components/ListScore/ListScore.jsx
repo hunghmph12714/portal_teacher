@@ -38,12 +38,12 @@ const ListScore = (props) => {
             cells: {
                 1: {
 
-                    1: {text: 'ID',bold: true},
-                    2: {text: 'Tên học sinh',bold: true},
-                    3: {text: 'Ngày sinh', bold:true},
-                    4: {text: 'Email', bold:true},                           
-                    5: {text: 'Điện thoại', bold:true},            
-                    6: {text: 'Trạng thái', bold:true},               
+                    1: {text: 'ID',bold: true, locked: true},
+                    2: {text: 'Tên học sinh',bold: true, locked: true },
+                    3: {text: 'Ngày sinh', bold:true, locked: true},
+                    4: {text: 'Email', bold:true, locked: true},                           
+                    5: {text: 'Điện thoại', bold:true, locked: true},            
+                    6: {text: 'Trạng thái', bold:true, locked: true},               
                 },
                 2: {
                     1: {text: 'ID',bold: true},
@@ -78,14 +78,14 @@ const ListScore = (props) => {
         let t = 0
         for (let j = 0 ; j < sessions.length ; j++){
             const d = format(new Date(sessions[j].date), 'd/M')
-            sheet.cells[1][7+t] = {text: sessions[j].id+ " | "+ d + ": " + sessions[j].name, bold:true}
-            sheet.cells[2][7+t] = {text: 'Điểm danh', bold:true}
-            sheet.cells[2][8+t] = {text: 'BTVN tổng', bold:true}
-            sheet.cells[2][9+t] = {text: 'BTVN hoàn thành', bold:true}
-            sheet.cells[2][10+t] = {text: 'BTVN điểm', bold:true}
-            sheet.cells[2][11+t] = {text: 'Điểm trên lớp', bold:true}
-            sheet.cells[2][12+t] = {text: 'Điểm trên lớp (tổng) ', bold:true}            
-            sheet.cells[2][13+t] = {text: 'Nhận xét', bold:true}
+            sheet.cells[1][7+t] = {text:  d + ": " + sessions[j].name, bold:true, locked: true, stroke:'black', horizontalAlign: 'center', verticalAlign: 'middle'}
+            sheet.cells[2][7+t] = {text: 'Điểm danh', bold:true, stroke:'black'}
+            sheet.cells[2][8+t] = {text: 'BTVN tổng', bold:true, stroke:'black'}
+            sheet.cells[2][9+t] = {text: 'BTVN hoàn thành', bold:true, stroke:'black'}
+            sheet.cells[2][10+t] = {text: 'BTVN điểm', bold:true, stroke:'black'}
+            sheet.cells[2][11+t] = {text: 'Điểm trên lớp', bold:true, stroke:'black'}
+            sheet.cells[2][12+t] = {text: 'Điểm trên lớp (tổng) ', bold:true, stroke:'black'}            
+            sheet.cells[2][13+t] = {text: 'Nhận xét', bold:true, stroke:'black'}
             sheet.mergedCells.push({top: 1, left: 7+t, right: 13+t, bottom: 1})
             t+=7
         }
@@ -95,12 +95,12 @@ const ListScore = (props) => {
             const keys = Object.keys(student)
             const rowIndex = i + 3
             sheet.cells[rowIndex] =  sheet.cells[rowIndex] ?? {}
-            sheet.cells[rowIndex][1] = {text: student.id}
-            sheet.cells[rowIndex][2] = {text: student.fullname}
-            sheet.cells[rowIndex][3] = {text: student.dob}
-            sheet.cells[rowIndex][4] = {text: student.email}
-            sheet.cells[rowIndex][5] = {text: student.phone}
-            sheet.cells[rowIndex][6] = {text: student.status}
+            sheet.cells[rowIndex][1] = {text: student.id, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][2] = {text: student.fullname, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][3] = {text: student.dob, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][4] = {text: student.email, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][5] = {text: student.phone, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][6] = {text: student.status, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
             for (let k = 0 ; k < sessions.length; k++){
                 sheet.cells[rowIndex][7+t] = {text: student.attendance[k], 
                     dataValidation: {
@@ -108,14 +108,14 @@ const ListScore = (props) => {
                       type: 'list',
                       formulae: ['x', '-', 'p','kp','l']
                     },
-                    tooltip: 'Hello world', student_id: student.id, session_id: sessions[k].id, col: 'attendance'
+                    tooltip: student.fullname, student_id: student.id, session_id: sessions[k].id, col: 'attendance', strokeLeftColor:'black'
                 }
-                sheet.cells[rowIndex][8+t] = {text: student.score['btvn_max'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max'}
-                sheet.cells[rowIndex][9+t] = {text: student.score['btvn_complete'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete'}
-                sheet.cells[rowIndex][10+t] = {text: student.score['btvn_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_score'}
-                sheet.cells[rowIndex][11+t] = {text: student.score['score'][k], student_id: student.id, session_id: sessions[k].id, col: 'score'}
-                sheet.cells[rowIndex][12+t] = {text: student.score['max_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'max_score'}
-                sheet.cells[rowIndex][13+t] = {text: student.score['comment'][k], student_id: student.id, session_id: sessions[k].id, col: 'comment'}     
+                sheet.cells[rowIndex][8+t] = {text: student.score['btvn_max'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max', strokeLeftColor:'black'}
+                sheet.cells[rowIndex][9+t] = {text: student.score['btvn_complete'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete', strokeLeftColor:'black'}
+                sheet.cells[rowIndex][10+t] = {text: student.score['btvn_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_score', strokeLeftColor:'black'}
+                sheet.cells[rowIndex][11+t] = {text: student.score['score'][k], student_id: student.id, session_id: sessions[k].id, col: 'score', strokeLeftColor:'black'}
+                sheet.cells[rowIndex][12+t] = {text: student.score['max_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'max_score', strokeLeftColor:'black'}
+                sheet.cells[rowIndex][13+t] = {text: student.score['comment'][k], student_id: student.id, session_id: sessions[k].id, col: 'comment', strokeLeftColor:'black'}     
 
                 t+=7
             }    
@@ -130,14 +130,16 @@ const ListScore = (props) => {
     let student_id = cells[cell.rowIndex][cell.columnIndex].student_id
     let session_id = cells[cell.rowIndex][cell.columnIndex].session_id
     let col = cells[cell.rowIndex][cell.columnIndex].col
-    axios.post(baseUrl + '/attendance/cell-edit', {student_id: student_id, session_id: session_id, col: col, value: value})
+    if(cells[cell.rowIndex][cell.columnIndex].student_id && cells[cell.rowIndex][cell.columnIndex].session_id){
+        axios.post(baseUrl + '/attendance/cell-edit', {student_id: student_id, session_id: session_id, col: col, value: value})
         .then(response => {
 
         })
         .catch(err=> {
             
         })
-
+    }
+    
   }
   return (
     <SpreadSheet
