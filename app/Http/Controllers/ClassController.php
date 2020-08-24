@@ -638,9 +638,12 @@ class ClassController extends Controller
         }
         return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
     }
-    protected function getScoreReport($class_id){
-        $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
-        $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
+    protected function getScoreReport(Request $request){
+        $rules = ['class_id' => 'required'];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
+        $from = date('Y-m-d 00:00:00', strtotime($request->from));
+        $to = date('Y-m-d 23:59:59', strtotime($request->to));
         $class = Classes::find($class_id);
         $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
         whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->get();

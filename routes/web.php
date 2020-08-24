@@ -101,7 +101,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
 
     Route::get('/class/report/{class_id}', 'ClassController@getReport');
-    Route::get('/score/report/{class_id}', 'ClassController@getScoreReport');
+    Route::post('/score/report', 'ClassController@getScoreReport');
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');
     Route::post('/class/find', 'ClassController@findClass');

@@ -30,7 +30,7 @@ const ListScore = (props) => {
         id: 1}])
     useEffect(() => {
     async function fetchJSON () {
-        const resource = await axios.get(baseUrl + '/score/report/'+props.class_id)
+        const resource = await axios.post(baseUrl + '/score/report', {class_id: props.class_id, from: props.from, to: props.to} )
         const students = resource.data.students
         const sessions = resource.data.sessions
         const sheet = {
@@ -38,12 +38,12 @@ const ListScore = (props) => {
             cells: {
                 1: {
 
-                    1: {text: 'ID',bold: true, locked: true},
-                    2: {text: 'Tên học sinh',bold: true, locked: true },
-                    3: {text: 'Ngày sinh', bold:true, locked: true},
-                    4: {text: 'Email', bold:true, locked: true},                           
-                    5: {text: 'Điện thoại', bold:true, locked: true},            
-                    6: {text: 'Trạng thái', bold:true, locked: true},               
+                    1: {text: 'ID',bold: true, locked: true, stroke:'black'},
+                    2: {text: 'Tên học sinh',bold: true, locked: true, stroke:'black' },
+                    3: {text: 'Ngày sinh', bold:true, locked: true, stroke:'black'},
+                    4: {text: 'Email', bold:true, locked: true, stroke:'black'},                           
+                    5: {text: 'Điện thoại', bold:true, locked: true,stroke:'black'},            
+                    6: {text: 'Trạng thái', bold:true, locked: true,stroke:'black'},               
                 },
                 2: {
                     1: {text: 'ID',bold: true},
@@ -95,12 +95,12 @@ const ListScore = (props) => {
             const keys = Object.keys(student)
             const rowIndex = i + 3
             sheet.cells[rowIndex] =  sheet.cells[rowIndex] ?? {}
-            sheet.cells[rowIndex][1] = {text: student.id, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
-            sheet.cells[rowIndex][2] = {text: student.fullname, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
-            sheet.cells[rowIndex][3] = {text: student.dob, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
-            sheet.cells[rowIndex][4] = {text: student.email, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
-            sheet.cells[rowIndex][5] = {text: student.phone, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
-            sheet.cells[rowIndex][6] = {text: student.status, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' }
+            sheet.cells[rowIndex][1] = {text: student.id, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+            sheet.cells[rowIndex][2] = {text: student.fullname, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'', strokeBottomColor: (i == students.length-1) ? 'black': ''  }
+            sheet.cells[rowIndex][3] = {text: student.dob, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
+            sheet.cells[rowIndex][4] = {text: student.email, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
+            sheet.cells[rowIndex][5] = {text: student.phone, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
+            sheet.cells[rowIndex][6] = {text: student.status, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
             for (let k = 0 ; k < sessions.length; k++){
                 sheet.cells[rowIndex][7+t] = {text: student.attendance[k], 
                     dataValidation: {
@@ -109,14 +109,14 @@ const ListScore = (props) => {
                       formulae: ['x', '-', 'p','kp','l']
                     },
                     tooltip: student.fullname, student_id: student.id, session_id: sessions[k].id, col: 'attendance', strokeLeftColor:'black'
+                    , strokeBottomColor: (i == students.length-1) ? 'black': '' 
                 }
-                sheet.cells[rowIndex][8+t] = {text: student.score['btvn_max'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max', strokeLeftColor:'black'}
-                sheet.cells[rowIndex][9+t] = {text: student.score['btvn_complete'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete', strokeLeftColor:'black'}
-                sheet.cells[rowIndex][10+t] = {text: student.score['btvn_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_score', strokeLeftColor:'black'}
-                sheet.cells[rowIndex][11+t] = {text: student.score['score'][k], student_id: student.id, session_id: sessions[k].id, col: 'score', strokeLeftColor:'black'}
-                sheet.cells[rowIndex][12+t] = {text: student.score['max_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'max_score', strokeLeftColor:'black'}
-                sheet.cells[rowIndex][13+t] = {text: student.score['comment'][k], student_id: student.id, session_id: sessions[k].id, col: 'comment', strokeLeftColor:'black'}     
-
+                sheet.cells[rowIndex][8+t] = {text: student.score['btvn_max'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+                sheet.cells[rowIndex][9+t] = {text: student.score['btvn_complete'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+                sheet.cells[rowIndex][10+t] = {text: student.score['btvn_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_score', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+                sheet.cells[rowIndex][11+t] = {text: student.score['score'][k], student_id: student.id, session_id: sessions[k].id, col: 'score', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+                sheet.cells[rowIndex][12+t] = {text: student.score['max_score'][k], student_id: student.id, session_id: sessions[k].id, col: 'max_score', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' }
+                sheet.cells[rowIndex][13+t] = {text: student.score['comment'][k], student_id: student.id, session_id: sessions[k].id, col: 'comment', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' , strokeRightColor:'black'}     
                 t+=7
             }    
         }
@@ -124,7 +124,7 @@ const ListScore = (props) => {
         initialSheet = sheet
     }    
     fetchJSON()
-  }, [])
+  }, [props.from, props.to])
   const updateServer = (sheet, value, cell) => {
     var cells = initialSheet.cells
     let student_id = cells[cell.rowIndex][cell.columnIndex].student_id
