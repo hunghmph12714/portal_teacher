@@ -111,39 +111,46 @@ class SessionController extends Controller
                 if(!array_key_exists($month, $fees)){
                     $fees[$month]['amount'] = $s['fee'];
                     $fees[$month]['count'] = 1;
-                    $fees[$month]['session_id'][] = $s['id'];
+                    $fees[$month]['session_id'][$s['id']] =  ['amount' => $s['fee']] ;
                 }
                 else{
                     $fees[$month]['amount'] += $s['fee'];
                     $fees[$month]['count']++;
-                    $fees[$month]['session_id'][] = $s['id'];
+                    $fees[$month]['session_id'][$s['id']] =  ['amount' => $s['fee']] ;
                 }
                 $fee_per_session = $s['fee'];
                 // Kiểm tra có điều chỉnh học phí tại ca học này không ? 
                 if(!array_key_exists('adjust',$fees[$month] )){$fees[$month]['adjust'] = [];}
                 $discount = Discount::where('class_id', $s['class_id'])->whereNull('student_class_id')->where('status', 'expired')
                     ->where('active_at','<=',$s['date'])->where('expired_at', '>=', $s['date'])->get();
-                foreach($discount as $d){
-                    if(!array_key_exists($d->id, $fees[$month]['adjust'])){
-                        if($d->amount){
-                            $fees[$month]['adjust'][$d->id]['amount'] = $d->amount;
-                            $fees[$month]['adjust'][$d->id]['content'] = $d->content;                        
+                    foreach($discount as $d){
+                        if(!array_key_exists($d->id, $fees[$month]['adjust'])){
+                            if($d->amount){
+                                $fees[$month]['adjust'][$d->id]['amount'] = $d->amount;
+                                $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => abs($d->amount), 'subamount' => $d->amount];
+                                $fees[$month]['adjust'][$d->id]['content'] = $d->content;                        
+                            }
+                            if($d->percentage){
+                                $fees[$month]['adjust'][$d->id]['amount'] = $s['fee']/100 * (intval($d->percentage));
+                                $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => $s['fee']/100 * abs(intval($d->percentage)), 'subamount' => $s['fee']/100 * abs(intval($d->percentage))];
+                                $fees[$month]['adjust'][$d->id]['content'] = $d->content;            
+                            }
                         }
-                        if($d->percentage){
-                            $fees[$month]['adjust'][$d->id]['amount'] = $s['fee']/100 * (intval($d->percentage));
-                            $fees[$month]['adjust'][$d->id]['content'] = $d->content;            
+                        else{
+                            if($d->amount){
+                                $fees[$month]['adjust'][$d->id]['amount'] +=  $d->amount;
+                                $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => abs($d->amount), 'subamount' => $d->amount];
+        
+                            }
+                            if($d->percentage){
+                                $fees[$month]['adjust'][$d->id]['amount'] += $s['fee']/100 * (intval($d->percentage));
+                                $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => $s['fee']/100 * abs(intval($d->percentage)), 'subamount' => $s['fee']/100 * abs(intval($d->percentage))];
+                            }
                         }
                     }
-                    else{
-                        if($d->amount){
-                            $fees[$month]['adjust'][$d->id]['amount'] +=  $d->amount;
-                        }
-                        if($d->percentage){
-                            $fees[$month]['adjust'][$d->id]['amount'] += $s['fee']/100 * (intval($d->percentage));
-                        }
-                    }
-                }
             }
+            // echo "<pre>";
+            // print_r($fees);
             foreach($fees as $key => $fee){
                 if($fee != 0){
                     $s = Student::find($sa['student']['id']);
@@ -169,7 +176,7 @@ class SessionController extends Controller
                                 $ta['credit'] = Account::Where('level_2', '3387')->first()->id;
                             }
                             if($adjust['amount'] < 0){
-                                $ta['debit'] = Account::Where('level_2', '511')->first()->id;
+                                $ta['debit'] = Account::Where('level_2', '3387')->first()->id;
                                 $ta['credit'] = Account::Where('level_2', '131')->first()->id;
                             }
                             $ta['amount'] = abs($adjust['amount']);
@@ -180,7 +187,11 @@ class SessionController extends Controller
                             $ta['content'] = $adjust['content'];
                             $created_transaction = Transaction::create($ta);
                             $created_transaction->tags()->syncWithoutDetaching([8]);
-                            $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
+                            $adj = [];
+                            foreach($adjust['session_ids'] as $akey => $amo){
+                                $adj[$akey] = ['amount' => abs($amo['amount'])];
+                            }
+                            $created_transaction->sessions()->syncWithoutDetaching($adj);
                         }
                         //Check Discount of student
                         $discounts = Discount::where('student_class_id', $sc->id)
@@ -192,13 +203,28 @@ class SessionController extends Controller
                             //Check discount available
                             $dt['credit'] = Account::Where('level_2', '131')->first()->id;
                             $dt['debit'] = Account::Where('level_2', '511')->first()->id;
-                            $dt['time'] = Date('Y-m-d', strtotime('1-'.$key));
+                            $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                             $dt['student_id'] = $s->id;
                             $dt['class_id'] = $class_id;
                             $dt['user'] = auth()->user()->id;                                           
                             if($d['percentage']){
-                                $dt['amount'] = ($fee['amount'] + $total_adjust)/100*intval($d['percentage']);
-                                $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';     
+                                $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
+                                $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';
+                                $sids = [];
+                                foreach($fee['session_id'] as $sid => $f){
+                                    $discount_per_session = $f['amount'];
+                                    foreach($fee['adjust'] as $a){
+                                        foreach($a['session_ids'] as $sdid => $da){
+                                            if($sdid == $sid){
+                                                $discount_per_session += $da['amount'];
+                                            }
+                                        }
+                                    }
+                                    $sids[$sid] = ['amount' => $discount_per_session/ 100 * intval($d['percentage']) ];
+                                }
+                                $created_transaction = Transaction::create($dt);
+                                $created_transaction->tags()->syncWithoutDetaching([9]);
+                                $created_transaction->sessions()->syncWithoutDetaching($sids);
                             }
                             if($d['amount']){
                                 $dt['amount'] = intval($d['amount']);
@@ -206,10 +232,9 @@ class SessionController extends Controller
                                 $discount = Discount::find($d['id']);
                                 $discount->max_use= $discount->max_use - 1;
                                 $discount->save();
+                                $created_transaction = Transaction::create($dt);
+                                $created_transaction->tags()->syncWithoutDetaching([9]);
                             }
-                            $created_transaction = Transaction::create($dt);
-                            $created_transaction->tags()->syncWithoutDetaching([9]);
-                            $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
                         }
                     }
                 }
@@ -247,8 +272,18 @@ class SessionController extends Controller
                 // echo "<pre>";
             }
         }
-        // $transactions = Transaction::where('content', 'like', '%Điều chỉnh học%')->orWhere('content','like','%Học phí lớp%')
-        //     ->orWhere('content','like','%Giảm học phí ONLINE%')->orWhere('content','like','%HỖ TRỢ%')->orWhere('content','like','%Miễn giảm học phí%')->forceDelete();
+    }
+    protected function deleteFee(){
+        $t1 = Transaction::where('content','like', '%Học phí lớp%')->where('debit', 10)->where('credit', 70)->forceDelete();
+        $t2 = Transaction::where('content','like', '%học phí ONLINE%')->forceDelete();
+        $t3 = Transaction::where('content','like', '%Nhận học phí dư có%')->forceDelete();
+        $t3 = Transaction::where('content','like', '%Chuyển học phí dư có%')->forceDelete();
+        $t4 = Transaction::where('content','like', '%HỖ TRỢ%')->forceDelete();
+        $t5 = Transaction::where('content', 'like', '%Miễn giảm học phí%')->forceDelete();
+        $t5 = Transaction::where('content', 'like', '%Hoàn tiền học phí do nghỉ %')->forceDelete();
+        $t5 = Transaction::where('content', 'like', '%HP tháng 8%')->forceDelete();
+        $t5 = Transaction::where('content', 'like', '%Học phí tháng 07%')->forceDelete();
+        $t5 = Transaction::where('content', 'like', '%Học phí tháng 08%')->forceDelete();
     }
     protected function getSession(Request $request){
         $rules = [
@@ -497,5 +532,13 @@ class SessionController extends Controller
             $discount->save();
             return response()->json();
         }
+    }
+    protected function testS(){
+        $session_id = 2713;
+        $session = Session::find($session_id);
+        $transaction = $session->transactions()->where('student_id', 4258)->get();
+        
+        echo "<pre>";
+        print_r($transaction->toArray());
     }
 }

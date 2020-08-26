@@ -28,10 +28,12 @@ class StudentClassObserver
             if(!array_key_exists($month, $fees)){
                 $fees[$month]['amount'] = $s['fee'];
                 $fees[$month]['count'] = 1;
+                $fees[$month]['session_id'][$s['id']] =  ['amount' => $s['fee']] ;
             }
             else{
                 $fees[$month]['amount'] += $s['fee'];
                 $fees[$month]['count']++;
+                $fees[$month]['session_id'][$s['id']] =  ['amount' => $s['fee']] ;
             }
             $fee_per_session = $s['fee'];
             
@@ -42,25 +44,30 @@ class StudentClassObserver
                 if(!array_key_exists($d->id, $fees[$month]['adjust'])){
                     if($d->amount){
                         $fees[$month]['adjust'][$d->id]['amount'] = $d->amount;
+                        $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => ($d->amount)];
                         $fees[$month]['adjust'][$d->id]['content'] = $d->content;                        
                     }
                     if($d->percentage){
                         $fees[$month]['adjust'][$d->id]['amount'] = $s['fee']/100 * (intval($d->percentage));
+                        $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => $s['fee']/100 * (intval($d->percentage))];
                         $fees[$month]['adjust'][$d->id]['content'] = $d->content;            
                     }
                 }
                 else{
                     if($d->amount){
                         $fees[$month]['adjust'][$d->id]['amount'] +=  $d->amount;
+                        $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => ($d->amount)];
+
                     }
                     if($d->percentage){
                         $fees[$month]['adjust'][$d->id]['amount'] += $s['fee']/100 * (intval($d->percentage));
+                        $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => $s['fee']/100 * (intval($d->percentage))];
                     }
                 }
             }
             // $this->applyFeeAdjustment($s['id'], $student->id);
         }
-        // print_r($fees);
+        
         foreach($fees as $key => $fee){
             if($fee != 0){
                 $s = $student;
@@ -76,7 +83,9 @@ class StudentClassObserver
                 $t['class_id'] = $class_id;
                 $t['user'] = auth()->user()->id;
                 $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
-                Transaction::create($t);
+                $created_transaction = Transaction::create($t);
+                $created_transaction->tags()->syncWithoutDetaching([7]);
+                $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
                 //Apply Ajust Fee
                 
                 foreach($fee['adjust'] as $a => $adjust){
@@ -86,7 +95,7 @@ class StudentClassObserver
                         $ta['credit'] = Account::Where('level_2', '3387')->first()->id;
                     }
                     if($adjust['amount'] < 0){
-                        $ta['debit'] = Account::Where('level_2', '511')->first()->id;
+                        $ta['debit'] = Account::Where('level_2', '3387')->first()->id;
                         $ta['credit'] = Account::Where('level_2', '131')->first()->id;
                     }
                     $ta['amount'] = abs($adjust['amount']);
@@ -95,8 +104,13 @@ class StudentClassObserver
                     $ta['class_id'] = $class_id;
                     $ta['user'] = auth()->user()->id;
                     $ta['content'] = $adjust['content'];
-                    print_r($ta);
-                    Transaction::create($ta);
+                    $created_transaction = Transaction::create($ta);
+                    $created_transaction->tags()->syncWithoutDetaching([8]);
+                    $adj = [];
+                    foreach($adjust['session_ids'] as $akey => $amo){
+                        $adj[$akey] = ['amount' => abs($amo['amount'])];
+                    }
+                    $created_transaction->sessions()->syncWithoutDetaching($adj);
                 }
                 //Check Discount
                 $student_class = StudentClass::where('student_id', $s->id)->where('class_id', $class_id)->first();
@@ -108,13 +122,28 @@ class StudentClassObserver
                     //Check discount available
                     $dt['credit'] = Account::Where('level_2', '131')->first()->id;
                     $dt['debit'] = Account::Where('level_2', '511')->first()->id;
-                    $dt['time'] = Date('Y-m-d', strtotime('1-'.$key));
+                    $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                     $dt['student_id'] = $s->id;
                     $dt['class_id'] = $class_id;
                     $dt['user'] = auth()->user()->id;                                           
                     if($d['percentage']){
-                        $dt['amount'] = ($fee['amount'] + $total_adjust)/100*intval($d['percentage']);
-                        $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';     
+                        $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
+                        $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';
+                        $sids = [];
+                        foreach($fee['session_id'] as $sid => $f){
+                            $discount_per_session = $f['amount'];
+                            foreach($fee['adjust'] as $a){
+                                foreach($a['session_ids'] as $sdid => $da){
+                                    if($sdid == $sid){
+                                        $discount_per_session += $da['amount'];
+                                    }
+                                }
+                            }
+                            $sids[$sid] = ['amount' => $discount_per_session/ 100 * intval($d['percentage']) ];
+                        }
+                        $created_transaction = Transaction::create($dt);
+                        $created_transaction->tags()->syncWithoutDetaching([9]);
+                        $created_transaction->sessions()->syncWithoutDetaching($sids);
                     }
                     if($d['amount']){
                         $dt['amount'] = intval($d['amount']);
@@ -122,8 +151,11 @@ class StudentClassObserver
                         $discount = Discount::find($d['id']);
                         $discount->max_use= $discount->max_use - 1;
                         $discount->save();
+                        $created_transaction = Transaction::create($dt);
+                        $created_transaction->tags()->syncWithoutDetaching([9]);
                     }
-                    Transaction::create($dt);
+                    
+                    
                 }
                     
             }
@@ -140,7 +172,7 @@ class StudentClassObserver
             //Create attendance for that student
             $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
             $sessions_id = array_column($sessions->toArray(), 'id');
-            $student->sessions()->attach($sessions_id);
+            $student->sessions()->syncWithoutDetaching($sessions_id);
             $students = Student::where('id', $student->id)->first();
             //Create fee (transaction)
             $this->generateTransactions($sessions, $students,  $studentClass->class_id);
@@ -159,15 +191,11 @@ class StudentClassObserver
     public function updated(StudentClass $studentClass)
     {
         $class = Classes::find($studentClass->class_id);
-        // $c = Classes::all();
-        // foreach($c as $class){
-        //     $this->updateClassCount($class);
-        // }
+       
         $this->updateClassCount($class);
         $student = Student::find($studentClass->student_id);
         if($studentClass->getOriginal('status') == 'waiting'){
             if($studentClass->status == 'active'){
-                
                 if($student){
                     //Create attendance for that student
                     $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
@@ -191,9 +219,14 @@ class StudentClassObserver
                 $total_fee = 0;
                 foreach($sessions as $s){
                     $fee = $s->fee;
+                    //Get transactions of that session
+                    $transactions = $s->transactions()->where('student_id', $studentClass->student_id)->get();
+                    print_r($transactions->toArray());
+                    echo "<pre>";
+
                     //Get class adjust;
                     $adjusts = Discount::where('class_id', $studentClass->class_id)->whereNull('student_class_id')
-                    ->where('active_at','<=',$s->date)->where('expired_at', '>=', $s->date)->get();
+                        ->where('active_at','<=',$s->date)->where('expired_at', '>=', $s->date)->get();
                     foreach($adjusts as $d){
                         if($d->amount){
                             $fee += $d->amount;
@@ -217,17 +250,7 @@ class StudentClassObserver
                     }
                     $total_fee += $fee;
                 }
-                if($total_fee > 0){
-                    $input['debit'] = Account::Where('level_2', '3387')->first()->id;
-                    $input['credit'] = Account::Where('level_2', '131')->first()->id;
-                    $input['amount'] = $total_fee;
-                    $input['time'] = $s->date;
-                    $input['student_id'] = $studentClass->student_id;
-                    $input['class_id'] = $studentClass->class_id;
-                    $input['user'] = auth()->user()->id;
-                    $input['content'] = 'Hoàn tiền học phí do nghỉ học từ ngày: ' . $studentClass->drop_time;
-                    Transaction::create($input);
-                }
+                
             }
             if($studentClass->status == 'waiting'){
                 $sessions = Session::where('class_id', $studentClass->class_id)->get();
@@ -238,14 +261,14 @@ class StudentClassObserver
             }
         }
         if($studentClass->getOriginal('status') == 'droped'){
-            if($studentClass->status == 'active'){
-                $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
-                $sessions_id = array_column($sessions->toArray(), 'id');
-                $student->sessions()->syncWithoutDetaching($sessions_id);
-                $students = Student::where('id', $student->id)->first();
-                //Create fee (transaction)
-                $this->generateTransactions($sessions, $students,  $studentClass->class_id);
-            }
+            // if($studentClass->status == 'active'){
+            //     $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
+            //     $sessions_id = array_column($sessions->toArray(), 'id');
+            //     $student->sessions()->syncWithoutDetaching($sessions_id);
+            //     $students = Student::where('id', $student->id)->first();
+            //     //Create fee (transaction)
+            //     $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+            // }
         }
     }
     public function updateClassCount(Classes $class){
