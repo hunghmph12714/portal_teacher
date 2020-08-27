@@ -36,12 +36,12 @@ const Routes = (props) => {
       <Redirect
         exact
         from="/"
-        to="/dashboard"
+        to="/classes"
       />
       <Redirect
         exact
         from="/home"
-        to="/dashboard"
+        to="/classes"
       />
 
       <ProtectedRouteWithLayout
