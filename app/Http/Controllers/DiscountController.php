@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Discount;
 use App\StudentClass;
+use App\Session;
+use App\StudentSession;
+use App\Classes;
+use App\Account;
+use App\Transaction;
+use App\Student;
 class DiscountController extends Controller
 {
     //
@@ -47,6 +53,11 @@ class DiscountController extends Controller
             $input['max_use'] = $request->max_use;
             // print_r($input);
             $discount = Discount::create($input);
+            
+            if($discount->status == 'active'){
+                
+            }
+            
         }else{
             return response()->json('Học sinh không học lớp này !', 421);
         }

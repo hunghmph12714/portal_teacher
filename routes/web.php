@@ -278,4 +278,3 @@ Route::get('/testtime',function(){
 Route::get('/regenerate', 'SessionController@reGenerateFee');
 Route::get('/delete-attendance', 'AttendanceController@delete');
 Route::get('/delete-fee', 'SessionController@deleteFee');
-Route::get('/test-s', 'SessionController@testS');

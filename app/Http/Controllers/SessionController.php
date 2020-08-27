@@ -140,7 +140,7 @@ class SessionController extends Controller
                             if($d->amount){
                                 $fees[$month]['adjust'][$d->id]['amount'] +=  $d->amount;
                                 $fees[$month]['adjust'][$d->id]['session_ids'][$s['id']] = ['amount' => abs($d->amount), 'subamount' => $d->amount];
-        
+
                             }
                             if($d->percentage){
                                 $fees[$month]['adjust'][$d->id]['amount'] += $s['fee']/100 * (intval($d->percentage));
@@ -491,9 +491,12 @@ class SessionController extends Controller
             $t = [];
             $session = Session::where('class_id', $discount->class_id)->where('date', '>=', $discount->active_at)->where('date','<=', $discount->expired_at)
                 ->get();
+            $session_ids = [];
+
             foreach($session as $s){
                 $students = $s->students;
                 foreach($students as $ss){
+                    
                     $amount = 0;                    
                     if($discount->amount){
                         $amount = abs($discount->amount);
@@ -503,16 +506,17 @@ class SessionController extends Controller
                     }
                     if(!array_key_exists($ss->id, $t)){
                         $t[$ss->id] = $amount;
+                        $session_ids[$ss->id][$s->id] = ['amount' => $amount];
                     }
                     else{
                         $t[$ss->id] += $amount;
-                    }             
-                    
+                        $session_ids[$ss->id][$s->id] = ['amount' => $amount];
+                    }
                 }
             }
             foreach($t as $sid => $value){
                 if($discount->amount < 0 || $discount->percentage < 0){
-                    $trans['debit'] = Account::Where('level_2', '511')->first()->id;
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                     $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                 }
                 else{
@@ -526,7 +530,10 @@ class SessionController extends Controller
                 $trans['student_id'] = $sid;
                 $trans['amount'] = $value;
 
-                Transaction::create($trans);
+                $tr = Transaction::create($trans);
+                print_r($session_ids[$sid]);
+             
+                $tr->sessions()->syncWithoutDetaching($session_ids[$sid]);
             }
             $discount->status = 'expired';
             $discount->save();
