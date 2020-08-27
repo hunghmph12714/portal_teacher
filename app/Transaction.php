@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
 class Transaction extends Model
 {
     //
@@ -18,7 +17,8 @@ class Transaction extends Model
         return $this->belongsTo('App\Student', 'student_id');
     }
     public function sessions(){
-        return $this->belongsToMany('App\Session', 'transaction_session', 'transaction_id', 'session_id');
+        return $this->belongsToMany('App\Session', 'transaction_session', 'transaction_id', 'session_id')
+            ->withPivot('id','amount');
     }
     
     

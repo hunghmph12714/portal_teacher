@@ -5,6 +5,7 @@ use App\Entrance;
 use App\StudentSession;
 use App\Transaction;
 use App\StudentClass;
+use App\TransactionSession;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,6 +13,7 @@ use App\Observers\EntranceObserver;
 use App\Observers\TransactionObserver;
 use App\Observers\StudentSessionObserver;
 use App\Observers\StudentClassObserver;
+use App\Observers\TransactionSessionObserver;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -37,5 +39,6 @@ class AppServiceProvider extends ServiceProvider
         Transaction::observe(TransactionObserver::class);
         StudentSession::observe(StudentSessionObserver::class);
         StudentClass::observe(StudentClassObserver::class);
+        TransactionSession::observe(TransactionSessionObserver::class);
     }
 }
