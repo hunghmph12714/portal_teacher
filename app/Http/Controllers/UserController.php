@@ -9,6 +9,38 @@ use App\User;
 class UserController extends Controller
 {
     //
+    protected function createTa(){
+        $ta = ['vietha131298@gmail.com','lvd28102001@gmail.com','hoangtuannghiahn@gmail.com','tungdohp98@gmail.com','hathu070401@gmail.com','maintt240@gmail.com','minh1998yc@gmail.com','lycandylee4@gmail.com','linhseo2000@gmail.com','nguyenhue2112000@gmail.com','hongngo1404@gmail.com','tdnam1807@gmail.com','phungdieulinh198@gmail.com','linhnguyencp129@gmail.com','dothachthao26598@gmail.com','nguyenthingochnue@gmail.com','dangquynh230299@gmai.com','nguyenthengocphuong@gmail.com','thanhhanghnuek68@gmail.com','tranthiphuongthao1601@gmail.com','nguyenkhanhly18112000@gmail.com'];
+$name = ['Nguyễn Việt Hà','Lê Việt Đức',
+'Hoàng Tuấn Nghĩa',
+'Đỗ Trung Tùng',
+'Trần Thị Thu Hà',
+'Nguyễn Thị Thanh Mai',
+'Trần Tân Minh',
+'Đoàn Thị Khánh Ly',
+'Đàm Huyền Linh',
+'Nguyễn Thị Huế',
+'Ngô Thị Ánh Hồng',
+'Trịnh Đức Nam',
+'Phùng Diệu Linh',
+'Nguyễn Thị Diệp Linh',
+'Đỗ Thạch Thảo',
+'Nguyễn Thị Ngọc',
+'Đặng Thị Quỳnh',
+'Nguyễn Thế Ngọc Phượng',
+'Nguyễn Thị Thanh Hằng',
+'Trần Thị Phương Thảo',
+'Nguyễn Thị Khánh Ly'];
+
+        foreach($ta as $key => $t){
+            $input['email'] = $t;
+            $input['password'] = Hash::make('12345Bay');
+            $input['name'] = $name[$key];
+            User::create($input);
+        }
+
+
+    }
     protected function checkAuth(){
         if(Auth::check()){
             $user = auth()->user();
