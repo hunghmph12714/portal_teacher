@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/parent/chuan', 'StudentController@normalPhone');
+// Route::get('/parent/chuan', 'StudentController@normalPhone');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -25,13 +25,181 @@ Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 Route::group(['middleware' => ['auth']], function() {
+    Route::get('/dashboard', function () {
+        return view('welcome');
+    });
+    Route::group(['middleware' => ['admin']], function(){
+        //CENTER MANAGEMENT
+            Route::get('/centers', function(){
+                return view('welcome');
+            });
+            Route::get('/get-center', 'CenterController@index'); 
+            Route::post('/center/create', 'CenterController@create');
+            Route::post('/center/edit', 'CenterController@edit');
+            Route::post('/center/delete', 'CenterController@delete');
+
+        //TEACHER MANAGEMENT
+            Route::get('/teachers', function(){
+                return view('welcome');
+            });
+            Route::get('/get-teacher', 'TeacherController@index');
+            Route::post('/teacher/create', 'TeacherController@create');
+            Route::post('/teacher/edit', 'TeacherController@edit');
+            Route::post('/techer/delete', 'TeacherController@delete');
+            Route::post('/teacher/resign', 'TeacherController@resign');
+        //BASE SALARY TEACHER
+            Route::get('/get-base-salary', 'TeacherController@getBaseSalary');
+            Route::get('/base-salary', function(){
+                return view('welcome');
+            });
+            Route::post('/base-salary/create', 'TeacherController@createBaseSalary');
+            Route::post('/base-salary/edit', 'TeacherController@editBaseSalary');
+            Route::post('/base-salary/delete', 'TeacherController@deleteBaseSalary');
+        //ROOM MANAGEMENT
+            Route::get('/rooms', function(){
+                return view('welcome');
+            });
+            Route::get('/get-rooms','ClassController@getRoom');
+            Route::get('/get-room/{center}', 'ClassController@getRoomCenter');
+            Route::post('/room/create', 'ClassController@createRoom');
+            Route::post('/room/edit', 'ClassController@editRoom');
+            Route::post('/room/delete', 'ClassController@deleteRoom');
+        //Courese MANAGEMENT
+            Route::get('/courses', function(){
+                return view('welcome');
+            });
+            Route::get('/get-courses','ClassController@getCourse');
+            Route::post('/course/create', 'ClassController@createCourse');
+            Route::post('/course/edit', 'ClassController@editCourse');
+            Route::post('/course/delete', 'ClassController@deleteCourse');
+        //Điều chỉnh học phí
+            Route::get('/fee-adjust', function(){
+                return view('welcome');
+            });
+            Route::post('/adjustfee/create', 'DiscountController@createAdjustFee');
+            Route::get('/adjustfee/get', 'DiscountController@getAdjustFee');
+            Route::post('/adjustfee/edit', 'DiscountController@editAdjustFee');
+            Route::post('/adjustfee/delete', 'DiscountController@deleteAdjustFee');
+            Route::post('/adjustfee/apply', 'SessionController@applyAdjustment');
+            
+        //SETTING-RELATIONSHIP
+            Route::get('/settings/relationship', function(){
+                return view('welcome');
+            });
+            Route::get('/relationship/get', 'AdminSettingController@getRelationship'); 
+            Route::post('/relationship/create', 'AdminSettingController@createRelationship');
+            Route::post('/relationship/edit', 'AdminSettingController@editRelationship');
+            Route::post('/relationship/delete', 'AdminSettingController@deleteRelationship');
+        //SETTING-STEP
+            Route::get('/settings/step', function(){
+                return view('welcome');
+            });
+            Route::post('/step/get', 'AdminSettingController@getStep'); 
+            Route::post('/step/create', 'AdminSettingController@createStep');
+            Route::post('/step/edit', 'AdminSettingController@editStep');
+            Route::post('/step/delete', 'AdminSettingController@deleteStep');
+
+        //SETTING-STATUS
+            Route::get('/settings/status', function(){
+                return view('welcome');
+            });
+            Route::post('/status/get', 'AdminSettingController@getStatus'); 
+            Route::post('/status/create', 'AdminSettingController@createStatus');
+            Route::post('/status/edit', 'AdminSettingController@editStatus');
+            Route::post('/status/delete', 'AdminSettingController@deleteStatus');
+        //Schools
+            Route::get('/school/find/{key}', 'StudentController@findSchools');
+        //Entrance
+            Route::get('/entrance/create', function(){
+                return view('welcome');
+            });
+            Route::get('/entrance/list', function(){
+                return view('welcome');
+            });
+            Route::post('/entrance/create', 'EntranceController@createEntrance');
+            Route::post('/entrance', 'EntranceController@getEntrance');
+            Route::get('/get-entrance/{step}', 'EntranceController@getEntranceByStep');
+            Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
+            Route::post('/entrance/edit', 'EntranceController@editEntrance');
+            Route::post('/entrance/delete', 'EntranceController@deleteEntrance');
+            Route::post('/entrance/send-message', 'EntranceController@sendMessage');
+        //Accounts
+            Route::get('/finaccount', function(){
+                return view('welcome');
+            });
+            Route::post('/account/get','AccountController@getAccount');
+            Route::post('/account/edit','AccountController@editAccount');
+            Route::post('/account/delete', 'AccountController@deleteAccount');
+            Route::post('/account/create', 'AccountController@addAccount');
+            // Route::get('/account/importDb', 'AccountController@importDb');
+            Route::post('/account/find', 'AccountController@findAccount');
+            Route::get('/get-equity', 'AccountController@getEquity');
+        //Transaction
+            Route::get('/transaction', function(){
+                return view('welcome');
+            });
+            Route::post('/transaction/add','TransactionController@addTransaction');
+            Route::post('/transaction/edit', 'TransactionController@editTransaction');
+            Route::post('/transaction/get','TransactionController@getTransaction');
+            Route::post('/transaction/get-id', 'TransactionController@getTransactionbyId');
+            Route::get('/transaction/test', 'TransactionController@getTransaction');
+            Route::get('/transaction/generate', 'TransactionController@generate');
+            Route::post('/transaction/delete', 'TransactionController@deleteTransaction');
+        //Discount
+            Route::get('/discount', function(){
+                return view('welcome');
+            });
+            Route::get('/discount/get', 'DiscountController@getDiscount');
+            Route::post('/discount/create', 'DiscountController@createDiscount');
+            Route::post('/discount/edit', 'DiscountController@editDiscount');
+            Route::post('/discount/delete', 'DiscountController@deleteDiscount');
+        //Paper 
+            Route::get('/payment', function(){
+                return view('welcome');
+            });
+            Route::get('/payment/get', 'PaperController@getPayment');
+            Route::post('/payment/create', 'PaperController@createPayment');
+            Route::post('/payment/edit', 'PaperController@editPayment');
+            Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
+            Route::post('/payment/delete', 'PaperController@deletePayment');
+
+        //Receipt 
+            Route::get('/receipt', function(){
+                return view('welcome');
+            });
+            Route::get('/receipt/get', 'PaperController@getReceipt');
+            Route::post('/receipt/create', 'PaperController@createReceipt');
+            Route::post('/receipt/edit', 'PaperController@editReceipt');
+            Route::post('/receipt/add-transaction', 'PaperController@addReceiptTransaction');
+            Route::post('/receipt/delete', 'PaperController@deleteReceipt');
+
+            Route::get('/paper/print/{id}', 'PaperController@printPaper');
+        //Tag
+            Route::get('/tag/get', 'TagController@getTag');
+        //Fee
+            Route::post('/fee/get', 'StudentController@getFee');
+            Route::get('/fee', function(){
+                return view('welcome');
+            });
+            Route::post('/fee/gather', 'PaperController@gatherFee');
+            Route::post('/fee/normalize', 'StudentController@normalizeFee');
+        //Email
+            Route::get('/send', 'StudentController@testMail');
+            Route::post('/attendance/send-email', 'AttendanceController@sendEmail');
+            Route::get('/e', function(){
+                return view('emails.thht');
+            });
+        //Bao cao tai chinh 
+            Route::get('/report/financial', function(){
+                return view('welcome');
+            });
+            Route::get('/report/get-financial', 'ReportController@getFinancial');
+    });
     //Password Change
     //Import database 
     // Route::get('/import-db', 'ClassController@importDB');
     Route::get('/get-schools', 'ClassController@getSchool');
-    Route::get('/dashboard', function () {
-        return view('welcome');
-    });
+    
 //USER PROFILE
     
     Route::get('/account', function () {
@@ -44,49 +212,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/settings', function(){
         return view('welcome');
     });
-//CENTER MANAGEMENT
-    Route::get('/centers', function(){
-        return view('welcome');
-    });
-    Route::get('/get-center', 'CenterController@index'); 
-    Route::post('/center/create', 'CenterController@create');
-    Route::post('/center/edit', 'CenterController@edit');
-    Route::post('/center/delete', 'CenterController@delete');
 
-//TEACHER MANAGEMENT
-    Route::get('/teachers', function(){
-        return view('welcome');
-    });
-    Route::get('/get-teacher', 'TeacherController@index');
-    Route::post('/teacher/create', 'TeacherController@create');
-    Route::post('/teacher/edit', 'TeacherController@edit');
-    Route::post('/techer/delete', 'TeacherController@delete');
-    Route::post('/teacher/resign', 'TeacherController@resign');
-//BASE SALARY TEACHER
-    Route::get('/get-base-salary', 'TeacherController@getBaseSalary');
-    Route::get('/base-salary', function(){
-        return view('welcome');
-    });
-    Route::post('/base-salary/create', 'TeacherController@createBaseSalary');
-    Route::post('/base-salary/edit', 'TeacherController@editBaseSalary');
-    Route::post('/base-salary/delete', 'TeacherController@deleteBaseSalary');
-//ROOM MANAGEMENT
-    Route::get('/rooms', function(){
-        return view('welcome');
-    });
-    Route::get('/get-rooms','ClassController@getRoom');
-    Route::get('/get-room/{center}', 'ClassController@getRoomCenter');
-    Route::post('/room/create', 'ClassController@createRoom');
-    Route::post('/room/edit', 'ClassController@editRoom');
-    Route::post('/room/delete', 'ClassController@deleteRoom');
-//Courese MANAGEMENT
-    Route::get('/courses', function(){
-        return view('welcome');
-    });
-    Route::get('/get-courses','ClassController@getCourse');
-    Route::post('/course/create', 'ClassController@createCourse');
-    Route::post('/course/edit', 'ClassController@editCourse');
-    Route::post('/course/delete', 'ClassController@deleteCourse');
 //Class Management
     Route::get('/classes', function(){
         return view('welcome');
@@ -110,57 +236,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
 
     
-    //Điều chỉnh học phí
-    Route::get('/fee-adjust', function(){
-        return view('welcome');
-    });
-    Route::post('/adjustfee/create', 'DiscountController@createAdjustFee');
-    Route::get('/adjustfee/get', 'DiscountController@getAdjustFee');
-    Route::post('/adjustfee/edit', 'DiscountController@editAdjustFee');
-    Route::post('/adjustfee/delete', 'DiscountController@deleteAdjustFee');
-    Route::post('/adjustfee/apply', 'SessionController@applyAdjustment');
-    
-//SETTING-RELATIONSHIP
-    Route::get('/settings/relationship', function(){
-        return view('welcome');
-    });
-    Route::get('/relationship/get', 'AdminSettingController@getRelationship'); 
-    Route::post('/relationship/create', 'AdminSettingController@createRelationship');
-    Route::post('/relationship/edit', 'AdminSettingController@editRelationship');
-    Route::post('/relationship/delete', 'AdminSettingController@deleteRelationship');
-//SETTING-STEP
-    Route::get('/settings/step', function(){
-        return view('welcome');
-    });
-    Route::post('/step/get', 'AdminSettingController@getStep'); 
-    Route::post('/step/create', 'AdminSettingController@createStep');
-    Route::post('/step/edit', 'AdminSettingController@editStep');
-    Route::post('/step/delete', 'AdminSettingController@deleteStep');
 
-//SETTING-STATUS
-    Route::get('/settings/status', function(){
-        return view('welcome');
-    });
-    Route::post('/status/get', 'AdminSettingController@getStatus'); 
-    Route::post('/status/create', 'AdminSettingController@createStatus');
-    Route::post('/status/edit', 'AdminSettingController@editStatus');
-    Route::post('/status/delete', 'AdminSettingController@deleteStatus');
-//Schools
-    Route::get('/school/find/{key}', 'StudentController@findSchools');
-//Entrance
-    Route::get('/entrance/create', function(){
-        return view('welcome');
-    });
-    Route::get('/entrance/list', function(){
-        return view('welcome');
-    });
-    Route::post('/entrance/create', 'EntranceController@createEntrance');
-    Route::post('/entrance', 'EntranceController@getEntrance');
-    Route::get('/get-entrance/{step}', 'EntranceController@getEntranceByStep');
-    Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
-    Route::post('/entrance/edit', 'EntranceController@editEntrance');
-    Route::post('/entrance/delete', 'EntranceController@deleteEntrance');
-    Route::post('/entrance/send-message', 'EntranceController@sendMessage');
     
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
@@ -185,77 +261,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
     Route::post('/attendance/edit', 'AttendanceController@editAttendance');
     Route::post('/attendance/cell-edit', 'AttendanceController@cellEdit');
-//Accounts
-    Route::get('/finaccount', function(){
-        return view('welcome');
-    });
-    Route::post('/account/get','AccountController@getAccount');
-    Route::post('/account/edit','AccountController@editAccount');
-    Route::post('/account/delete', 'AccountController@deleteAccount');
-    Route::post('/account/create', 'AccountController@addAccount');
-    // Route::get('/account/importDb', 'AccountController@importDb');
-    Route::post('/account/find', 'AccountController@findAccount');
-    Route::get('/get-equity', 'AccountController@getEquity');
-//Transaction
-    Route::get('/transaction', function(){
-        return view('welcome');
-    });
-    Route::post('/transaction/add','TransactionController@addTransaction');
-    Route::post('/transaction/edit', 'TransactionController@editTransaction');
-    Route::post('/transaction/get','TransactionController@getTransaction');
-    Route::post('/transaction/get-id', 'TransactionController@getTransactionbyId');
-    Route::get('/transaction/test', 'TransactionController@getTransaction');
-    Route::get('/transaction/generate', 'TransactionController@generate');
-    Route::post('/transaction/delete', 'TransactionController@deleteTransaction');
-//Discount
-    Route::get('/discount', function(){
-        return view('welcome');
-    });
-    Route::get('/discount/get', 'DiscountController@getDiscount');
-    Route::post('/discount/create', 'DiscountController@createDiscount');
-    Route::post('/discount/edit', 'DiscountController@editDiscount');
-    Route::post('/discount/delete', 'DiscountController@deleteDiscount');
-//Paper 
-    Route::get('/payment', function(){
-        return view('welcome');
-    });
-    Route::get('/payment/get', 'PaperController@getPayment');
-    Route::post('/payment/create', 'PaperController@createPayment');
-    Route::post('/payment/edit', 'PaperController@editPayment');
-    Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
-    Route::post('/payment/delete', 'PaperController@deletePayment');
 
-//Receipt 
-    Route::get('/receipt', function(){
-        return view('welcome');
-    });
-    Route::get('/receipt/get', 'PaperController@getReceipt');
-    Route::post('/receipt/create', 'PaperController@createReceipt');
-    Route::post('/receipt/edit', 'PaperController@editReceipt');
-    Route::post('/receipt/add-transaction', 'PaperController@addReceiptTransaction');
-    Route::post('/receipt/delete', 'PaperController@deleteReceipt');
-
-    Route::get('/paper/print/{id}', 'PaperController@printPaper');
-//Tag
-    Route::get('/tag/get', 'TagController@getTag');
-//Fee
-    Route::post('/fee/get', 'StudentController@getFee');
-    Route::get('/fee', function(){
-        return view('welcome');
-    });
-    Route::post('/fee/gather', 'PaperController@gatherFee');
-    Route::post('/fee/normalize', 'StudentController@normalizeFee');
-//Email
-    Route::get('/send', 'StudentController@testMail');
-    Route::post('/attendance/send-email', 'AttendanceController@sendEmail');
-    Route::get('/e', function(){
-        return view('emails.thht');
-    });
-//Bao cao tai chinh 
-    Route::get('/report/financial', function(){
-        return view('welcome');
-    });
-    Route::get('/report/get-financial', 'ReportController@getFinancial');
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
