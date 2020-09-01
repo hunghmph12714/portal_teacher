@@ -222,13 +222,13 @@ const ListFee = React.memo(props => {
                     text: 'Xem toàn bộ',
                     onClick: (evt) => {setAll(!show_all)},
                 },
-                {                                  
-                    icon: () => <CachedIcon/>,
-                    tooltip: 'Chuẩn hóa học phí',
-                    isFreeAction: true,
-                    text: 'Chuẩn hóa học phí',
-                    onClick: (evt) => {props.normalize()},
-                },
+                // {                                  
+                //     icon: () => <CachedIcon/>,
+                //     tooltip: 'Chuẩn hóa học phí',
+                //     isFreeAction: true,
+                //     text: 'Chuẩn hóa học phí',
+                //     onClick: (evt) => {props.normalize()},
+                // },
             ]}
         />
     )

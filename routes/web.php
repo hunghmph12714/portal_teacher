@@ -11,7 +11,6 @@
 |
 */
 
-// Route::get('/parent/chuan', 'StudentController@normalPhone');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -183,12 +182,7 @@ Route::group(['middleware' => ['auth']], function() {
             });
             Route::post('/fee/gather', 'PaperController@gatherFee');
             Route::post('/fee/normalize', 'StudentController@normalizeFee');
-        //Email
-            Route::get('/send', 'StudentController@testMail');
-            Route::post('/attendance/send-email', 'AttendanceController@sendEmail');
-            Route::get('/e', function(){
-                return view('emails.thht');
-            });
+        
         //Bao cao tai chinh 
             Route::get('/report/financial', function(){
                 return view('welcome');
@@ -261,7 +255,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/attendance/get', 'AttendanceController@getAttendance');
     Route::post('/attendance/edit', 'AttendanceController@editAttendance');
     Route::post('/attendance/cell-edit', 'AttendanceController@cellEdit');
-
+//Email
+    Route::get('/send', 'StudentController@testMail');
+    Route::post('/attendance/send-email', 'AttendanceController@sendEmail');
+    Route::get('/e', function(){
+        return view('emails.thht');
+    });
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
@@ -284,4 +283,4 @@ Route::get('/testtime',function(){
 // Route::get('/regenerate', 'SessionController@reGenerateFee');
 // Route::get('/delete-attendance', 'AttendanceController@delete');
 // Route::get('/delete-fee', 'SessionController@deleteFee');
-Route::get('/create-ta', 'UserController@createTa');
+// Route::get('/create-ta', 'UserController@createTa');
