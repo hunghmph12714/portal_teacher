@@ -35,6 +35,10 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
         foreach($ta as $key => $t){
             $input['email'] = $t;
             $input['password'] = Hash::make('12345Bay');
+            
+            $name_arr = explode(' ', $name[$key]);
+            $input['first_name'] = $name_arr[0];
+            $input['last_name'] = end($name_arr);
             $input['name'] = $name[$key];
             User::create($input);
         }

@@ -17,7 +17,7 @@ class ReportController extends Controller
         // $result = $this->report($class_id, $month);
 
         // print_r($result);
-        $classes = Classes::where('student_number', '>' , 4)->get();
+        $classes = Classes::where('student_number', '>' , 1)->get();
         $result = [];
         foreach($classes as $class){
             $grade = Course::find($class->course_id)->grade;
