@@ -14,6 +14,7 @@ use App\Discount;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use App\TransactionSession;
 class SessionController extends Controller
 {
     //
@@ -478,8 +479,23 @@ class SessionController extends Controller
     }
    
     protected function deleteSession(Request $request){
-        $rules = ['class_id' => 'required'];
+        $rules = ['session_id' => 'required'];
         $this->validate($request, $rules);
+
+        
+        $session = Session::find($request->session_id);
+        if($session){
+        //Xóa điểm danh
+            $session->students()->detach();
+        
+        // Xóa học phí
+            $transactions = $session->transactions;
+            foreach($transactions as $t){
+                TransactionSession::where('transaction_id', $t->id)->where('session_id', $session->id)->first()->forceDelete();
+            }
+            $session->forceDelete();
+        }
+        return response()->json('ok');
     }
     
     protected function applyAdjustment(Request $request){

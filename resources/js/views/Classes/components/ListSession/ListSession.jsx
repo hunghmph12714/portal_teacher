@@ -29,7 +29,7 @@ const ListSession = (props) => {
     const [selected_session, setSelectedSession] = useState([]);
     const [columns, setColumn] = useState(
       [
-        //Actions
+        //Actionsds
           {
             title: "",
             field: "action",
@@ -55,7 +55,7 @@ const ListSession = (props) => {
                     <Tooltip title="Xóa ca học" arrow>
                       <IconButton onClick={() => {
                         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                          this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                          handleDeactivateSession(rowData.sid, rowData.tableData.id)}
                         }>
                       <DeleteForeverIcon fontSize='inherit' />
                       </IconButton>
@@ -229,6 +229,17 @@ const ListSession = (props) => {
       setDialogType('edit')
       setSelectedSession(rowData)
       //ss
+    }
+    function handleDeactivateSession(session_id, table_id){
+      console.log(session_id)
+      axios.post('/session/delete', {session_id: session_id})
+        .then(response => {
+
+        })
+        .catch(err => {
+
+        })
+      setFetchData(!fetchData)
     }
     useEffect(() => {
         const fetchData = async() => {
