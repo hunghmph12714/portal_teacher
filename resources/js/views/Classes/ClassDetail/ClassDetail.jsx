@@ -131,7 +131,9 @@ class ClassDetail extends React.Component{
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                  <ListAttendance class_id={this.props.match.params.id}/>
+                  <ListAttendance class_id={this.props.match.params.id} 
+                    from = {this.state.from}
+                    to = {this.state.to}/>
                 </TabPanel>
                 <TabPanel value={this.state.value} index={1}>
                     <ListSession class_id={this.props.match.params.id}/>

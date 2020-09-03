@@ -220,7 +220,7 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
 
-    Route::get('/class/report/{class_id}', 'ClassController@getReport');
+    Route::post('/class/report', 'ClassController@getReport');
     Route::post('/score/report', 'ClassController@getScoreReport');
     Route::get('/class/{class_id}', 'ClassController@detailClass');
     Route::post('/class/student','ClassController@detailStudentClass');

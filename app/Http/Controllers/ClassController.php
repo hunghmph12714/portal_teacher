@@ -541,15 +541,18 @@ class ClassController extends Controller
             }
         }
     }
-    protected function getReport($class_id){
-        $from = date('Y-m-d 00:00:00', strtotime('01-08-2020'));
-        $to = date('Y-m-d 23:59:59', strtotime('30-09-2020'));
+    protected function getReport(Request $request){
+        $rules = ['class_id' => 'required', 'from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+
+        $from = date('Y-m-d 00:00:00', strtotime($request->from));
+        $to = date('Y-m-d 23:59:59', strtotime($request->to));
+        $class_id = $request->class_id;
         $class = Classes::find($class_id);
         $sessions = Session::whereBetween('date',[$from, $to])->where('class_id', $class_id)->get();
         $result = [];
         if($class){  
-            //session
-            
+            //session            
             $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
@@ -563,9 +566,12 @@ class ClassController extends Controller
 
                 $transactions = Transaction::where('class_id', $class_id)->where('student_id', $s->id)->whereBetween('time',[$from, $to])->get();
                 $r['hp'] = 0;
+                $r['mg'] = 0;
                 $r['dd'] = 0;
                 $r['no'] = 0;
                 $r['gc'] = 0;
+                $r['cd'] = 0;
+                $r['remain'] = 0;
                 foreach($transactions as $t){
                     //hp 
                     $acc_no = Account::where('level_2', '131')->first()->id;
@@ -573,11 +579,17 @@ class ClassController extends Controller
                     $dt = Account::where('level_2', '511')->first()->id;
                     
                     // print_r($t->debit);
+                    // Học phí
                     if($t->debit == $acc_no){
                         $r['hp'] += $t->amount;
                     }
-                    if(($t->debit == $dtcth || $t->debit == $dt) && $t->credit == $acc_no){
+                    // Điều chỉnh học phí
+                    if(($t->debit == $dtcth) && $t->credit == $acc_no){
                         $r['hp'] -= $t->amount;
+                    }
+                    // Miễn giảm
+                    if(($t->debit == $dt) && $t->credit == $acc_no || $t->tags()->first()->name == 'Miễn giảm'){
+                        $r['mg'] += $t->amount;
                     }
                     //DD
                     $acc = Account::where('type','equity')->get('id')->toArray();
@@ -586,18 +598,24 @@ class ClassController extends Controller
                         $r['dd'] += $t->amount;
                     }
                     //giữ chỗ
-                    $tag = Tag::where('name', 'Giữ chỗ')->first()->id;
-                    $t_tag = $t->tags->toArray();
-                    if($t_tag){
-                        foreach($t_tag as $tt){
-                            if($tt['id'] == $tag){
-                                $r['gc'] += $t->amount;
-                            }
-                        }
-                    }
+                    // $tag = Tag::where('name', 'Giữ chỗ')->first()->id;
+                    // $t_tag = $t->tags->toArray();
+                    // if($t_tag){
+                    //     foreach($t_tag as $tt){
+                    //         if($tt['id'] == $tag){
+                    //             $r['gc'] += $t->amount;
+                    //         }
+                    //     }
+                    // }
+
+                    //Số dư kì trước
+                    $debit = Transaction::where('class_id', $class_id)->where('student_id', $s->id)->where('time', '<', $from)->where('debit', $acc_no)->sum('amount');
+                    $credit = Transaction::where('class_id', $class_id)->where('student_id', $s->id)->where('time', '<', $from)->where('credit', $acc_no)->sum('amount');
+                    $r['remain'] = $debit - $credit;
                 }
                 $r['attendance'] = [];
-                $r['no'] = $r['hp'] - $r['dd'] + $r['gc'];
+                $r['cd'] = $r['hp'] - $r['mg'] + $r['remain'];
+                $r['no'] = $r['cd'] - $r['dd'];
 
                 //Attendance
                 foreach($sessions as $ss){
