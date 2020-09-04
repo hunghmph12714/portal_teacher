@@ -454,46 +454,38 @@ class Attendance extends React.Component{
                         render: rowData => (
                             <div style = {{display: 'block'}}>
                                 {/* {rowData.tableData.id} */}
-                                {                 
-                                                 
-                                    (!rowData.attendance[0].logs.sent_user )? (
-                                        (this.state.loading_email) ? (
-                                            <CircularProgress/>
-                                        ):(
-                                            <Tooltip title="Gửi email" arrow>                                                
-                                                <IconButton onClick={() => {
-                                                    if(rowData.attendance[0].attendance == 'holding'){
-                                                        if (window.confirm('Học sinh chưa được điểm danh! Tiếp tục gửi email?')) 
-                                                            this.handleSendEmail(rowData.attendance)
-                                                            return;
-                                                    }
-                                                    if(!rowData.attendance[0].btvn_complete||!rowData.attendance[0].btvn_score||!rowData.attendance[0].btvn_max){
-                                                        if (window.confirm('Học sinh không có điểm BTVN! Tiếp tục gửi email?')) 
-                                                            this.handleSendEmail(rowData.attendance)
-                                                            return;
-
-                                                    }
-                                                    if(!rowData.attendance[0].max_score||!rowData.attendance[0].score){
-                                                        if (window.confirm('Học sinh không có điểm trên lớp! Tiếp tục gửi email?')) 
-                                                            this.handleSendEmail(rowData.attendance)
-                                                            return;
-                                                    }
-                                                    this.handleSendEmail(rowData.attendance)
-                                                    }}
-                                                    >                                                    
-                                                    <MailOutlineIcon fontSize='inherit' />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )
-                                        
+                                {   (this.state.loading_email) ? (
+                                        <CircularProgress/>
                                     ):(
-                                        <Tooltip 
-                                            title={rowData.attendance[0].logs.sent_user + ' đã gửi email ' + format(new Date(rowData.attendance[0].logs.sent_time * 1000), 'd/M/yyyy HH:mm')} arrow>
-                                            <span>
-                                                <IconButton disabled>
-                                                    <MailOutlineIcon fontSize='inherit' />
-                                                </IconButton>
-                                            </span>
+                                        <Tooltip title={
+                                            rowData.attendance.map( a => {
+                                                if(a.logs.sent_time){
+                                                    return a.logs.sent_user + ' đã gửi email ' + format(new Date(a.logs.sent_time * 1000), 'd/M/yyyy HH:mm') + '\n'
+                                                }
+                                            })
+                                        } arrow>                                                
+                                            <IconButton onClick={() => {
+                                                if(rowData.attendance[0].attendance == 'holding'){
+                                                    if (window.confirm('Học sinh chưa được điểm danh! Tiếp tục gửi email?')) 
+                                                        this.handleSendEmail(rowData.attendance)
+                                                        return;
+                                                }
+                                                if(!rowData.attendance[0].btvn_complete||!rowData.attendance[0].btvn_score||!rowData.attendance[0].btvn_max){
+                                                    if (window.confirm('Học sinh không có điểm BTVN! Tiếp tục gửi email?')) 
+                                                        this.handleSendEmail(rowData.attendance)
+                                                        return;
+
+                                                }
+                                                if(!rowData.attendance[0].max_score||!rowData.attendance[0].score){
+                                                    if (window.confirm('Học sinh không có điểm trên lớp! Tiếp tục gửi email?')) 
+                                                        this.handleSendEmail(rowData.attendance)
+                                                        return;
+                                                }
+                                                this.handleSendEmail(rowData.attendance)
+                                                }}
+                                                >                                                    
+                                                <MailOutlineIcon fontSize='inherit' />
+                                            </IconButton>
                                         </Tooltip>
                                     )
                                 }                      
