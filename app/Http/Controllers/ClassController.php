@@ -588,7 +588,7 @@ class ClassController extends Controller
                         $r['hp'] -= $t->amount;
                     }
                     // Miễn giảm
-                    if(($t->debit == $dt) && $t->credit == $acc_no || $t->tags()->first()->name == 'Miễn giảm'){
+                    if(($t->debit == $dt) && $t->credit == $acc_no ){
                         $r['mg'] += $t->amount;
                     }
                     //DD
