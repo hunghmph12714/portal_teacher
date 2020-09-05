@@ -34,12 +34,11 @@
                         <span>Đi học muộn</span>
                         @break
                     @case('absence')
-                        <span>Vắng không phép</span>
-                        @break
-                    @case('n_absence')
                         <span>Vắng có phép</span>
                         @break
-
+                    @case('n_absence')
+                        <span>Vắng không phép</span>
+                        @break
                     @default
                         <span>Something went wrong, please try again</span>
                 @endswitch

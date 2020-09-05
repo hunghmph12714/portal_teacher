@@ -18,7 +18,7 @@ class Classes extends Model
                     ->as('detail')
                     ->using('App\StudentClass')
                     ->withPivot('status', 'entrance_date','stats','drop_time')
-                    ->withTimestamps()->orderBy('student_class.status');
+                    ->withTimestamps()->orderBy('student_class.status')->orderBy('students.fullname');
     }
     public function activeStudents(){
         return $this->belongsToMany('App\Student','student_class','class_id','student_id')

@@ -563,7 +563,10 @@ class ClassController extends Controller
                 $r['pname'] = $parent->fullname;
                 $r['dob'] = date('d-m-Y', strtotime($s->dob));
                 $r['phone'] = $parent->phone; $r['email'] = $parent->email; 
-
+                $r['id'] = $s->id;
+                $r['status'] = $s->detail['status'];
+                $r['entrance'] = $s->detail['entrance_date'];
+                $r['drop'] = $s->detail['drop_time'];
                 $transactions = Transaction::where('class_id', $class_id)->where('student_id', $s->id)->whereBetween('time',[$from, $to])->get();
                 $r['hp'] = 0;
                 $r['mg'] = 0;
