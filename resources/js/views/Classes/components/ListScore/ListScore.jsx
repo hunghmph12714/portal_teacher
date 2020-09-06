@@ -20,6 +20,7 @@ import {
   import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 const baseUrl = window.Laravel.baseUrl
 var initialSheet = {}
+var attendanceOptions = ['x', '-', 'p','kp','l'];
 const ListScore = (props) => {
     const [sheets, setSheets] = useState([{name: 'Sheet 1',
         cells: {
@@ -104,9 +105,9 @@ const ListScore = (props) => {
             for (let k = 0 ; k < sessions.length; k++){
                 sheet.cells[rowIndex][7+t] = {text: student.attendance[k], 
                     dataValidation: {
-                      prompt: "Nhập điểm danh",
-                      type: 'list',
-                      formulae: ['x', '-', 'p','kp','l']
+                        prompt: "Nhập điểm danh",
+                        type: 'list',
+                        formulae: ['x', '-', 'p','kp','l']
                     },
                     tooltip: student.fullname, student_id: student.id, session_id: sessions[k].id, col: 'attendance', strokeLeftColor:'black'
                     , strokeBottomColor: (i == students.length-1) ? 'black': '' 
@@ -127,26 +128,50 @@ const ListScore = (props) => {
   }, [props.from, props.to])
   const updateServer = (sheet, value, cell) => {
     var cells = initialSheet.cells
-    let student_id = cells[cell.rowIndex][cell.columnIndex].student_id
-    let session_id = cells[cell.rowIndex][cell.columnIndex].session_id
-    let col = cells[cell.rowIndex][cell.columnIndex].col
-    if(cells[cell.rowIndex][cell.columnIndex].student_id && cells[cell.rowIndex][cell.columnIndex].session_id){
-        axios.post(baseUrl + '/attendance/cell-edit', {student_id: student_id, session_id: session_id, col: col, value: value})
-        .then(response => {
+        let student_id = cells[cell.rowIndex][cell.columnIndex].student_id
+        let session_id = cells[cell.rowIndex][cell.columnIndex].session_id
+        let col = cells[cell.rowIndex][cell.columnIndex].col
+        if(cells[cell.rowIndex][cell.columnIndex].student_id && cells[cell.rowIndex][cell.columnIndex].session_id){
+            axios.post(baseUrl + '/attendance/cell-edit', {student_id: student_id, session_id: session_id, col: col, value: value})
+            .then(response => {
 
-        })
-        .catch(err=> {
-            
-        })
-    }
-    
+            })
+            .catch(err=> {
+                
+            })
+        }
   }
   return (
     <SpreadSheet
         className = "sheet"
         sheets={sheets}
         onChange = {setSheets}
-        onChangeCell={(sheet, value, cell) => updateServer(sheet,value,cell)}
+        // onChangeCell={(sheet, value, cell) => updateServer(sheet,value,cell)}
+        onChangeCells={(activeSheetId, changes) => {
+            // Persist in your data model
+            let payload = [];
+            for (const [row, rows] of Object.entries(changes)) {
+                for (const [col, cell] of Object.entries(rows)) {
+                    var cells = initialSheet.cells
+                    let student_id = cells[row][col].student_id
+                    let session_id = cells[row][col].session_id
+                    let type = cells[row][col].col
+                    
+                    if(cells[row][col].student_id && cells[row][col].session_id){
+                        payload.push({student_id: student_id, session_id: session_id, col: type, value: cell.text})                        
+                    }
+                }
+            }
+            axios.post(baseUrl + '/attendance/cell-edit', {payload: payload})
+                .then(response => {
+
+                })
+                .catch(err=> {
+                    
+                })
+        }}
+        minHeight={600}
+        snap={true}
         selectionMode='row|column|both'
     />
   )

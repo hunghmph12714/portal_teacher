@@ -131,32 +131,37 @@ class AttendanceController extends Controller
         }
     }
     public function cellEdit(Request $request){
-        $att = StudentSession::where('student_id', $request->student_id)->where('session_id', $request->session_id)->first();
-        if($att){
-            $att->{$request->col} = $request->value;
-            if($request->col = "attendance"){
-                switch ($request->value) {
-                    case 'x':
-                        $att->attendance = 'present';
-                        break;
-                    case 'p':
-                        $att->attendance = 'absence';
-                        break;
-                    case 'kp':
-                        $att->attendance = 'n_absence';
-                        break;
-                    case '-':
-                        $att->attendance = 'holding';
-                        break;
-                    case 'l':
-                        $att->attendance = 'late';
-                        break;
-                    default:
-                        # code...
-                        break;
+        $rules = ['payload' => 'required'];
+        $this->validate($request, $rules);
+        foreach($request->payload as $p){
+            $att = StudentSession::where('student_id', $p['student_id'])->where('session_id', $p['session_id'])->first();
+            if($att){
+                $att->{$p['col']} = $p['value'];
+                if($p['col'] = "attendance"){
+                    switch ($p['value']) {
+                        case 'x':
+                            $att->attendance = 'present';
+                            break;
+                        case 'p':
+                            $att->attendance = 'absence';
+                            break;
+                        case 'kp':
+                            $att->attendance = 'n_absence';
+                            break;
+                        case '-':
+                            $att->attendance = 'holding';
+                            break;
+                        case 'l':
+                            $att->attendance = 'late';
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
                 }
-            }
             $att->save();
+        }
+        
         }
         return response()->json(200);
     }
