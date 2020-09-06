@@ -151,7 +151,7 @@ class ClassController extends Controller
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', strtotime($request['student_dob'])) : null;
         $p = [];
         $p['fullname'] = $request['parent_name'];
-        $p['relationship_id'] = $request['selected_relationship']['value'];
+        $p['relationship_id'] = ($request['selected_relationship'] != "") ? $request['selected_relationship']['value'] : null;
         $p['phone'] = $request['parent_phone']['label'];
         $p['email'] = $request['parent_email'];
         $p['note'] = $request['parent_note'];

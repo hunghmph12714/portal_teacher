@@ -229,7 +229,7 @@ const ListStudent = (props) => {
                             (                              
                             <Typography variant="body2" component="p">
                                 <b>{rowData.pname}</b> 
-                                <br/>{rowData.pphone} 
+                                <br/><a target="_blank" href={"https://vietelite.3cx.vn:5001/webclient/#/call?phone=" + rowData.pphone} > {rowData.pphone} </a> 
                                 <br/>{rowData.pemail}
                             </Typography>                              
                             ),
