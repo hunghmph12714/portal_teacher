@@ -13,7 +13,8 @@ class Session extends Model
         return $this->belongsToMany('App\Student', 'student_session', 'session_id', 'student_id');
     }
     public function transactions(){
-        return $this->belongsToMany('App\Transaction', 'transaction_session', 'session_id', 'transaction_id');
+        return $this->belongsToMany('App\Transaction', 'transaction_session', 'session_id', 'transaction_id')
+        ->withPivot('id','amount');;
     }
     
-}//s
+}//ss
