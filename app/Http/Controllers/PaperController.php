@@ -259,16 +259,41 @@ class PaperController extends Controller
             }
         }
     }
-    protected function getReceipt(){
-        $result = [];
-        $receipts = Paper::Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
+    protected function getReceipt(Request $request){
+        $rules = [
+            'page' => 'required',
+            'per_page' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $offset = $request->page * ($request->per_page);
+        $result = ['data' => []];
+        $receipts = [];
+        $transactions = null;
+        if(empty($request->filter)){
+            $result['page'] = $request->page;
+            $result['total'] = Paper::where('type','receipt')->count();
+            $receipts = Paper::Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
                                     'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid')->where('type', 'receipt')
                                     ->leftJoin('users','papers.user_created_id','users.id')
-                                    ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')
-                                    ->get();
+                                    ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
+                                    ->get();            
+        }
+        else{
+            $result['page'] = $request->page;
+            // print_r($request->filter);
+            $receipt = Paper::query();
+            $receipt->receiptNumber($request->filter)->receiptName($request->filter)->receiptDescription($request->filter)->receiptAddress($request->filter);
+
+            $receipts =  $receipt->Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
+                'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid')->where('type', 'receipt')
+                ->leftJoin('users','papers.user_created_id','users.id')
+                ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
+                ->get();
+        }
+        
         foreach($receipts as $key => $p){
             $transaction_result = [];       
-            $result[$key] = $p;     
+            $result['data'][$key] = $p;     
 
             $transactions = $p->transactions()->select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
@@ -293,7 +318,7 @@ class PaperController extends Controller
                 $transaction_result[$k]['tags'] = $tags->toArray();
             }
             
-            $result[$key]['transactions'] = $transaction_result;
+            $result['data'][$key]['transactions'] = $transaction_result;
         }
         return response()->json($result);
     }

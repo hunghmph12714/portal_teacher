@@ -223,18 +223,32 @@ const ReceiptView = React.memo(props => {
         },
     
     ])
-    useEffect(() => {
-        const fetchData = async() => {
-            var r = await axios.get(baseUrl + '/receipt/get')            
-            setData(r.data)
-        }
-        fetchData()
-    },[reload])
+    // useEffect(() => {
+    //     const fetchData = async() => {
+    //         var r = await axios.get(baseUrl + '/receipt/get')            
+    //         setData(r.data)
+    //     }
+    //     fetchData()
+    // },[reload])
     return(
         <MaterialTable
             className = "receipt-table"
             title="Danh sách phiếu thu"
-            data={data}
+            data={(query) => new Promise((resolve, reject) => {
+                console.log(query)
+                axios.post(baseUrl + '/receipt/get', {filter: query.filters, page: query.page, per_page: query.pageSize})
+                    .then(response => {
+                        resolve(
+                            {
+                                data: response.data.data,
+                                page: response.data.page,
+                                totalCount: response.data.total
+                            }
+                        )
+                         
+                    })
+                })
+            }
             options={{
                 pageSize: 20,
                 pageSizeOptions: [20, 50, 100],

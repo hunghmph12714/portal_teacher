@@ -174,10 +174,10 @@ const PaymentView = React.memo(props => {
                         )
                     }
                 },
-            //Thời  gian chứng từ
+            //Thời  gian chứng từd
                 {
                     title: "Chứng từ",
-                    field: "created_at",
+                    field: "time_formated",
                     grouping: false,
                     headerStyle: {
                         padding: '0px',
@@ -188,7 +188,6 @@ const PaymentView = React.memo(props => {
                         padding: '0px',
                         width: '130px',
                     },
-                    render: rowData => (<span> {format(new Date(rowData.created_at) , 'd/M/yyyy')} </span>)
                 },
             //Số tiền  
                 {

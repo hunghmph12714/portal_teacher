@@ -1,5 +1,5 @@
 <?php
-
+//s
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -84,8 +84,7 @@ class TransactionController extends Controller
                 if($f['column']['field'] == 'sname'){     
                     $sname = $f['value'];               
                                                      
-                }
-                
+                }                
                 $transactions = Transaction::Select(
                     'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                     'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',

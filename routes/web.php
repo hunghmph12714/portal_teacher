@@ -156,7 +156,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/payment', function(){
                 return view('welcome');
             });
-            Route::get('/payment/get', 'PaperController@getPayment');
+            Route::post('/payment/get', 'PaperController@getPayment');
             Route::post('/payment/create', 'PaperController@createPayment');
             Route::post('/payment/edit', 'PaperController@editPayment');
             Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
@@ -166,7 +166,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/receipt', function(){
                 return view('welcome');
             });
-            Route::get('/receipt/get', 'PaperController@getReceipt');
+            Route::post('/receipt/get', 'PaperController@getReceipt');
             Route::post('/receipt/create', 'PaperController@createReceipt');
             Route::post('/receipt/edit', 'PaperController@editReceipt');
             Route::post('/receipt/add-transaction', 'PaperController@addReceiptTransaction');
