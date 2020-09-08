@@ -156,7 +156,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/payment', function(){
                 return view('welcome');
             });
-            Route::post('/payment/get', 'PaperController@getPayment');
+            Route::get('/payment/get', 'PaperController@getPayment');
             Route::post('/payment/create', 'PaperController@createPayment');
             Route::post('/payment/edit', 'PaperController@editPayment');
             Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
@@ -229,6 +229,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
 
+    Route::post('/class/active-student', 'ClassController@getActiveStudent');
     
 
     
@@ -248,6 +249,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/session/edit', 'SessionController@editSession');
     Route::post('/session/add', 'SessionController@addSession');
     Route::post('/session/check-date', 'SessionController@checkDate');
+
+    
 //Attendance
     Route::get('/attendance', function(){
         return view('welcome');

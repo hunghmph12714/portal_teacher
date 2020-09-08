@@ -7,3 +7,5 @@ export { default as Navigation } from './Navigation';
 export { default as StudentSearch } from './StudentSearch';
 export { default as ParentSearch } from './ParentSearch';
 export { default as ClassSearch } from './ClassSearch';
+export { default as TeacherSearch } from './TeacherSearch';
+export { default as StudentClassSelect } from './StudentClassSelect';

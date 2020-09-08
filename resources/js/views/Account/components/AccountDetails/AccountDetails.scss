@@ -1,4 +1,6 @@
-.date-time {
+
+account-root{
+  .date-time {
     display: inline-flex;
     width: 100%;
     .input-date {
@@ -14,8 +16,7 @@
         margin-left: 0;
       }
     }
-    
-}
+  }
 .gender-group {
     flex-direction: row !important;
     flex: 1;
@@ -30,3 +31,20 @@
       padding: 0 5%;
     }
   }
+}
+.date-time {
+  display: inline-flex;
+  width: 100%;
+  .input-date {
+    width: 100%;
+    .MuiInputBase-root {
+      height: 40px;
+    }
+    .MuiOutlinedInput-adornedEnd {
+      padding-right: 0;
+    }
+    .MuiInputAdornment-positionEnd {
+      margin-left: 0;
+    }
+  }
+}

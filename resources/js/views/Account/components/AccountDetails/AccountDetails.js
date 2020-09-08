@@ -65,7 +65,7 @@ class AccountDetails extends React.Component{
       return(
         <div>
           <Card
-            className="root"
+            className="account-root"
           >
             <form
               autoComplete="off"

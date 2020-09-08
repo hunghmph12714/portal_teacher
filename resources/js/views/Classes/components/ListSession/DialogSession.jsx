@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
+import { TeacherSearch, StudentClassSelect } from '../../../../components';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Select from "react-select";
 import {DropzoneArea} from 'material-ui-dropzone'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -38,6 +38,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withSnackbar } from 'notistack';
 import Slide from '@material-ui/core/Slide';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select  from '@material-ui/core/Select';
 const baseUrl = window.Laravel.baseUrl
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -61,7 +63,7 @@ function NumberFormatCustom(props) {
         isNumericString
       />
     );
-  }
+}
   
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
@@ -76,45 +78,67 @@ const CenterSelect = React.memo(props => {
         fetchData()
     }, [])
     
-    return( 
-        <Select className = "select-box"
-            className="select-box"
-            key = "center-select"
-            value = {props.center}
-            name = "center"
-            placeholder="Cơ sở"
-            options={centers}
-            onChange={props.handleChange}
-        />)
+    return(         
+        <FormControl variant="outlined" size="small">
+            <InputLabel id="demo-simple-select-outlined-label">Cơ sở</InputLabel>
+            <Select
+                value={props.center}
+                onChange={props.handleChange}
+                label="Cơ sở"
+            >
+            <MenuItem value="">
+                <em>Vui lòng chọn cơ sở</em>
+            </MenuItem>
+            {
+                centers.map(c => {
+                    return (<MenuItem value={c.value}>{c.label}</MenuItem>)
+                })
+            }
+            </Select>
+        </FormControl>
+    )
 })
-const TeacherSelect = React.memo(props => {
-    const [teachers, setTeacher] = useState([])
+const RoomSelect = React.memo(props => {
+    const [rooms, setRooms] = useState([])
+    const center_id = props.center
     useEffect(() => {
         const fetchData = async() => {
-            const r = await axios.get(baseUrl + '/get-teacher')
-            setTeacher(r.data.map(center => {
-                    return {label: center.name, value: center.id}
+            const r = await axios.get(window.Laravel.baseUrl + '/get-room/'+ center_id)            
+            setRooms(r.data.map(room => {
+                    return {label: room.name, value: room.id}
                 })
             )
         }
         fetchData()
-    }, [])
+    }, [props.center])
     
-    return( 
-        <Select className = "select-box"
-            className="select-box"
-            key = "center-select"
-            value = {props.teacher}
-            name = "teacher"
-            placeholder="Giáo viên"
-            options={teachers}
-            onChange={props.handleChange}
-        />)
-}) 
+    return(         
+        <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '4px'}}>
+            <InputLabel id="demo-simple-select-outlined-label">Phòng học</InputLabel>
+            <Select
+                value={props.room}
+                onChange={props.handleChange}
+                label="Phòng học"
+            >
+            <MenuItem value="">
+                <em>Vui lòng chọn Phòng học</em>
+            </MenuItem>
+            {
+                rooms.map(c => {
+                    return (<MenuItem value={c.value}>{c.label}</MenuItem>)
+                })
+            }
+            </Select>
+        </FormControl>
+    )
+})
+
 class DialogSession extends React.Component {
     constructor(props){
         super(props)      
         this.state = {
+            students: [],
+            type: '',
             student_involved: false,
             transaction_involved: false,
             room: "",
@@ -130,7 +154,6 @@ class DialogSession extends React.Component {
             centers : [],
             center: '',
             teachers: [],
-            rooms: [],
             btvn_content: '',
             content: '',
             status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
@@ -139,10 +162,12 @@ class DialogSession extends React.Component {
     UNSAFE_componentWillReceiveProps(nextProps){
         //d
         let s = nextProps.session
-        this.getRoom(nextProps.session.ctid)
+        // console.log(s)
+        
         this.setState({
-            room : {label: s.rname, value: s.rid},
-            center : {label: s.ctname, value: s.ctid},
+            type: s.type,
+            room : s.rid,
+            center : s.ctid,
             from_date: (s.from_full) ? new Date(s.from_full) : new Date(),
             to_date: (s.to_full) ? new Date(s.to_full) : new Date(),
             note: s.note ? s.note : '',
@@ -154,65 +179,55 @@ class DialogSession extends React.Component {
             exercice: [],
             old_document: (s.document) ? s.document.split(',') : [],
             old_exercice: (s.exercice) ? s.exercice.split(',') : [],
-            
+            students: s.students
         })
     }    
-   
-    getRoom = (center_id) => {
-        axios.get(window.Laravel.baseUrl + '/get-room/'+ center_id)
-            .then(response => {
-                this.setState({
-                    rooms: response.data.map(r => {
-                        return {value: r.id, label: r.name}
-                    })
-                })
-            })
-            .catch(err => {
-                console.log('room bug: ' + err)
-            })
-    }
     onChange = e => {
         this.setState({
             [e.target.name] : e.target.value
         })
     };
     
-    handleCenterChange = (center)=> {
-        this.setState({ center: center })
-        this.getRoom(center.value)
+    handleCenterChange = (event)=> {
+        this.setState({ center: event.target.value })
     }
     
     handleDateChange = date => {
         this.setState({ open_date: date });
     };   
-    
+    handleTypeChange = event => {
+        this.setState({ type: event.target.value })
+    }
     handleFromDate = date => {
-        //Check exist session date
-        var d = date.getTime()
-        axios.post(baseUrl+'/session/check-date', {date: d/1000})
-            .then(response => {
-                if(!response.data.result){
-                    this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
-                        variant: 'warning',
-                    })
-                }
-                this.setState({ 
-                    from_date: date, 
-                    to_date: (this.state.to_date)?this.state.to_date:date
-                });
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        
+        this.setState({ 
+            from_date: date, 
+            to_date: (this.state.to_date)?this.state.to_date:date
+        });        
     }    
     handleToDate = date => {
         this.setState({ 
             to_date : date, 
             from_date: (this.state.from_date)?this.state.from_date:date });
     }
-    handleRoomChange = room => {
-        this.setState({room: room})
+    checkSession = () => {
+        axios.post(baseUrl+'/session/check-date', {date: this.state.from_date, class_id: this.props.class_id})
+            .then(response => {
+                if(!response.data.result){
+                    this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
+                        variant: 'warning',
+                    })
+                }
+                
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    handleRoomChange = event => {
+        this.setState({room: event.target.value})
+    }
+    handleStudentChange = students => {
+        this.setState({students : students})
     }
     handleChangeTeacher = teacher => {
         this.setState({teacher: teacher})
@@ -226,6 +241,7 @@ class DialogSession extends React.Component {
     handleAddNewSession = () => {
         
     }
+    
     handleCheckBoxChange = (e) => {
         this.setState({
             [e.target.name] : !this.state[e.target.name]
@@ -287,7 +303,7 @@ class DialogSession extends React.Component {
         if(this.props.dialogType == 'edit'){
             fd.append('old_exercice', this.state.old_exercice.join(','))
             fd.append('old_document', this.state.old_document.join(','))
-            fd.append('ss_id', this.props.session.sid)
+            fd.append('ss_id', this.props.session.id)
             axios.post(baseUrl +'/session/edit' , fd)
                 .then(response => {
                     this.props.enqueueSnackbar('Sửa buổi học thành công', {
@@ -328,7 +344,7 @@ class DialogSession extends React.Component {
                             
                             <Grid
                                 item
-                                md={12}
+                                sm={12}
                                 lg={6}
                             >
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
@@ -337,28 +353,64 @@ class DialogSession extends React.Component {
                                         handleChange={this.handleCenterChange}
                                     />
                                 </FormControl>                                   
-                                <div className="date-time">
-                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                                <Grid
+                                    container
+                                    spacing={4}
+                                >   
+                                    <Grid
+                                        item
+                                        sm={12}
+                                        lg={6}
+                                    >
+                                        <div className="date-time">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                                                <KeyboardDateTimePicker
+                                                    minutesStep= {15}
+                                                    value={this.state.from_date}                            
+                                                    onChange={this.handleFromDate}
+                                                    onClose={this.checkSession}
+                                                    placeholder="Thời gian bắt đầu"                            
+                                                    className="input-date"
+                                                    variant="inline"
+                                                    inputVariant="outlined"
+                                                    format="dd/MM/yyyy hh:mm a"     
+                                                />                     
+                                            </MuiPickersUtilsProvider>
+                                        </div>  
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        sm={12}
+                                        lg={6}
+                                    >
+                                        <div className="date-time">
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                                            <KeyboardDateTimePicker
+                                                minutesStep= {15}
+                                                value={this.state.to_date}                            
+                                                onChange={this.handleToDate}
+                                                onAccept={this.checkSession}
+                                                minDate = {this.state.from_date}
+                                                maxDate = {this.state.from_date}
+                                                placeholder="Thời gian kết thúc"                            
+                                                className="input-date"
+                                                variant="inline"
+                                                inputVariant="outlined"
+                                                format="dd/MM/yyyy hh:mm a"
 
-                                        <KeyboardDateTimePicker
-                                            minutesStep= {15}
-                                            value={this.state.from_date}                            
-                                            onChange={this.handleFromDate}
-                                            placeholder="Thời gian bắt đầu"                            
-                                            className="input-date"
-                                            variant="inline"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy hh:mm a"     
-                                        />                     
-                                    </MuiPickersUtilsProvider>
-                                </div>    
+                                            />                     
+                                            </MuiPickersUtilsProvider>
+                                        </div> 
+                                    </Grid>
+                                </Grid>
                                 <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <TeacherSelect
+                                    <TeacherSearch
                                         teacher={this.state.teacher}
                                         handleChange={this.handleChangeTeacher}                                       
                                     />
         
                                 </FormControl> 
+                                
                                 {
                                     this.props.dialogType == 'create' ? (
                                         <FormControl fullWidth variant="outlined" margin="dense">
@@ -379,36 +431,15 @@ class DialogSession extends React.Component {
                             </Grid>
                             <Grid
                                 item
-                                md={12}
+                                sm={12}
                                 lg={6}
                             >
-                                <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <Select className = "select-box"
-                                        value={this.state.room}
-                                        onChange={this.handleRoomChange}
-                                        options={this.state.rooms}
-                                        placeholder="Phòng học"
-                                    />
-        
-                                </FormControl> 
-                                <div className="date-time">
-                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                    <KeyboardDateTimePicker
-                                        minutesStep= {15}
-                                        value={this.state.to_date}                            
-                                        onChange={this.handleToDate}
-                                        minDate = {this.state.from_date}
-                                        maxDate = {this.state.from_date}
-                                        placeholder="Thời gian kết thúc"                            
-                                        className="input-date"
-                                        variant="inline"
-                                        inputVariant="outlined"
-                                        format="dd/MM/yyyy hh:mm a"
-
-                                    />                     
-                                    </MuiPickersUtilsProvider>
-                                </div> 
+                                <RoomSelect
+                                    center={this.state.center}
+                                    room = {this.state.room}
+                                    handleChange = {this.handleRoomChange}/>
+                                
+                                
                                 <TextField  label="Ghi chú" 
                                     variant="outlined"
                                     size="medium"
@@ -419,35 +450,37 @@ class DialogSession extends React.Component {
                                     value = {this.state.note}
                                     onChange = {this.onChange}
                                 />
-                                {
-                                    this.props.dialogType == 'create' ? (
-                                        <FormGroup row>
-                                            <FormControlLabel
-                                                control={<Checkbox checked={this.state.student_involved} onChange={this.handleCheckBoxChange} name="student_involved" />}
-                                                label="Thêm học sinh hiện hữu vào buổi học"
-                                            />
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox
-                                                    checked={this.state.transaction_involved && this.state.student_involved}
-                                                    onChange={this.handleCheckBoxChange}
-                                                    name="transaction_involved"
-                                                    disabled = {!this.state.student_involved}
-                                                    color="primary"
-                                                />
-                                                }
-                                                label="Tạo công nợ"
-                                            /> 
-                                        </FormGroup>    
-                                    ): ''
-                                }
-                               
+                                <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '8px'}}>
+                                    <InputLabel id="demo-simple-select-outlined-label">Loại buổi học</InputLabel>
+                                    <Select
+                                        value={this.state.type}
+                                        onChange={this.handleTypeChange}
+                                        label="Loại buổi học"
+                                    >
+                                        <MenuItem value="">
+                                            <em>Vui lòng chọn loại buổi học</em>
+                                        </MenuItem>
+                                        <MenuItem value="main">Chính khóa</MenuItem>
+                                        <MenuItem value="tutor">Phụ đạo</MenuItem>
+                                        <MenuItem value="compensate">Học bù</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <StudentClassSelect 
+                                    session_id = {this.props.session.id}
+                                    class_id = {this.props.class_id}
+                                    students = {this.state.students}
+                                    session_date = {this.state.from_date}
+                                    dialogType = {this.props.dialogType}
+                                    handleChange = {this.handleStudentChange}
+                                    
+                                />
+                                
                             </Grid>
                         </Grid>
                     <h5>Tài liệu và Bài tập về nhà</h5>
                         <Grid container spacing={4}>
                             <Grid item
-                                md={12}
+                                sm={12}
                                 lg={6} 
                             >
                                 <TextField  label="Nội dung bài tập về nhà" 
@@ -493,7 +526,7 @@ class DialogSession extends React.Component {
                                 
                             </Grid>
                             <Grid item
-                                md={12}
+                                sm={12}
                                 lg={6}
                             >
                                 <TextField  label="Nội dung bài học" 

@@ -403,7 +403,6 @@ class ClassController extends Controller
     protected function detailStudentClass(Request $request){
         $rules = ['student_id' => 'required'];
         $this->validate($request, $rules);
-
         $student = Student::find($request->student_id);
         if($student){
             $classes = $student->classes;
@@ -762,6 +761,20 @@ class ClassController extends Controller
 
             }
         }
+    }
+    protected function getActiveStudent(Request $request){
+        $rules = ['class_id' => 'required'];
+        $this->validate($request, $rules);
+        $class = Classes::find($request->class_id);
+        if($request->has('session_date')){
+            $date = date('Y-m-d', strtotime($request->session_date));            
+            $students = $class->activeStudentsDate($date)->get(); 
+        }
+        else{
+            $students = $class->activeStudents;
+        }
+        return response()->json($students);
+        
     }
     
 }

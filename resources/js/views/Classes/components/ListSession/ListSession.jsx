@@ -243,7 +243,7 @@ const ListSession = (props) => {
     }
     useEffect(() => {
         const fetchData = async() => {
-            const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
+            const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
             setData(response.data.map(r => {
                     let date = new Date(r.date)
                     r.from_full = r.from
@@ -261,7 +261,7 @@ const ListSession = (props) => {
             setLoading(true)
         }
         fetchData()
-    }, [fetchData])
+    }, [fetchData, props.from, props.to])
     return (
         <React.Fragment>
             <MaterialTable
