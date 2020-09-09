@@ -30,7 +30,6 @@ import {format, subDays } from 'date-fns';
 import vi from "date-fns/locale/vi";
 
 import NumberFormat from 'react-number-format';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -40,10 +39,12 @@ import { withSnackbar } from 'notistack';
 import Slide from '@material-ui/core/Slide';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select  from '@material-ui/core/Select';
+
 const baseUrl = window.Laravel.baseUrl
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
   
@@ -64,9 +65,10 @@ function NumberFormatCustom(props) {
       />
     );
 }
-  
+
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
+
     useEffect(() => {
         const fetchData = async() => {
             const r = await axios.get(baseUrl + '/get-center')
@@ -77,7 +79,7 @@ const CenterSelect = React.memo(props => {
         }
         fetchData()
     }, [])
-    
+
     return(         
         <FormControl variant="outlined" size="small">
             <InputLabel id="demo-simple-select-outlined-label">Cơ sở</InputLabel>
@@ -157,6 +159,7 @@ class DialogSession extends React.Component {
             btvn_content: '',
             content: '',
             status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
+            fetch_student: false,
         }  
     }
     UNSAFE_componentWillReceiveProps(nextProps){
@@ -197,17 +200,32 @@ class DialogSession extends React.Component {
     };   
     handleTypeChange = event => {
         this.setState({ type: event.target.value })
+        this.calculateFee(this.state.from_date, this.state.to_date, event.target.value);
     }
     handleFromDate = date => {
         this.setState({ 
             from_date: date, 
             to_date: (this.state.to_date)?this.state.to_date:date
         });        
+        this.calculateFee(date, this.state.to_date, this.state.type);
     }    
     handleToDate = date => {
         this.setState({ 
             to_date : date, 
             from_date: (this.state.from_date)?this.state.from_date:date });
+        this.calculateFee(this.state.from_date, date, this.state.type);
+    }
+    calculateFee = (from, to, type) => {
+        let diffHour = Math.ceil(Math.abs(to - from) / (1000 * 60 * 60));
+        if(type == 'tutor'){            
+            this.setState({fee:  100000*diffHour})
+        }
+        if(type == 'tutor_online'){
+            this.setState({fee:  80000*diffHour})
+        }
+        if(type == 'main'){
+            this.setState({fee: this.props.class_fee})
+        }
     }
     checkSession = () => {
         axios.post(baseUrl+'/session/check-date', {date: this.state.from_date, class_id: this.props.class_id})
@@ -217,11 +235,11 @@ class DialogSession extends React.Component {
                         variant: 'warning',
                     })
                 }
-                
             })
             .catch(err => {
                 console.log(err)
             })
+        this.setState({fetch_student : !this.state.fetch_student})
     }
     handleRoomChange = event => {
         this.setState({room: event.target.value})
@@ -274,19 +292,18 @@ class DialogSession extends React.Component {
         }
         fd.append('document_count', this.state.document.length)
         fd.append('exercice_count', this.state.exercice.length)
-        fd.append('center_id', this.state.center.value)
+        fd.append('center_id', this.state.center)
         fd.append('class_id', this.props.class_id)
-        fd.append('room_id', (this.state.room.value)?this.state.room.value:0)
-        fd.append('from_date', this.state.from_date.getTime()/1000)
-        fd.append('to_date', this.state.to_date.getTime()/1000)
+        fd.append('room_id', (this.state.room))
+        fd.append('from_date', this.state.from_date)
+        fd.append('to_date', this.state.to_date)
         fd.append('teacher_id', (this.state.teacher.value)?this.state.teacher.value:0)
         fd.append('note', this.state.note)
         fd.append('fee', this.state.fee)
-        fd.append('student_involved', this.state.student_involved)
-        fd.append('transaction_involved', this.state.transaction_involved)
         fd.append('btvn_content', this.state.btvn_content)
         fd.append('content', this.state.content)
-        
+        fd.append('type', this.state.type)
+        fd.append('students', JSON.stringify(this.state.students))
         if(this.props.dialogType == 'create'){
             axios.post(baseUrl+'/session/add', fd)
             .then(response => {
@@ -336,12 +353,11 @@ class DialogSession extends React.Component {
                         Vui lòng điền đầy đủ thông tin cần thiết (*)
                     </DialogContentText>
                     <form noValidate autoComplete="on">
-                    <h5>Thông tin buổi học</h5>   
+                    <h5>Thông tin buổi học</h5>
                         <Grid
                             container
                             spacing={4}
                         >
-                            
                             <Grid
                                 item
                                 sm={12}
@@ -389,7 +405,7 @@ class DialogSession extends React.Component {
                                                 minutesStep= {15}
                                                 value={this.state.to_date}                            
                                                 onChange={this.handleToDate}
-                                                onAccept={this.checkSession}
+                                                onClose={this.checkSession}
                                                 minDate = {this.state.from_date}
                                                 maxDate = {this.state.from_date}
                                                 placeholder="Thời gian kết thúc"                            
@@ -397,7 +413,6 @@ class DialogSession extends React.Component {
                                                 variant="inline"
                                                 inputVariant="outlined"
                                                 format="dd/MM/yyyy hh:mm a"
-
                                             />                     
                                             </MuiPickersUtilsProvider>
                                         </div> 
@@ -408,9 +423,7 @@ class DialogSession extends React.Component {
                                         teacher={this.state.teacher}
                                         handleChange={this.handleChangeTeacher}                                       
                                     />
-        
-                                </FormControl> 
-                                
+                                </FormControl>
                                 {
                                     this.props.dialogType == 'create' ? (
                                         <FormControl fullWidth variant="outlined" margin="dense">
@@ -427,7 +440,6 @@ class DialogSession extends React.Component {
                                         </FormControl>
                                     ): ''
                                 }
-                                
                             </Grid>
                             <Grid
                                 item
@@ -462,6 +474,7 @@ class DialogSession extends React.Component {
                                         </MenuItem>
                                         <MenuItem value="main">Chính khóa</MenuItem>
                                         <MenuItem value="tutor">Phụ đạo</MenuItem>
+                                        <MenuItem value="tutor_online">Phụ đạo (Online)</MenuItem>
                                         <MenuItem value="compensate">Học bù</MenuItem>
                                     </Select>
                                 </FormControl>
@@ -471,8 +484,8 @@ class DialogSession extends React.Component {
                                     students = {this.state.students}
                                     session_date = {this.state.from_date}
                                     dialogType = {this.props.dialogType}
+                                    fetch_student = {this.state.fetch_student}
                                     handleChange = {this.handleStudentChange}
-                                    
                                 />
                                 
                             </Grid>

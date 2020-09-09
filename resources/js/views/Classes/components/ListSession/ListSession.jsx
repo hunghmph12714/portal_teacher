@@ -21,6 +21,7 @@ const baseUrl = window.Laravel.baseUrl
 const ListSession = (props) => {
     const Vndate = ['','Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const { class_id } = props
+    const class_fee = props.class_fee
     const [open, setOpen] = useState(false);
     const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
@@ -319,6 +320,7 @@ const ListSession = (props) => {
               class={{}}
               session = {selected_session}
               class_id = {class_id}
+              class_fee = {class_fee}
               handleCloseDialog={handleCloseSessionDialog}
               dialogType = {dialogType}/>
             <DialogDocument 

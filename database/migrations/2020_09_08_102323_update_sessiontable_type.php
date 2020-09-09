@@ -15,7 +15,7 @@ class UpdateSessiontableType extends Migration
     {
         Schema::table('sessions', function (Blueprint $table) {
             //
-            $table->enum('type', ['tutor','main','compensate'])->default('main');
+            $table->enum('type', ['tutor','main','compensate','tutor_online'])->default('main');
         });
     }
 

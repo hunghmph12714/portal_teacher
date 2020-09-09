@@ -17,7 +17,7 @@ const StudentClassSelect = React.memo(props => {
             )
         }
         fetchData()
-    }, [props.session_date])
+    }, [props.fetch_student])
     
     return (
         <Select style={{marginTop: '2px'}}

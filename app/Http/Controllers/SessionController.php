@@ -388,9 +388,11 @@ class SessionController extends Controller
     }
     protected function addSession(Request $request){
         $rules = ['class_id' => 'required', 
+            'center_id' => 'required',
             'from_date' => 'required',
             'to_date' => 'required',
-            'fee' => 'required'
+            'fee' => 'required',
+            'students' => 'required'
         ];
         $this->validate($request, $rules);
         $class_id = $request->class_id;
@@ -398,10 +400,10 @@ class SessionController extends Controller
         $input['teacher_id'] = $request->teacher_id;
         $input['center_id'] = $request->center_id;
         $input['room_id'] = $request->room_id;
-        $input['status'] = ($request->student_involved && $request->transaction_involved) ? '1' : '0';
-        $input['date'] = date('Y-m-d', $request->from_date);
-        $input['from'] = date('Y-m-d H:i:00', $request->from_date);
-        $input['to'] = date('Y-m-d H:i:00', $request->to_date);
+        $input['status'] = 1;
+        $input['date'] = date('Y-m-d', strtotime($request->from_date));
+        $input['from'] = date('Y-m-d H:i:00', strtotime($request->from_date));
+        $input['to'] = date('Y-m-d H:i:00', strtotime($request->to_date));
         $input['ss_number'] = 0;
         $input['note'] = $request->note;
         //Create new session
@@ -440,37 +442,40 @@ class SessionController extends Controller
         $session->exercice = $exercice;
         $session->btvn_content = $request->btvn_content;
         $session->content = $request->content;
-        $session->save();
+        $session->type = $request->type;
+
+        // $session->save();
         //Add student to session
-        if($request->student_involved){
-            //Get all active student from class
-            $class = Classes::find($class_id);
-            if($class){
-                $students = $class->activeStudents;
-                foreach($students as $student){
-                    $s['student_id'] = $student->id;
-                    $s['session_id'] = $session->id;
-                    $s['attendance'] = 'holding';
-                    $s['type'] = 'official';
-                    StudentSession::create($s);
-                    if($request->transaction_involved){
-                        //get account 131
-                        $debit = Account::where('level_2', '131')->first();
-                        $credit = Account::where('level_2', '3387')->first();
-                        $transaction['debit'] = $debit->id;
-                        $transaction['credit'] = $credit->id;
-                        $transaction['amount'] = intval($request->fee);
-                        $transaction['time'] = $session->from;
-                        $transaction['content'] = 'Học phí tháng '.date('m', $request->from_date) . ' - Buổi '.date('d/m', $request->from_date);
-                        $transaction['student_id'] = $student->id;
-                        $transaction['class_id'] = $class_id;
-                        $transaction['session_id'] = $session->id;
-                        $transaction['user'] = auth()->user()->id;
-                        $trans = Transaction::create($transaction);
-                    }
-                }
-            }
-        }      
+        $class = Classes::find($class_id);
+        $students = json_decode($request->students);
+        foreach($students as $student){
+            // $student['']
+        }
+        // if($class){
+        //     $students = $class->activeStudents;
+        //     foreach($students as $student){
+        //         $s['student_id'] = $student->id;
+        //         $s['session_id'] = $session->id;
+        //         $s['attendance'] = 'holding';
+        //         $s['type'] = 'official';
+        //         StudentSession::create($s);
+        //         if($request->transaction_involved){
+        //             //get account 131
+        //             $debit = Account::where('level_2', '131')->first();
+        //             $credit = Account::where('level_2', '3387')->first();
+        //             $transaction['debit'] = $debit->id;
+        //             $transaction['credit'] = $credit->id;
+        //             $transaction['amount'] = intval($request->fee);
+        //             $transaction['time'] = $session->from;
+        //             $transaction['content'] = 'Học phí tháng '.date('m', $request->from_date) . ' - Buổi '.date('d/m', $request->from_date);
+        //             $transaction['student_id'] = $student->id;
+        //             $transaction['class_id'] = $class_id;
+        //             $transaction['session_id'] = $session->id;
+        //             $transaction['user'] = auth()->user()->id;
+        //             $trans = Transaction::create($transaction);
+        //         }
+        //     }
+        // }  
     }
     protected function checkDate(Request $request){
         $date = date('Y-m-d', strtotime($request->date));
