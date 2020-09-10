@@ -290,13 +290,15 @@ class DialogSession extends React.Component {
         for(let j = 0 ; j < this.state.exercice.length ; j++){
             fd.append('exercice' + j, this.state.exercice[j], this.state.exercice[j].name)
         }
+        let from_date = this.state.from_date.getTime()/1000
+        let to_date = this.state.to_date.getTime()/1000
         fd.append('document_count', this.state.document.length)
         fd.append('exercice_count', this.state.exercice.length)
         fd.append('center_id', this.state.center)
         fd.append('class_id', this.props.class_id)
         fd.append('room_id', (this.state.room))
-        fd.append('from_date', this.state.from_date)
-        fd.append('to_date', this.state.to_date)
+        fd.append('from_date', from_date)
+        fd.append('to_date', to_date)
         fd.append('teacher_id', (this.state.teacher.value)?this.state.teacher.value:0)
         fd.append('note', this.state.note)
         fd.append('fee', this.state.fee)

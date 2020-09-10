@@ -337,9 +337,9 @@ class SessionController extends Controller
             $session->teacher_id = $request->teacher_id;
             $session->center_id = $request->center_id;
             $session->room_id = $request->room_id;
-            $session->date = date('Y-m-d', strtotime($request->from_date));
-            $session->from = date('Y-m-d H:i:00',strtotime($request->from_date));
-            $session->to = date('Y-m-d H:i:00', strtotime($request->to_date));
+            $session->date = date('Y-m-d', $request->from_date);
+            $session->from = date('Y-m-d H:i:00', $request->from_date);
+            $session->to = date('Y-m-d H:i:00', $request->to_date);
             $session->note = $request->note;
 
             $document = $request->old_document;
