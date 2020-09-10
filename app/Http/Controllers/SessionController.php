@@ -293,18 +293,31 @@ class SessionController extends Controller
             'to_date' => 'required',    
         ];
         $this->validate($request, $rules);
-
-        $from = date('Y-m-d', strtotime($request->from_date));
-        $to = date('Y-m-d', strtotime($request->to_date));
         $result = [];
-        $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
-            select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
-                'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
-            leftJoin('teacher','sessions.teacher_id','teacher.id')->
-            leftJoin('center','sessions.center_id','center.id')->
-            leftJoin('room','sessions.room_id','room.id')->
-            get();
+        if($request->from == '-1' && $request->to == '-1'){
+            $sessions = Session::where('class_id', $request->class_id)->
+                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
+                    'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                leftJoin('teacher','sessions.teacher_id','teacher.id')->
+                leftJoin('center','sessions.center_id','center.id')->
+                leftJoin('room','sessions.room_id','room.id')->
+                get();
+        }
+        else{
+            $from = date('Y-m-d', strtotime($request->from_date));
+            $to = date('Y-m-d', strtotime($request->to_date));
+            
+            $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
+                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
+                    'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                leftJoin('teacher','sessions.teacher_id','teacher.id')->
+                leftJoin('center','sessions.center_id','center.id')->
+                leftJoin('room','sessions.room_id','room.id')->
+                get();
+        }
+        
         foreach($sessions as $key => $value){
             $result[$key] = $value->toArray();
             $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value')->get()->toArray();
