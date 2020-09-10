@@ -294,7 +294,7 @@ class SessionController extends Controller
         ];
         $this->validate($request, $rules);
         $result = [];
-        if($request->from == '-1' && $request->to == '-1'){
+        if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Session::where('class_id', $request->class_id)->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
                     'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
@@ -322,8 +322,6 @@ class SessionController extends Controller
             $result[$key] = $value->toArray();
             $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value')->get()->toArray();
         }
-       
-        //s
         return response()->json($result);
     }
     protected function editSession(Request $request){
