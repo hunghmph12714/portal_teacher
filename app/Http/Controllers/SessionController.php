@@ -336,7 +336,7 @@ class SessionController extends Controller
         if($session){
             $session->teacher_id = $request->teacher_id;
             $session->center_id = $request->center_id;
-            $session->room_id = $request->room_id;
+            $session->room_id = ($request->room_id != 'null')? $request->room_id : NULL;
             $session->date = date('Y-m-d', $request->from_date);
             $session->from = date('Y-m-d H:i:00', $request->from_date);
             $session->to = date('Y-m-d H:i:00', $request->to_date);
