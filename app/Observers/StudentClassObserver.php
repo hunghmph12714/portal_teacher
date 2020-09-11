@@ -247,6 +247,24 @@ class StudentClassObserver
                 $this->generateTransactions($sessions, $students,  $studentClass->class_id);
             }
         }
+        if($studentClass->getOriginal('entrance_date') < $studentClass->entrance_date){
+            // Xóa các attendance
+            $from = $studentClass->getOriginal('entrance_date');
+            $to = $studentClass->entrance_date;
+            $sessions = $student->sessions()->whereBetween('date', [$from, $to])->get();
+            
+            $session_ids = array_column($sessions->toArray(), 'id');
+
+            $student->sessions()->detach($session_ids);
+            //Xóa học phí
+            foreach($sessions as $s){
+                $transactions = $s->transactions()->where('student_id', $student->id)->get();
+                foreach($transactions as $t ){
+                    $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
+                    $ts->forceDelete();
+                }
+            }
+        }
     }
     public function updateClassCount(Classes $class){
         if($class){
