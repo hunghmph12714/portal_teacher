@@ -56,7 +56,7 @@ const ListSession = (props) => {
                     <Tooltip title="Xóa ca học" arrow>
                       <IconButton onClick={() => {
                         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                          handleDeactivateSession(rowData.sid, rowData.tableData.id)}
+                          handleDeactivateSession(rowData.id, rowData.tableData.id)}
                         }>
                       <DeleteForeverIcon fontSize='inherit' />
                       </IconButton>
