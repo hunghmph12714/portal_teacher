@@ -88,7 +88,7 @@ const ParentSearch = props => {
             onChange = {handleParentChange}
             formatCreateLabel = {promptTextCreator}
             isValidNewOption = {checkValidCreate}
-            className="select-box"
+            className="select-box-parent"
         />
     )
 }

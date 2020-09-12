@@ -15,12 +15,12 @@
     margin: 5px 0px !important;
 }
 .select-input {
-    z-index: 1000 !important;
+    z-index: 1000 ;
     position: static !important;
   }
-.date-time{
-    margin-top: 7px;
-}
+// .date-time{
+//     margin-top: 7px;
+// }
 .input-time{
     div{
         padding-right: 0px;
@@ -85,10 +85,5 @@
     .MuiGrid-item{
         padding-bottom: 0px !important;
     }
-    .select-box {
-        z-index: 999 !important;
-    }
-    .select-box {
-        z-index: 1000 !important;
-    }
+    
 }

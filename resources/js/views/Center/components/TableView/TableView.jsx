@@ -35,6 +35,7 @@ class TableView extends React.Component{
             openCreateUser: false,
             columns: [
                 { title: 'Tên cơ sở', field: 'name' },
+                { title: 'Mã', field: 'code' },
                 { title: 'Địa chỉ', field: 'address' },
                 { title: 'Email', field: 'email' },
                 { title: 'Số điện thoại', field: 'phone' },
@@ -71,7 +72,7 @@ class TableView extends React.Component{
                     const data = [...prevState.data];
                     data.push(response.data);
                     return { ...prevState, data };
-                    });
+                });
             })
             .catch(err => {
                 console.log("Add new center bug: "+ err)

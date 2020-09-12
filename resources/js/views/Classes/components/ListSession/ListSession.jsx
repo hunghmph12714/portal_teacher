@@ -235,7 +235,7 @@ const ListSession = (props) => {
       console.log(session_id)
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
-
+          setFetchData(!fetchData)
         })
         .catch(err => {
 

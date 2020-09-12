@@ -95,6 +95,34 @@ const ReceiptView = React.memo(props => {
                 </div>
             )
         },
+    //Cơ sở
+        {
+            title: "Cơ sở",
+            field: "code",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                width: '55px',
+            },
+            cellStyle: {
+                padding: '0px',
+                width: '55px',
+            },
+        },
+    //Method
+        {
+            title: "TM-NH",
+            field: "method",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+                width: '55px',
+            },
+            cellStyle: {
+                padding: '0px',
+                width: '55px',
+            },
+        },
     //Số phiếu thu
         {
             title: "ID",
@@ -102,25 +130,19 @@ const ReceiptView = React.memo(props => {
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
-                width: '100px'
+                width: '80px'
             },
             cellStyle: {
                 padding: '0px',
-                width: '100px'
-            },
-            render: rowData => {
-                return (
-                    <span>
-                        PT{rowData.receipt_number}
-                    </span>
-                )
-            }
+                width: '80px'
+            },            
         },
     //Thời  gian chứng từ
         {
             title: "Chứng từ",
             field: "time_formated",
             grouping: false,
+            type: 'date',
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
@@ -158,18 +180,7 @@ const ReceiptView = React.memo(props => {
             },                            
             
         },
-    //Cơ sở
-        {
-            title: "Cơ sở",
-            field: "ctname",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-        },
+   
     // Người nhận
         {
             title: "Người nộp",
@@ -179,7 +190,7 @@ const ReceiptView = React.memo(props => {
                 fontWeight: '600',
             },
             cellStyle: {
-                padding: '0px',
+                padding: '0px', 
             },
         },
     // Địa chỉ

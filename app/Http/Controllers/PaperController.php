@@ -198,7 +198,18 @@ class PaperController extends Controller
         $receipt = Paper::create($p);
         $receipt->created_at = date('Y-m-d', strtotime($request->receipt_time));
         $receipt->save();
-        foreach($request->transactions as $transaction){
+        foreach($request->transactions as $key => $transaction){
+            if($key == 0){
+                $acc = Account::find($transaction['debit']['id']);
+                if($acc->level_1 == '111'){
+                    $receipt->method = 'TM';
+                    $receipt->save();
+                }
+                if($acc->level_1 == '112'){
+                    $receipt->method = 'NH';
+                    $receipt->save();
+                }
+            }
             $this->addTransaction($transaction, $receipt->id);
         }
         return response()->json($receipt);
@@ -272,8 +283,8 @@ class PaperController extends Controller
         if(empty($request->filter)){
             $result['page'] = $request->page;
             $result['total'] = Paper::where('type','receipt')->count();
-            $receipts = Paper::Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
-                                    'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid')->where('type', 'receipt')
+            $receipts = Paper::Select('papers.id as id', 'receipt_number','type','papers.name as name','papers.method','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.created_at' ,'papers.status as status',
+                                    'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.code as code', 'center.id as ctid')->where('type', 'receipt')
                                     ->leftJoin('users','papers.user_created_id','users.id')
                                     ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
                                     ->get();            
@@ -282,10 +293,16 @@ class PaperController extends Controller
             $result['page'] = $request->page;
             // print_r($request->filter);
             $receipt = Paper::query();
-            $receipt->receiptNumber($request->filter)->receiptName($request->filter)->receiptDescription($request->filter)->receiptAddress($request->filter);
+            $receipt->receiptNumber($request->filter)
+                ->receiptName($request->filter) 
+                ->receiptDescription($request->filter)
+                ->receiptAddress($request->filter)
+                ->receiptMethod($request->filter)
+                ->receiptCenter($request->filter)
+                ->receiptDate($request->filter);
 
-            $receipts =  $receipt->Select('papers.id as id', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
-                'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid')->where('type', 'receipt')
+            $receipts =  $receipt->Select('papers.id as id','papers.method', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
+                'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid','center.code as code')->where('type', 'receipt')
                 ->leftJoin('users','papers.user_created_id','users.id')
                 ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
                 ->get();
@@ -297,27 +314,39 @@ class PaperController extends Controller
 
             $transactions = $p->transactions()->select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
-                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.level_1 as debit_level_1', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
-                'students.id as sid', 'students.fullname as sname','students.dob', 
+                'students.id as sid', 'students.fullname as sname','students.dob',
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
                 'users.id as uid','users.name as uname', 'paper_id'
             )
-            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
-            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
-            ->leftJoin('students','transactions.student_id','students.id')
-            ->leftJoin('classes','transactions.class_id','classes.id')
-            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
-            ->get();
-
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
+                ->get();
             $x = $transactions->toArray();
+            $pt = Paper::find($p->id);
+            // if(sizeof($x) != 0){
+            //     if($x[0]['debit_level_1'] == '111'){
+            //         $p->method = 'TM';
+            //         $p->save();
+            //     }
+            //     if($x[0]['debit_level_1'] == '112'){
+            //         $p->method = 'NH';
+            //         $p->save();
+            //     }
+            // }
+            // else{
+            //     $result['data'][$key]['debit_code'] = '';
+            // }
             foreach($transactions as $k => $t){
                 $tags = $t->tags()->get();
                 $transaction_result[$k] = $x[$k];
                 $transaction_result[$k]['tags'] = $tags->toArray();
             }
-            
             $result['data'][$key]['transactions'] = $transaction_result;
         }
         return response()->json($result);
@@ -489,6 +518,16 @@ class PaperController extends Controller
         $sumOfMonth = array();      
         $randomClass = '';  
         foreach($request->transactions as $key => $v){
+            if($key == 0){
+                $account = Account::find($request->account);
+                if($account->level_1 == '111'){
+                    $p->method = 'TM';
+                }
+                if($account->level_2 == '112'){
+                    $p->method = 'NH';
+                } 
+                $p->save();
+            }
             if($v['id'] > 0){
                 $month = $v['month'];
                 $cid = (array_key_exists('cid', $v))?($v['cid'])? $v['cid'] : '-1' :'-1';
@@ -510,7 +549,6 @@ class PaperController extends Controller
                 
             }
         }
-        print_r($sumOfMonth);
         foreach($sumOfMonth as $key => $sum){
             if(array_sum($sum['total_amount']) > 0){
                 $other_fee = array_key_exists('other_amount', $sum) ? array_sum($sum['other_amount']) : 0;

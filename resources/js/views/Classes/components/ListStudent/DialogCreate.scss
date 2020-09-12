@@ -1,18 +1,31 @@
 .dialog-create-student{
-    .input-text{
-        margin-top: 8px;
-        margin-bottom:4px;
-    }
+    // .input-text{
+    //     margin-top: 8px;
+    //     margin-bottom:4px;
+    // }
     .relationship-select{
         margin-top: 8px; 
         margin-bottom: 4px;
     }
     .title-header{
-        margin-left: 15px;
-        padding-top: 15px;
+        // margin-left: 15px;
+        // padding-top: 15px;
     }
-    .text-input{
-        margin-top: 15px;
+    // .text-input{
+    //     margin-top: 15px;
+    // }
+    .select-box{
+        z-index: 1000;
+        margin-top: 8px;
+        margin-bottom: 4px;
+    }
+    .select-box-parent{
+        z-index: 999;
+        margin-top: 8px;
+        margin-bottom: 4px;
+    }
+    .relationship-select{
+        z-index: 999;
     }
 }
 @media only screen and (min-width: 600px) {

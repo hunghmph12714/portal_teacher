@@ -9,14 +9,18 @@
         margin: 8px !important;
     }
     .select-input{
-        z-index: 1000 !important;
-        position: static !important;
+        z-index: 1000;
     }
     hr{
         margin-bottom: 5px;
     }
     .fee{
         margin-right: 5px;
+    }
+    tr[level="0"]{
+        td:last-child{
+            font-weight: 600 !important;
+        }
     }
     
 }
@@ -45,9 +49,4 @@
 
 .MuiDialogContent-root{
     z-index: 999;
-}
-tr[level="0"]{
-    td:last-child{
-        font-weight: 600 !important;
-    }
 }

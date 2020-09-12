@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import './StudentForm.scss'
 import { StudentSearch, ParentSearch } from '../../../../components'
 import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
@@ -43,7 +44,7 @@ const debouncedLoadOptions = throttle(loadOptions, wait)
 const StudentForm = props => {
     const { state, handleDateChange, handleStudentChange, onChange,onChangePhone , handleChange, ...rest } = props;
     return (
-        <Grid container spacing={3} className="container-grid" {...rest}>                
+        <Grid container spacing={3} className="student-form" {...rest}>                
             <Grid item md={12} lg={4} sm={12} xs={12}>
                 <StudentSearch
                     student_name={state.student_name}
@@ -52,7 +53,7 @@ const StudentForm = props => {
                 <Grid container spacing={2}>
                     <Grid item md={6} sm={12}>
                         <div className="date-time">
-                                               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
 
                                 <KeyboardDatePicker
                                     autoOk

@@ -304,7 +304,7 @@ class ClassController extends Controller
 
         $result = Classes::where('center_id', $center_operator, $center_value)->
                         where('course_id', $course_operator, $course_value)->
-                        select('classes.id as id','classes.name as name','code',
+                        select('classes.id as id','classes.name as name','classes.code as code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
                         'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
@@ -324,7 +324,7 @@ class ClassController extends Controller
     }
     protected function getClassById($class_id){
         $result = Classes::where('classes.id',$class_id)->
-                        select('classes.id as id','classes.name as name','code',
+                        select('classes.id as id','classes.name as name','classes.code as code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
                         'config','classes.fee as fee')->

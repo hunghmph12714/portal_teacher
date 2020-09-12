@@ -15,7 +15,7 @@ class CenterController extends Controller
 
     protected function create(Request $request){
         // print_r($request->toArray());
-        $rules = ['name' => 'required'];
+        $rules = ['name' => 'required', 'code'=>'required'];
         $this->validate($request, $rules);
 
         $input = $request->toArray();
@@ -34,6 +34,7 @@ class CenterController extends Controller
             $center->address = $newData['address'];
             $center->email = $newData['email'];
             $center->phone = $newData['phone'];
+            $center->code = $newData['code'];
             $center->save();
             return response()->json(200);
         }
