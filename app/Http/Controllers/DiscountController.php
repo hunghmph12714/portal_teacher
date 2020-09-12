@@ -158,8 +158,6 @@ class DiscountController extends Controller
                         }
                     }
                 }
-                echo "<pre>";
-                print_r($result);
                 foreach($result as $month => $r){
                     $trans['debit'] = Account::Where('level_2', '511')->first()->id;
                     $trans['credit'] = Account::Where('level_2', '131')->first()->id;

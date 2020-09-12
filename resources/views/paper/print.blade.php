@@ -98,7 +98,7 @@
                 <div class="col-sm"></div>
                 <div class="col-sm">
                     @if ($paper['type'] == 'receipt')
-                        <b>Số :</b> PT{{$paper['receipt_number']}} <br>
+                        <b>Số :</b> PT-{{$paper['method'] ."-". $paper['receipt_number']}} <br>
                     @elseif ($paper['type'] == 'payment')
                         <b>Số :</b> PC{{$paper['payment_number']}} <br>
                     @endif

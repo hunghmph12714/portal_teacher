@@ -132,4 +132,15 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
             return response()->json('Sai mật khẩu', 400);   
         }
     }
+    protected function createNewTa($email){
+        $input['email'] = $email;
+        $input['password'] = Hash::make('12345Bay');
+        
+        
+        $input['first_name'] = 'Trợ';
+        $input['last_name'] = 'Giảng';
+        $input['name'] ='';
+        User::create($input);
+        return response()->json('ok');
+    }
 }

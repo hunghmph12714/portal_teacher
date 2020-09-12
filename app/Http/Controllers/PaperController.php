@@ -456,7 +456,7 @@ class PaperController extends Controller
     protected function printPaper($id){
         
         $paper = Paper::Where('papers.id', $id)->Select('papers.id as id','receipt_number', 'payment_number','type','papers.name as name','description','amount','papers.created_at as created_at','papers.status as status',
-            'users.name as uname','papers.address as address','center.name as ctname', 'center.id as ctid')
+            'users.name as uname','papers.address as address','center.name as ctname', 'center.id as ctid','papers.method')
         ->leftJoin('users','papers.user_created_id','users.id')
         ->leftJoin('center', 'papers.center_id', 'center.id')
         ->first()->toArray();
