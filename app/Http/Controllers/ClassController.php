@@ -379,7 +379,7 @@ class ClassController extends Controller
             $class->password = $request->password;
             $class->save();
             $result = Classes::where('classes.id', $class->id)->
-                        select('classes.id as id','classes.name as name','code',
+                        select('classes.id as id','classes.name as name','classes.code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status','online_id','password',
                         'config','classes.fee as fee')->

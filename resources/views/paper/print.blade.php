@@ -33,7 +33,7 @@
     }
     .detail{
         padding-left: 25px;
-        font-size: 20px;
+        font-size: 18px;
     }
     .detail p {margin-bottom: 0.4rem !important;}
     .sign b{
