@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import './DialogSession.scss'
 import { TeacherSearch, StudentClassSelect } from '../../../../components';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -134,56 +135,60 @@ const RoomSelect = React.memo(props => {
         </FormControl>
     )
 })
-
+const initState = {
+    students: [],
+    type: '',
+    student_involved: false,
+    transaction_involved: false,
+    room: "",
+    from_date: new Date(),
+    to_date: null,
+    teacher: "",
+    note: "",
+    document: [],
+    old_document: [],
+    exercice: [],
+    old_exercice: [],
+    fee: "",
+    centers : [],
+    center: '',
+    teachers: [],
+    btvn_content: '',
+    content: '',
+    status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
+    fetch_student: false,
+}
 class DialogSession extends React.Component {
     constructor(props){
         super(props)      
-        this.state = {
-            students: [],
-            type: '',
-            student_involved: false,
-            transaction_involved: false,
-            room: "",
-            from_date: new Date(),
-            to_date: null,
-            teacher: "",
-            note: "",
-            document: [],
-            old_document: [],
-            exercice: [],
-            old_exercice: [],
-            fee: "",
-            centers : [],
-            center: '',
-            teachers: [],
-            btvn_content: '',
-            content: '',
-            status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
-            fetch_student: false,
-        }  
+        this.state = initState
     }
     UNSAFE_componentWillReceiveProps(nextProps){
         //d
         let s = nextProps.session
         // console.log(s)
-        
-        this.setState({
-            type: s.type,
-            room : s.rid,
-            center : s.ctid,
-            from_date: (s.from_full) ? new Date(s.from_full) : new Date(),
-            to_date: (s.to_full) ? new Date(s.to_full) : new Date(),
-            note: s.note ? s.note : '',
-            teacher: { label: s.tname, value: s.tid},
-            fee: s.fee,
-            btvn_content: (s.btvn_content)?s.btvn_content:'',
-            content: (s.content) ? s.content: '',
-            document: [],
-            exercice: [],
-            old_document: (s.document) ? s.document.split(',') : [],
-            old_exercice: (s.exercice) ? s.exercice.split(',') : [],
-            students: s.students
-        })
+        if(nextProps.dialogType == 'create'){
+            this.setState(initState)
+        }else{
+            this.setState({
+                type: s.type,
+                room : s.rid,
+                center : s.ctid,
+                from_date: (s.from_full) ? new Date(s.from_full) : new Date(),
+                to_date: (s.to_full) ? new Date(s.to_full) : new Date(),
+                note: s.note ? s.note : '',
+                teacher: { label: s.tname, value: s.tid},
+                fee: s.fee,
+                btvn_content: (s.btvn_content)?s.btvn_content:'',
+                content: (s.content) ? s.content: '',
+                document: [],
+                exercice: [],
+                old_document: (s.document) ? s.document.split(',') : [],
+                old_exercice: (s.exercice) ? s.exercice.split(',') : [],
+                students: s.students
+            })
+       
+        }
     }    
     onChange = e => {
         this.setState({
@@ -216,7 +221,7 @@ class DialogSession extends React.Component {
         this.calculateFee(this.state.from_date, date, this.state.type);
     }
     calculateFee = (from, to, type) => {
-        let diffHour = Math.ceil(Math.abs(to - from) / (1000 * 60 * 60));
+        let diffHour = (Math.abs(to - from) / (1000 * 60 * 60));
         if(type == 'tutor'){            
             this.setState({fee:  100000*diffHour})
         }
@@ -340,6 +345,7 @@ class DialogSession extends React.Component {
     render(){
         return (
             <Dialog 
+                className="dialog-session-root"
                 fullWidth 
                 TransitionComponent={Transition}
                 keepMounted
@@ -451,19 +457,11 @@ class DialogSession extends React.Component {
                                 <RoomSelect
                                     center={this.state.center}
                                     room = {this.state.room}
-                                    handleChange = {this.handleRoomChange}/>
-                                
-                                
-                                <TextField  label="Ghi chú" 
-                                    variant="outlined"
-                                    size="medium"
-                                    type="text"
-                                    fullWidth
-                                    margin = "dense"
-                                    name = 'note'
-                                    value = {this.state.note}
-                                    onChange = {this.onChange}
+                                    handleChange = {this.handleRoomChange}
                                 />
+                                
+                                
+                                
                                 <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '8px'}}>
                                     <InputLabel id="demo-simple-select-outlined-label">Loại buổi học</InputLabel>
                                     <Select
@@ -489,7 +487,16 @@ class DialogSession extends React.Component {
                                     fetch_student = {this.state.fetch_student}
                                     handleChange = {this.handleStudentChange}
                                 />
-                                
+                                <TextField  label="Ghi chú" 
+                                    variant="outlined"
+                                    size="medium"
+                                    type="text"
+                                    fullWidth
+                                    margin = "dense"
+                                    name = 'note'
+                                    value = {this.state.note}
+                                    onChange = {this.onChange}
+                                />
                             </Grid>
                         </Grid>
                     <h5>Tài liệu và Bài tập về nhà</h5>

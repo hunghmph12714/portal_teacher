@@ -12,16 +12,19 @@
         margin:0px;
         width: 100%;
     }
+    .student-form{
+      width: 100%;
+      margin : 0px;
+    }
     .input-text{
-        margin-top: 0px;
-        margin-bottom:15px;
+        // margin-bottom:15px;
     }
     .title-header{
         margin-left: 15px;
         padding-top: 15px;
     }
     .date-time {
-        margin-top: 0px;
+        margin-top: 8px;
         display: inline-flex;
         width: 100%;
         .input-date {
@@ -42,6 +45,24 @@
     #btn-save{
       
       margin: 0px 12px 12px 0px;
-    }  
+    } 
+    .select-box{
+        z-index: 1002;
+        margin-top: 8px;
+        margin-bottom: 4px;
+    }
+    .select-box-parent{
+        z-index: 999;
+        margin-top: 8px;
+        margin-bottom: 4px;
+    }
+    .relationship-select{
+      margin-top: 8px;
+        z-index: 1001;
+    }
+    .select-entrance{
+      z-index: 999;
+      margin-top: 8px;
+    }
     
 }

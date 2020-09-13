@@ -412,9 +412,9 @@ class SessionController extends Controller
         $input['center_id'] = $request->center_id;
         $input['room_id'] = $request->room_id;
         $input['status'] = 1;
-        $input['date'] = date('Y-m-d', strtotime($request->from_date));
-        $input['from'] = date('Y-m-d H:i:00', strtotime($request->from_date));
-        $input['to'] = date('Y-m-d H:i:00', strtotime($request->to_date));
+        $input['date'] = date('Y-m-d', ($request->from_date));
+        $input['from'] = date('Y-m-d H:i:00', ($request->from_date));
+        $input['to'] = date('Y-m-d H:i:00', ($request->to_date));
         $input['ss_number'] = 0;
         $input['note'] = $request->note;
         //Create new session
@@ -455,12 +455,36 @@ class SessionController extends Controller
         $session->content = $request->content;
         $session->type = $request->type;
 
-        // $session->save();
+        $session->save();
         //Add student to session
         $class = Classes::find($class_id);
         $students = json_decode($request->students);
+        // print_r($students);
         foreach($students as $student){
-            // $student['']
+            $session->students()->attach($student->value);
+            $debit = Account::where('level_2', '131')->first();
+            $credit = Account::where('level_2', '3387')->first();
+            $transaction['debit'] = $debit->id;
+            $transaction['credit'] = $credit->id;
+            $transaction['amount'] = intval($request->fee);
+            $transaction['time'] = $session->from;
+            if($session->type == 'main'){
+                $transaction['content'] = 'Học phí buổi '. date('d-m', strtotime($session->date));
+            }else if($session->type == 'tutor' || $session->type == 'tutor_online'){
+                $transaction['content'] = 'Học phí phụ đạo '. date('d-m', strtotime($session->date));
+            }
+            
+            $transaction['student_id'] = $student->value;
+            $transaction['class_id'] = $class_id;
+            $transaction['session_id'] = $session->id;
+            $transaction['user'] = auth()->user()->id;
+            $trans = Transaction::create($transaction);
+            $trans->sessions()->attach([$session->id => ['amount' => $trans->amount]]);
+            if($session->type == 'main'){
+                $trans->tags()->attach(7);
+            }else if($session->type == 'tutor' || $session->type == 'tutor_online'){
+                $trans->tags()->attach(10);
+            }
         }
         // if($class){
         //     $students = $class->activeStudents;

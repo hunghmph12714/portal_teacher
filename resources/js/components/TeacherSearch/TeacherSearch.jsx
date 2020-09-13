@@ -33,8 +33,7 @@ const TeacherSearch = React.memo(props => {
     else{
         return (
             <Select className = "select-box"
-                className="select-box"
-                key = "center-select"
+                            key = "center-select"
                 name = "teacher"
                 label ="Giáo viên"
                 placeholder="Giáo viên"

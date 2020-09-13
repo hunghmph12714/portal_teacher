@@ -25,8 +25,7 @@ const CenterSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select className = "select-box"
-            className="select-box"
+        <Select className = "select-entrance"
             key = "center-select"
             value = {props.entrance_center}
             name = "entrance_center"
@@ -50,7 +49,7 @@ const CourseSelect = React.memo(props => {
     }, [])
     
     return( 
-        <Select className = "select-box"
+        <Select className = "select-entrance"
             key = "course-select"
             value = {props.entrance_courses}
             isMulti = {props.entrance_multi_course}
