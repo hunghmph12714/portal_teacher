@@ -108,6 +108,7 @@ class AttendanceController extends Controller
         try{
             Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
                 $message->to($to_email, $to_name)
+                        ->to('webmaster@vietelite.edu.vn')
                         ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
                         ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
                 $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');

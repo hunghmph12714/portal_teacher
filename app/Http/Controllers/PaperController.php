@@ -241,7 +241,7 @@ class PaperController extends Controller
                         $td->content = $t['content'];
                         $td->student_id = $t['student']['value'];
                         $td->class_id = $t['selected_class']['value'];
-                        $td->session_id = $t['selected_session']['value'];
+                        // $td->session_id = $t['selected_session']['value'];
                         // $td->
                         $tags = array_column($t['tags'], 'value');
                         $td->tags()->sync($tags);
@@ -513,7 +513,6 @@ class PaperController extends Controller
         $p['created_at'] = date('Y-m-d');
         $p['status'] = NULL;
         $p['address'] = '';
-        // print_r($p);
         $p = Paper::create($p);
         $sumOfMonth = array();      
         $randomClass = '';  
@@ -523,7 +522,7 @@ class PaperController extends Controller
                 if($account->level_1 == '111'){
                     $p->method = 'TM';
                 }
-                if($account->level_2 == '112'){
+                if($account->level_1 == '112'){
                     $p->method = 'NH';
                 } 
                 $p->save();

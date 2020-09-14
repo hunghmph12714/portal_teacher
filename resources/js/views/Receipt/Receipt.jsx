@@ -281,6 +281,12 @@ const ReceiptView = React.memo(props => {
                     text: 'Thêm phiếu thu',
                     onClick: (event) => {handleOpenCreateDialog()},
                 },
+                {
+                    icon: 'refresh',
+                    tooltip: 'Tải lại',
+                    isFreeAction: true,
+                    onClick: () => tableRef.current && tableRef.current.onQueryChange(),
+                }
             ]}
             icons={{
                 Filter: () => <span />
