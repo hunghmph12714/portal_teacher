@@ -106,7 +106,8 @@ class DialogCreate extends React.Component {
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
             this.setState({
-                student_name: newValue
+                student_name: newValue,
+                
             }) 
         }
         else{
@@ -138,7 +139,13 @@ class DialogCreate extends React.Component {
             newValue.label = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
             newValue.value = newValue.label.replace(/\s|[(]|[)]|[-]/g, '')
             this.setState({
-                parent_phone: newValue
+                parent_phone: newValue,
+                parent_name: '',
+                parent_alt_name: '',
+                parent_email: '',
+                parent_alt_email: '',
+                parent_alt_phone: '',
+                parent_note: '',
             }) 
         }
         else{
@@ -149,7 +156,7 @@ class DialogCreate extends React.Component {
                 parent_alt_name: newValue.alt_fullname,
                 parent_alt_email: newValue.alt_email,
                 parent_alt_phone: newValue.alt_phone,
-    
+                
                 selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
                 parent_note : (newValue.note)?newValue.note:'',
                 parent_id : newValue.pid
@@ -219,6 +226,7 @@ class DialogCreate extends React.Component {
         e.preventDefault();
         let data = this.state
         data.class_id = this.props.class_id
+        console.log(data)
         axios.post(baseUrl + '/class/add-student', data)
             .then(response => {
                 this.props.enqueueSnackbar('Thêm học sinh thành công', { 

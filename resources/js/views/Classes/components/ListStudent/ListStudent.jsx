@@ -41,13 +41,12 @@ const ListStudent = (props) => {
                     r.dob_format = format(date , 'dd/MM/yyyy')      
                     r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
                     r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''
-                    const d = r.detail                  
+                    const d = r.detail
                     const o = r.parent
                     let a = Object.assign(r, o, d)
                     return a
                 })
             )
-
         }
         fetchData()
     }, [reload])
@@ -175,11 +174,11 @@ const ListStudent = (props) => {
                         title: "STT",
                         field: "id",
                         headerStyle: {
-                            width: '50px',
+                            width: '20px',
                             fontWeight: '600',
                         },
                         cellStyle: {
-                            width: '50px',
+                            width: '20px',
                         },
                         render: rowData => {
                             return (                                
@@ -259,6 +258,19 @@ const ListStudent = (props) => {
                         renderGroup: (rname, groupData) => (                            
                             <Chip variant="outlined" label={rname} size="small" />
                         )                
+                    },
+                    //Quan hệ
+                    {
+                        title: "Ghi chú",
+                        field: "pnote",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                                
                     },
                     //Ngày nhập học
                     {
