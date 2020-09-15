@@ -11,6 +11,7 @@ import Select , { components }  from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 const baseUrl = window.Laravel.baseUrl
+import {Redirect} from 'react-router-dom';
 
 const wait = 1000;
 const customChip = (color) => ({
@@ -48,9 +49,8 @@ const CustomOption = props => {
                     <Grid item md={12} sm={12}>
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
-                                
                                 let cl = (c.pivot.status == 'active')? '' : ((c.pivot.status == 'droped') ? '#adadc9' : (c.pivot.status == 'waiting') ? '#b22222' : '#000000')
-                                return (<Chip style={customChip(cl)} variant="outlined" color="secondary" label={c.code} size="small" title={c.pivot.status}/>)
+                                return (<Chip style={customChip(cl)} variant="outlined" color="secondary" label={c.code} size="small" title={c.pivot.status} onClick = {() => window.location.href = "/class/" + c.pivot.class_id }/>)
                             })}
                         </Typography>                        
                     </Grid>          

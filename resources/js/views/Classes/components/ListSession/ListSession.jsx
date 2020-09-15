@@ -26,7 +26,7 @@ const ListSession = (props) => {
     const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(false);
-    const [fetchData, setFetchData] = useState(false);
+    const [fetchData, setFetchData] = useState(true);
     const [selected_session, setSelectedSession] = useState([]);
     const [columns, setColumn] = useState(
       [
@@ -232,7 +232,6 @@ const ListSession = (props) => {
       //ss
     }
     function handleDeactivateSession(session_id, table_id){
-      console.log(session_id)
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
           setFetchData(!fetchData)
@@ -240,10 +239,11 @@ const ListSession = (props) => {
         .catch(err => {
 
         })
-      setFetchData(!fetchData)
+      
+      
     }
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchDataa = async() => {
             const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
             setData(response.data.map(r => {
                     let date = new Date(r.date)
@@ -261,7 +261,7 @@ const ListSession = (props) => {
             )
             setLoading(true)
         }
-        fetchData()
+        fetchDataa()
     }, [fetchData, props.from, props.to])
     return (
         <React.Fragment>

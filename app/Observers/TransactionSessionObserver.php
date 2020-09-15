@@ -48,9 +48,7 @@ class TransactionSessionObserver
     {
         //
         $transaction = Transaction::find($transactionSession->transaction_id);
-        print_r($transactionSession->id);
         if($transaction){
-            
             $transaction->amount = $transaction->amount - $transactionSession->amount;
             $transaction->save();
             if($transaction->amount == 0){
@@ -81,7 +79,6 @@ class TransactionSessionObserver
         //
         echo "fired";
         $transaction = Transaction::find($transactionSession->transaction_id);
-        print_r($transactionSession->id);
         if($transaction){
             
             $transaction->amount = $transaction->amount - $transactionSession->amount;

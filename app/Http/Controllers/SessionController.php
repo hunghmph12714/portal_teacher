@@ -522,7 +522,6 @@ class SessionController extends Controller
             return response()->json(['result'=>true]);
         }
     }
-   
     protected function deleteSession(Request $request){
         $rules = ['session_id' => 'required'];
         $this->validate($request, $rules);
@@ -542,7 +541,6 @@ class SessionController extends Controller
         }
         return response()->json('ok');
     }
-    
     protected function applyAdjustment(Request $request){
         $rules = ['discount_id' => 'required'];
         $this->validate($request, $rules);
@@ -595,6 +593,7 @@ class SessionController extends Controller
                 print_r($session_ids[$sid]);
              
                 $tr->sessions()->syncWithoutDetaching($session_ids[$sid]);
+                $tr->tags()->syncWithoutDetaching([8]);
             }
             $discount->status = 'expired';
             $discount->save();
