@@ -13,6 +13,7 @@ use App\Center;
 use App\Session;
 use App\Teacher;
 use App\StudentSession;
+use App\Tag;
 use Mail;
 class StudentController extends Controller
 {
@@ -173,6 +174,11 @@ class StudentController extends Controller
         usort($result, function($a, $b) {
             return $a['amount'] <=> $b['amount'];
         });
+        //Tags
+        $tag = Tag::where('name', 'Chuyển HP')->first();
+        if(!$tag){
+            $tag = Tag::create(['name' => 'Chuyển HP']);
+        }
         // print_r($result);
         foreach($result as $key => &$r){
             if($r['amount'] < 0 && $r['count_transaction'] > 1) {
@@ -184,8 +190,9 @@ class StudentController extends Controller
                 $t['student_id'] = $student_id;
                 $t['content'] = 'Chuyển học phí dư có';
                 $t['user'] = auth()->user()->id;
-                Transaction::create($t);
-
+                $transfer = Transaction::create($t);
+                
+                $transfer->tags()->attach([$tag->id]);
                 $dt['debit'] = Account::where('level_2','111')->first()->id;
                 $dt['credit'] = Account::where('level_2', '131')->first()->id;
                 $dt['amount'] = -$r['amount'];
@@ -201,7 +208,9 @@ class StudentController extends Controller
                 $dt['student_id'] = $student_id;
                 $dt['content'] = 'Nhận học phí dư có';
                 $dt['user'] = auth()->user()->id;
-                Transaction::create($dt);                
+                $receipt  = Transaction::create($dt);
+                
+                $receipt->tags()->attach([$tag->id]);          
             }
         }
         return response()->json('done');
