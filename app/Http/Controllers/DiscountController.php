@@ -117,6 +117,7 @@ class DiscountController extends Controller
                 $t['class_id'] = $d->class_id;
                 $t['user'] = auth()->user()->id;
                 $t['content'] = $d->content;
+                $t['discount_id'] = $d->id;
                 Transaction::create($t);
             }
         }
@@ -170,6 +171,7 @@ class DiscountController extends Controller
                     foreach($r['sessions'] as $key => $value){
                         $r['sessions'][$key]['amount'] = $value['amount']/100*$discount->percentage;
                     }
+                    $trans['discount_id'] = $discount->id;
                     $tr = Transaction::create($trans);               
                     $tr->sessions()->syncWithoutDetaching($r['sessions']);
                     $tr->tags()->syncWithoutDetaching([9]);

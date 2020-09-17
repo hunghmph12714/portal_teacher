@@ -8,7 +8,7 @@ class Transaction extends Model
     //
     public $table = 'transactions';
     protected $fillable = ['id','debit','credit','amount','time','content',
-    'student_id','class_id','session_id','paper_id','status','user','center_id','refer_transaction'];
+    'student_id','class_id','session_id','paper_id','status','user','center_id','refer_transaction','discount_id'];
 
     public function tags(){
         return $this->morphToMany('App\Tag', 'taggable');
@@ -20,6 +20,5 @@ class Transaction extends Model
         return $this->belongsToMany('App\Session', 'transaction_session', 'transaction_id', 'session_id')
             ->withPivot('id','amount');
     }
-    
     
 }

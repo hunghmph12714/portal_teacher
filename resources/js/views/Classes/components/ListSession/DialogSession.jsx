@@ -185,7 +185,7 @@ class DialogSession extends React.Component {
                 exercice: [],
                 old_document: (s.document) ? s.document.split(',') : [],
                 old_exercice: (s.exercice) ? s.exercice.split(',') : [],
-                students: s.students
+                students: s.students,
             })
        
         }
@@ -432,21 +432,20 @@ class DialogSession extends React.Component {
                                         handleChange={this.handleChangeTeacher}                                       
                                     />
                                 </FormControl>
+                                <FormControl fullWidth variant="outlined" margin="dense">
+                                    <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
+                                    <OutlinedInput
+                                        value={this.state.fee}
+                                        name = "fee"
+                                        onChange={this.onChange}
+                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                        labelWidth={70}
+                                        inputComponent = {NumberFormatCustom}
+                                    >
+                                    </OutlinedInput>
+                                </FormControl>
                                 {
-                                    this.props.dialogType == 'create' ? (
-                                        <FormControl fullWidth variant="outlined" margin="dense">
-                                            <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
-                                            <OutlinedInput
-                                                value={this.state.fee}
-                                                name = "fee"
-                                                onChange={this.onChange}
-                                                startAdornment={<InputAdornment position="start">VND</InputAdornment>}
-                                                labelWidth={70}
-                                                inputComponent = {NumberFormatCustom}
-                                            >
-                                            </OutlinedInput>
-                                        </FormControl>
-                                    ): ''
+                                    this.props.dialogType == 'create' ? '': ''
                                 }
                             </Grid>
                             <Grid

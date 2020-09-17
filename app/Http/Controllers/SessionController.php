@@ -309,7 +309,7 @@ class SessionController extends Controller
             $to = date('Y-m-d', strtotime($request->to_date));
             
             $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
-                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
+                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
@@ -323,6 +323,34 @@ class SessionController extends Controller
             $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value')->get()->toArray();
         }
         return response()->json($result);
+    }
+    protected function generateFee(Session $session){
+        $discount = Discount::where('class_id', $session->class_id)->whereNull('student_class_id')->where('status', 'expired')
+                    ->where('active_at','<=',$session->date)->where('expired_at', '>=', $session->date)->get();
+        $hp_tag = Tag::where('name','Học phí')->first()->id;
+        $dc_tag = Tag::where('name', 'Điều chỉnh')->first()->id;
+        $mg_tag = Tag::where('name','Miễn giảm')->first()->id;
+        $students = $session->students;
+        $month_session = date('m', strtotime($session->date));
+        $year_session = date('Y', strtotime($session->date));
+        foreach($students as $s){
+            $t_hp = Transaction::where('student_id', $s->id)->where('class_id', $session->class_id)
+                ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                ->whereHas('tags', function($query) {
+                    $query->find($hp_tag);
+                })->first();
+            $t_dc = Transaction::where('student_id', $s->id)->where('class_id', $session->class_id)
+                ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                ->whereHas('tags', function($query) {
+                    $query->find($dc_tag);
+                })->first();
+            $t_mg = Transaction::where('student_id', $s->id)->where('class_id', $session->class_id)
+                ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                ->whereHas('tags', function($query) {
+                    $query->find($mg_tag);
+                })->first();
+            
+        }
     }
     protected function editSession(Request $request){
         $rules = ['ss_id' => 'required', 
@@ -375,8 +403,37 @@ class SessionController extends Controller
             $session->exercice = $exercice;
             $session->btvn_content = $request->btvn_content;
             $session->content = $request->content;
+            if($session->fee != $request->fee){
+                $this->editSessionFee($session, $request->fee);
+                $session->fee = $request->fee;
+            }
             $session->save();
+            
         }
+    }
+    protected function editSessionFee(Session $session, $new_fee){        
+        
+        $ts = TransactionSession::where('session_id', $session->id)->get();
+        foreach($ts as $value){
+            $transaction = Transaction::find($value->transaction_id);
+            $trans_hp = $transaction->tags()->where('tags.name', 'Học phí')->first();
+            if($trans_hp){
+                $value->amount = $new_fee;          
+            }
+            $trans_mg = $transaction->tags()->where('tags.name', 'Miễn giảm')->first();
+            $trans_dc = $transaction->tags()->where('tags.name', 'Điều chỉnh')->first();
+            if( $trans_mg || $trans_dc ){
+                $discount = Discount::find($transaction->discount_id);
+                if($discount->student_class_id && $discount->percentage){
+                    $value->amount = $new_fee/100* $discount->percentage;
+                }
+                if($discount->class_id && $discount->percentage){
+                    $value->amount = $new_fee/100 * abs($discount->percentage);
+                }
+            }
+            $value->save();
+        }
+
     }
     protected function createSession(Request $request){
        $rules = [
@@ -432,7 +489,7 @@ class SessionController extends Controller
                     $document = $path;
                 }else{
                     $document = $document.",".$path;
-                } 
+                }
             }
         }
         $exercice = '';
@@ -588,9 +645,8 @@ class SessionController extends Controller
                 $trans['time'] = $discount->expired_at;
                 $trans['student_id'] = $sid;
                 $trans['amount'] = $value;
-
+                $tr['discount_id'] = $discount->id;
                 $tr = Transaction::create($trans);
-                print_r($session_ids[$sid]);
              
                 $tr->sessions()->syncWithoutDetaching($session_ids[$sid]);
                 $tr->tags()->syncWithoutDetaching([8]);
@@ -609,9 +665,9 @@ class SessionController extends Controller
         print_r($transaction->toArray());
     }
     protected function deleteTransactionSession(){
-        $t1 = TransactionSession::leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('transactions.id')->forceDelete();
-        $t2 = TransactionSession::leftJoin('sessions','transaction_session.session_id','sessions.id')->leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('sessions.id')->get();
-        echo "<pre>";
-        print_r($t2->toArray());
+        // $t1 = TransactionSession::leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('transactions.id')->forceDelete();
+        // $t2 = TransactionSession::leftJoin('sessions','transaction_session.session_id','sessions.id')->leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('sessions.id')->get();
+        // echo "<pre>";
+        // print_r($t2->toArray());
     }
 }

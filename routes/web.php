@@ -284,6 +284,8 @@ Route::get('/testtime',function(){
 });
 Route::get('/ta/{email}', 'UserController@createNewTa');
 Route::get('/delete/ts', 'SessionController@deleteTransactionSession');
+Route::get('/transaction/discount', 'TransactionController@discountId');
+Route::get('/transaction/content', 'TransactionController@changeContent');
 // 
 // Route::get('/regenerate', 'SessionController@reGenerateFee');
 // Route::get('/delete-attendance', 'AttendanceController@delete');

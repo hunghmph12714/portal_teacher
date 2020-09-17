@@ -14,6 +14,8 @@ use App\Session;
 use App\Teacher;
 use App\StudentSession;
 use App\Tag;
+use App\Paper;
+use App\TransactionSession;
 use Mail;
 class StudentController extends Controller
 {
@@ -101,7 +103,7 @@ class StudentController extends Controller
         
         $transactions = Transaction::where('student_id', $student_id)
                             ->Select(
-                                'transactions.id as id','transactions.amount' ,'transactions.time','transactions.content','transactions.created_at',
+                                'transactions.id as id','transactions.amount' ,'transactions.time','transactions.paper_id','transactions.content','transactions.created_at',
                                 'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                                 'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
                                 'students.id as sid', 'students.fullname as sname','students.dob', 
@@ -117,7 +119,23 @@ class StudentController extends Controller
                             ->get();
         
         foreach($transactions as $key => $t){
-            $month = Date('m-Y', strtotime($t->time));                
+            $month = Date('m-Y', strtotime($t->time));     
+            $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();
+            $detail = '';
+            setlocale(LC_MONETARY,"vi_VN");
+           
+            foreach($detail_amount as $key => $da){
+                $session = Session::find($da->session_id);
+                if($session){
+                    $date = date('d/m', strtotime($session->date));
+                    $detail = $detail. 'Ngày ' . $date .': '. number_format($da->amount) . " + ";
+                }
+            }
+            if($t->paper_id != NULL){
+
+                $paper = Paper::find($t->paper_id);
+                $detail = "PT".$paper->receipt_number."+";
+            }
             if(!array_key_exists($month, $result)){
                 // echo $month."<br>";
                 $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
@@ -129,13 +147,16 @@ class StudentController extends Controller
                 $tarray['parent_id'] = $id;
                 $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
                 $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                $tarray['detail'] = $detail;
                 if($show_detail){
                     array_push($result, $tarray);
                 }                
                 $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
                 $result[$month]['month'] = $month;
                 $result[$month]['content'] = 'Tổng tiền tháng '.$month;
+                $result[$month]['detail'] = '';
                 $result[$month]['cname'] = '';
+
             }
             else{
                 $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
@@ -145,9 +166,11 @@ class StudentController extends Controller
                 $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
                 $tarray['parent_id'] = $result[$month]['id'];
                 $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                $tarray['detail'] = $detail;
+                $result[$month]['detail'] = '';
                 if($show_detail){
                     array_push($result, $tarray);
-                }             
+                }
             }
         }
         $neutral = [];

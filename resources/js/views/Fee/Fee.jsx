@@ -16,9 +16,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import CachedIcon from '@material-ui/icons/Cached';
 import orange from '@material-ui/core/colors/orange';
 import { format } from 'date-fns'
-import {
-    Tooltip,
-  } from "@material-ui/core";
+import ReactTooltip from 'react-tooltip';
 import { Grid } from '@material-ui/core';
 import MaterialTable from "material-table";
 import Typography from '@material-ui/core/Typography';
@@ -148,9 +146,9 @@ const ListFee = React.memo(props => {
                 if(t.id < 0 && t.id != -9999){
                     return t.amount
                 }} ).map(x => x.amount).reduce((acc, tr) => acc + parseInt(tr), 0)
-            data.unshift({month: '', time: '', content:'Tổng', cname: '', amount: sum, id: -9999})
+            data.unshift({month: '', time: '', content:'Tổng', cname: '', amount: sum, id: -9999, detail: ''})
             
-            console.log(data)
+            // console.log(data)
             setFee(data)
         }
         fetchData()
@@ -179,7 +177,25 @@ const ListFee = React.memo(props => {
             columns={[
                 { title: 'Tháng', field: 'month',headerStyle: { fontWeight: '600', }, },
                 { title: 'Ngày', field: 'time' ,headerStyle: { fontWeight: '600', }, },
-                { title: 'Nội dung', field: 'content' ,headerStyle: { fontWeight: '600', },},
+                { title: 'Nội dung', field: 'content' ,headerStyle: { fontWeight: '600', }, 
+                    render: rowData => {
+                        var detail = rowData.detail.split('+')
+                        console.log(detail)
+                        return (      
+                            <React.Fragment>
+                                <a data-tip data-for={rowData.content}> {rowData.content} </a>
+                                <ReactTooltip id={rowData.content} aria-haspopup='true' >
+                                    {detail.map(d => {
+                                        return(
+                                            <span>{d} <br/></span>
+                                        )
+                                    })}
+                                </ReactTooltip>
+                            </React.Fragment>                         
+                                                         
+                        )
+                    },
+                },
                 { title: 'Lớp', field: 'cname', headerStyle: { fontWeight: '600', },},
                 { title: 'Số tiền', 
                     field: 'amount', type: 'currency', currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0}, 

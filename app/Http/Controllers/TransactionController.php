@@ -9,10 +9,34 @@ use App\Transaction;
 use App\Tag;
 use App\Student;
 use App\Classes;
-
+use App\StudentClass;
+use App\Discount;
 class TransactionController extends Controller
 {
     //
+    public function discountId(){
+        $transactions = Transaction::whereHas('tags', function($query){
+            $query->where('name', 'Miễn giảm');
+        })->get();
+        // echo "<pre>";
+        // print_r($transactions->toArray());
+        foreach($transactions as $t){
+            $student_class = StudentClass::where('class_id', $t->class_id)->where('student_id', $t->student_id)->first()->id;
+            $discount = Discount::where('student_class_id', $student_class)->first()->id;
+            $t->discount_id = $discount;
+            $t->save();
+        }
+        $dieuchinh = Transaction::whereHas('tags', function($query){
+            $query->where('name', 'Điều chỉnh');
+        })->get();
+        // echo "<pre>";
+        // print_r($dieuchinh->toArray());
+        foreach($dieuchinh as $d){
+            $discount = Discount::where('class_id', $d->class_id)->where('active_at', '<=' ,$d->time)->where('expired_at','>=' , $d->time)->first();
+            $d->discount_id = $discount->id;
+            $d->save();
+        }
+    }
     protected function addTransaction(Request $request){
         $rules = [
             'credit'=>'required',
@@ -200,6 +224,14 @@ class TransactionController extends Controller
             $input['session_id'] = 24;
             $input['user'] = auth()->user()->id;
             $transaction = Transaction::create($input);
+        }
+    }
+    public function changeContent(){
+        $transactions = Transaction::where('content', 'LIKE', '%: %')->get();
+        foreach($transactions as $t){
+            $new_content = explode(':', $t->content)[0];
+            $t->content = $new_content;
+            $t->save();
         }
     }
 }
