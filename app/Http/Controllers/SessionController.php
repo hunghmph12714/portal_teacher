@@ -608,4 +608,10 @@ class SessionController extends Controller
         echo "<pre>";
         print_r($transaction->toArray());
     }
+    protected function deleteTransactionSession(){
+        $t1 = TransactionSession::leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('transactions.id')->forceDelete();
+        $t2 = TransactionSession::leftJoin('sessions','transaction_session.session_id','sessions.id')->leftJoin('transactions','transaction_session.transaction_id','transactions.id')->whereNULL('sessions.id')->get();
+        echo "<pre>";
+        print_r($t2->toArray());
+    }
 }
