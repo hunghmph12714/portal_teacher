@@ -5,6 +5,7 @@
     {{$datas[0]['center']->name}} xin gửi tới quý phụ huynh thông tin tình hình học tập của con <strong>{{$datas[0]['student']->fullname}}</strong> tại lớp <strong>{{$datas[0]['class']}}</strong>
     @foreach($datas as $data)
         <h3 style="font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">Buổi {{ date('d/m/Y', strtotime($data['session']->date)) }}, ca học của thầy/cô {{$data['teacher']}}:</h3>
+        
         <h4>Kết quả bài tập về nhà: </h4>
         <ul>
             <li>
@@ -16,39 +17,10 @@
             <li>
                 Số bài đạt yêu cầu: {{$data['student_session']->btvn_score}}
             </li>
+            <li>
+                Nhận xét bài tập về nhà: {{$data['student_session']->btvn_comment}}
+            </li>
 
-        </ul>
-        <h4>Kết quả học trên lớp: </h4>
-        <ul>
-            <li>
-                Điểm danh: 
-                @switch($data['student_session']->attendance)
-                    @case('holding')
-                        <span>Chưa điểm danh</span>
-                        @break
-
-                    @case('present')
-                        <span>Có mặt đúng giờ</span>
-                        @break
-                    @case('late')
-                        <span>Đi học muộn</span>
-                        @break
-                    @case('absence')
-                        <span>Vắng có phép</span>
-                        @break
-                    @case('n_absence')
-                        <span>Vắng không phép</span>
-                        @break
-                    @default
-                        <span>Something went wrong, please try again</span>
-                @endswitch
-            </li>
-            <li>
-                Điểm trên lớp (nếu có): {{$data['student_session']->score}} / {{$data['student_session']->max_score}}
-            </li>
-            <li>
-                Nhận xét (nếu có): {{$data['student_session']->comment}}
-            </li>
         </ul>
         <h4>Thông tin buổi học: </h4>
         <ul>
@@ -75,6 +47,39 @@
                 @endif
             </li>
         </ul>
+        <h4>Tình hình học trên lớp: </h4>
+        <ul>
+            <li>
+                Điểm danh: 
+                @switch($data['student_session']->attendance)
+                    @case('holding')
+                        <span>Chưa điểm danh</span>
+                        @break
+
+                    @case('present')
+                        <span>Có mặt đúng giờ</span>
+                        @break
+                    @case('late')
+                        <span>Đi học muộn</span>
+                        @break
+                    @case('absence')
+                        <span>Vắng có phép</span>
+                        @break
+                    @case('n_absence')
+                        <span>Vắng không phép</span>
+                        @break
+                    @default
+                        <span>Something went wrong, please try again</span>
+                @endswitch
+            </li>
+            <li>
+                Điểm trên lớp (nếu có): {{$data['student_session']->score}}
+            </li>
+            <li>
+                Nhận xét (nếu có): {{$data['student_session']->comment}}
+            </li>
+        </ul>
+        
 
     @endforeach
     Mọi thắc mắc quý phụ huynh vui lòng liên hệ hotline cơ sở {{$datas[0]['center']->name}}: {{$datas[0]['center']->phone}}

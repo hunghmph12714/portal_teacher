@@ -476,7 +476,7 @@ class Attendance extends React.Component{
                                                         return;
 
                                                 }
-                                                if(!rowData.attendance[0].max_score||!rowData.attendance[0].score){
+                                                if(!rowData.attendance[0].score){
                                                     if (window.confirm('Học sinh không có điểm trên lớp! Tiếp tục gửi email?')) 
                                                         this.handleSendEmail(rowData.attendance)
                                                         return;
@@ -611,7 +611,7 @@ class Attendance extends React.Component{
                             return rowData.attendance.map(a => {
                                 return (
                                     <Tooltip title={a.session_id}>
-                                        <Chip variant="outlined" label={a.score&&a.max_score ? a.score + '/' + a.max_score : ''} size="small"  className="attendance" />
+                                        <Chip variant="outlined" label={a.score} size="small"  className="attendance" />
                                     </Tooltip> 
                                 )
                             })                          

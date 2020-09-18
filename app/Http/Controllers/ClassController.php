@@ -686,7 +686,9 @@ class ClassController extends Controller
                 $r['status'] = $s->detail['status'];
                 //Attendance
                 foreach($sessions as $ss){
-                    $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
+                    // $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
+                    $attendance = $ss->student($s->id)->first()['pivot'];
+                    // print_r($attendance->toArray());
                     if($attendance){
                         switch ($attendance->attendance) {
                             case 'present':
@@ -718,9 +720,11 @@ class ClassController extends Controller
                         $r['score']['btvn_score'][]  = $attendance->btvn_score;
                         $r['score']['max_score'][]  = $attendance->max_score;
                         $r['score']['score'][]  = $attendance->score;
-                        $r['score']['comment'][] = $attendance->comment; 
+                        $r['score']['comment'][] = $attendance->comment;
+                        $r['score']['btvn_comment'][] = $attendance->btvn_comment;
                     }
-                    else{
+                    else
+                    {
                         $r['attendance'][] = '';
                         $r['score']['btvn_max'][] = '';
                         $r['score']['btvn_complete'][]  ='';
@@ -728,6 +732,8 @@ class ClassController extends Controller
                         $r['score']['max_score'][]  ='';
                         $r['score']['score'][]  ='';
                         $r['score']['comment'][] = '';
+                        $r['score']['btvn_comment'][] = '';
+
                     }
                 }
                 $result[] = $r;

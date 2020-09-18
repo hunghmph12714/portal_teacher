@@ -75,7 +75,6 @@ class AttendanceController extends Controller
         $rules = ['student_session_id' => 'required'];
         $this->validate($request, $rules);
         
-        
         $ids = $request->student_session_id;
         $datas = [];
         foreach($ids as $key=>$id){
