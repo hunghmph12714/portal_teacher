@@ -396,6 +396,7 @@ class Fee extends React.Component{
             })
     }
     render(){
+        document.title = "Học phí"
         return(
             <React.Fragment>
                 <Paper className="form-fee form-index">

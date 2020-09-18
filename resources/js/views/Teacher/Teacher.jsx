@@ -184,6 +184,8 @@ class Teacher extends React.Component{
     this.getTeacher()
   }
   render() {
+    document.title = 'Giáo viên'
+
       return(
           <div className="root-teacher">
               <MaterialTable

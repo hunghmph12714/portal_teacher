@@ -408,6 +408,7 @@ class Transaction extends React.Component {
         this.setState({ open_dialog : false, reload: !this.state.reload })
     }
     render(){
+        document.title = 'Giao dịch'
         return(
             <React.Fragment>
                 <DialogTransaction 

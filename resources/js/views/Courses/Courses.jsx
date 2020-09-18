@@ -172,6 +172,8 @@ export default class Courses extends React.Component{
         })
     }
     render(){
+        document.title = 'Khóa học'
+
         return(
             <div className="root-base-salary">
                 <ReactNotification />

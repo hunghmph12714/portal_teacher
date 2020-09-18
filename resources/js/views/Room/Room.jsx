@@ -156,6 +156,8 @@ export default class Room extends React.Component{
         })
     }
     render(){
+        document.title = 'Phòng học'
+
         return(
             <div className="root-base-salary">
                 <ReactNotification />

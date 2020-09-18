@@ -294,6 +294,8 @@ class Classes extends React.Component{
       this.getClass()
     }
     render() {
+        document.title = 'Danh sách lớp học'
+
         return(
             <div className="root-class">
                 <ReactNotification />

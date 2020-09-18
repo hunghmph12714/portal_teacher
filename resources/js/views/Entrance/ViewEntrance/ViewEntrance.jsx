@@ -437,6 +437,8 @@ class ViewEntrance extends React.Component{
       })
     }
     render(){      
+      document.title = 'Danh sách ghi danh'
+
         return(          
           <React.Fragment>  
             {!this.state.loaded ? (

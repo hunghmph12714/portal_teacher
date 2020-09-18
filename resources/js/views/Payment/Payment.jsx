@@ -552,6 +552,7 @@ class Payment extends React.Component {
             })
     }
     render(){
+        document.title = 'Phiếu chi'
         return (
             <React.Fragment>
                 <DialogForm 

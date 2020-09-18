@@ -42,6 +42,8 @@ class Center extends React.Component{
         })
       }
     render(){
+      document.title = 'Trung tâm'
+
         return(
             <div className="root-center">
                 <ReactNotification />

@@ -242,7 +242,7 @@ const ListSession = (props) => {
       // console.log(da)
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
-          
+          fetchDataa()
         })
         .catch(err => {
 
@@ -250,25 +250,25 @@ const ListSession = (props) => {
       
       
     }
+    const fetchDataa = async() => {
+        const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
+        setData(response.data.map(r => {
+                let date = new Date(r.date)
+                r.from_full = r.from
+                r.to_full = r.to
+                r.date = format(date , 'dd-MM-yyyy')
+                r.day = format(date, 'i') 
+                r.from = format(new Date(r.from), 'HH:mm')
+                r.to = format(new Date(r.to), 'HH:mm')
+                r.document = (r.document)?r.document:'',
+                r.exercice = (r.exercice)?r.exercice:'',
+                r.time = r.from + ' - ' + r.to
+                return r
+            })
+        )
+        setLoading(true)
+    }
     useEffect(() => {
-        const fetchDataa = async() => {
-            const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
-            setData(response.data.map(r => {
-                    let date = new Date(r.date)
-                    r.from_full = r.from
-                    r.to_full = r.to
-                    r.date = format(date , 'dd-MM-yyyy')
-                    r.day = format(date, 'i') 
-                    r.from = format(new Date(r.from), 'HH:mm')
-                    r.to = format(new Date(r.to), 'HH:mm')
-                    r.document = (r.document)?r.document:'',
-                    r.exercice = (r.exercice)?r.exercice:'',
-                    r.time = r.from + ' - ' + r.to
-                    return r
-                })
-            )
-            setLoading(true)
-        }
         fetchDataa()
     }, [fetchData, props.from, props.to])
     return (

@@ -164,6 +164,8 @@ export default class Status extends React.Component{
         })
     }
     render(){
+        document.title = 'Trạng thái'
+
         return(
             <div className="root-setting-status">
                 <ReactNotification />

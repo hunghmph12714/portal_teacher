@@ -48,6 +48,7 @@ class TableView extends React.Component{
         this.setState({ anchorElOptionTeacher: null });
     };
     render(){
+        document.title = 'Giáo viên'
         return(
             <Fragment>
                 

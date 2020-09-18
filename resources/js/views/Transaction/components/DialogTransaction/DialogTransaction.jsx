@@ -185,6 +185,7 @@ class DialogTransaction extends React.Component{
 
     }
     render(){
+
         return(
             <Dialog
                 fullWidth

@@ -196,6 +196,8 @@ export default class Relationship extends React.Component{
         })
     }
     render(){
+        document.title = 'Cấu hình quan hệ'
+
         return(
             <div className="root-setting-relationship">
                 <ReactNotification />

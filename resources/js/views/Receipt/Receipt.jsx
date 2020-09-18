@@ -585,6 +585,7 @@ class Receipt extends React.Component {
             })
     }
     render(){
+        document.title = 'Phiếu thu'
         return (
             <React.Fragment>
                 <DialogForm 

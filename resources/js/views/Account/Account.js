@@ -44,6 +44,8 @@ class Account extends React.Component {
     })
   }
   render() {
+    document.title = 'Tài khoản'
+
     return (
       <div className="root" style={{padding: 29}}>
         <Grid

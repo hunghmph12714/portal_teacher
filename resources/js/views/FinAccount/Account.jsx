@@ -203,6 +203,8 @@ class Account extends React.Component{
         })
     }
     render(){
+        document.title = 'Tài khoản KT'
+
         return(
             <div className="root-setting-account">
                 <ReactNotification />

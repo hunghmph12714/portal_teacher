@@ -350,6 +350,8 @@ class AdjustFee extends React.Component{
         })
     }
     render(){
+        document.title = 'Điều chỉnh học phí'
+
         return(
             <div className="root-adjustfee">
                 <MaterialTable

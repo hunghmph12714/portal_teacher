@@ -83,6 +83,7 @@ class ClassDetail extends React.Component{
       this.setState({ to: date });
     }
     render(){
+        document.title = 'Lớp ' + this.state.selected_class.name
         return (
             <div className="root-class-detail">
               <Grid container spacing={2} direction="row" justify="space-between" alignItems="center">

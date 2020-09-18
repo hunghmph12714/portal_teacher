@@ -346,6 +346,8 @@ class Discount extends React.Component{
         })
     }
     render(){
+        document.title = 'Ưu đãi'
+
         return(
             <div className="root-discount">
                 <MaterialTable

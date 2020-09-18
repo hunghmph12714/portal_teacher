@@ -361,15 +361,19 @@ class Attendance extends React.Component{
         this.setState({loading_email: true})
         axios.post(baseUrl + '/attendance/send-email', {student_session_id: rowData.map(r => r.id)})
             .then(response => {
-                this.handleUpdate
                 this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
                 this.setState({loading_email: false})
+                axios.post('/attendance/get', {class_id: this.state.selected_class.value, sessions: this.state.selected_session})
+                .then(response=> {
+                    this.setState({data: response.data})
+                })
             })
             .catch(err => {
                 this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng thử lại', {variant: 'error'})
             })
     }
     render(){
+        document.title = 'Điểm danh'
         return(
             <div className="root-attendance">
                 <Grid container spacing={1} className="select-session">
