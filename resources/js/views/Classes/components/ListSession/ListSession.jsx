@@ -232,9 +232,6 @@ const ListSession = (props) => {
       //ss
     }
     function handleDeactivateSession(session_id, table_id){
-      console.log(session_id)
-      console.log(data)
-      console.log(columns)
       // let da = data.filter( d => {
       //   console.log(d)
       //   return d.id == session_id
@@ -242,6 +239,7 @@ const ListSession = (props) => {
       // console.log(da)
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
+          console.log(props.from)
           fetchDataa()
         })
         .catch(err => {

@@ -357,6 +357,7 @@ class Attendance extends React.Component{
             return {...prevState, selected_data}
         })
     }
+    //send email 
     handleSendEmail = (rowData )=> {
         this.setState({loading_email: true})
         axios.post(baseUrl + '/attendance/send-email', {student_session_id: rowData.map(r => r.id)})

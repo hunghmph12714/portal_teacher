@@ -70,7 +70,7 @@ class AttendanceController extends Controller
         }
         print_r($request->attendance);
     }
-
+//send email
     public function sendEmail(Request $request){
         $rules = ['student_session_id' => 'required'];
         $this->validate($request, $rules);

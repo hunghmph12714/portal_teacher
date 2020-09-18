@@ -8,7 +8,7 @@ class Student extends Model
 {
     //s
     public $table = "students";
-    protected $fillable = ['parent_id','relationship_id','fullname','school','grade','email','phone','dob','address','note','gender'];
+    protected $fillable = ['parent_id','relationship_id','fullname','school','grade','email','phone','dob','address','note','gender','fee_email_log'];
 
     public function parents(){
         return $this->belongsTo('App\Parents');

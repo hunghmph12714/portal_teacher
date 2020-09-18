@@ -2,6 +2,9 @@ import React , {useState, useEffect} from 'react'
 import { StudentSearch, ParentSearch } from '../../components'
 import './Fee.scss'
 import axios from 'axios'
+import {
+    Tooltip,IconButton
+  } from "@material-ui/core";
 import { withSnackbar } from 'notistack';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -28,7 +31,8 @@ import Select from '@material-ui/core/Select';
 import NumberFormat from 'react-number-format';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DoneIcon from '@material-ui/icons/Done';
-
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import CircularProgress from '@material-ui/core/CircularProgress';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -232,6 +236,29 @@ const ListFee = React.memo(props => {
                     onClick: (evt, data) => props.submitFeeGather(data)
                 },
                 {                                  
+                    icon: () => (
+                        <div style = {{display: 'block'}}>
+                            {   (props.loading_email) ? (
+                                    <CircularProgress/>
+                                ):(
+                                    <Tooltip title={''
+                                        // rowData.attendance.map( a => {
+                                        //     if(a.logs.sent_time){
+                                        //         return a.logs.sent_user + ' đã gửi email ' + format(new Date(a.logs.sent_time * 1000), 'd/M/yyyy HH:mm') + '\n'
+                                        //     }
+                                        // })
+                                    } arrow>                                                
+                                        <IconButton>                                                    
+                                            <MailOutlineIcon fontSize='inherit' />
+                                        </IconButton>
+                                    </Tooltip>
+                                )
+                            }                      
+                        </div>
+                    ),
+                    onClick: (evt, data) => props.handleSendEmail(data)
+                },
+                {                                  
                     icon: () => (show_all) ? (<DoneIcon/>) : (<DoneAllIcon/>),
                     tooltip: 'Xem toàn bộ lịch sử giao dịch',
                     isFreeAction: true,
@@ -283,6 +310,7 @@ class Fee extends React.Component{
             center: [],
             name: '',
             account:[],
+            loading_email: false,
         }
     }
     handleClassChange = (newValue , event) => {
@@ -353,6 +381,9 @@ class Fee extends React.Component{
     }
     handleGetFee = () => {
         this.setState({reload : !this.state.reload})
+    }
+    handleSendEmail = (data) => {
+        
     }
     submitFeeGather = (data) => {
         this.setState({
@@ -426,6 +457,8 @@ class Fee extends React.Component{
                         <Grid item lg={12} sm={12} xs={12}>
                             <ListFee
                                 submitFeeGather = {this.submitFeeGather}
+                                handleSendEmail = {this.handleSendEmail}
+                                loading_email = {this.state.loading_email}
                                 student_id = {this.state.student_id}
                                 normalize = {this.normalize}
                                 reload = {this.state.reload}

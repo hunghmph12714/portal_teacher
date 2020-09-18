@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth']], function() {
             });
             Route::post('/fee/gather', 'PaperController@gatherFee');
             Route::post('/fee/normalize', 'StudentController@normalizeFee');
-        
+            Route::post('/fee/send-email', 'TransactionController@sendEmail');
         //Bao cao tai chinh 
             Route::get('/report/financial', function(){
                 return view('welcome');

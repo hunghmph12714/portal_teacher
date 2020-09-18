@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateStudentSessionTable extends Migration
+class UpdateParentTableFeeEmailLog extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class UpdateStudentSessionTable extends Migration
      */
     public function up()
     {
-        Schema::table('student_session', function (Blueprint $table) {
+        Schema::table('students', function (Blueprint $table) {
             //
-            $table->string('btvn_comment')->nullable();
+            $table->json('fee_email_note')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class UpdateStudentSessionTable extends Migration
      */
     public function down()
     {
-        Schema::table('student_session', function (Blueprint $table) {
+        Schema::table('students', function (Blueprint $table) {
             //
         });
     }
