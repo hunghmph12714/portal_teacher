@@ -582,7 +582,9 @@ class ClassController extends Controller
                     
                     // print_r($t->debit);
                     // Học phí
-                    if($t->debit == $acc_no){
+                    $tag = $t->tags()->first();
+                    
+                    if($t->debit == $acc_no && $tag->name == "Học phí"){
                         $r['hp'] += $t->amount;
                     }
                     // Điều chỉnh học phí
