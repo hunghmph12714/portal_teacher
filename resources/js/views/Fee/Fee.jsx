@@ -184,7 +184,7 @@ const ListFee = React.memo(props => {
                 { title: 'Nội dung', field: 'content' ,headerStyle: { fontWeight: '600', }, 
                     render: rowData => {
                         var detail = rowData.detail.split('+')
-                        console.log(detail)
+                        // console.log(detail)
                         return (      
                             <React.Fragment>
                                 <a data-tip data-for={rowData.content}> {rowData.content} </a>
@@ -383,7 +383,10 @@ class Fee extends React.Component{
         this.setState({reload : !this.state.reload})
     }
     handleSendEmail = (data) => {
-        
+        console.log(data)
+        axios.post(baseUrl + '/fee/send-email', {data: data, pemail: this.state.parent_email, student_id : this.state.student_name.value})
+            .then(response => {})
+            .catch(err => {})
     }
     submitFeeGather = (data) => {
         this.setState({

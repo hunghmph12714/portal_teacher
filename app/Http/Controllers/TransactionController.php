@@ -11,6 +11,8 @@ use App\Student;
 use App\Classes;
 use App\StudentClass;
 use App\Discount;
+use Mail;
+
 class TransactionController extends Controller
 {
     //
@@ -244,51 +246,117 @@ class TransactionController extends Controller
         }
     }
     public function sendEmail(Request $request){
-        $rules = ['student_session_id' => 'required'];
+        $rules = ['data' => 'required'];
         $this->validate($request, $rules);
-        
-        $ids = $request->student_session_id;
-        $datas = [];
-        foreach($ids as $key=>$id){
-            $data = [];
-            $student_session = StudentSession::find($id);     
-            $logs = $student_session->logs;
-            $logs['sent_user'] = auth()->user()->name;
-            $logs['sent_time'] = strtotime(date('d-m-Y H:i:m'));
-            $student_session->logs = $logs;
-            $student_session->save();
-            if($student_session){
-    
-                $data['student'] = Student::find($student_session->student_id);
-                $data['parent'] = Parents::find($data['student']->parent_id);
-                
-                $data['session'] = Session::find($student_session->session_id);
-                $data['class'] = Classes::find($data['session']->class_id)->code;
-    
-                $data['center'] = Center::find($data['session']->center_id);
-                $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
-    
-                $data['student_session'] = $student_session;
+        $result = [];
+
+        $months = [];
+        $data = [];
+        $student_name = Student::find($request->student_id)->fullname;
+        $sum_amount = 0;
+        $content = '';
+        $classes = [];
+        $max_date = date('Y-m-d', strtotime('01-01-1999'));
+        foreach($request->data as $key => $d){
+            if($d['id'] < 0) continue;
+            $date = date('Y-m-d', strtotime('01-'.$d['month']));
+            if($date > $max_date){
+                $max_date = $date;
             }
-            $datas[$key]  = $data;
+            //Class
+            if(!in_array($d['cname'], $classes)){
+                array_push($classes, $d['cname']);
+            }
+            $transaction = Transaction::find($d['id']);
+            $sessions = $transaction->sessions()->count();
+            
+            $t['cname'] = $d['cname'];
+            $t['content'] = $d['content'];
+            $t['sl'] = ($sessions != 0) ? $sessions : 1;
+            $t['dg'] = ($sessions != 0) ? $d['amount']/$sessions : $d['amount'];
+            $t['amount'] = $d['amount'];
+            $sum_amount += $d['amount'];
+            if(!array_key_exists($d['month'], $data)){
+                array_push($months , date('m', strtotime($date)));
+                $data[$d['month']][0] = $t;
+            }
+            else{
+                $data[$d['month']][] = $t;
+            }
         }
-        $d = array('datas'=>$datas);
-        // return view('emails.thht', compact('datas'));
-        $to_email = $datas[0]['parent']->email;        
+        $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
+        $classes = implode(',', $classes);
+        $months = implode(',', $months);
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
+        $content = $classes.'_'.$this->vn_to_str($student_name).'_HP'.$months;
+        // print_r($data);
+        
+
+        $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
+         'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content];
+        
+        print_r($result);
+        $d = ['result' => $result];
+        $to_email = $request->pemail;        
         $to_name = '';
+        Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result) {
+            $message->to($to_email, $to_name)
+                    ->to('webmaster@vietelite.edu.vn')
+                    ->subject($result['title'])
+                    ->replyTo('ketoan.cs1@vietelite.edu.vn', 'Phụ huynh hs '.$result['student']);
+            $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
+        });
+        return response()->json(200);
         try{
-            Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
-                $message->to($to_email, $to_name)
-                        ->to('webmaster@vietelite.edu.vn')
-                        ->subject('[VIETELITE]Thông báo học phí '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
-                        ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
-                $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
-            });
-            return response()->json(200);
+            
         }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
         }
     }
+    function vn_to_str ($str){
+ 
+        $unicode = array(
+         
+        'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+         
+        'd'=>'đ',
+         
+        'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+         
+        'i'=>'í|ì|ỉ|ĩ|ị',
+         
+        'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+         
+        'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+         
+        'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+         
+        'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+         
+        'D'=>'Đ',
+         
+        'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+         
+        'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+         
+        'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+         
+        'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+         
+        'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+         
+        );
+         
+        foreach($unicode as $nonUnicode=>$uni){
+         
+        $str = preg_replace("/($uni)/i", $nonUnicode, $str);
+         
+        }
+        $str = str_replace(' ','_',$str);
+         
+        return $str;
+         
+        }
 }
