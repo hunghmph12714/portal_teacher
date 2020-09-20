@@ -19,12 +19,15 @@
 			padding: 0;
 		}
 
-		table,
-		td,
-		tr {
-			vertical-align: top;
-			border-collapse: collapse;
-		}
+		.tg  {border-collapse:collapse;border-color:#bbb;border-spacing:0;}
+		.tg td{background-color:#E0FFEB;border-color:#bbb;border-style:solid;border-width:1px;color:#594F4F;
+		font-family:Arial, sans-serif;font-size:12px;overflow:hidden;padding:5px 5px;word-break:normal;}
+		.tg th{background-color:#9DE0AD;border-color:#bbb;border-style:solid;border-width:1px;color:#493F3F;
+		font-family:Arial, sans-serif;font-size:12px;font-weight:normal;overflow:hidden;padding:5px 5px;word-break:normal; font-size: 12px;}
+		.tg .tg-1wig{font-weight:bold;text-align:left;vertical-align:top}
+		.tg .tg-l2oz{font-weight:bold;text-align:right;vertical-align:top}
+		.tg .tg-sjuo{background-color:#C2FFD6;text-align:left;vertical-align:top}
+		.tg .tg-cgaz{background-color:#C2FFD6;text-align:right;vertical-align:top}
 
 		* {
 			line-height: inherit;
@@ -163,7 +166,7 @@ text-decoration: none;
 border-radius: 10px;
 
 display: inline-block;
-font-size: 12px;" target="_blank">WEBSITE</a></div>
+font-size: 2vh;" target="_blank">WEBSITE</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
@@ -189,7 +192,7 @@ text-decoration: none;
 display: inline-block;
 border-radius: 10px;
 
-font-size: 12px;" target="_blank">FACEBOOK</a></div>
+font-size: 2vh;" target="_blank">FACEBOOK</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
@@ -216,7 +219,7 @@ padding: 5px 10px;
 text-decoration: none;
 display: inline-block;
 border-radius: 10px;
-font-size: 12px;" target="_blank">024 73065565</a></div>
+font-size: 2vh;" target="_blank">024 73065565</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
@@ -231,29 +234,7 @@ font-size: 12px;" target="_blank">024 73065565</a></div>
 </div>
 <div style="background-color:transparent;">
 <div class="block-grid" style="Margin: 0 auto; min-width: 320px; max-width: 640px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
-<div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;background-image:url('https://vietelite.edu.vn/wp-content/uploads/2018/05/Fotolia_83255773_Subscription_Monthly.jpg');background-position:top center;background-repeat:no-repeat">
-<!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:640px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
-<!--[if (mso)|(IE)]><td align="center" width="640" style=";width:640px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:0px;"><![endif]-->
-<div class="col num12" style="min-width: 320px; max-width: 640px; display: table-cell; vertical-align: top; width: 640px;">
-<div style="width:100% !important;">
-<!--[if (!mso)&(!IE)]><!-->
-<div style="border-top:0px solid transparent; border-left:0px solid transparent; border-bottom:0px solid transparent; border-right:0px solid transparent; padding-top:0px; padding-bottom:0px; padding-right: 0px; padding-left: 0px;">
-<!--<![endif]-->
-<!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 15px; padding-left: 15px; padding-top: 30px; padding-bottom: 30px; font-family: Arial, sans-serif"><![endif]-->
-<div style="color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;line-height:1.2;padding-top:30px;padding-right:15px;padding-bottom:30px;padding-left:15px;">
-<div style="line-height: 1.2; font-size: 12px; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; color: #555555; mso-line-height-alt: 14px;">
-<p style="font-size: 30px; line-height: 1.2; word-break: break-word; text-align: center; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 36px; margin: 0;"><span style="color: #ffffff; font-size: 30px;"><strong>THÔNG BÁO TÌNH HÌNH HỌC TẬP<br/></strong></span></p>
-</div>
-</div>
-<!--[if mso]></td></tr></table><![endif]-->
-<!--[if (!mso)&(!IE)]><!-->
-</div>
-<!--<![endif]-->
-</div>
-</div>
-<!--[if (mso)|(IE)]></td></tr></table><![endif]-->
-<!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-</div>
+@yield('banner')
 </div>
 </div>
 <div style="background-color:transparent;">

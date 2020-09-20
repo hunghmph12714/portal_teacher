@@ -252,7 +252,8 @@ class TransactionController extends Controller
 
         $months = [];
         $data = [];
-        $student_name = Student::find($request->student_id)->fullname;
+        $student = Student::find($request->student_id);
+        $student_name = $student->fullname;
         $sum_amount = 0;
         $content = '';
         $classes = [];
@@ -284,31 +285,36 @@ class TransactionController extends Controller
                 $data[$d['month']][] = $t;
             }
         }
+        $logs = $student->fee_email_log;
+        $logs[]['sent_user'] = auth()->user()->name;
+        $logs[]['sent_time'] = strtotime(date('d-m-Y H:i:m'));
+        $student->fee_email_log = $logs;
+        $student->save();
+
         $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
         $classes = implode(',', $classes);
         $months = implode(',', $months);
         $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
         $content = $classes.'_'.$this->vn_to_str($student_name).'_HP'.$months;
-        // print_r($data);
+        // print_r($data);d
         
 
         $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
          'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content];
         
-        print_r($result);
         $d = ['result' => $result];
         $to_email = $request->pemail;        
         $to_name = '';
-        Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result) {
-            $message->to($to_email, $to_name)
-                    ->to('webmaster@vietelite.edu.vn')
-                    ->subject($result['title'])
-                    ->replyTo('ketoan.cs1@vietelite.edu.vn', 'Phụ huynh hs '.$result['student']);
-            $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
-        });
-        return response()->json(200);
+        
         try{
-            
+            Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result) {
+                $message->to($to_email, $to_name)
+                        ->to('webmaster@vietelite.edu.vn')
+                        ->subject($result['title'])
+                        ->replyTo('ketoan.cs1@vietelite.edu.vn', 'Phụ huynh hs '.$result['student']);
+                $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
+            });
+            return response()->json(200);
         }
         catch(\Exception $e){
             // Get error here
