@@ -256,7 +256,7 @@ const ListFee = React.memo(props => {
                             }                      
                         </div>
                     ),
-                    onClick: (evt, data) => props.handleSendEmail(data)
+                    onClick: (evt, data) => props.handleSendEmail(evt, data)
                 },
                 {                                  
                     icon: () => (show_all) ? (<DoneIcon/>) : (<DoneAllIcon/>),
@@ -382,17 +382,20 @@ class Fee extends React.Component{
     handleGetFee = () => {
         this.setState({reload : !this.state.reload})
     }
-    handleSendEmail = (data) => {
-        console.log(data)
+    handleSendEmail = (evt, data) => {
+        // evt.preventDefault()
+        this.setState({loading_email: true})
         axios.post(baseUrl + '/fee/send-email', {data: data, pemail: this.state.parent_email, student_id : this.state.student_name.value})
-            .then(response => {})
+            .then(response => {
+                this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
+                this.setState({loading_email: false})
+            })
             .catch(err => {})
     }
     submitFeeGather = (data) => {
         this.setState({
             open: true,
-            selected_fee: data,
-            
+            selected_fee: data,            
             selected_amount : data.filter( t => {
                 if(t.id > 0){
                     return t.amount

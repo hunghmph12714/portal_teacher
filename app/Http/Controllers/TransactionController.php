@@ -258,6 +258,7 @@ class TransactionController extends Controller
         $content = '';
         $classes = [];
         $max_date = date('Y-m-d', strtotime('01-01-1999'));
+        $center_id = 0;
         foreach($request->data as $key => $d){
             if($d['id'] < 0) continue;
             $date = date('Y-m-d', strtotime('01-'.$d['month']));
@@ -269,6 +270,7 @@ class TransactionController extends Controller
                 array_push($classes, $d['cname']);
             }
             $transaction = Transaction::find($d['id']);
+            $center_id = Classes::find($transaction->class_id)->center_id;
             $sessions = $transaction->sessions()->count();
             
             $t['cname'] = $d['cname'];
@@ -285,10 +287,11 @@ class TransactionController extends Controller
                 $data[$d['month']][] = $t;
             }
         }
-        $logs = $student->fee_email_log;
-        $logs[]['sent_user'] = auth()->user()->name;
-        $logs[]['sent_time'] = strtotime(date('d-m-Y H:i:m'));
-        $student->fee_email_log = $logs;
+        $logs = json_decode($student->fee_email_note);
+        print_r($logs);
+        $logs->sent_user = auth()->user()->name;
+        $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
+        $student->fee_email_note = json_encode($logs);
         $student->save();
 
         $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
@@ -300,7 +303,7 @@ class TransactionController extends Controller
         
 
         $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
-         'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content];
+         'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
         
         $d = ['result' => $result];
         $to_email = $request->pemail;        

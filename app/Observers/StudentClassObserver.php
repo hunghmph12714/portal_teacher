@@ -83,7 +83,7 @@ class StudentClassObserver
                 $t['student_id'] = $s->id;
                 $t['class_id'] = $class_id;
                 $t['user'] = auth()->user()->id;
-                $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key .': '. $fee['count']. ' ca*'.$fee_per_session.'đ';
+                $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key ;
                 $created_transaction = Transaction::create($t);
                 $created_transaction->tags()->syncWithoutDetaching([7]);
                 $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);

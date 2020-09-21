@@ -26,7 +26,7 @@
 </div>
 @endsection
 @section('content')
-<p>Kính gửi phụ huynh con {{$result['student']}},
+<p>Kính gửi phụ huynh,
 <br>
 {{$result['title']}} của con <strong>{{$result['student']}}</strong><br>
 Tổng học phí của con là: <strong>{{number_format ($result['sum_amount'])}}đ</strong><br>
@@ -76,29 +76,35 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 <p>
 Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh toán chuyển khoản. <br/>
 <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
-&nbsp; 
+@if($result['center_id'] == 5)
+    * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
+    Chủ TK: Phan Việt Anh <br/>
+    Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
+    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+    <br/>
+    <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
+    Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
+    Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 để được giải đáp kịp thời. <br/>
+@endif
+@if($result['center_id'] == 2 || $result['center_id'] == 4)
+<br>
 * NH: <strong>VIB CN Ba Đình </strong> <br/>
 Chủ TK: Phan Việt Anh<br/>
 Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
-&nbsp; 
-&nbsp; 
-
-* NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
-Chủ TK: Phan Việt Anh <br/>
-Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
-&nbsp; 
-&nbsp; 
-
 *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
 <br/>
-&nbsp; 
-&nbsp; 
-
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
-
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>@endif
+@if($result['center_id'] == 3)
+<br>
+* NH: <strong>TCB CN THĂNG LONG</strong> <br/>
+Chủ TK: Bùi Huyền Nga<br/>
+Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
+&nbsp; 
+@endif
 
-Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565/03667.65565 để được giải đáp kịp thời. <br/>
+
 
 Trân trọng! 
 

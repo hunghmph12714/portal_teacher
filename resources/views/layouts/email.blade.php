@@ -166,7 +166,7 @@ text-decoration: none;
 border-radius: 10px;
 
 display: inline-block;
-font-size: 2vh;" target="_blank">WEBSITE</a></div>
+font-size: 1.3vh;" target="_blank">WEBSITE</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
@@ -192,7 +192,7 @@ text-decoration: none;
 display: inline-block;
 border-radius: 10px;
 
-font-size: 2vh;" target="_blank">FACEBOOK</a></div>
+font-size: 1.3vh;" target="_blank">FACEBOOK</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
@@ -219,7 +219,7 @@ padding: 5px 10px;
 text-decoration: none;
 display: inline-block;
 border-radius: 10px;
-font-size: 2vh;" target="_blank">024 73065565</a></div>
+font-size: 1.3vh;" target="_blank">024 73065565</a></div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->
 <!--[if (!mso)&(!IE)]><!-->
