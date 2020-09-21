@@ -34,6 +34,7 @@ Tổng học phí của con là: <strong>{{number_format ($result['sum_amount'])
 <ul>
     <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>{{$result['max_date']}}</strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
+    <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
 </ul>
 Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong bảng kê dưới đây:<br>
 @foreach($result['data'] as $key =>  $fee)

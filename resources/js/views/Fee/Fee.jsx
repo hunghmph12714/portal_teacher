@@ -141,6 +141,40 @@ const NameText = React.memo(props => {
 const ListFee = React.memo(props => {
     const [fees, setFee] = useState([])
     const [show_all, setAll] = useState(true)
+    const [columns, setCol] = useState([
+        { title: 'Tháng', field: 'month',headerStyle: { fontWeight: '600', }, },
+        { title: 'Ngày', field: 'time' ,headerStyle: { fontWeight: '600', }, },
+        { title: 'Nội dung', field: 'content' ,headerStyle: { fontWeight: '600', }, 
+            render: rowData => {
+                var detail = rowData.detail.split('+')
+                // console.log(detail)
+                return (      
+                    <React.Fragment>
+                        <a data-tip data-for={rowData.content}> {rowData.content} </a>
+                        <ReactTooltip id={rowData.content} aria-haspopup='true' >
+                            {detail.map(d => {
+                                return(
+                                    <span>{d} <br/></span>
+                                )
+                            })}
+                        </ReactTooltip>
+                    </React.Fragment>                         
+                                                 
+                )
+            },
+        },
+        { title: 'Lớp', field: 'cname', headerStyle: { fontWeight: '600', },},
+        { title: 'Số tiền', 
+            field: 'amount', type: 'currency', currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0}, 
+            headerStyle: {
+                fontWeight: '600',
+                textAlign: 'right'
+            },
+            cellStyle:{
+                paddingRight: '34px',
+            }
+        },
+    ])
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
@@ -178,40 +212,7 @@ const ListFee = React.memo(props => {
                     }
                 }
             }}
-            columns={[
-                { title: 'Tháng', field: 'month',headerStyle: { fontWeight: '600', }, },
-                { title: 'Ngày', field: 'time' ,headerStyle: { fontWeight: '600', }, },
-                { title: 'Nội dung', field: 'content' ,headerStyle: { fontWeight: '600', }, 
-                    render: rowData => {
-                        var detail = rowData.detail.split('+')
-                        // console.log(detail)
-                        return (      
-                            <React.Fragment>
-                                <a data-tip data-for={rowData.content}> {rowData.content} </a>
-                                <ReactTooltip id={rowData.content} aria-haspopup='true' >
-                                    {detail.map(d => {
-                                        return(
-                                            <span>{d} <br/></span>
-                                        )
-                                    })}
-                                </ReactTooltip>
-                            </React.Fragment>                         
-                                                         
-                        )
-                    },
-                },
-                { title: 'Lớp', field: 'cname', headerStyle: { fontWeight: '600', },},
-                { title: 'Số tiền', 
-                    field: 'amount', type: 'currency', currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0}, 
-                    headerStyle: {
-                        fontWeight: '600',
-                        textAlign: 'right'
-                    },
-                    cellStyle:{
-                        paddingRight: '34px',
-                    }
-                },
-            ]}
+            columns= {columns}
             parentChildData={(row, rows) => rows.find(a => a.id === row.parent_id)}
             options={{
                 selection: true,
@@ -231,22 +232,16 @@ const ListFee = React.memo(props => {
                 },                                
             }}  
             actions={[
-                {                                  
-                    icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
-                    onClick: (evt, data) => props.submitFeeGather(data)
-                },
+                
                 {                                  
                     icon: () => (
                         <div style = {{display: 'block'}}>
                             {   (props.loading_email) ? (
                                     <CircularProgress/>
                                 ):(
-                                    <Tooltip title={''
-                                        // rowData.attendance.map( a => {
-                                        //     if(a.logs.sent_time){
-                                        //         return a.logs.sent_user + ' đã gửi email ' + format(new Date(a.logs.sent_time * 1000), 'd/M/yyyy HH:mm') + '\n'
-                                        //     }
-                                        // })
+                                    <Tooltip title={
+                                        props.student_email_note.sent_user + ' đã gửi lúc ' + 
+                                        format(new Date(props.student_email_note.sent_time*1000), 'd/M/yyyy')
                                     } arrow>                                                
                                         <IconButton>                                                    
                                             <MailOutlineIcon fontSize='inherit' />
@@ -257,6 +252,10 @@ const ListFee = React.memo(props => {
                         </div>
                     ),
                     onClick: (evt, data) => props.handleSendEmail(evt, data)
+                },
+                {                                  
+                    icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
+                    onClick: (evt, data) => props.submitFeeGather(data)
                 },
                 {                                  
                     icon: () => (show_all) ? (<DoneIcon/>) : (<DoneAllIcon/>),
@@ -341,6 +340,7 @@ class Fee extends React.Component{
             parent_alt_phone: newValue.alt_phone,
             parent_id: newValue.pid,
 
+            fee_email_note: JSON.parse(newValue.fee_email_note),
             selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
             parent_note : (newValue.note)?newValue.note:'',
             open: false,
@@ -468,6 +468,7 @@ class Fee extends React.Component{
                                 student_id = {this.state.student_id}
                                 normalize = {this.normalize}
                                 reload = {this.state.reload}
+                                student_email_note = {this.state.fee_email_note}
                             />
                         </Grid>
                     </Grid>

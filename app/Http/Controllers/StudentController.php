@@ -29,7 +29,7 @@ class StudentController extends Controller
         if(ctype_digit($key)){
             //check parent phone
             $s = Parents::where('parents.phone', 'LIKE', '%'.$key.'%')->select(
-                'students.id as sid','students.fullname as s_name', 'school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
+                'students.id as sid','students.fullname as s_name','students.fee_email_note','school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
                 'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('students','parents.id','students.parent_id')
@@ -40,7 +40,7 @@ class StudentController extends Controller
         else{
             //check student full name
             $s = Student::where('students.fullname', 'LIKE', '%'.$key.'%')->select(
-                'students.id as sid','students.fullname as s_name', 'school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
+                'students.id as sid','students.fullname as s_name', 'school', 'fee_email_note' ,'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
                 'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
                 'relationships.id as r_id','relationships.name as r_name','relationships.color'
             )->leftJoin('parents','students.parent_id','parents.id')
