@@ -84,7 +84,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
     *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
     <br/>
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
-    Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
+    Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 để được giải đáp kịp thời. <br/>
 @endif
 @if($result['center_id'] == 2 || $result['center_id'] == 4)
@@ -96,13 +96,19 @@ Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
 <br/>
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
-Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>@endif
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>
+@endif
+
 @if($result['center_id'] == 3)
 <br>
 * NH: <strong>TCB CN THĂNG LONG</strong> <br/>
 Chủ TK: Bùi Huyền Nga<br/>
 Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
-&nbsp; 
+*Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+<br/>
+<strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
+Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: cs.phamtuantai@vietelite.edu.vn  <br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>
 @endif
 
 
