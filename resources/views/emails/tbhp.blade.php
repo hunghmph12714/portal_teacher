@@ -85,7 +85,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
     <br/>
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
     Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
-    Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 để được giải đáp kịp thời. <br/>
+    Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 để được giải đáp kịp thời. <br/>
 @endif
 @if($result['center_id'] == 2 || $result['center_id'] == 4)
 <br>
@@ -96,7 +96,7 @@ Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
 <br/>
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
-Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 để được giải đáp kịp thời. <br/>
 @endif
 
 @if($result['center_id'] == 3)
@@ -108,7 +108,7 @@ Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
 <br/>
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: cs.phamtuantai@vietelite.edu.vn  <br/>
-Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565  để được giải đáp kịp thời. <br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2  để được giải đáp kịp thời. <br/>
 @endif
 
 
