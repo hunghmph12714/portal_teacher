@@ -100,7 +100,7 @@ class Discount extends React.Component{
             //Học sinh
                 {
                     title: "Học sinh",
-                    field: "student",
+                    field: "sname",
                     headerStyle: {
                         fontWeight: '600',
                         width: '25%',
