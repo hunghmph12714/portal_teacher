@@ -416,19 +416,23 @@ class SessionController extends Controller
         $ts = TransactionSession::where('session_id', $session->id)->get();
         foreach($ts as $value){
             $transaction = Transaction::find($value->transaction_id);
-            $trans_hp = $transaction->tags()->where('tags.name', 'Học phí')->first();
-            if($trans_hp){
-                $value->amount = $new_fee;          
-            }
-            $trans_mg = $transaction->tags()->where('tags.name', 'Miễn giảm')->first();
-            $trans_dc = $transaction->tags()->where('tags.name', 'Điều chỉnh')->first();
-            if( $trans_mg || $trans_dc ){
-                $discount = Discount::find($transaction->discount_id);
-                if($discount->student_class_id && $discount->percentage){
-                    $value->amount = $new_fee/100* $discount->percentage;
+            if($transaction){
+                $trans_hp = $transaction->tags()->where('tags.name', 'Học phí')->first();
+                if($trans_hp){
+                    $value->amount = $new_fee;          
                 }
-                if($discount->class_id && $discount->percentage){
-                    $value->amount = $new_fee/100 * abs($discount->percentage);
+                $trans_mg = $transaction->tags()->where('tags.name', 'Miễn giảm')->first();
+                $trans_dc = $transaction->tags()->where('tags.name', 'Điều chỉnh')->first();
+                if( $trans_mg || $trans_dc ){
+                    $discount = Discount::find($transaction->discount_id);
+                    if($discount){
+                        if($discount->student_class_id && $discount->percentage){
+                            $value->amount = $new_fee/100* $discount->percentage;
+                        }
+                        if($discount->class_id && $discount->percentage){
+                            $value->amount = $new_fee/100 * abs($discount->percentage);
+                        }
+                    }
                 }
             }
             $value->save();

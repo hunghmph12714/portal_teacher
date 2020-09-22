@@ -108,7 +108,7 @@ class DialogForm extends React.Component {
                 amount: nextProps.receipt.amount,
                 remaining_amount: nextProps.receipt.amount,
                 description: nextProps.receipt.description,
-                receipt_time: new Date(nextProps.receipt.created_at),
+                receipt_time: new Date(nextProps.receipt.time_formated),
                 transaction_count: nextProps.receipt.transactions.length,
                 transactions : transactions,
                 center: {label: nextProps.receipt.ctname, value: nextProps.receipt.ctid}

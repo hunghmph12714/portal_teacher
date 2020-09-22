@@ -234,6 +234,15 @@ class PaperController extends Controller
                 if(array_key_exists('id', $t)){
                     $td = Transaction::find($t['id']);
                     if($td){
+                        $account = Account::find($t['debit']['value']);
+                        if($account->level_1 == '111'){
+                            $receipt->method = 'TM';
+                        }
+                        if($account->level_1 == '112'){
+                            $receipt->method = 'NH';
+                        } 
+                        $receipt->save();
+                        $p->save();
                         $td->debit = $t['debit']['value'];
                         $td->credit = $t['credit']['value'];
                         $td->amount = $t['amount'];
