@@ -356,6 +356,7 @@ class Discount extends React.Component{
                     data={this.state.data}
                     options = {{
                         pageSize: 10,
+                        filter: true,
                     }}
                     editable={{
                         onRowAdd: newData => this.addNewDiscount(newData) ,
