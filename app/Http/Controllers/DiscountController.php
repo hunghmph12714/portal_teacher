@@ -35,14 +35,14 @@ class DiscountController extends Controller
     }
     protected function createDiscount(Request $request){
         $rules = [
-            'student' => 'required',
+            'sname' => 'required',
             'class' => 'required',
             // 'expired_at' => 'required',
         ];
         $this->validate($request, $rules);
 
         //Check student in class
-        $c = StudentClass::where('student_id', $request->student['sid'])->where('class_id', $request->class['value'])->first();
+        $c = StudentClass::where('student_id', $request->sname['sid'])->where('class_id', $request->class['value'])->first();
         if($c){
             $input['student_class_id'] = $c->id;
             $input['active_at'] = explode('T', $request->active_at)[0];

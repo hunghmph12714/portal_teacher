@@ -287,8 +287,7 @@ class TransactionController extends Controller
                 $data[$d['month']][] = $t;
             }
         }
-        $logs = json_decode($student->fee_email_note);
-        print_r($logs);
+        $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
         $logs->sent_user = auth()->user()->name;
         $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
         $student->fee_email_note = json_encode($logs);
