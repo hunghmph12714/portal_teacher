@@ -240,8 +240,8 @@ const ListFee = React.memo(props => {
                                     <CircularProgress/>
                                 ):(
                                     <Tooltip title={
-                                        props.student_email_note.sent_user + ' đã gửi lúc ' + 
-                                        format(new Date(props.student_email_note.sent_time*1000), 'd/M/yyyy')
+                                        (props.student_email_note) ? props.student_email_note.sent_user + ' đã gửi lúc ' + 
+                                        format(new Date(props.student_email_note.sent_time*1000), 'd/M/yyyy') : ''
                                     } arrow>                                                
                                         <IconButton>                                                    
                                             <MailOutlineIcon fontSize='inherit' />
