@@ -12,6 +12,7 @@ use App\Classes;
 use App\StudentClass;
 use App\Discount;
 use Mail;
+use Swift_SmtpTransport;
 
 class TransactionController extends Controller
 {
@@ -287,41 +288,76 @@ class TransactionController extends Controller
                 $data[$d['month']][] = $t;
             }
         }
-        $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
-        $logs->sent_user = auth()->user()->name;
-        $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
-        $student->fee_email_note = json_encode($logs);
-        $student->save();
+        //aadf
+            $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
+            $logs->sent_user = auth()->user()->name;
+            $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
+            $student->fee_email_note = json_encode($logs);
+            $student->save();
 
-        $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
-        $classes = implode(',', $classes);
-        $months = implode(',', $months);
-        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
-        $content = $classes.'_'.$this->vn_to_str($student_name).'_HP'.$months;
-        // print_r($data);d
-        
+            $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
+            $classes = implode(',', $classes);
+            $months = implode(',', $months);
+            $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
+            $content = $classes.'_'.$this->vn_to_str($student_name).'_HP'.$months;
+            // print_r($data);d
+            
 
-        $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
-         'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
-        
-        $d = ['result' => $result];
-        $to_email = $request->pemail;        
-        $to_name = '';
-        
-        try{
-            Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result) {
+            $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
+            'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
+            
+            $d = ['result' => $result];
+            $to_email = $request->pemail;        
+            $to_name = '';
+            $mail = 'ketoantrungyen@vietelite.edu.vn';
+            $password = 'Mot23457';
+            if($center_id == 5){
+                $mail = 'ketoantrungyen@vietelite.edu.vn';
+                $password = 'Mot23457';
+            }
+            
+            if($center_id == 2 || $center_id == 4){
+                $mail = 'ketoancs1@vietelite.edu.vn';
+                $password = '12345Bay';
+            }
+            if($center_id == 3){
+                $mail = 'cs.phamtuantai@vietelite.edu.vn';
+                $password = 'Mot23457';
+            }
+
+        try{ 
+            $backup = Mail::getSwiftMailer();
+
+            // Setup your outlook mailer
+            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+            $transport->setUsername($mail);
+            $transport->setPassword($password);
+            // Any other mailer configuration stuff needed...
+            echo $mail;
+            echo $password;
+            $outlook = new \Swift_Mailer($transport);
+
+            // Set the mailer as gmail
+            Mail::setSwiftMailer($outlook);
+           
+            // Send your message
+            Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
                 $message->to($to_email, $to_name)
                         ->to('webmaster@vietelite.edu.vn')
                         ->subject($result['title'])
-                        ->replyTo('ketoan.cs1@vietelite.edu.vn', 'Phụ huynh hs '.$result['student']);
-                $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
+                        ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
+                $message->from($mail,'VIETELITE EDUCATION CENTER');
             });
+
+            // Restore your original mailer
+            Mail::setSwiftMailer($backup);
             return response()->json(200);
         }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
         }
+        
     }
     function vn_to_str ($str){
  
