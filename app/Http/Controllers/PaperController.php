@@ -242,7 +242,6 @@ class PaperController extends Controller
                             $receipt->method = 'NH';
                         } 
                         $receipt->save();
-                        $p->save();
                         $td->debit = $t['debit']['value'];
                         $td->credit = $t['credit']['value'];
                         $td->amount = $t['amount'];

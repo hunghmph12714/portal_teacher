@@ -32,7 +32,7 @@
 Tổng học phí của con là: <strong>{{number_format ($result['sum_amount'])}}đ</strong><br>
 <i><h4>Chú ý: </h4></i>
 <ul>
-    <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>{{$result['max_date']}}</strong> </li>
+    <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>10/10/2020</strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
     <li><i>Đối với học sinh học 3 môn và có anh/chị/em ruột học tại trung tâm sẽ được giảm 5% học phí.</i></li>
 </ul>
@@ -82,30 +82,32 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
     Chủ TK: Phan Việt Anh <br/>
     Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
     *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
-    <br/>
+    <br/><br>
+
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
     Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 để được giải đáp kịp thời. <br/>
 @endif
 @if($result['center_id'] == 2 || $result['center_id'] == 4)
-<br>
 * NH: <strong>VIB CN Ba Đình </strong> <br/>
 Chủ TK: Phan Việt Anh<br/>
 Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
 *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
-<br/>
+<br/><br>
+
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
 Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 để được giải đáp kịp thời. <br/>
 @endif
 
 @if($result['center_id'] == 3)
-<br>
 * NH: <strong>TCB CN THĂNG LONG</strong> <br/>
 Chủ TK: Bùi Huyền Nga<br/>
 Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
 *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
 <br/>
+<br>
+
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
 Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: cs.phamtuantai@vietelite.edu.vn  <br/>
 Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2  để được giải đáp kịp thời. <br/>
