@@ -98,6 +98,7 @@ class DiscountController extends Controller
 
         $discount = Discount::find($request->id);
         if($discount){
+            $transaction = Transaction::where('discount_id', $discount->id)->forceDelete();
             $discount->forceDelete();
             return response()->json('ok');
         }

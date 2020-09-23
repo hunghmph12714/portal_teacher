@@ -328,8 +328,8 @@ class Discount extends React.Component{
                     variant: 'success'
                 })
                 this.setState(prevState => {
-                    const data = [...prevState.data];
-                    data.splice(data.indexOf(oldData), 1);
+                    const datas = [...prevState.data];                    
+                    const data = datas.filter(d => d.did !== oldData.did)
                     return { ...prevState, data };
                 });
             })

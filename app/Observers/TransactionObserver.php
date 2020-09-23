@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Transaction;
 use App\Account;
+use App\TransactionSession;
 class TransactionObserver
 {
     /**
@@ -89,6 +90,7 @@ class TransactionObserver
         $credit->balance -= $amount;
         $credit->save();
         $debit->save();
+        $ts = TransactionSession::where('transaction_id', $transaction->id)->forceDelete();
     }
 
     /**
@@ -118,5 +120,8 @@ class TransactionObserver
         $credit->balance -= $amount;
         $credit->save();
         $debit->save();
+
+        $ts = TransactionSession::where('transaction_id', $transaction->id)->forceDelete();
+        //
     }
 }
