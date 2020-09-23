@@ -229,7 +229,7 @@ class StudentController extends Controller
                     $result[$key+1]['count_transaction']++;
                 }
                 $dt['student_id'] = $student_id;
-                $dt['content'] = 'Nhận học phí dư có';
+                $dt['content'] = 'Học phí thừa kì trước';
                 $dt['user'] = auth()->user()->id;
                 $receipt  = Transaction::create($dt);
                 

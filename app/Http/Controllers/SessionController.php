@@ -277,7 +277,7 @@ class SessionController extends Controller
     protected function deleteFee(){
         $t1 = Transaction::where('content','like', '%Học phí lớp%')->where('debit', 10)->where('credit', 70)->forceDelete();
         $t2 = Transaction::where('content','like', '%học phí ONLINE%')->forceDelete();
-        $t3 = Transaction::where('content','like', '%Nhận học phí dư có%')->forceDelete();
+        $t3 = Transaction::where('content','like', '%Học phí thừa kì trước%')->forceDelete();
         $t3 = Transaction::where('content','like', '%Chuyển học phí dư có%')->forceDelete();
         $t4 = Transaction::where('content','like', '%HỖ TRỢ%')->forceDelete();
         $t5 = Transaction::where('content', 'like', '%Miễn giảm học phí%')->forceDelete();
