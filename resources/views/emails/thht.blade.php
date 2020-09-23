@@ -31,27 +31,13 @@
     @foreach($datas as $data)
         <h3 style="font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">Buổi {{ date('d/m/Y', strtotime($data['session']->date)) }}, ca học của thầy/cô {{$data['teacher']}}:</h3>
         
-        <h4>Kết quả bài tập về nhà: </h4>
-        <ul>
-            <li>
-                Tổng số bài: {{$data['student_session']->btvn_max}}
-            </li>
-            <li>
-                Số bài đã hoàn thành: {{$data['student_session']->btvn_complete}}
-            </li>
-            <li>
-                Số bài đạt yêu cầu: {{$data['student_session']->btvn_score}}
-            </li>
-            <li>
-                Nhận xét bài tập về nhà: {{$data['student_session']->btvn_comment}}
-            </li>
-
-        </ul>
-        <h4>Thông tin buổi học: </h4>
+       
+        <h4>1. Thông tin của ca học : </h4>
         <ul>
             <li>
                 Nội dung ca học: <b>{{$data['session']->content}}</b>
             </li>
+                    
             <li>
                 Tài liệu ca học (nếu có):
                 @if($data['session']->document != '')
@@ -71,8 +57,30 @@
                     @endforeach
                 @endif
             </li>
+            @if($data['session']['note'] != "")
+                <li>
+                    Nhận xét chung: <b>{{$data['session']['note']}}</b>
+                </li>
+            @endif   
         </ul>
-        <h4>Tình hình học trên lớp: </h4>
+        <h4>2. Kết quả bài tập về nhà: </h4>
+        <ul>
+            <li>
+                Tổng số bài: {{$data['student_session']->btvn_max}}
+            </li>
+            <li>
+                Số bài đã hoàn thành: {{$data['student_session']->btvn_complete}}
+            </li>
+            <li>
+                Số bài đạt yêu cầu: {{$data['student_session']->btvn_score}}
+            </li>
+            <li>
+                Nhận xét bài tập về nhà: {{$data['student_session']->btvn_comment}}
+            </li>
+
+        </ul>
+        
+        <h4>3. Tình hình học trên lớp: </h4>
         <ul>
             <li>
                 Điểm danh: 
