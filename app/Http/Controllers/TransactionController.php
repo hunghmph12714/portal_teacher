@@ -271,7 +271,10 @@ class TransactionController extends Controller
                 array_push($classes, $d['cname']);
             }
             $transaction = Transaction::find($d['id']);
-            $center_id = Classes::find($transaction->class_id)->center_id;
+            $center_id = Classes::find($transaction->class_id);
+            if($center_id){
+                $center_id = $center_id->center_id;
+            }
             $sessions = $transaction->sessions()->count();
             
             $t['cname'] = $d['cname'];
@@ -325,7 +328,7 @@ class TransactionController extends Controller
                 $password = 'Mot23457';
             }
 
-        try{ 
+        try{
             $backup = Mail::getSwiftMailer();
 
             // Setup your outlook mailer
@@ -352,6 +355,7 @@ class TransactionController extends Controller
             // Restore your original mailer
             Mail::setSwiftMailer($backup);
             return response()->json(200);
+             
         }
         catch(\Exception $e){
             // Get error here
