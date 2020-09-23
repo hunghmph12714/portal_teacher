@@ -29,13 +29,6 @@
 <p>Kính gửi phụ huynh,
 <br>
 {{$result['title']}} của con <strong>{{$result['student']}}</strong><br>
-Tổng học phí của con là: <strong>{{number_format ($result['sum_amount'])}}đ</strong><br>
-<i><h4>Chú ý: </h4></i>
-<ul>
-    <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>10/10/2020</strong> </li>
-    <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
-    <li><i>Đối với học sinh học 3 môn và có anh/chị/em ruột học tại trung tâm sẽ được giảm 5% học phí.</i></li>
-</ul>
 Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong bảng kê dưới đây:<br>
 @foreach($result['data'] as $key =>  $fee)
     <h3>THÁNG {{$key}}</h3>    
@@ -75,6 +68,14 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 
 <br>
 <p>
+<br>
+Tổng học phí của con là: <strong>{{number_format ($result['sum_amount'])}}đ</strong><br>
+<i><h4>Chú ý: </h4></i>
+<ul>
+    <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>10/10/2020</strong> </li>
+    <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
+    <li><i>Đối với học sinh học 3 môn và có anh/chị/em ruột học tại trung tâm sẽ được giảm 5% học phí.</i></li>
+</ul>
 Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh toán chuyển khoản. <br/>
 <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
 @if($result['center_id'] == 5)
