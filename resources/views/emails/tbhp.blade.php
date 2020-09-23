@@ -88,7 +88,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
     * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
     Chủ TK: Phan Việt Anh <br/>
     Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
-    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
     <br/><br>
 
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -99,7 +99,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
 * NH: <strong>VIB CN Ba Đình </strong> <br/>
 Chủ TK: Phan Việt Anh<br/>
 Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
-*Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+*Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
 <br/><br>
 
 <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -111,7 +111,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 ho
 * NH: <strong>TCB CN THĂNG LONG</strong> <br/>
 Chủ TK: Bùi Huyền Nga<br/>
 Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
-*Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+*Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
 <br/>
 <br>
 

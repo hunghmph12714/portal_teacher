@@ -233,7 +233,7 @@ class StudentClassObserver
                 $sessions = Session::where('class_id', $studentClass->class_id)->get();
                 $sessions_id = array_column($sessions->toArray(), 'id');
                 // Xóa điểm danh
-                $student->sessions()->detach($sessions_id);
+                // $student->sessions()->detach($sessions_id);
                 $transactions = Transaction::whereNull('paper_id')->where('student_id', $student->id)->where('class_id', $studentClass->class_id)->forceDelete();
             }
         }

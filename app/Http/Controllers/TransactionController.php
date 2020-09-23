@@ -302,7 +302,7 @@ class TransactionController extends Controller
             $classes = implode(',', $classes);
             $months = implode(',', $months);
             $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
-            $content = $classes.'_'.$this->vn_to_str($student_name).'_HP'.$months;
+            $content = $classes.'_'.$this->vn_to_str($student_name);
             // print_r($data);d
             
 
