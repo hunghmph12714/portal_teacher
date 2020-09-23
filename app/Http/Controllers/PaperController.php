@@ -309,7 +309,7 @@ class PaperController extends Controller
                 ->receiptCenter($request->filter)
                 ->receiptDate($request->filter);
 
-            $receipts =  $receipt->Select('papers.id as id','papers.method', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
+            $receipts =  $receipt->Select('papers.id as id','papers.method', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.created_at','papers.status as status',
                 'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid','center.code as code')->where('type', 'receipt')
                 ->leftJoin('users','papers.user_created_id','users.id')
                 ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)

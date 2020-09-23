@@ -258,7 +258,7 @@ class TransactionController extends Controller
         $sum_amount = 0;
         $content = '';
         $classes = [];
-        $max_date = date('Y-m-d', strtotime('01-01-1999'));
+        $max_date = date('Y-m-d');
         $center_id = 0;
         foreach($request->data as $key => $d){
             if($d['id'] < 0) continue;
