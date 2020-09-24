@@ -83,6 +83,7 @@ class PaperController extends Controller
             $payment->name = $request->name;
             $payment->amount = $request->amount;
             $payment->address = $request->address;
+            $payement->description = $request->description;
             $payment->created_at = date('Y-m-d', strtotime($request->payment_time));
             if($payment->center_id != $request->center['value']){
                 $max_payment_number = Paper::where('center_id', $request->center['value'])->max('payment_number')!="" ? Paper::where('center_id', $request->center['value'])->max('payment_number') : 0;
@@ -224,6 +225,7 @@ class PaperController extends Controller
             $receipt->name = $request->name;
             $receipt->amount = $request->amount;
             $receipt->address = $request->address;
+            $receipt->description = $request->description;
             $receipt->created_at = date('Y-m-d', strtotime($request->receipt_time));
             $receipt->save();
             if($request->transaction_count == 0){
