@@ -115,7 +115,7 @@ class StudentController extends Controller
                             ->leftJoin('students','transactions.student_id','students.id')
                             ->leftJoin('classes','transactions.class_id','classes.id')
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id')->orderBy('transactions.time', 'ASC')
+                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
                             ->get();
         
         foreach($transactions as $key => $t){
