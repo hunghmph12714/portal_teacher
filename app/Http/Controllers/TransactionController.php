@@ -11,6 +11,7 @@ use App\Student;
 use App\Classes;
 use App\StudentClass;
 use App\Discount;
+use App\TransactionSession;
 use Mail;
 use Swift_SmtpTransport;
 
@@ -363,6 +364,17 @@ class TransactionController extends Controller
         }
         
     }
+    function dif(){
+        $acc = Account::where('level_2', 131)->first()->id;
+        $transactions = Transaction::where('debit', $acc)->get();
+        foreach($transactions as $t){
+            $ts = TransactionSession::where('transaction_id', $t->id)->sum('amount');
+            if($ts != $t->amount){
+                echo "<pre>";
+                print_r($t->toArray());
+            }
+        }
+    }
     function vn_to_str ($str){
  
         $unicode = array(
@@ -407,4 +419,5 @@ class TransactionController extends Controller
         return $str;
          
         }
-}
+
+    }
