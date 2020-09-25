@@ -10,6 +10,7 @@ use App\Classes;
 use App\Account;
 use App\Transaction;
 use App\Student;
+use App\Tag;
 use App\Discount;
 use DateTime;
 use DateInterval;
@@ -361,7 +362,9 @@ class SessionController extends Controller
         $this->validate($request, $rules);
 
         $session = Session::find($request->ss_id);
+        
         if($session){
+            $class = Classes::find($session->class_id);
             $session->teacher_id = $request->teacher_id;
             $session->center_id = $request->center_id;
             $session->room_id = ($request->room_id != 'null')? $request->room_id : NULL;
@@ -407,6 +410,100 @@ class SessionController extends Controller
                 $this->editSessionFee($session, $request->fee);
                 $session->fee = $request->fee;
             }
+            //CHeck student
+            $new_students = array_column(json_decode($request->students), 'value');
+            $old_students = array_column($session->students->toArray(), 'id');
+            // Các học sinh được thêm mới
+            $arr_1 = array_diff($new_students, $old_students);
+
+            //Các học sinh bị loại bỏ
+            $arr_2 = array_diff($old_students, $new_students);
+
+            foreach($arr_1 as $a1){
+                // Tìm transaction 
+                $debit = Account::where('level_2', '131')->first();
+                $credit = Account::where('level_2', '3387')->first();
+                $transaction['debit'] = $debit->id;
+                $transaction['credit'] = $credit->id;
+                $transaction['amount'] = intval($session->fee);
+                $transaction['time'] = $session->from;
+                $transaction['student_id'] = $a1;
+                $transaction['class_id'] = $session->class_id;
+                $transaction['session_id'] = $session->id;
+                $transaction['user'] = auth()->user()->id;              
+                switch ($session->type) {
+                    case 'main':
+                        # code...
+                        $tag = Tag::where('name', 'Học phí')->first(); 
+                        $trans = $tag->transactions()->where('student_id', $a1)
+                            ->where('class_id', $session->class_id)->whereMonth('time', date('m', strtotime($session->date)))
+                            ->whereYear('time', date('Y', strtotime($session->date)))->first();
+                        if($trans){  
+                            $trans->amount += $session->fee;
+                            $trans->save();
+                        }
+                        else{
+                            $transaction['content'] = 'Học phí tháng '. date('m-Y', strtotime($session->date));
+                            $trans = Transaction::create($transaction);
+                        }
+                        $trans->sessions()->attach([$session->id => ['amount'=> $session->fee]]);
+                        //Dieu chinh
+                        $amount = $session->fee;
+                        $tag = Tag::where('name', 'Điều chỉnh')->first();
+                        $trans = $tag->transactions()->where('student_id', $a1)
+                            ->where('class_id', $session->class_id)->whereMonth('time', date('m', strtotime($session->date)))
+                            ->whereYear('time', date('Y', strtotime($session->date)))->first();
+                        if($trans){
+                            $discount = Discount::find($trans->discount_id);
+                            if($discount->percentage){
+                                $trans->amount = $trans->amount + abs($session->fee/100*$discount->percentage);
+                                $trans->save();
+                                $trans->sessions()->attach([$session->id => ['amount'=> abs($session->fee/100*$discount->percentage)]]);
+                                $amount = $session->fee + $session->fee/100*$discount->percentage;
+                            }
+                        }
+                        //Mien giam
+                        $tag = Tag::where('name', 'Miễn giảm')->first();
+                        $trans = $tag->transactions()->where('student_id', $a1)
+                            ->where('class_id', $session->class_id)->whereMonth('time', date('m', strtotime($session->date)))
+                            ->whereYear('time', date('Y', strtotime($session->date)))->first();
+                        if($trans){
+                            $discount = Discount::find($trans->discount_id);
+                            if($discount->percentage){
+                                $trans->amount = $trans->amount + $amount/100*$discount->percentage;
+                                $trans->save();
+                                $trans->sessions()->attach([$session->id => ['amount'=> abs($amount/100*$discount->percentage)]]);
+                            }
+                        }
+                        break;
+                    case 'tutor_online':
+                    case 'tutor':
+                        # code...
+                        $transaction['content'] = 'Học phí phụ đạo '. date('d-m', strtotime($session->date));
+                        $trans = Transaction::create($transaction);
+                        $trans->sessions()->attach([$session->id => ['amount'=> $session->fee]]);
+                        break;
+                   
+                    default:
+                        # code...
+                        break;
+                }
+                // Add attendance
+                $session->students()->attach([$a1]);
+            }
+            foreach($arr_2 as $a2){
+                // Bo khoi diem danh
+                $session->students()->detach([$a2]);
+                //Bo hoc phi
+                $transactions = $session->transactions()->where('student_id', $a2)->get();
+                foreach($transactions as $transaction){
+                    $ts = TransactionSession::where('transaction_id', $transaction->id)->where('session_id', $session->id)->first();
+                    $ts->forceDelete();
+                }
+                
+            }
+            print_r($arr_1);
+            print_r($arr_2);
             $session->save();
             
         }
@@ -478,6 +575,7 @@ class SessionController extends Controller
         $input['to'] = date('Y-m-d H:i:00', ($request->to_date));
         $input['ss_number'] = 0;
         $input['note'] = $request->note;
+        $input['fee'] = $request->fee;
         //Create new session
         $session = Session::create($input);
 

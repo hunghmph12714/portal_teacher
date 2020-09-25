@@ -150,8 +150,8 @@ const ListFee = React.memo(props => {
                 // console.log(detail)
                 return (      
                     <React.Fragment>
-                        <a data-tip data-for={rowData.content}> {rowData.content} </a>
-                        <ReactTooltip id={rowData.content} aria-haspopup='true' >
+                        <a data-tip data-for={rowData.content + rowData.cname}> {rowData.content} </a>
+                        <ReactTooltip id={rowData.content + rowData.cname} aria-haspopup='true' >
                             {detail.map(d => {
                                 return(
                                     <span>{d} <br/></span>
