@@ -137,7 +137,7 @@ class DiscountController extends Controller
                 $id = -1;
 
                 $student = Student::find($student_id);
-                $sessions = $student->sessions()->where('class_id', $student_class->class_id)->whereBetween('date', [$from, $to])->get();
+                $sessions = $student->sessions()->where('class_id', $student_class->class_id)->whereBetween('date', [$from, $to])->where('sessions.type', 'main')->get();
                 foreach($sessions as $s){
                     $sum_amount_session = 0;
                     $transactions = $s->transactions()->where('student_id', $student->id)->get();

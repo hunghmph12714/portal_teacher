@@ -272,9 +272,9 @@ class TransactionController extends Controller
                 array_push($classes, $d['cname']);
             }
             $transaction = Transaction::find($d['id']);
-            $center_id = Classes::find($transaction->class_id);
-            if($center_id){
-                $center_id = $center_id->center_id;
+            $class = Classes::find($transaction->class_id);
+            if($class){
+                $center_id = $class->center_id;
             }
             $sessions = $transaction->sessions()->count();
             
@@ -302,7 +302,7 @@ class TransactionController extends Controller
             $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
             $classes = implode(',', $classes);
             $months = implode(',', $months);
-            $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months. " năm học 2020-2021";
+            $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng 10-11 năm học 2020-2021';
             $content = $classes.'_'.$this->vn_to_str($student_name);
             // print_r($data);d
             
@@ -328,7 +328,7 @@ class TransactionController extends Controller
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
                 $password = 'Mot23457';
             }
-
+        print_r($center_id);
         try{
             $backup = Mail::getSwiftMailer();
 

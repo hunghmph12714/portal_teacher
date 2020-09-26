@@ -287,7 +287,7 @@ class ClassController extends Controller
             }
             if($request->status == 'droped'){
                 $sc->status = $request->status;
-                $sc->drop_time = date('Y-m-d', strtotime($request->drop_date));
+                $sc->drop_time = ($request->drop_date)?date('Y-m-d', strtotime($request->drop_date)):date('Y-m-d');
                 $stats = ($sc->stats) ? $sc->stats : [];                    
                 $stats['drop_reason'] = $request->drop_reason;                  
                 $sc->stats = $stats;
@@ -584,7 +584,7 @@ class ClassController extends Controller
                     // Học phí
                     $tag = $t->tags()->first();
                     
-                    if($t->debit == $acc_no && $tag->name == "Học phí"){
+                    if($t->debit == $acc_no){
                         $r['hp'] += $t->amount;
                     }
                     // Điều chỉnh học phí
@@ -783,6 +783,16 @@ class ClassController extends Controller
         }
         return response()->json($students);
         
+    }
+    protected function fuckDrop(){
+        // $sc = StudentClass::where('status', 'active')->whereNotNull('drop_time')->get();
+        $sc = StudentClass::where('drop_time', '1970-01-01')->get();
+        foreach($sc as $a){
+            $a->drop_time = $a->entrance_date;
+            $a->save();
+        }
+        echo "<pre>";
+        print_r($sc->toArray());
     }
     
 }

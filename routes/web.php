@@ -292,3 +292,4 @@ Route::get('/transaction/content', 'TransactionController@changeContent');
 // Route::get('/delete-fee', 'SessionController@deleteFee');
 // Route::get('/create-ta', 'UserController@createTa');
 Route::get('/transaction/dif', 'TransactionController@dif');
+Route::get('/sc/drop', 'ClassController@fuckDrop');

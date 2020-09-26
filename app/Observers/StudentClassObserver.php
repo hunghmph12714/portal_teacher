@@ -118,7 +118,7 @@ class StudentClassObserver
                 $discounts = Discount::where('student_class_id', $student_class->id)
                                     ->where('status', 'active')
                                     ->where('max_use','>',0)
-                                    ->where('expired_at', '>', $t['time'])->get();
+                                    ->where('expired_at', '>=', $t['time'])->where('active_at', '<=' , $t['time'])->get();
                 foreach($discounts as $d){
                     //Check discount available
                     $dt['credit'] = Account::Where('level_2', '131')->first()->id;
@@ -239,6 +239,8 @@ class StudentClassObserver
         }
         if($studentClass->getOriginal('status') == 'droped'){
             if($studentClass->status == 'active'){
+                $studentClass->drop_time = null;
+                $studentClass->save();
                 $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
                 $sessions_id = array_column($sessions->toArray(), 'id');
                 $student->sessions()->syncWithoutDetaching($sessions_id);
