@@ -117,7 +117,8 @@ class StudentController extends Controller
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
                             ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
                             ->get();
-        
+        // print_r($student_id);
+        // print_r($transactions->toArray());
         foreach($transactions as $key => $t){
             $month = Date('m-Y', strtotime($t->time));     
             $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();

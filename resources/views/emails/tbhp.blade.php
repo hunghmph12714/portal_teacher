@@ -74,7 +74,7 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 
     <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
     @if($result['center_id'] == 3)
-        06/10/2020
+        08/10/2020
     @else
         10/10/2020
     @endif

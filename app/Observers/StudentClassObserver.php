@@ -253,7 +253,7 @@ class StudentClassObserver
             // Xóa các attendance
             $from = $studentClass->getOriginal('entrance_date');
             $to = $studentClass->entrance_date;
-            $sessions = $student->sessions()->whereBetween('date', [$from, $to])->get();
+            $sessions = $student->sessions()->whereBetween('date', [$from, $to])->where('class_id', $class->id)->get();
             
             $session_ids = array_column($sessions->toArray(), 'id');
 
