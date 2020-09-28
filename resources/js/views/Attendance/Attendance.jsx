@@ -25,7 +25,7 @@ const customChip = (color = '#ccc') => ({
   fontSize: '12px',
 })
 
-
+const trl = {'present': 'x', 'late':'l', 'absence': 'cp', 'n_absence': 'kp','holding': '-'}
 const ClassSelect = React.memo(props => {
     const {center, course} = props
     const [classes, setClasses] = useState([])
@@ -505,9 +505,11 @@ class Attendance extends React.Component{
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
+                            width: '150px'
                         },
                         cellStyle: {
-                            padding: '0px',
+                            padding: '0px',                            
+                            width: '150px'
                         },
                         render: rowData => {
                           return (                                
@@ -526,9 +528,11 @@ class Attendance extends React.Component{
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
+                            width: '150px'
                         },
                         cellStyle: {
                             padding: '3px 0px',
+                            width: '150px'
                         },
                         render: rowData => 
                           (                              
@@ -574,33 +578,78 @@ class Attendance extends React.Component{
                           return rowData.attendance.map(a => {
                             return (
                                 <Tooltip title={a.session_id}>
-                                    <Chip variant="outlined" label={a.attendance} size="small"  className="attendance" />
+                                    <Chip variant="outlined" label={trl[a.attendance]} size="small"  className="attendance" />
                                 </Tooltip> 
                             )
                           })                          
                         }
                     },
                     // Ghi chú
+                    // {
+                    //     title: "Ghi chú",
+                    //     field: "note",
+                    //     headerStyle: {
+                    //         padding: '0px',
+                    //         fontWeight: '600',
+                    //     },
+                    //     cellStyle: {
+                    //         padding: '0px',
+                    //     },
+                    //     render: rowData => {
+                    //     return rowData.attendance.map(a => {
+                    //         return (
+                    //             <span>{a.attendance_note}</span>    
+                    //         )
+                    //     })                          
+                    //     }
+                    // },    
+                    //Bài tập về nhà
                     {
-                        title: "Ghi chú",
-                        field: "note",
+                        title: "Bài về nhà",
+                        field: "btvn_score",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
                         },
                         cellStyle: {
                             padding: '0px',
-                        },
+                        },  
                         render: rowData => {
-                        return rowData.attendance.map(a => {
-                            return (
-                                <Tooltip title={a.session_id}>
-                                <span>{a.attendance_note}</span>    
-                                </Tooltip> 
-                            )
-                        })                          
-                        }
-                    },                  
+                            return rowData.attendance.map(a => {
+                                return (
+                                    <Tooltip title={a.session_id}>
+                                        <Chip variant="outlined" label={a.btvn_complete ? a.btvn_score + '/' + a.btvn_complete + '/' + a.btvn_max: ''} size="small"  className="attendance" />
+                                    </Tooltip>
+                                )
+                            })                          
+                        }                          
+                    },  
+                    //Nx btvn
+                    {
+                        title: "N/xét BTVN",
+                        field: "comment",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                            width: '200px'
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                            width: '200px'
+                        },  
+                        render: rowData => {
+                            return rowData.attendance.map(a => {
+                                return (
+                                    // <Tooltip title={a.session_id}>
+                                    //     <Chip variant="outlined" label={a.comment} size="small"  className="attendance" />
+                                    // </Tooltip> 
+                                    <p class="note"> {a.btvn_comment} </p>
+                                )
+                            })                          
+                        }                          
+                    },
+                    
+                            
                     //Điểm 
                     {
                         title: "Điểm",
@@ -622,27 +671,7 @@ class Attendance extends React.Component{
                             })                          
                         }                          
                     },
-                    //Bài tập về nhà
-                    {
-                        title: "Bài về nhà",
-                        field: "btvn_score",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },  
-                        render: rowData => {
-                            return rowData.attendance.map(a => {
-                                return (
-                                    <Tooltip title={a.session_id}>
-                                        <Chip variant="outlined" label={a.btvn_complete ? a.btvn_score + '/' + a.btvn_complete + '/' + a.btvn_max: ''} size="small"  className="attendance" />
-                                    </Tooltip>
-                                )
-                            })                          
-                        }                          
-                    },
+                    
                     //Điểm 
                     {
                         title: "Nhận xét",
@@ -650,16 +679,19 @@ class Attendance extends React.Component{
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
+                            width: '400px'
                         },
                         cellStyle: {
                             padding: '0px',
+                            width: '400px'
                         },  
                         render: rowData => {
                             return rowData.attendance.map(a => {
                                 return (
-                                    <Tooltip title={a.session_id}>
-                                        <Chip variant="outlined" label={a.comment} size="small"  className="attendance" />
-                                    </Tooltip> 
+                                    // <Tooltip title={a.session_id}>
+                                    //     <Chip variant="outlined" label={a.comment} size="small"  className="attendance" />
+                                    // </Tooltip> 
+                                    <p class="note"> {a.comment} </p>
                                 )
                             })                          
                         }                          

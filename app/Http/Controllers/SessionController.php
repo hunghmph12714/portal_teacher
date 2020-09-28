@@ -407,6 +407,7 @@ class SessionController extends Controller
             $session->exercice = $exercice;
             $session->btvn_content = $request->btvn_content;
             $session->content = $request->content;
+            $session->type = $request->type;
             if($session->fee != $request->fee){
                 $this->editSessionFee($session, $request->fee);
                 $session->fee = $request->fee;
@@ -433,6 +434,7 @@ class SessionController extends Controller
                 $transaction['session_id'] = $session->id;
                 $transaction['user'] = auth()->user()->id;              
                 switch ($session->type) {
+                    case 'exam':
                     case 'main':
                         # code...
                         $tag = Tag::where('name', 'Học phí')->first(); 
