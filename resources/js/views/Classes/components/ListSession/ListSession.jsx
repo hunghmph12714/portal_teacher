@@ -301,18 +301,31 @@ const ListSession = (props) => {
                         },
                       } ,
                       {
-                        title: "Trạng thái",
-                        field: "status",
-                        lookup: {0: 'Khởi tạo', 1: 'Công nợ', 2: 'Điểm danh', 3: 'Chốt'},
+                        title: "Loại",
+                        field: "type",
+                        lookup: {'main': 'Chính khóa', 'tutor': 'Phụ đạo', 'tutor_online': 'Phụ đạo ONLINE','exam': 'KTĐK'},
                         grouping: false,
                         headerStyle: {
-                          padding: '0px',
+                          padding: '4px',
                           fontWeight: '600',                      
                         },
                         cellStyle: {
-                            padding: '0px',
+                            padding: '4px',
                         },
-                      }
+                      },
+                      // {
+                      //   title: "Trạng thái",
+                      //   field: "status",
+                      //   lookup: {0: 'Khởi tạo', 1: 'Công nợ', 2: 'Điểm danh', 3: 'Chốt'},
+                      //   grouping: false,
+                      //   headerStyle: {
+                      //     padding: '0px',
+                      //     fontWeight: '600',                      
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '0px',
+                      //   },
+                      // }
                   ]
                 }
             />

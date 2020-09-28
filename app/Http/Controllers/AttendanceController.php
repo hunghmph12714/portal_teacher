@@ -79,6 +79,8 @@ class AttendanceController extends Controller
         
         $ids = $request->student_session_id;
         $datas = [];
+        $session_type = 'main';
+        $session_month = '';
         $center_id = 0;
         foreach($ids as $key=>$id){
             $data = [];
@@ -89,11 +91,14 @@ class AttendanceController extends Controller
             $student_session->logs = $logs;
             $student_session->save();
             if($student_session){
-    
                 $data['student'] = Student::find($student_session->student_id);
                 $data['parent'] = Parents::find($data['student']->parent_id);
                 
-                $data['session'] = Session::find($student_session->session_id);
+                $session = Session::find($student_session->session_id);
+                $session_type = $session->type;
+                $session_month = date('m', strtotime($session->date));
+                $data['session'] = $session;
+                
                 $data['class'] = Classes::find($data['session']->class_id)->code;
     
                 $center = Center::find($data['session']->center_id);
@@ -126,7 +131,7 @@ class AttendanceController extends Controller
         // return view('emails.thht', compact('datas'));
         $to_email = $datas[0]['parent']->email;        
         $to_name = '';
-        try{
+      
             $backup = Mail::getSwiftMailer();
 
             // Setup your outlook mailer
@@ -138,18 +143,29 @@ class AttendanceController extends Controller
             $outlook = new \Swift_Mailer($transport);
 
             // Set the mailer as gmail
-            Mail::setSwiftMailer($outlook);
-           
-            Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas, $mail) {
-                $message->to($to_email, $to_name)
-                        ->to('webmaster@vietelite.edu.vn')
-                        ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
-                        ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
-                $message->from($mail,'VIETELITE EDUCATION CENTER');
-            });
+            Mail::setSwiftMailer($outlook);           
+            
+            if($session_type == "exam"){
+                Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month) {
+                    $message->to($to_email, $to_name)
+                            ->to('webmaster@vietelite.edu.vn')
+                            ->subject('[VIETELITE]Kết quả Kiểm tra định kỳ tháng '.$session_month ." của con " . $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
+                            ->replyTo($datas[0]['center']->email, '[KTDK] Phụ huynh hs '.$datas[0]['student']->fullname);
+                    $message->from($mail,'VIETELITE EDUCATION CENTER');
+                });
+            }
+            else{
+                Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas, $mail) {
+                    $message->to($to_email, $to_name)
+                            ->to('webmaster@vietelite.edu.vn')
+                            ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
+                            ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
+                    $message->from($mail,'VIETELITE EDUCATION CENTER');
+                });
+            }
             Mail::setSwiftMailer($backup);
             return response()->json(200);
-            }
+            try{  }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);

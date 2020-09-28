@@ -475,6 +475,7 @@ class DialogSession extends React.Component {
                                         <MenuItem value="tutor">Phụ đạo</MenuItem>
                                         <MenuItem value="tutor_online">Phụ đạo (Online)</MenuItem>
                                         <MenuItem value="compensate">Học bù</MenuItem>
+                                        <MenuItem value="exam">Kiểm tra định kỳ</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <StudentClassSelect 
