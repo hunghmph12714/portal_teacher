@@ -11,6 +11,7 @@ use App\Student;
 use App\Classes;
 use App\StudentClass;
 use App\Discount;
+use App\Center;
 use App\TransactionSession;
 use Mail;
 use Swift_SmtpTransport;
@@ -18,6 +19,61 @@ use Swift_SmtpTransport;
 class TransactionController extends Controller
 {
     //
+    function dif(){
+        $acc = Account::where('level_2', 131)->first()->id;
+        $transactions = Transaction::where('debit', $acc)->get();
+        foreach($transactions as $t){
+            $ts = TransactionSession::where('transaction_id', $t->id)->sum('amount');
+            if($ts != $t->amount){
+                echo "<pre>";
+                print_r($t->toArray());
+            }
+        }
+    }
+    function vn_to_str ($str){
+ 
+        $unicode = array(
+         
+        'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+         
+        'd'=>'đ',
+         
+        'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+         
+        'i'=>'í|ì|ỉ|ĩ|ị',
+         
+        'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+         
+        'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+         
+        'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+         
+        'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+         
+        'D'=>'Đ',
+         
+        'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+         
+        'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+         
+        'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+         
+        'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+         
+        'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+         
+        );
+         
+        foreach($unicode as $nonUnicode=>$uni){
+         
+        $str = preg_replace("/($uni)/i", $nonUnicode, $str);
+         
+        }
+        $str = str_replace(' ','_',$str);
+         
+        return $str;
+         
+    }
     public function discountId(){
         $tag = Tag::where('name', "Miễn giảm")->first();
         $dc = Tag::where('name', "Điều chỉnh")->first();
@@ -293,42 +349,41 @@ class TransactionController extends Controller
             }
         }
         //aadf
-            $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
-            $logs->sent_user = auth()->user()->name;
-            $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
-            $student->fee_email_note = json_encode($logs);
-            $student->save();
+        $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
+        $logs->sent_user = auth()->user()->name;
+        $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
+        $student->fee_email_note = json_encode($logs);
+        $student->save();
 
-            $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
-            $classes = implode(',', $classes);
-            $months = implode(',', $months);
-            $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng 10-11 năm học 2020-2021';
-            $content = $classes.'_'.$this->vn_to_str($student_name);
-            // print_r($data);d
-            
+        $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
+        $classes = implode(',', $classes);
+        $months = implode(',', $months);
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng 10-11 năm học 2020-2021';
+        $content = $classes.'_'.$this->vn_to_str($student_name);
+        // print_r($data);d
+        
 
-            $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
-            'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
-            
-            $d = ['result' => $result];
-            $to_email = $request->pemail;        
-            $to_name = '';
+        $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
+        'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
+        
+        $d = ['result' => $result];
+        $to_email = $request->pemail;        
+        $to_name = '';
+        $mail = 'ketoantrungyen@vietelite.edu.vn';
+        $password = 'Mot23457';
+        if($center_id == 5){
             $mail = 'ketoantrungyen@vietelite.edu.vn';
             $password = 'Mot23457';
-            if($center_id == 5){
-                $mail = 'ketoantrungyen@vietelite.edu.vn';
-                $password = 'Mot23457';
-            }
-            
-            if($center_id == 2 || $center_id == 4){
-                $mail = 'ketoancs1@vietelite.edu.vn';
-                $password = '12345Bay';
-            }
-            if($center_id == 3){
-                $mail = 'cs.phamtuantai@vietelite.edu.vn';
-                $password = 'Mot23457';
-            }
-        print_r($center_id);
+        }
+        
+        if($center_id == 2 || $center_id == 4){
+            $mail = 'ketoancs1@vietelite.edu.vn';
+            $password = '12345Bay';
+        }
+        if($center_id == 3){
+            $mail = 'cs.phamtuantai@vietelite.edu.vn';
+            $password = 'Mot23457';
+        }
         try{
             $backup = Mail::getSwiftMailer();
 
@@ -364,60 +419,98 @@ class TransactionController extends Controller
         }
         
     }
-    function dif(){
-        $acc = Account::where('level_2', 131)->first()->id;
-        $transactions = Transaction::where('debit', $acc)->get();
-        foreach($transactions as $t){
-            $ts = TransactionSession::where('transaction_id', $t->id)->sum('amount');
-            if($ts != $t->amount){
-                echo "<pre>";
-                print_r($t->toArray());
+    public function print(Request $request){
+        $rules = ['data' => 'required'];
+        $this->validate($request, $rules);
+        $result = [];
+
+        $months = [];
+        $data = [];
+        $student = Student::find($request->student_id);
+        $student_name = $student->fullname;
+        $sum_amount = 0;
+        $content = '';
+        $classes = [];
+        $max_date = date('Y-m-d');
+        $center_id = 0;
+        foreach($request->data as $key => $d){
+            if($d['id'] < 0) continue;
+            $date = date('Y-m-d', strtotime('01-'.$d['month']));
+            if($date > $max_date){
+                $max_date = $date;
+            }
+            //Class
+            if(!in_array($d['cname'], $classes)){
+                array_push($classes, $d['cname']);
+            }
+            $transaction = Transaction::find($d['id']);
+            $tag = Tag::where('name', "Học phí")->first()->id;
+            $t_tag = $transaction->tags()->first();
+            $t['content'] = '';
+            if($t_tag){
+                if($t_tag->id == $tag){
+                    $t['content'] = 'Học phí lớp '. $d['cname'];
+                }
+                else{
+                    $t['content'] = $d['content'];
+                }
+            }
+            if($d['cname'] == "") $t['content'] = $d['content'];
+            $class = Classes::find($transaction->class_id);
+            if($class){
+                $center_id = $class->center_id;
+            }
+            $sessions = $transaction->sessions()->count();
+            
+            $t['cname'] = ($d['cname'] != '')?$d['cname'] : '-';
+            
+            $t['sl'] = ($sessions != 0) ? $sessions : 1;
+            $t['dg'] = ($sessions != 0) ? $d['amount']/$sessions : $d['amount'];
+            $t['amount'] = $d['amount'];
+            $sum_amount += $d['amount'];
+            
+            if(!array_key_exists($d['cname'], $data)){
+                array_push($months , date('m', strtotime($date)));
+                $data[$d['cname']][0] = $t;
+            }
+            else{
+                $check = false;
+                foreach($data[$d['cname']] as $cl => $dt){
+                    if($dt['dg'] == $t['dg']){
+                        $data[$d['cname']][$cl]['sl'] += $t['sl'];
+                        $data[$d['cname']][$cl]['amount'] += $t['amount'];
+                        $check = true;
+                    break;
+                    }
+                }
+                if(!$check){
+                    $data[$d['cname']][] = $t;
+                }                
             }
         }
-    }
-    function vn_to_str ($str){
- 
-        $unicode = array(
-         
-        'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
-         
-        'd'=>'đ',
-         
-        'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
-         
-        'i'=>'í|ì|ỉ|ĩ|ị',
-         
-        'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
-         
-        'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
-         
-        'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
-         
-        'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
-         
-        'D'=>'Đ',
-         
-        'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
-         
-        'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
-         
-        'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
-         
-        'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
-         
-        'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
-         
-        );
-         
-        foreach($unicode as $nonUnicode=>$uni){
-         
-        $str = preg_replace("/($uni)/i", $nonUnicode, $str);
-         
-        }
-        $str = str_replace(' ','_',$str);
-         
-        return $str;
-         
-        }
+        //Content
+        $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
+        $logs->sent_user = auth()->user()->name;
+        $logs->sent_time = strtotime(date('d-m-Y H:i:m'));
+        $student->fee_email_note = json_encode($logs);
+        $student->save();
 
+        $max_date = date('d/m/Y', strtotime($max_date. ' + 9 days'));
+        $classes = implode(', ', $classes);
+        $months = implode(', ', $months);
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ tháng 10-11 năm học 2020-2021';
+        $content = $classes.'_'.$this->vn_to_str($student_name);        
+        // print_r($data);d
+        
+
+        $result = ['data' => $data, 'title' => $title, 'classes' => $classes,
+        'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
+        $center = Center::find($center_id);
+        $result['center_address'] = ($center)?$center->address:'';
+        $result['center_phone'] = ($center)?$center->phone:'';
+        return view('fee.a5', compact('result'));
+        // print_r($result);
     }
+
+
+}

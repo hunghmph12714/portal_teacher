@@ -13,7 +13,9 @@ use App\Account;
 use App\Transaction;
 use App\Teacher;
 use Mail;
+use Swift_SmtpTransport;
 use App\StudentSession;
+
 class AttendanceController extends Controller
 {
     //
@@ -70,13 +72,14 @@ class AttendanceController extends Controller
         }
         print_r($request->attendance);
     }
-//send email
+//send emails
     public function sendEmail(Request $request){
         $rules = ['student_session_id' => 'required'];
         $this->validate($request, $rules);
         
         $ids = $request->student_session_id;
         $datas = [];
+        $center_id = 0;
         foreach($ids as $key=>$id){
             $data = [];
             $student_session = StudentSession::find($id);     
@@ -93,7 +96,9 @@ class AttendanceController extends Controller
                 $data['session'] = Session::find($student_session->session_id);
                 $data['class'] = Classes::find($data['session']->class_id)->code;
     
-                $data['center'] = Center::find($data['session']->center_id);
+                $center = Center::find($data['session']->center_id);
+                $center_id = $center->id;
+                $data['center'] = $center;
                 $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
     
                 $data['student_session'] = $student_session;
@@ -101,19 +106,50 @@ class AttendanceController extends Controller
             $datas[$key]  = $data;
         }
         $d = array('datas'=>$datas);
+
+        $mail = 'info@vietelite.edu.vn';
+        $password = 'Mot23457';
+        // if($center_id == 5){
+        //     $mail = 'ketoantrungyen@vietelite.edu.vn';
+        //     $password = 'Mot23457';
+        // }
+        
+        // if($center_id == 2 || $center_id == 4){
+        //     $mail = 'ketoancs1@vietelite.edu.vn';
+        //     $password = '12345Bay';
+        // }
+        if($center_id == 3){
+            $mail = 'cs.phamtuantai@vietelite.edu.vn';
+            $password = 'Mot23457';
+        }
+
         // return view('emails.thht', compact('datas'));
         $to_email = $datas[0]['parent']->email;        
         $to_name = '';
         try{
-            Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
+            $backup = Mail::getSwiftMailer();
+
+            // Setup your outlook mailer
+            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+            $transport->setUsername($mail);
+            $transport->setPassword($password);
+            // Any other mailer configuration stuff needed...
+            
+            $outlook = new \Swift_Mailer($transport);
+
+            // Set the mailer as gmail
+            Mail::setSwiftMailer($outlook);
+           
+            Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas, $mail) {
                 $message->to($to_email, $to_name)
                         ->to('webmaster@vietelite.edu.vn')
                         ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
                         ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
-                $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
+                $message->from($mail,'VIETELITE EDUCATION CENTER');
             });
+            Mail::setSwiftMailer($backup);
             return response()->json(200);
-        }
+            }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
@@ -136,7 +172,10 @@ class AttendanceController extends Controller
         foreach($request->payload as $p){
             $att = StudentSession::where('student_id', $p['student_id'])->where('session_id', $p['session_id'])->first();
             if($att){
-                $att->{$p['col']} = $p['value'];
+                if(array_key_exists('value', $p)){
+                    $att->{$p['col']} = ($p['value'])?$p['value']:NULL;
+                }
+                else $att->{$p['col']} = NULL;
                 if($p['col'] = "attendance"){
                     switch ($p['value']) {
                         case 'x':

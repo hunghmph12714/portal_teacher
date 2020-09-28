@@ -33,6 +33,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import DoneIcon from '@material-ui/icons/Done';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -254,6 +255,14 @@ const ListFee = React.memo(props => {
                     onClick: (evt, data) => props.handleSendEmail(evt, data)
                 },
                 {                                  
+                    icon: () => (
+                        <IconButton>                                                    
+                            <PrintOutlinedIcon fontSize='inherit' />
+                        </IconButton>
+                    ),
+                    onClick: (evt, data) => props.handlePrint(evt, data)
+                },
+                {                                  
                     icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
                     onClick: (evt, data) => props.submitFeeGather(data)
                 },
@@ -392,6 +401,17 @@ class Fee extends React.Component{
             })
             .catch(err => {})
     }
+    handlePrint = (evt, data) => {
+        axios.post(baseUrl + '/fee/print', {data: data, pemail: this.state.parent_email, student_id : this.state.student_name.value})
+            .then(response => {
+                // this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
+                
+                let newWin = window.open("about:blank", "hello", "width=1000,height=900");
+                newWin.document.write((response.data));
+                // this.setState({loading_email: false})
+            })
+            .catch(err => {})
+    }
     submitFeeGather = (data) => {
         this.setState({
             open: true,
@@ -464,6 +484,7 @@ class Fee extends React.Component{
                             <ListFee
                                 submitFeeGather = {this.submitFeeGather}
                                 handleSendEmail = {this.handleSendEmail}
+                                handlePrint = {this.handlePrint}
                                 loading_email = {this.state.loading_email}
                                 student_id = {this.state.student_id}
                                 normalize = {this.normalize}
