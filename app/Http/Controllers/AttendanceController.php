@@ -108,7 +108,7 @@ class AttendanceController extends Controller
         $d = array('datas'=>$datas);
 
         $mail = 'info@vietelite.edu.vn';
-        $password = 'Mot23457';
+        $password = 'Pv$hn$ms26';
         // if($center_id == 5){
         //     $mail = 'ketoantrungyen@vietelite.edu.vn';
         //     $password = 'Mot23457';
@@ -177,25 +177,32 @@ class AttendanceController extends Controller
                 }
                 else $att->{$p['col']} = NULL;
                 if($p['col'] = "attendance"){
-                    switch ($p['value']) {
-                        case 'x':
-                            $att->attendance = 'present';
-                            break;
-                        case 'p':
-                            $att->attendance = 'absence';
-                            break;
-                        case 'kp':
-                            $att->attendance = 'n_absence';
-                            break;
-                        case '-':
-                            $att->attendance = 'holding';
-                            break;
-                        case 'l':
-                            $att->attendance = 'late';
-                            break;
-                        default:
-                            # code...
-                            break;
+                    
+                    if(array_key_exists('value', $p)){
+                        switch ($p['value']) {
+                            case 'x':
+                                $att->attendance = 'present';
+                                break;
+                            case 'p':
+                                $att->attendance = 'absence';
+                                break;
+                            case 'kp':
+                                $att->attendance = 'n_absence';
+                                break;
+                            case NULL:
+                            case '-':
+                                $att->attendance = 'holding';
+                                break;
+                            case 'l':
+                                $att->attendance = 'late';
+                                break;
+                            default:
+                                # code...
+                                break;
+                        }
+                    }
+                    else{
+                        $att->attendance = 'holding';
                     }
                 }
             $att->save();
