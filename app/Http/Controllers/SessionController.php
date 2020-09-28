@@ -447,22 +447,26 @@ class SessionController extends Controller
                         else{
                             $student = Student::find($a1);
                             $this->generateFeeMainSession($student, $session);
+                        break;
                         }
                         
                         //Dieu chinh
                         $amount = $session->fee;
                         $tag = Tag::where('name', 'Điều chỉnh')->first();
+                        print_r($tag->toArray());
                         $trans = $tag->transactions()->where('student_id', $a1)
                             ->where('class_id', $session->class_id)->whereMonth('time', date('m', strtotime($session->date)))
                             ->whereYear('time', date('Y', strtotime($session->date)))->first();
                         if($trans){
                             echo $trans->discount_id;
                             $discount = Discount::find($trans->discount_id);
-                            if($discount->percentage){
-                                $trans->amount = $trans->amount + abs($session->fee/100*$discount->percentage);
-                                $trans->save();
-                                $trans->sessions()->attach([$session->id => ['amount'=> abs($session->fee/100*$discount->percentage)]]);
-                                $amount = $session->fee + $session->fee/100*$discount->percentage;
+                            if($discount){
+                                if($discount->percentage){
+                                    $trans->amount = $trans->amount + abs($session->fee/100*$discount->percentage);
+                                    $trans->save();
+                                    $trans->sessions()->attach([$session->id => ['amount'=> abs($session->fee/100*$discount->percentage)]]);
+                                    $amount = $session->fee + $session->fee/100*$discount->percentage;
+                                }
                             }
                         }
                         //Mien giam
@@ -472,10 +476,12 @@ class SessionController extends Controller
                             ->whereYear('time', date('Y', strtotime($session->date)))->first();
                         if($trans){
                             $discount = Discount::find($trans->discount_id);
-                            if($discount->percentage){
-                                $trans->amount = $trans->amount + $amount/100*$discount->percentage;
-                                $trans->save();
-                                $trans->sessions()->attach([$session->id => ['amount'=> abs($amount/100*$discount->percentage)]]);
+                            if($discount){
+                                if($discount->percentage){
+                                    $trans->amount = $trans->amount + $amount/100*$discount->percentage;
+                                    $trans->save();
+                                    $trans->sessions()->attach([$session->id => ['amount'=> abs($amount/100*$discount->percentage)]]);
+                                }
                             }
                         }
                         break;
@@ -534,13 +540,14 @@ class SessionController extends Controller
             if($discount->percentage){
                 $transaction['debit'] = ($discount->percentage < 0) ? $credit->id : $debit->id;
                 $transaction['credit'] = ($discount->percentage < 0) ? $debit->id : $credit->id;
-                $transaction['amount'] = abs($session->fee/100 * $discount->percentage);
+                $transaction['amount'] = abs($session->fee/100 * $discount->percentage);                
             }
             if($discount->amount){
                 $transaction['debit'] = ($discount->amount < 0) ? $credit->id : $debit->id;
                 $transaction['credit'] = ($discount->amount < 0) ? $debit->id : $credit->id;
                 $transaction['amount'] = abs($discount->amount);
             }
+            $transaction['discount_id'] = $discount->id;
             $transaction['content'] = $discount->content;
             $trans = Transaction::create($transaction);        
 
@@ -559,6 +566,7 @@ class SessionController extends Controller
             if($discount->percentage){               
                 $transaction['amount'] = abs($session->fee/100 * $discount->percentage);
             }
+            $transaction['discount_id'] = $discount->id;
             $transaction['content'] = 'Miễn giảm học phí.';
             $trans = Transaction::create($transaction);        
 
