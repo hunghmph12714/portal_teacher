@@ -449,7 +449,12 @@ class TransactionController extends Controller
             $t['content'] = '';
             if($t_tag){
                 if($t_tag->id == $tag){
-                    $t['content'] = 'Học phí lớp '. $d['cname'];
+                    if($t['content'] != ""){
+                        $t['content'] = $t['content'].', '.date('m', strtotime('01-'.$d['month']));
+                    }
+                    else{
+                        $t['content'] = 'Học phí tháng '. date('m', strtotime('01-'.$d['month']));
+                    }
                 }
                 else{
                     $t['content'] = $d['content'];
@@ -477,6 +482,7 @@ class TransactionController extends Controller
                 $check = false;
                 foreach($data[$d['cname']] as $cl => $dt){
                     if($dt['dg'] == $t['dg']){
+                        $data[$d['cname']][$cl]['content'] = $data[$d['cname']][$cl]['content'] .' , '. date('m', strtotime('01-'.$d['month']));
                         $data[$d['cname']][$cl]['sl'] += $t['sl'];
                         $data[$d['cname']][$cl]['amount'] += $t['amount'];
                         $check = true;

@@ -137,7 +137,7 @@ class DiscountController extends Controller
                 $id = -1;
 
                 $student = Student::find($student_id);
-                $sessions = $student->sessions()->where('class_id', $student_class->class_id)->whereBetween('date', [$from, $to])->where('sessions.type', 'main')->get();
+                $sessions = $student->sessions()->where('class_id', $student_class->class_id)->whereBetween('date', [$from, $to])->where('sessions.type', 'main')->orWhere('sessions.type', 'exam')->get();
                 foreach($sessions as $s){
                     $sum_amount_session = 0;
                     $transactions = $s->transactions()->where('student_id', $student->id)->get();
@@ -160,6 +160,7 @@ class DiscountController extends Controller
                         }
                     }
                 }
+            
                 foreach($result as $month => $r){
                     $trans['debit'] = Account::Where('level_2', '511')->first()->id;
                     $trans['credit'] = Account::Where('level_2', '131')->first()->id;

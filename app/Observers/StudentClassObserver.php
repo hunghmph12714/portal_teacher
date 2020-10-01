@@ -119,6 +119,8 @@ class StudentClassObserver
                                     ->where('status', 'active')
                                     ->where('max_use','>',0)
                                     ->where('expired_at', '>=', $t['time'])->where('active_at', '<=' , $t['time'])->get();
+                // print_r($t);
+                // print_r($discounts->toArray());
                 foreach($discounts as $d){
                     //Check discount available
                     $dt['credit'] = Account::Where('level_2', '131')->first()->id;
@@ -129,7 +131,7 @@ class StudentClassObserver
                     $dt['user'] = auth()->user()->id;                                           
                     if($d['percentage']){
                         $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
-                        $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';
+                        $dt['content'] = 'Miễn giảm học phí '.$d['percentage'].'%';
                         $sids = [];
                         foreach($fee['session_id'] as $sid => $f){
                             $discount_per_session = $f['amount'];

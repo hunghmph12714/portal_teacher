@@ -129,23 +129,25 @@
                             <?php $count = 0?>
                             @foreach($result['data'] as $key =>  $fee) 
                             <tr>
-                                <td class="tg-sjuo" style="text-align: center; vertical-align: middle;" rowspan={{sizeof($fee)}}>{{$key}}</td>
+                                <td class="tg-sjuo" style="text-align: center; vertical-align: middle;" rowspan={{sizeof($fee)+1}}>{{$key}}</td>
                                 <td class="tg-sjuo">{{$fee[0]['content']}}</td>
                                 <td class="tg-cgaz">{{number_format ($fee[0]['dg'])}}</td>
                                 <td class="tg-sjuo">{{$fee[0]['sl']}}</td>
                                 <td class="tg-cgaz">{{number_format ($fee[0]['amount'])}}</td>
                             </tr>  
-                            <tr>
+                            
                                 @foreach($fee as $n => $f)
+                                <tr>
                                     @if($n == 0)
                                     @else 
-                                    <td class="tg-sjuo">{{$f['content']}}</td>
-                                    <td class="tg-cgaz">{{number_format ($f['dg'])}}</td>
-                                    <td class="tg-sjuo">{{$f['sl']}}</td>
-                                    <td class="tg-cgaz">{{number_format ($f['amount'])}}</td>
+                                        <td class="tg-sjuo">{{$f['content']}}</td>
+                                        <td class="tg-cgaz">{{number_format ($f['dg'])}}</td>
+                                        <td class="tg-sjuo">{{$f['sl']}}</td>
+                                        <td class="tg-cgaz">{{number_format ($f['amount'])}}</td>
                                     @endif
+                                </tr>  
                                 @endforeach
-                            </tr>                      
+                                                
                             @endforeach                    
                             <tr>
                                 <td class="tg-sjuo"></td>

@@ -668,10 +668,10 @@ class ClassController extends Controller
         $to = date('Y-m-d 23:59:59', strtotime($request->to));
         $class = Classes::find($class_id);
         $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
-            whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->get();
+            whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->orderBy('sessions.date')->get();
         $result = [];
         if($class){            
-            $students = $class->activeStudents;
+            $students = $class->students;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
                 if(!$parent){
