@@ -173,7 +173,7 @@ class StudentClassObserver
         $student = Student::find($studentClass->student_id);
         if($studentClass->status == "active" && $student){
             //Create attendance for that student
-            $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
+            $sessions = Session::where('class_id', $studentClass->class_id)->where('type','!=', 'tutor')->where('type', '!=', 'tutor_online')->where('type', '!=', 'compensate')->whereDate('date','>=', $studentClass->entrance_date)->get();
             $sessions_id = array_column($sessions->toArray(), 'id');
             $student->sessions()->syncWithoutDetaching($sessions_id);
             $students = Student::where('id', $student->id)->first();
@@ -201,7 +201,9 @@ class StudentClassObserver
             if($studentClass->status == 'active'){
                 if($student){
                     //Create attendance for that student
-                    $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
+                    $sessions = Session::where('class_id', $studentClass->class_id)
+                        ->where('type','!=', 'tutor')->where('type', '!=', 'tutor_online')->where('type', '!=', 'compensate')
+                        ->whereDate('date','>=', $studentClass->entrance_date)->get();
                     $sessions_id = array_column($sessions->toArray(), 'id');
                     $student->sessions()->syncWithoutDetaching($sessions_id);
                     $students = Student::where('id', $student->id)->first();

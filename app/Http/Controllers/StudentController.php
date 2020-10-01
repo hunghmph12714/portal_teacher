@@ -195,9 +195,21 @@ class StudentController extends Controller
         $student_id = $request->student_id;
         $result = $this->generateFee($student_id, false, false);
         // return response()->json($this->generateFee($student_id, false, false));
-        usort($result, function($a, $b) {
+        
+        $negative_arr = array_filter($result, function($a){
+            return ($a['amount'] < 0);
+        });
+        usort($negative_arr, function($a, $b){
             return $a['amount'] <=> $b['amount'];
         });
+        $positive_arr = array_filter($result, function($a){
+            return $a['amount'] > 0;
+        });
+        usort($positive_arr, function($a, $b) {
+            return strtotime(str_replace('/', '-', $a['time'])) - strtotime( str_replace('/', '-', $b['time']));            
+        });
+        $result = array_merge($negative_arr, $positive_arr);
+        // print_r($result);
         //Tags
         $tag = Tag::where('name', 'Chuyển HP')->first();
         if(!$tag){

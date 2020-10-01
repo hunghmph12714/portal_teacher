@@ -226,7 +226,7 @@ class DialogSession extends React.Component {
             this.setState({fee:  100000*diffHour})
         }
         if(type == 'tutor_online'){
-            this.setState({fee:  80000*diffHour})
+            this.setState({fee:  88000*diffHour})
         }
         if(type == 'main'){
             this.setState({fee: this.props.class_fee})
@@ -610,7 +610,6 @@ class DialogSession extends React.Component {
                             </Button>
                         )
                     }
-                    
                 </DialogActions>
             </Dialog>
                 
