@@ -28,3 +28,4 @@ export { default as Receipt } from './Receipt';
 export { default as Fee } from './Fee';
 export { default as AdjustFee } from './AdjustFee';
 export { Financial } from './Report';
+export { default as Revenue } from './Revenue';

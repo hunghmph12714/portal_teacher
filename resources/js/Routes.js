@@ -27,7 +27,7 @@ import {
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
-  Financial
+  Financial, Revenue
 } from './views';
 
 const Routes = (props) => {
@@ -215,6 +215,11 @@ const Routes = (props) => {
         component = {Financial}
         layout = {MainLayout}
         path = "/report/financial"
+      />
+      <ProtectedRouteWithLayout 
+        component = {Revenue}
+        layout = {MainLayout}
+        path = "/report/revenue"
       />
       
       <Redirect to="/not-found" />

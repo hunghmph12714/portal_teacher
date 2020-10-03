@@ -189,6 +189,14 @@ Route::group(['middleware' => ['auth']], function() {
                 return view('welcome');
             });
             Route::get('/report/get-financial', 'ReportController@getFinancial');
+            Route::get('/report/revenue', function(){
+                return view('welcome');
+            });
+            // Route::get('/report/get-revenue', 'ReportController@getRevenue');
+            Route::post('/report/get-revenue', 'ReportController@getRevenue');
+            Route::get('/admin/dt', function(){
+                return redirect('/report/revenue');
+            });
     });
     //Password Change
     //Import database 
