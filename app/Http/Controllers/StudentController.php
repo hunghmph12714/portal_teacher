@@ -394,9 +394,9 @@ class StudentController extends Controller
 
     }
     public function lnda(){
-        $session = Session::where('class_id', '94')->get();
+        $session = Session::where('class_id', '89')->get();
         foreach($session as $s){
-            $ss = StudentSession::where('student_id', '4809')->where('session_id', $s->id)->get();
+            $ss = StudentSession::where('student_id', '3966')->where('session_id', $s->id)->get();
             foreach($ss as $sss){
                 $sss->forceDelete();
             }
