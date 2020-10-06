@@ -87,10 +87,10 @@ class ClassDetail extends React.Component{
         return (
             <div className="root-class-detail">
               <Grid container spacing={2} direction="row" justify="space-between" alignItems="center">
-                <Grid item md={6} className="header-class">
+                <Grid item md={6} sm={6} className="header-class">
                   <h2 className="class-title">Lớp {this.state.selected_class.name}</h2>
                 </Grid>
-                <Grid item md={6} className="header-class">
+                <Grid item md={6} sm={6} className="header-class">
                   
                   <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} >
                     <KeyboardDatePicker
