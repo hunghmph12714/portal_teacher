@@ -460,6 +460,9 @@ class TransactionController extends Controller
                     $t['content'] = $d['content'];
                 }
             }
+            else{
+                $t['content'] = $d['content'];
+            }
             if($d['cname'] == "") $t['content'] = $d['content'];
             $class = Classes::find($transaction->class_id);
             if($class){

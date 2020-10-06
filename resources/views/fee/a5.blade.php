@@ -173,7 +173,7 @@
                         @endif
                         </strong> </li>
                         <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
-                        <li><i>Đối với học sinh học <b>3 môn trở lên </b> và có <b>anh/chị/em ruột học tại trung tâm</b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
+                        <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
                     </ul>
                 </div>
             </div>

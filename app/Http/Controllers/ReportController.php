@@ -131,22 +131,21 @@ class ReportController extends Controller
             switch ($class_id) {
                 case '-1':
                     # Tat ca class...
-                    $classes = Classes::all();
-                    
-                    break;                
-                case 'ty':
-                    $classes = Classes::where('center_id', 5)->get();
+                    $classes = Classes::all();                    
                     break;
-                
+
+                case 'ty':
+                    $classes = Classes::where('center_id', 5)->orWhere('center_id', 1)->get();
+                    break;
+
                 case 'tdh':
                     # code...
                     $classes = Classes::where('center_id', 2)->orWhere('center_id', 4)->get();
                     break;
                 
                 case 'ptt':
-                    $classes = Classes::where('center_id', 3)->orWhere('center_id', 4)->get();
+                    $classes = Classes::where('center_id', 3)->get();
                     break;
-                
                 default:
                     $classes = Classes::where('id',$request->class['value'])->get();
                     break;
