@@ -4,11 +4,11 @@
 <style>
 @media print 
 {
-   @page
+   /* @page
    {
     size: 8.5in 5.5in;
     size: landscape;
-  }
+  } */
 }
     @page {
         size: auto !important;
