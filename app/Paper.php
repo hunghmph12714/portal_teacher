@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Center;
+use DB;
 class Paper extends Model
 {
     //
@@ -16,7 +17,7 @@ class Paper extends Model
         if(!empty($filter)){
             foreach($filter as $f){
                 if($f['column']['field'] == 'receipt_number'){
-                    $query->where('type', 'receipt')->where('receipt_number', $f['value']);
+                    $query->where('type', 'receipt')->where(DB::raw('CAST(receipt_number AS CHAR)'), 'LIKE' ,'%'.$f['value'].'%');
                 }
             }
         }
@@ -72,7 +73,9 @@ class Paper extends Model
             foreach($filter as $f){
                 if($f['column']['field'] == 'code'){
                     $center = Center::where('code', $f['value'])->first();
-                    $query->where('type', 'receipt')->where('center_id', $center->id);
+                    if($center){
+                        $query->where('type', 'receipt')->where('center_id', $center->id);
+                    }
                 }
             }
         }

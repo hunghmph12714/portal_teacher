@@ -181,9 +181,24 @@ class PaperController extends Controller
             'amount' => 'required',
             'receipt_time' => 'required',
         ];
+        foreach($request->transactions as $key => $transaction){
+            if($key == 0){
+                $acc = Account::find($transaction['debit']['id']);
+                if($acc->level_1 == '111'){
+                    $p['method'] = 'TM';
+                    $max_receipt_number = Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number') : 0;
+                    $p['receipt_number'] = $max_receipt_number + 1;
+                }
+                if($acc->level_1 == '112'){
+                    $p['method'] = 'NH';
+                    $max_receipt_number = Paper::where('center_id', $request->center['value'])->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->where('method', 'NH')->max('receipt_number') : 0;
+                    $p['receipt_number'] = $max_receipt_number + 1;
+                }
+            }
+            else break;
+        }
         $this->validate($request, $rules);
-        $max_receipt_number = Paper::where('center_id', $request->center['value'])->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->max('receipt_number') : 0;
-        $p['receipt_number'] = $max_receipt_number + 1;
+        
         $p['center_id'] = $request->center['value'];
         $p['type'] = 'receipt';
         $p['name'] = $request->name;
@@ -199,18 +214,8 @@ class PaperController extends Controller
         $receipt = Paper::create($p);
         $receipt->created_at = date('Y-m-d', strtotime($request->receipt_time));
         $receipt->save();
-        foreach($request->transactions as $key => $transaction){
-            if($key == 0){
-                $acc = Account::find($transaction['debit']['id']);
-                if($acc->level_1 == '111'){
-                    $receipt->method = 'TM';
-                    $receipt->save();
-                }
-                if($acc->level_1 == '112'){
-                    $receipt->method = 'NH';
-                    $receipt->save();
-                }
-            }
+        
+        foreach($request->transactions as $key => $transaction){           
             $this->addTransaction($transaction, $receipt->id);
         }
         return response()->json($receipt);
@@ -235,15 +240,22 @@ class PaperController extends Controller
                 //edit existing transactions
                 if(array_key_exists('id', $t)){
                     $td = Transaction::find($t['id']);
-                    if($td){
+                    if($td){    
                         $account = Account::find($t['debit']['value']);
                         if($account->level_1 == '111'){
-                            $receipt->method = 'TM';
+                            $method = 'TM';
+                            
                         }
                         if($account->level_1 == '112'){
-                            $receipt->method = 'NH';
-                        } 
-                        $receipt->save();
+                            $method = 'NH';
+                        }
+                        if($receipt->method != $method){
+                            $receipt->method = $method;
+                            $max_receipt_number = Paper::where('center_id', $request->center['value'])->where('method', $method)->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->where('method', $method)->max('receipt_number') : 0;
+                            $receipt->receipt_number = $max_receipt_number + 1;
+                            $receipt->save();
+                        }
+                        
                         $td->debit = $t['debit']['value'];
                         $td->credit = $t['credit']['value'];
                         $td->amount = $t['amount'];
@@ -290,6 +302,8 @@ class PaperController extends Controller
         $result = ['data' => []];
         $receipts = [];
         $transactions = null;
+        $result['page'] = $request->page;
+        
         if(empty($request->filter)){
             $result['page'] = $request->page;
             $result['total'] = Paper::where('type','receipt')->count();
@@ -297,7 +311,7 @@ class PaperController extends Controller
                                     'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.code as code', 'center.id as ctid')->where('type', 'receipt')
                                     ->leftJoin('users','papers.user_created_id','users.id')
                                     ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
-                                    ->get();            
+                                    ->get();           
         }
         else{
             $result['page'] = $request->page;
@@ -311,6 +325,7 @@ class PaperController extends Controller
                 ->receiptCenter($request->filter)
                 ->receiptDate($request->filter);
 
+            $result['total'] = ($receipt->count());
             $receipts =  $receipt->Select('papers.id as id','papers.method', 'receipt_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.created_at','papers.status as status',
                 'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid','center.code as code')->where('type', 'receipt')
                 ->leftJoin('users','papers.user_created_id','users.id')
@@ -360,6 +375,55 @@ class PaperController extends Controller
             $result['data'][$key]['transactions'] = $transaction_result;
         }
         return response()->json($result);
+    }
+    public function regenerateId(){
+        $receipts = Paper::where('type', 'receipt')->where('method', 'TM')->orderBy('receipt_number', 'ASC')->get();
+        $ty = 1;       $tdh = 1;       $dq = 1;       $ptt = 1;
+        foreach($receipts as $key => $value){
+            if($value->center_id == 5){
+                $value->receipt_number = $ty;
+                $ty++;
+            }
+            if($value->center_id == 2){
+                $value->receipt_number = $tdh;
+                $tdh++;
+            }
+            if($value->center_id == 4){
+                $value->receipt_number = $dq;
+                $dq++;
+            }
+            if($value->center_id == 3){
+                $value->receipt_number = $ptt;
+                $ptt++;
+            }            
+            $value->save();            
+        }
+        $receipts = Paper::where('type', 'receipt')->where('method', 'NH')->orderBy('receipt_number', 'ASC')->get();
+        $ty = 1;       $tdh = 1;       $dq = 1;       $ptt = 1;
+        foreach($receipts as $key => $value){
+            if($value->center_id == 5){
+                $value->receipt_number = $ty;
+                $ty++;
+            }
+            if($value->center_id == 2){
+                $value->receipt_number = $tdh;
+                $tdh++;
+            }
+            if($value->center_id == 4){
+                $value->receipt_number = $dq;
+                $dq++;
+            }
+            if($value->center_id == 3){
+                $value->receipt_number = $ptt;
+                $ptt++;
+            }            
+            $value->save();            
+        }
+        $receipts = Paper::where('type', 'receipt')->where('method','!=' ,'NH')->where('method','!=' ,'TM')->orderBy('receipt_number', 'ASC')->get();
+        foreach($receipts as $key => $value){
+            $value->receipt_number = $key;
+            $value->save();            
+        }
     }
     public function convert_number_to_words($number) {
             $hyphen      = ' ';
@@ -510,8 +574,22 @@ class PaperController extends Controller
         foreach($description as $class => $month){
             $des = $des. $class. ': '. implode(', ', $month). " - ";
         }
-        $max_receipt_number = Paper::where('center_id', $request->center)->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->max('receipt_number') : 0;
-        $p['receipt_number'] = $max_receipt_number + 1;
+        foreach($request->transactions as $key => $v){
+            if($key == 0){
+                $account = Account::find($request->account);
+                if($account->level_1 == '111'){
+                    $p['method'] = 'TM';
+                    $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
+                    $p['receipt_number'] = $max_receipt_number + 1;
+                }
+                if($account->level_1 == '112'){
+                    $p['method'] = 'NH';
+                    $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
+                    $p['receipt_number'] = $max_receipt_number + 1;
+                } 
+            }else break;
+        }
+        
         $p['center_id'] = $request->center;
         $p['type'] = 'receipt';
         $p['name'] = $request->name;
@@ -525,7 +603,8 @@ class PaperController extends Controller
         $p['address'] = '';
         $p = Paper::create($p);
         $sumOfMonth = array();      
-        $randomClass = '';  
+        $randomClass = ''; 
+        
         foreach($request->transactions as $key => $v){
             if($key == 0){
                 $account = Account::find($request->account);

@@ -303,4 +303,5 @@ Route::get('/transaction/content', 'TransactionController@changeContent');
 // Route::get('/transaction/dif', 'TransactionController@dif');
 // Route::get('/sc/drop', 'ClassController@fuckDrop');
 
-Route::get('/lnda', 'StudentController@lnda');
+// Route::get('/lnda', 'StudentController@lnda');
+Route::get('/receipt/id','PaperController@regenerateId');
