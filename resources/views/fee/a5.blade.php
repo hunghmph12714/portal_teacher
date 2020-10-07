@@ -167,7 +167,7 @@
                     <ul>
                         <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
                         @if($result['center_id'] == 3)
-                            08/10/2020
+                            15/10/2020
                         @else
                             10/10/2020
                         @endif
