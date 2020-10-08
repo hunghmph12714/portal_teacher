@@ -341,14 +341,6 @@ class Fee extends React.Component{
             student_gender: newValue.gender,
             student_grade: newValue.grade,
 
-            parent_name: newValue.p_name,
-            parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.p_phone}, 
-            parent_email: newValue.p_email,
-            parent_alt_name: newValue.alt_fullname,
-            parent_alt_email: newValue.alt_email,
-            parent_alt_phone: newValue.alt_phone,
-            parent_id: newValue.pid,
-
             fee_email_note: JSON.parse(newValue.fee_email_note),
             selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
             parent_note : (newValue.note)?newValue.note:'',

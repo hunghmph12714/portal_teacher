@@ -541,7 +541,6 @@ class PaperController extends Controller
         return view('paper.print', compact('paper'));
         // return response()->json($paper);
     }
-
     protected function gatherFee(Request $request){
         $rules = [
             'transactions' => 'required',

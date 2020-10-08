@@ -10,6 +10,12 @@ import { Grid } from '@material-ui/core';
 import Select , { components }  from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import { useSnackbar } from 'notistack';
+
 const baseUrl = window.Laravel.baseUrl
 import {Redirect} from 'react-router-dom';
 
@@ -22,6 +28,8 @@ const customChip = (color) => ({
 })
 const CustomOption = props => {
     const { data, innerRef, innerProps } = props;
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     return data.custom ? (
         <Card className= "search-card" ref={innerRef} {...innerProps}>
             <CardContent>
@@ -39,9 +47,19 @@ const CustomOption = props => {
                         <Typography variant="body2" component="p">
                             <b>Phụ huynh: </b>{data.p_name}
                         <br />
-                            Số điện thoại: {data.p_phone}
+                            SDT:{data.p_phone}
+                            <CopyToClipboard text={data.p_phone} onCopy={() => enqueueSnackbar('Đã sao chép', {'variant': 'success'})}>
+                                <Tooltip title="Sao chép">
+                                    <FileCopyIcon fontSize="small" />
+                                </Tooltip>                                
+                            </CopyToClipboard>
                             <br />
-                           Email: {data.p_email}
+                           EMAIL: {data.p_email}
+                           <CopyToClipboard text={data.p_email} onCopy={() => enqueueSnackbar('Đã sao chép', {'variant': 'success'})}>
+                                <Tooltip title="Sao chép">
+                                    <FileCopyIcon fontSize="small" />
+                                </Tooltip>                                
+                            </CopyToClipboard>
                         </Typography>
                     </Grid>                    
                 </Grid>
