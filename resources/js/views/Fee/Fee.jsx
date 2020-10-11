@@ -179,7 +179,7 @@ const ListFee = React.memo(props => {
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
-            const r  = await axios.post(baseUrl + '/fee/get', {student_id: props.student_id, show_all: show_all})
+            const r  = await axios.post(baseUrl + '/fee/get', {student_id: (props.student_id)?props.student_id:-1, show_all: show_all, parent_id: props.parent_id})
             let data = r.data
             sum = data.filter( t => {
                 if(t.id < 0 && t.id != -9999){
@@ -479,6 +479,7 @@ class Fee extends React.Component{
                                 handlePrint = {this.handlePrint}
                                 loading_email = {this.state.loading_email}
                                 student_id = {this.state.student_id}
+                                parent_id = {this.state.parent_id}
                                 normalize = {this.normalize}
                                 reload = {this.state.reload}
                                 student_email_note = {this.state.fee_email_note}

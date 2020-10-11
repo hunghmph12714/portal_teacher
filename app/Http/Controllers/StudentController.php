@@ -89,19 +89,30 @@ class StudentController extends Controller
     protected function getFee(Request $request){
         $rules = ['student_id' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
-
         $student_id = $request->student_id;
-        return response()->json($this->generateFee($student_id, $request->show_all, true));
+        if($request->parent_id){
+            $parent = Parents::find($request->parent_id);
+            if($parent){
+                $students = $parent->students()->select('students.id')->get()->toArray();
+                $student_ids = array_column($students, 'id');
+                // print_r($student_ids);
+                return response()->json($this->generateFee($student_ids, $request->show_all, true));
+            }
+        }
+        if($student_id != '-1' ){
+            return response()->json($this->generateFee([$student_id], $request->show_all, true));
+        }
+        
     }
     protected function generateFee($student_id, $show_all, $show_detail){
-        $student = Student::find($student_id);
-        $classes = $student->classes;
+        // $student = Student::find($student_id);
+        // $classes = $student->classes;
         
         $acc = Account::where('level_2','131')->first();
         $result = [];
         $id = -1;
         
-        $transactions = Transaction::where('student_id', $student_id)
+        $transactions = Transaction::whereIn('student_id', $student_id)
                             ->Select(
                                 'transactions.id as id','transactions.amount' ,'transactions.time','transactions.paper_id','transactions.content','transactions.created_at',
                                 'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
