@@ -76,7 +76,7 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     @if($result['center_id'] == 3)
         15/10/2020
     @else
-        10/10/2020
+        15/10/2020
     @endif
     </strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>

@@ -15,7 +15,7 @@
         <h4 style="font-size: 15px;">2. Bài tập về nhà kỳ trước: </h4>
         <ul>            
             <li style="font-size: 14px;">
-                Đểm bài tập về nhà (Nếu có): <b>{{$data['student_session']->btvn_score}}/{{$data['student_session']->btvn_complete}}/{{$data['student_session']->btvn_max}}</b></li> (Số bài làm đúng / Số bài hoàn thành/ Tổng số bài)
+                Điểm bài tập về nhà (Nếu có): <b>{{$data['student_session']->btvn_score}}/{{$data['student_session']->btvn_complete}}/{{$data['student_session']->btvn_max}}</b></li> (Số bài làm đúng / Số bài hoàn thành/ Tổng số bài)
             <li style="font-size: 14px;">
                 Nhận xét bài tập về nhà (Nếu có): <b>{{$data['student_session']->btvn_comment}}</b>
             </li>

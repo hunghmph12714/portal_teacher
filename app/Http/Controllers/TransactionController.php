@@ -8,6 +8,7 @@ use DB;
 use App\Transaction;
 use App\Tag;
 use App\Student;
+use App\Parents;
 use App\Classes;
 use App\StudentClass;
 use App\Discount;
@@ -311,6 +312,7 @@ class TransactionController extends Controller
         $months = [];
         $data = [];
         $student = Student::find($request->student_id);
+        $parent_email = Parents::find($student->parent_id)->email;
         $student_name = $student->fullname;
         $sum_amount = 0;
         $content = '';
@@ -367,7 +369,7 @@ class TransactionController extends Controller
         'max_date' => $max_date, 'student' => $student_name, 'sum_amount' => $sum_amount, 'content' => $content, 'center_id' => $center_id];
         
         $d = ['result' => $result];
-        $to_email = $request->pemail;        
+        $to_email = $parent_email;        
         $to_name = '';
         $mail = 'ketoantrungyen@vietelite.edu.vn';
         $password = 'Mot23457';

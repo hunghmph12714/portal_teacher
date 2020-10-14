@@ -204,7 +204,7 @@ class StudentController extends Controller
         $this->validate($request, $rules);
 
         $student_id = $request->student_id;
-        $result = $this->generateFee($student_id, false, false);
+        $result = $this->generateFee([$student_id], false, false);
         // return response()->json($this->generateFee($student_id, false, false));
         
         $negative_arr = array_filter($result, function($a){
