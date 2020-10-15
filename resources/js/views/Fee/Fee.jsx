@@ -34,12 +34,21 @@ import DoneIcon from '@material-ui/icons/Done';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
-const baseUrl = window.Laravel.baseUrl;
+import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import vi from "date-fns/locale/vi";
+const baseUrl = window.Laravel.baseUrl
+import {
+    KeyboardDateTimePicker,
+    MuiPickersUtilsProvider,
+    DatePicker,
+} from "@material-ui/pickers";
+
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
   color: '#000',
   fontSize: '12px',
 })
+
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
     return (
@@ -73,9 +82,8 @@ const CenterSelect = React.memo(props => {
         fetchData()
     }, [])
     
-    return( 
-        <FormControl variant="outlined" size="small" className="select-box"  
-        fullWidth>
+    return(
+        <FormControl variant="outlined" size="small" className="select-box" fullWidth>
             <InputLabel>Cơ sở</InputLabel>
             <Select className = "select-box-margin"
                 id="select-outlined"
@@ -89,7 +97,7 @@ const CenterSelect = React.memo(props => {
                 })}                
             </Select>
         </FormControl>
-        )
+    )
 })
 const AccountSelect = React.memo(props => {
     const [accounts, setAccounts] = useState([])
@@ -125,7 +133,6 @@ const AccountSelect = React.memo(props => {
     )
 })
 const NameText = React.memo(props => {
-
     return (
         <TextField
             className="select-box-margin"
@@ -179,7 +186,7 @@ const ListFee = React.memo(props => {
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
-            const r  = await axios.post(baseUrl + '/fee/get', {student_id: (props.student_id)?props.student_id:-1, show_all: show_all, parent_id: props.parent_id})
+            const r  = await axios.post(baseUrl + '/fee/get', {students: props.students, show_all: show_all})
             let data = r.data
             sum = data.filter( t => {
                 if(t.id < 0 && t.id != -9999){
@@ -287,31 +294,14 @@ const ListFee = React.memo(props => {
 })
 
 // const studentInfo =
+
 class Fee extends React.Component{
     constructor(props){
         super(props)
 
         this.state = {           
-            student_id: '',
-            student_name: '',
-            student_dob: new Date(),
-            student_school: '',
-            student_grade: '',
-            student_gender: 'Khác',
-            student_email: '',
-            student_phone: '',
-            student_changed: false,
+            student_name: [],
 
-            parent_id: '',
-            parent_name: '',
-            parent_alt_name: '',
-            parent_email: '',
-            parent_alt_email: '',
-            parent_phone: '',
-            parent_alt_phone: '',
-            parent_note: '',            
-            selected_relationship: '',
-            parent_changed: false,
             reload: false,
             selected_fee: [],
             selected_amount: 0,
@@ -319,6 +309,9 @@ class Fee extends React.Component{
             name: '',
             account:[],
             loading_email: false,
+            students: [],
+            from: null,
+            to: null
         }
     }
     handleClassChange = (newValue , event) => {
@@ -330,44 +323,22 @@ class Fee extends React.Component{
         }       
         
     }    
-    handleStudentChange = (newValue) => {
-        this.setState({            
-            student_name: {__isNew__: false, value: newValue.value, label: newValue.label},
-            student_id: newValue.sid,
-            student_dob: new Date(newValue.dob),
-            student_school: {label: newValue.school, value: newValue.school},
-            student_email: newValue.s_email,
-            student_phone: newValue.s_phone,
-            student_gender: newValue.gender,
-            student_grade: newValue.grade,
-
-            fee_email_note: JSON.parse(newValue.fee_email_note),
-            selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.r_id},
-            parent_note : (newValue.note)?newValue.note:'',
-            open: false,
-        })         
-    }
-    handleParentChange = (newValue) => {
-        // console.log(newValue)
-        this.setState({
-            parent_name: newValue.fullname,
-            parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.phone},
-            parent_email: newValue.email,
-            parent_alt_name: newValue.alt_fullname,
-            parent_alt_email: newValue.alt_email,
-            parent_alt_phone: newValue.alt_phone,
-            parent_id: newValue.pid,
-            selected_relationship: {color: newValue.color, label: newValue.r_name, value: newValue.rid},
-            parent_note : (newValue.note)?newValue.note:'',
-        }) 
+    handleStudentsChange = (newValue) => {
+        if(newValue){
+            this.setState({student_name: newValue})
+        }       
+        else  this.setState({student_name: []})
     }
     onChange = e => {      
         this.setState({
             [e.target.name] : e.target.value
         })
     };
-    handleDateChange = date => {
-        this.setState({ student_dob: date, student_changed: true });
+    handleFromChange = date => {
+        this.setState({ from: date });
+    };
+    handleToChange = date => {
+        this.setState({ to: date });
     };
     handleChange = (newValue , event)=> {
         this.setState({            
@@ -450,17 +421,44 @@ class Fee extends React.Component{
             <React.Fragment>
                 <Paper className="form-fee form-index">
                     <Grid container spacing={1} className="select-session">
-                        <Grid item lg={5} sm={12} xs={12}>
+                        <Grid item lg={6} sm={12} xs={12}>
                             <StudentSearch
+                                isMulti
                                 student_name={this.state.student_name}
-                                handleStudentChange={this.handleStudentChange}
+                                handleStudentChange={this.handleStudentsChange}
                             />
                         </Grid>
-                        <Grid item lg={5} sm={12} xs={12}>
-                            <ParentSearch
-                                parent_phone = {this.state.parent_phone}
-                                handleParentChange = {this.handleParentChange}
-                            />
+                        <Grid item lg={2} sm={12} xs={12}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>                                 
+                                <DatePicker
+                                    variant="inline"
+                                    inputVariant="outlined"
+                                    openTo="month"
+                                    views={["year", "month"]}
+                                    label="Từ tháng"
+                                    value={this.state.from}
+                                    format="MM/yyyy"    
+                                    fullWidth
+                                    size="small"
+                                    onChange={this.handleFromChange}
+                                />                  
+                            </MuiPickersUtilsProvider>
+                        </Grid>
+                        <Grid item lg={2} sm={12} xs={12}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>                                 
+                                <DatePicker
+                                    variant="inline"
+                                    inputVariant="outlined"
+                                    openTo="month"
+                                    views={["year", "month"]}
+                                    label="Đến tháng"
+                                    value={this.state.to}
+                                    format="MM/yyyy"    
+                                    fullWidth
+                                    size="small"
+                                    onChange={this.handleToChange}
+                                />                  
+                            </MuiPickersUtilsProvider>
                         </Grid>
                         <Grid item lg={2} sm={12} xs={12}>
                             <Button variant="contained" color="primary" fullWidth onClick = {this.handleGetFee}>
@@ -478,7 +476,7 @@ class Fee extends React.Component{
                                 handleSendEmail = {this.handleSendEmail}
                                 handlePrint = {this.handlePrint}
                                 loading_email = {this.state.loading_email}
-                                student_id = {this.state.student_id}
+                                students = {this.state.student_name}
                                 parent_id = {this.state.parent_id}
                                 normalize = {this.normalize}
                                 reload = {this.state.reload}

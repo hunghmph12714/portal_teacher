@@ -68,15 +68,19 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 
 <br>
 <p>
+@if($result['sum_amount'] > 0)
 <h3>Tổng học phí cần đóng: <strong>{{number_format ($result['sum_amount'])}}đ</strong><br></h3>
+@else
+<h3>Học phí còn thừa: <strong>{{number_format (abs($result['sum_amount']))}}đ</strong><br></h3>
+@endif
 <i><h4>Chú ý: </h4></i>
 <ul>
 
     <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
     @if($result['center_id'] == 3)
-        15/10/2020
+        21/10/2020
     @else
-        15/10/2020
+        21/10/2020
     @endif
     </strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>

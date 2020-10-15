@@ -87,21 +87,14 @@ class StudentController extends Controller
     }
 
     protected function getFee(Request $request){
-        $rules = ['student_id' => 'required', 'show_all'=>'required'];
+        $rules = ['students' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
-        $student_id = $request->student_id;
-        if($request->parent_id){
-            $parent = Parents::find($request->parent_id);
-            if($parent){
-                $students = $parent->students()->select('students.id')->get()->toArray();
-                $student_ids = array_column($students, 'id');
-                // print_r($student_ids);
-                return response()->json($this->generateFee($student_ids, $request->show_all, true));
-            }
+        foreach($request->students as $student){
+            $student_id = $request->student_id;
         }
-        if($student_id != '-1' ){
-            return response()->json($this->generateFee([$student_id], $request->show_all, true));
-        }
+        $student_ids = array_column($request->students, 'sid');
+        return response()->json($this->generateFee($student_ids, $request->show_all, true));
+        
         
     }
     protected function generateFee($student_id, $show_all, $show_detail){

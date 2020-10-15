@@ -102,9 +102,10 @@ const checkValidCreate = (inputValue, selectValue, selectOptions) => {
     }else return true
 }
 const StudentSearch = props => {
-    const {student_name, handleStudentChange} = props
+    const {student_name, handleStudentChange, isMulti} = props
     return (
         <AsyncCreatableSelect
+            isMulti = {isMulti}
             components={{ Option: CustomOption }}
             loadOptions={inputValue => throttleOptions((/\d/.test(inputValue))?inputValue.replace(/\s|[(]|[)]|[-]/g, '') : inputValue)}
             autosize={true}

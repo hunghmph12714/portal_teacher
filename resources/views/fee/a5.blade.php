@@ -160,16 +160,15 @@
                         </tbody>
                     </table>   
                     <span class="sum">Tổng học phí cần đóng: <strong>{{number_format ($result['sum_amount'])}}đ</strong></span>
-
                 </div>
                 <div class="col-4">
                     <i><b>Chú ý: </b></i>
                     <ul>
                         <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
                         @if($result['center_id'] == 3)
-                            15/10/2020
+                            21/10/2020
                         @else
-                            15/10/2020
+                            21/10/2020
                         @endif
                         </strong> </li>
                         <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
