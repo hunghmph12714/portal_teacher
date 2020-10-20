@@ -89,15 +89,13 @@ class StudentController extends Controller
     protected function getFee(Request $request){
         $rules = ['students' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
-        foreach($request->students as $student){
-            $student_id = $request->student_id;
-        }
+        $from = ($request->from) ? date('Y-m-01', strtotime($request->from)) : '2010-01-01';
+        $to = ($request->to) ? date('Y-m-t', strtotime($request->to)) : '2099-01-01';
+
         $student_ids = array_column($request->students, 'sid');
-        return response()->json($this->generateFee($student_ids, $request->show_all, true));
-        
-        
+        return response()->json($this->generateFee($student_ids, $request->show_all, true, $from, $to));
     }
-    protected function generateFee($student_id, $show_all, $show_detail){
+    protected function generateFee($student_id, $show_all, $show_detail, $from, $to){
         // $student = Student::find($student_id);
         // $classes = $student->classes;
         
@@ -105,7 +103,7 @@ class StudentController extends Controller
         $result = [];
         $id = -1;
         
-        $transactions = Transaction::whereIn('student_id', $student_id)
+        $transactions = Transaction::whereIn('student_id', $student_id)->whereBetween('time', [$from ,$to])
                             ->Select(
                                 'transactions.id as id','transactions.amount' ,'transactions.time','transactions.paper_id','transactions.content','transactions.created_at',
                                 'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
@@ -189,15 +187,24 @@ class StudentController extends Controller
         $result = array_filter($result, function($v, $k) use ($neutral){
             return (!in_array($v['parent_id'] , $neutral));
         }, ARRAY_FILTER_USE_BOTH);
-        
+        //Check số dư kỳ trước
+        $remainTransactions = Transaction::whereIn('student_id', $student_id)->where('time', '<' , $from)->get();
+        $totalRemain = 0;
+        foreach($remainTransactions as $t){
+            $totalRemain += (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+        }
+        $result['remain'] = ['amount' => $totalRemain, 'id' => '-1999', 'detail' => 'Học phí kỳ trước', 'month'=>'','time'=>'','content'=>'Số dư kỳ trước'];
+        // print_r($result);
+
         return array_values($result);
     }
+    
     protected function normalizeFee(Request $request){
-        $rules = ['student_id' => 'required'];
+        $rules = ['student_ids' => 'required'];
         $this->validate($request, $rules);
 
-        $student_id = $request->student_id;
-        $result = $this->generateFee([$student_id], false, false);
+        $student_ids = $request->student_ids;
+        $result = $this->generateFee($student_ids, false, false,'2010-01-01', '2099-01-01');
         // return response()->json($this->generateFee($student_id, false, false));
         
         $negative_arr = array_filter($result, function($a){

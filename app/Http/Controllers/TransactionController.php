@@ -384,7 +384,7 @@ class TransactionController extends Controller
         }
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
-            $password = 'Mot23457';
+            $password = 'V33du2020';
         }
         try{
             $backup = Mail::getSwiftMailer();

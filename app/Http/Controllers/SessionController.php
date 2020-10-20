@@ -425,6 +425,7 @@ class SessionController extends Controller
                 // Tìm transaction 
                 $debit = Account::where('level_2', '131')->first();
                 $credit = Account::where('level_2', '3387')->first();
+                $credit_tutor = Account::where('level_2', '5113')->first();
                 $transaction['debit'] = $debit->id;
                 $transaction['credit'] = $credit->id;
                 $transaction['amount'] = intval($session->fee);
@@ -491,6 +492,7 @@ class SessionController extends Controller
                     case 'tutor':
                         # code...
                         $transaction['content'] = 'Học phí phụ đạo '. date('d-m', strtotime($session->date));
+                        $transaction['credit'] = $credit_tutor->id;
                         $trans = Transaction::create($transaction);
                         $trans->sessions()->attach([$session->id => ['amount'=> $session->fee]]);
                         $trans->tags()->attach(10);

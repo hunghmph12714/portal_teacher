@@ -186,13 +186,13 @@ const ListFee = React.memo(props => {
     useEffect(() => {
         const fetchData = async() => {
             let sum = 0;
-            const r  = await axios.post(baseUrl + '/fee/get', {students: props.students, show_all: show_all})
+            const r  = await axios.post(baseUrl + '/fee/get', {students: props.students, show_all: show_all, from: props.from, to: props.to})
             let data = r.data
             sum = data.filter( t => {
                 if(t.id < 0 && t.id != -9999){
                     return t.amount
                 }} ).map(x => x.amount).reduce((acc, tr) => acc + parseInt(tr), 0)
-            data.unshift({month: '', time: '', content:'Tổng', cname: '', amount: sum, id: -9999, detail: ''})
+            data.push({month: '', time: '', content:'Tổng', cname: '', amount: sum, id: -9999, detail: ''})
             
             // console.log(data)
             setFee(data)
@@ -301,7 +301,6 @@ class Fee extends React.Component{
 
         this.state = {           
             student_name: [],
-
             reload: false,
             selected_fee: [],
             selected_amount: 0,
@@ -415,6 +414,7 @@ class Fee extends React.Component{
                 this.setState({reload : !this.state.reload})
             })
     }
+    
     render(){
         document.title = "Học phí"
         return(
@@ -481,6 +481,7 @@ class Fee extends React.Component{
                                 normalize = {this.normalize}
                                 reload = {this.state.reload}
                                 student_email_note = {this.state.fee_email_note}
+                                from = {this.state.from} to = {this.state.to}
                             />
                         </Grid>
                     </Grid>
