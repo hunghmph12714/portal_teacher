@@ -37,7 +37,7 @@ export default class Root extends Component {
     render() {
         return (
           <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3} anchorOrigin={{
+            <SnackbarProvider maxSnack={1} anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'center',
             }}>

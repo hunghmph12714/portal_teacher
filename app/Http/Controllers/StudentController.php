@@ -85,7 +85,6 @@ class StudentController extends Controller
             return '0'.explode('/', $phone)[0];
         }
     }
-
     protected function getFee(Request $request){
         $rules = ['students' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
@@ -119,8 +118,7 @@ class StudentController extends Controller
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
                             ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
                             ->get();
-        // print_r($student_id);
-        // print_r($transactions->toArray());
+        
         foreach($transactions as $key => $t){
             $month = Date('m-Y', strtotime($t->time));     
             $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();
@@ -203,8 +201,13 @@ class StudentController extends Controller
         $rules = ['student_ids' => 'required'];
         $this->validate($request, $rules);
 
-        $student_ids = $request->student_ids;
-        $result = $this->generateFee($student_ids, false, false,'2010-01-01', '2099-01-01');
+        if(sizeof($request->student_ids) > 1){
+            return response()->json(433);
+        }else{
+            $student_ids = array_column($request->student_ids, 'sid');
+            $result = $this->generateFee($student_ids, false, false,'2010-01-01', '2099-01-01');
+            $student_id = $student_ids[0];
+        }        
         // return response()->json($this->generateFee($student_id, false, false));
         
         $negative_arr = array_filter($result, function($a){
@@ -216,7 +219,7 @@ class StudentController extends Controller
         $positive_arr = array_filter($result, function($a){
             return $a['amount'] > 0;
         });
-        usort($positive_arr, function($a, $b) {
+        usort($positive_arr, function($a, $b) {               
             return strtotime(str_replace('/', '-', $a['time'])) - strtotime( str_replace('/', '-', $b['time']));            
         });
         $result = array_merge($negative_arr, $positive_arr);
@@ -404,14 +407,5 @@ class StudentController extends Controller
         // return response()->json();
 
     }
-    public function lnda(){
-        $session = Session::where('class_id', '89')->get();
-        foreach($session as $s){
-            $ss = StudentSession::where('student_id', '3966')->where('session_id', $s->id)->get();
-            foreach($ss as $sss){
-                $sss->forceDelete();
-            }
-        }
-        
-    }
+    
 }

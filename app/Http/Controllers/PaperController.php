@@ -7,6 +7,9 @@ use App\Paper;
 use App\Transaction;
 use App\Tag;
 use App\Account;
+use App\Session;
+use App\TransactionSession;
+
 use DB;
 class PaperController extends Controller
 {
@@ -543,117 +546,201 @@ class PaperController extends Controller
     }
     protected function gatherFee(Request $request){
         $rules = [
-            'transactions' => 'required',
-            'student' => 'required',
+            'students' => 'required',
             'center'=>'required',
             'name' => 'required',
             'account' => 'required',
+            'total_amount' => 'required',
+            'description' => 'required',
         ];
         $this->validate($request, $rules);
-        $total_amount = 0;
-        $description = [];
-        $classes = "";
-        foreach($request->transactions as $key => $value){
-            if($value['id'] > 0){
-                $t = [];
-                $total_amount += $value['amount'];
-                if(!array_key_exists($value['cname'], $description)){
-                    $description[$value['cname']] = [$value['month']];
-                }    
-                else{
-                    if(!in_array($value['month'], $description[$value['cname']])) 
-                    {
-                        array_push($description[$value['cname']], $value['month']);
-                    }
-                }
-            }
+              
+        $account = Account::find($request->account);
+        if($account->level_1 == '111'){
+            $p['method'] = 'TM';
+            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
+            $p['receipt_number'] = $max_receipt_number + 1;
         }
-        $classes = array_keys($description);
-        $des = "";
-        foreach($description as $class => $month){
-            $des = $des. $class. ': '. implode(', ', $month). " - ";
+        if($account->level_1 == '112'){
+            $p['method'] = 'NH';
+            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
+            $p['receipt_number'] = $max_receipt_number + 1;
         }
-        foreach($request->transactions as $key => $v){
-            if($key == 0){
-                $account = Account::find($request->account);
-                if($account->level_1 == '111'){
-                    $p['method'] = 'TM';
-                    $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
-                    $p['receipt_number'] = $max_receipt_number + 1;
-                }
-                if($account->level_1 == '112'){
-                    $p['method'] = 'NH';
-                    $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
-                    $p['receipt_number'] = $max_receipt_number + 1;
-                } 
-            }else break;
-        }
-        
         $p['center_id'] = $request->center;
         $p['type'] = 'receipt';
         $p['name'] = $request->name;
-        $p['description'] = 'Thu học phí '.$request->student['name']['label']. ' lớp: '.$des;
-
-        $p['amount'] = $total_amount;
+        $p['description'] = $request->description;
+        $p['amount'] = $request->total_amount;
         $p['user_created_id'] = auth()->user()->id;
         $p['note'] = '';
         $p['created_at'] = date('Y-m-d');
         $p['status'] = NULL;
         $p['address'] = '';
         $p = Paper::create($p);
-        $sumOfMonth = array();      
-        $randomClass = ''; 
-        
-        foreach($request->transactions as $key => $v){
-            if($key == 0){
-                $account = Account::find($request->account);
-                if($account->level_1 == '111'){
-                    $p->method = 'TM';
-                }
-                if($account->level_1 == '112'){
-                    $p->method = 'NH';
-                } 
-                $p->save();
-            }
-            if($v['id'] > 0){
-                $month = $v['month'];
-                $cid = (array_key_exists('cid', $v))?($v['cid'])? $v['cid'] : '-1' :'-1';
-                $sumOfMonth[$month]['total_amount'][] = $v['amount'];
-                if($cid == '-1'){
-                    $sumOfMonth[$month]['other_amount'][] = $v['amount'];
-                }else{
-                    $sumOfMonth[$month]['class'][$cid]['amount'][] = $v['amount'];
-                    $sumOfMonth[$month]['class'][$cid]['debit'] = $request->account;
-                    $sumOfMonth[$month]['class'][$cid]['credit'] = Account::where('level_2', '131')->first()->id;
-                    $sumOfMonth[$month]['class'][$cid]['time'] = date('Y-m-t', strtotime('01-'.$v['month']));
-                    $sumOfMonth[$month]['class'][$cid]['content'] = 'Thu học phí '. $v['month'];
-                    $sumOfMonth[$month]['class'][$cid]['student_id'] = $request->student['id'];
-                    $sumOfMonth[$month]['class'][$cid]['class_id'] = (array_key_exists('cid', $v))?$v['cid']:NULL;
-                    $sumOfMonth[$month]['class'][$cid]['session_id'] = NULL;
-                    $sumOfMonth[$month]['class'][$cid]['user'] = auth()->user()->id;
-                    $sumOfMonth[$month]['class'][$cid]['paper_id'] = $p->id;
-                }
-                
-            }
-        }
-        foreach($sumOfMonth as $key => $sum){
-            if(array_sum($sum['total_amount']) > 0){
-                $other_fee = array_key_exists('other_amount', $sum) ? array_sum($sum['other_amount']) : 0;
-                foreach($sum['class'] as $cid => $c){
-                    $c['amount'] = array_sum($c['amount']) + $other_fee;
-                    if($c['amount'] > 0){
-                        Transaction::create($c);
-                        $other_fee = 0;
+        $total_amount = $request->total_amount;
+        $lastClass = [];
+        foreach($request->students as $student){
+            $sumOfMonth = array();
+            $transactions = $this->generateFee([$student['sid']], false, true,'2010-01-01', '2099-01-01');
+            
+            foreach($transactions as $key => $v){
+                if($v['id'] > 0){
+                    $month = $v['month'];
+                    $cid = (array_key_exists('cid', $v))?($v['cid'])? $v['cid'] : '-1' :'-1';
+                    $sumOfMonth[$month]['total_amount'][] = $v['amount'];
+                    if($cid == '-1'){
+                        $sumOfMonth[$month]['other_amount'][] = $v['amount'];
+                    }else{
+                        $sumOfMonth[$month]['class'][$cid]['debit'] = $request->account;
+                        $sumOfMonth[$month]['class'][$cid]['credit'] = Account::where('level_2', '131')->first()->id;
+                        $sumOfMonth[$month]['class'][$cid]['time'] = date('Y-m-t', strtotime('01-'.$v['month']));
+                        $sumOfMonth[$month]['class'][$cid]['content'] = 'Thu học phí '. $v['month'];
+                        $sumOfMonth[$month]['class'][$cid]['student_id'] = $student['sid'];
+                        $sumOfMonth[$month]['class'][$cid]['class_id'] = (array_key_exists('cid', $v))?$v['cid']:NULL;
+                        $sumOfMonth[$month]['class'][$cid]['session_id'] = NULL;
+                        $sumOfMonth[$month]['class'][$cid]['user'] = auth()->user()->id;
+                        $sumOfMonth[$month]['class'][$cid]['paper_id'] = $p->id;
+                        $sumOfMonth[$month]['class'][$cid]['amount'][] = $v['amount'];
                     }
-                    else{
-                        $other_fee = $c['amount'];
-                    }
-                }
-            }
                     
+                }
+            }
+            
+            foreach($sumOfMonth as $key => $sum){
+                if(array_sum($sum['total_amount']) > 0){
+                    $other_fee = array_key_exists('other_amount', $sum) ? array_sum($sum['other_amount']) : 0;
+                    foreach($sum['class'] as $cid => $c){
+                        $c['amount'] = array_sum($c['amount']) + $other_fee;
+                        if($c['amount'] > 0){
+                            if($total_amount > 0){
+                                if($c['amount'] <= $total_amount){
+                                    $total_amount -= $c['amount'];                                
+                                }
+                                else{
+                                    $c['amount'] = $total_amount;
+                                    $total_amount = 0;
+                                }
+                                $lastClass = $c;
+                                Transaction::create($c);    
+                            }
+                            $other_fee = 0;
+                        }
+                        else{
+                            $other_fee = $c['amount'];
+                        }
+                    }
+                }
+                        
+            }            
+        }  
+        if($total_amount > 0){
+            $lastClass['amount'] = $total_amount;
+            Transaction::create($lastClass);    
         }
         return response()->json(200);
         
+    }
+    protected function generateFee($student_id, $show_all, $show_detail, $from, $to){
+        // $student = Student::find($student_id);
+        // $classes = $student->classes;
+        
+        $acc = Account::where('level_2','131')->first();
+        $result = [];
+        $id = -1;
+        
+        $transactions = Transaction::whereIn('student_id', $student_id)->whereBetween('time', [$from ,$to])
+                            ->Select(
+                                'transactions.id as id','transactions.amount' ,'transactions.time','transactions.paper_id','transactions.content','transactions.created_at',
+                                'debit_account.id as debit','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                                'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                                'students.id as sid', 'students.fullname as sname','students.dob', 
+                                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                                'users.id as uid','users.name as uname'
+                            )
+                            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                            ->leftJoin('students','transactions.student_id','students.id')
+                            ->leftJoin('classes','transactions.class_id','classes.id')
+                            ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
+                            ->get();
+        
+        foreach($transactions as $key => $t){
+            $month = Date('m-Y', strtotime($t->time));     
+            $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();
+            $detail = '';
+            setlocale(LC_MONETARY,"vi_VN");
+           
+            foreach($detail_amount as $key => $da){
+                $session = Session::find($da->session_id);
+                if($session){
+                    $date = date('d/m', strtotime($session->date));
+                    $detail = $detail. 'Ngày ' . $date .': '. number_format($da->amount) . " + ";
+                }
+            }
+            if($t->paper_id != NULL){
+
+                $paper = Paper::find($t->paper_id);
+                $detail = "PT".$paper->receipt_number."+";
+            }
+            if(!array_key_exists($month, $result)){
+                // echo $month."<br>";
+                $result[$month]['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0);
+                $result[$month]['count_transaction'] = 1;
+                $result[$month]['id'] = --$id;
+                $result[$month]['parent_id'] = '';                    
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $tarray['parent_id'] = $id;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                $tarray['detail'] = $detail;
+                if($show_detail){
+                    array_push($result, $tarray);
+                }                
+                $result[$month]['time'] = Date('d/m/Y', strtotime($t->time));
+                $result[$month]['month'] = $month;
+                $result[$month]['content'] = 'Tổng tiền tháng '.$month;
+                $result[$month]['detail'] = '';
+                $result[$month]['cname'] = '';
+
+            }
+            else{
+                $result[$month]['amount'] = $result[$month]['amount'] + (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+                $tarray = $t->toArray();
+                $tarray['month'] = $month;
+                $result[$month]['count_transaction'] ++ ;
+                $tarray['amount'] = ($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0) ;
+                $tarray['parent_id'] = $result[$month]['id'];
+                $tarray['time'] = Date('d/m/Y', strtotime($t->time));
+                $tarray['detail'] = $detail;
+                $result[$month]['detail'] = '';
+                if($show_detail){
+                    array_push($result, $tarray);
+                }
+            }
+        }
+        $neutral = [];
+        if($show_all){
+            foreach($result as $r){
+                if($r['amount'] == 0){
+                    array_push($neutral, $r['id'] );
+                }
+            }
+        }
+        $result = array_filter($result, function($v, $k) use ($neutral){
+            return (!in_array($v['parent_id'] , $neutral));
+        }, ARRAY_FILTER_USE_BOTH);
+        //Check số dư kỳ trước
+        $remainTransactions = Transaction::whereIn('student_id', $student_id)->where('time', '<' , $from)->get();
+        $totalRemain = 0;
+        foreach($remainTransactions as $t){
+            $totalRemain += (($t->debit == $acc->id) ? $t->amount : (($t->credit == $acc->id) ? -$t->amount : 0));
+        }
+        $result['remain'] = ['amount' => $totalRemain, 'id' => '-1999', 'detail' => 'Học phí kỳ trước', 'month'=>'','time'=>'','content'=>'Số dư kỳ trước'];
+        // print_r($result);
+
+        return array_values($result);
     }
     
 }

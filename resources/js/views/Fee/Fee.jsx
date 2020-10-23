@@ -5,7 +5,7 @@ import axios from 'axios'
 import {
     Tooltip,IconButton
   } from "@material-ui/core";
-import { withSnackbar } from 'notistack';
+import { withSnackbar, useSnackbar } from 'notistack';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
@@ -35,6 +35,7 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+
 import vi from "date-fns/locale/vi";
 const baseUrl = window.Laravel.baseUrl
 import {
@@ -148,6 +149,7 @@ const NameText = React.memo(props => {
 })
 const ListFee = React.memo(props => {
     const [fees, setFee] = useState([])
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [show_all, setAll] = useState(true)
     const [columns, setCol] = useState([
         { title: 'Tháng', field: 'month',headerStyle: { fontWeight: '600', }, },
@@ -236,9 +238,28 @@ const ListFee = React.memo(props => {
                     }
                     if(rowData.id == -9999){
                         return { boxShadow: '0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset'}
-                    }                                    
+                    }
                 },                                
-            }}  
+            }}
+            onSelectionChange={(rows) => {
+                let s = 0
+                
+                rows.map(r => {
+                    if(r.id > 0){
+                        s += r.amount;
+                    }
+                })
+                s = s/2
+                let format_sum = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s)
+                const x = enqueueSnackbar('Tổng số tiền đã chọn: ' + format_sum, {
+                    'variant': 'success', 
+                    preventDuplicate: true,
+                    persist: true,
+                })
+                if(rows.length == 0){
+                    closeSnackbar(x)
+                }
+            }}
             actions={[
                 
                 {                                  
@@ -271,7 +292,8 @@ const ListFee = React.memo(props => {
                 },
                 {                                  
                     icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
-                    onClick: (evt, data) => props.submitFeeGather(data)
+                    isFreeAction: true,
+                    onClick: (evt) => props.submitFeeGather(fees)
                 },
                 {                                  
                     icon: () => (show_all) ? (<DoneIcon/>) : (<DoneAllIcon/>),
@@ -310,7 +332,8 @@ class Fee extends React.Component{
             loading_email: false,
             students: [],
             from: null,
-            to: null
+            to: null,
+            description: '',
         }
     }
     handleClassChange = (newValue , event) => {
@@ -375,9 +398,11 @@ class Fee extends React.Component{
             .catch(err => {})
     }
     submitFeeGather = (data) => {
+        let student_name = this.state.student_name.map(s => s.s_name).toString();
         this.setState({
             open: true,
-            selected_fee: data,            
+            description: 'Thu học phí ' + student_name,     
+            name: student_name,
             selected_amount : data.filter( t => {
                 if(t.id > 0){
                     return t.amount
@@ -390,10 +415,12 @@ class Fee extends React.Component{
     handleReceiptCreate = () => {
         if(this.state.selected_amount > 0){
             axios.post(baseUrl + '/fee/gather', {
-                transactions: this.state.selected_fee,
                 center: this.state.center,
                 name: this.state.name,
-                account: this.state.account, student: {id: this.state.student_id, name: this.state.student_name}
+                account: this.state.account, student: {id: this.state.student_id, name: this.state.student_name},
+                total_amount: this.state.selected_amount,
+                students: this.state.student_name,
+                description: this.state.description
             })
                 .then(repsonse => {
                     this.setState({open: false})
@@ -409,10 +436,15 @@ class Fee extends React.Component{
         }
     }
     normalize = () => {
-        axios.post(baseUrl + '/fee/normalize', {student_id: this.state.student_id})
+        if(this.state.student_name.length > 1){
+            this.props.enqueueSnackbar('Không thể chuẩn hoá nhiều hơn 1 học sinh')
+        }else{
+            axios.post(baseUrl + '/fee/normalize', {student_ids: this.state.student_name})
             .then(response => {
                 this.setState({reload : !this.state.reload})
             })
+        }
+        
     }
     
     render(){
@@ -504,13 +536,23 @@ class Fee extends React.Component{
                         />
                         <TextField
                             fullWidth
+                            value={this.state.description}
+                            name = "description"
+                            variant="outlined"
+                            size="small"
+                            onChange = {this.onChange}
+                            style = {{marginBottom: '14px'}}
+                        />
+                        <TextField
+                            fullWidth
                             value={this.state.selected_amount}
-                            name = "amount"
+                            name = "selected_amount"
                             variant="outlined"
                             size="small"
                             InputProps={{
                                 inputComponent: NumberFormatCustom,
                             }}
+                            onChange = {this.onChange}
                         />
                     </DialogContent>
                     <DialogActions>
