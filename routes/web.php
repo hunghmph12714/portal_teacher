@@ -180,10 +180,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/fee', function(){
                 return view('welcome');
             });
-            Route::post('/fee/gather', 'PaperController@gatherFee');
+            Route::post('/fee/gather', 'StudentController@gatherFee');
             Route::post('/fee/normalize', 'StudentController@normalizeFee');
-            Route::post('/fee/send-email', 'TransactionController@sendEmail');
-            Route::post('/fee/print', 'TransactionController@print');
+            Route::post('/fee/send-email', 'StudentController@sendEmail');
+            Route::post('/fee/print', 'StudentController@printFee');
         //Bao cao tai chinh 
             Route::get('/report/financial', function(){
                 return view('welcome');

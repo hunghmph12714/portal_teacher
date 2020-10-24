@@ -43,6 +43,7 @@ import {
     MuiPickersUtilsProvider,
     DatePicker,
 } from "@material-ui/pickers";
+import { flatMap } from 'lodash';
 
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -280,7 +281,8 @@ const ListFee = React.memo(props => {
                             }                      
                         </div>
                     ),
-                    onClick: (evt, data) => props.handleSendEmail(evt, data)
+                    isFreeAction: true,
+                    onClick: (evt) => props.handleSendEmail(fees)
                 },
                 {                                  
                     icon: () => (
@@ -288,7 +290,8 @@ const ListFee = React.memo(props => {
                             <PrintOutlinedIcon fontSize='inherit' />
                         </IconButton>
                     ),
-                    onClick: (evt, data) => props.handlePrint(evt, data)
+                    isFreeAction: true,
+                    onClick: (evt) => props.handlePrint(fees)
                 },
                 {                                  
                     icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
@@ -334,6 +337,8 @@ class Fee extends React.Component{
             from: null,
             to: null,
             description: '',
+            preview: '',
+            note: '', max_date: '', preview_open: false, tmp_data: null,
         }
     }
     handleClassChange = (newValue , event) => {
@@ -376,26 +381,78 @@ class Fee extends React.Component{
     handleGetFee = () => {
         this.setState({reload : !this.state.reload})
     }
-    handleSendEmail = (evt, data) => {
+    
+    handlePreviewEmail = (data) => {
         // evt.preventDefault()
-        this.setState({loading_email: true})
-        axios.post(baseUrl + '/fee/send-email', {data: data, pemail: this.state.parent_email, student_id : this.state.student_name.value})
-            .then(response => {
-                this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
-                this.setState({loading_email: false})
-            })
-            .catch(err => {})
+        if(this.state.student_name.length > 1){
+            this.props.enqueueSnackbar('Chỉ có thể gửi học phí của 1 học sinh cùng lúc',  {variant: 'warning'})
+        }else{
+            if(this.state.from && this.state.to ){
+                axios.post(baseUrl + '/fee/send-email',{data:data, student_id: this.state.student_name[0].sid, from: this.state.from, to: this.state.to, preview: !this.state.preview_open})
+                .then(response => {
+                    // this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
+                    // this.setState({loading_email: false})
+                    var date = new Date(this.state.from);
+                    var today = new Date();
+                    var max_date = new Date(date.getFullYear(), date.getMonth(), 10);
+                    console.log(today)
+                    console.log(max_date)
+                    if(today > max_date){
+                        max_date = new Date(today.getFullYear(), today.getMonth(), today.getDate()+2);
+                    }else {max_date = new Date(max_date.getFullYear(), max_date.getMonth(), max_date.getDate())
+                    console.log(max_date)
+                    };
+                    this.setState({
+                        preview: response.data,
+                        preview_open: true,
+                        max_date: max_date.getDate() + "/"+ (max_date.getMonth()+1) +"/" + max_date.getFullYear(),
+                        tmp_data: data
+                    })
+                })
+                .catch(err => {})
+            }
+            else{
+                this.props.enqueueSnackbar('Vui lòng chọn kỳ học phí', {variant: 'warning'})
+            }
+            
+        }        
     }
-    handlePrint = (evt, data) => {
-        axios.post(baseUrl + '/fee/print', {data: data, pemail: this.state.parent_email, student_id : this.state.student_name.value})
-            .then(response => {
-                // this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
-                
-                let newWin = window.open("about:blank", "hello", "width=1000,height=900");
-                newWin.document.write((response.data));
-                // this.setState({loading_email: false})
-            })
-            .catch(err => {})
+    handleSendEmail = () => {
+        this.setState({preview_open: false})
+        axios.post(baseUrl + '/fee/send-email',{data:this.state.tmp_data, student_id: this.state.student_name[0].sid, 
+            from: this.state.from, to: this.state.to, preview: false, max_date: this.state.max_date, note: this.state.note})
+        .then(response => {
+            this.props.enqueueSnackbar('Đã gửi email cho phụ huynh. Vui lòng kiểm tra hộp thư đã gửi' , {variant: 'success'})
+            // this.setState({loading_email: false})            
+            this.handlePreviewClose()
+        })
+        .catch(err => {})
+    }
+    handlePreviewClose= () => {
+        this.setState({
+            preview_open: false,
+            preview: '',
+            tmp_data: null,
+
+        })
+    }
+    handlePrint = (data) => {
+        if(this.state.student_name.length > 1){
+            this.props.enqueueSnackbar('Chỉ có thể in học phí của 1 học sinh cùng lúc',  {variant: 'warning'})
+        }else{
+            if(this.state.from && this.state.to ){
+                axios.post(baseUrl + '/fee/print', {data:data, student_id: this.state.student_name[0].sid, from: this.state.from, to: this.state.to})
+                .then(response => {                
+                    let newWin = window.open("In học phí", "", "width=1000,height=900");
+                    newWin.document.write((response.data));
+                })
+                .catch(err => {})
+            }
+            else{
+                this.props.enqueueSnackbar('Vui lòng chọn kỳ học phí', {variant: 'warning'})
+            }
+        }
+        
     }
     submitFeeGather = (data) => {
         let student_name = this.state.student_name.map(s => s.s_name).toString();
@@ -505,7 +562,7 @@ class Fee extends React.Component{
                         <Grid item lg={12} sm={12} xs={12}>
                             <ListFee
                                 submitFeeGather = {this.submitFeeGather}
-                                handleSendEmail = {this.handleSendEmail}
+                                handleSendEmail = {this.handlePreviewEmail}
                                 handlePrint = {this.handlePrint}
                                 loading_email = {this.state.loading_email}
                                 students = {this.state.student_name}
@@ -561,6 +618,43 @@ class Fee extends React.Component{
                     </Button>
                     <Button onClick={this.handleReceiptCreate} color="primary">
                         Thu học phí
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={this.state.preview_open} onClose={this.handlePreviewClose} aria-labelledby="form-dialog-preview" fullWidth maxWidth="md" className="preview-dialog">
+                    <DialogTitle id="form-dialog-title">Xem trước</DialogTitle>
+                    <DialogContent>
+                        
+                        <TextField
+                            fullWidth
+                            label="Ghi chú"
+                            value={this.state.note}
+                            name = "note"
+                            variant="outlined"
+                            size="small"
+                            onChange = {this.onChange}
+                            style = {{marginBottom: '15px'}}
+                        />
+                        <TextField
+                            fullWidth
+                            value={this.state.max_date}
+                            name = "max_date"
+                            label="Hạn nộp học phí"
+                            variant="outlined"
+                            size="small"
+                            placeholder= "Hạn nộp học phí"
+                            onChange = {this.onChange}
+                            style = {{marginBottom: '15px'}}
+                        />
+                        <iframe srcDoc={this.state.preview} width="900" height="600"></iframe>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={this.handlePreviewClose} color="primary">
+                        Hủy
+                    </Button>
+                    <Button onClick={this.handleSendEmail} color="primary">
+                        Gửi
                     </Button>
                     </DialogActions>
                 </Dialog>

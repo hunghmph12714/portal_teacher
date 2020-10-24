@@ -31,14 +31,21 @@
 {{$result['title']}} của con <strong>{{$result['student']}}</strong><br>
 Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong bảng kê dưới đây:<br>
 @foreach($result['data'] as $key =>  $fee)
+    @if($fee[0]['amount'] == 0)
+        @continue
+    @endif
+    @if(!$key)
+    <h3>KHÁC</h3>    
+    @else
     <h3>THÁNG {{$key}}</h3>    
+    @endif
+    
     <table class="tg" style="" width="100%">
     <thead>
     <tr>
         <th class="tg-1wig">Lớp </th>
         <th class="tg-1wig">Nội dung</th>
-        <th class="tg-l2oz">Đơn giá</th>
-        <th class="tg-1wig">Số ca/buổi</th>
+        <th class="tg-l2oz">Đơn giá * Số ca/buổi</th>
         <th class="tg-l2oz">Thành tiền</th>
     </tr>
     </thead>
@@ -49,15 +56,13 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
         <tr>
             <td class="tg-sjuo">{{$f['cname']}}</td>
             <td class="tg-sjuo">{{$f['content']}}</td>
-            <td class="tg-cgaz">{{number_format ($f['dg'])}}</td>
-            <td class="tg-sjuo">{{$f['sl']}}</td>
+            <td class="tg-cgaz">{{$f['session_fee']}}</td>
             <td class="tg-cgaz">{{number_format ($f['amount'])}}</td>
         </tr>        
         @endforeach
         <tr>
             <td class="tg-sjuo"></td>
             <td class="tg-sjuo"></td>
-            <td class="tg-cgaz"></td>
             <td class="tg-sjuo">Tổng</td>
             <td class="tg-cgaz">{{number_format ($count)}}</td>
         </tr>
@@ -73,15 +78,12 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 @else
 <h3>Học phí còn thừa: <strong>{{number_format (abs($result['sum_amount']))}}đ</strong><br></h3>
 @endif
+<span><i>Ghi chú: {{$result['note']}}</i></span>
 <i><h4>Chú ý: </h4></i>
 <ul>
 
-    <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
-    @if($result['center_id'] == 3)
-        21/10/2020
-    @else
-        21/10/2020
-    @endif
+    <li><i>Học phí bắt buộc phải hoàn thành trước ngày: {{$result['max_date']}}</i> <strong>
+    
     </strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
     <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
@@ -94,7 +96,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
         Chủ TK: Phan Việt Anh <br/>
         Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
-        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/><br>
 
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -107,7 +109,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         * NH: <strong>VIB CN Ba Đình </strong> <br/>
         Chủ TK: Phan Việt Anh<br/>
         Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
-        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/><br>
 
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -118,7 +120,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         * NH: <strong>TCB CN THĂNG LONG</strong> <br/>
         Chủ TK: Bùi Huyền Nga<br/>
         Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
-        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/>
         <br>
 
@@ -130,7 +132,7 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
         Chủ TK: Phan Việt Anh <br/>
         Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
-        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/><br>
 
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>

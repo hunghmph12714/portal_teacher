@@ -212,7 +212,7 @@ class SessionController extends Controller
                             $dt['user'] = auth()->user()->id;                                           
                             if($d['percentage']){
                                 $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
-                                $dt['content'] = 'Miễn giảm học phí '. $key . ' '.$d['percentage'].'%';
+                                $dt['content'] = 'Miễn giảm học phí '.$d['percentage'].'%'  . ' '.$key;
                                 $sids = [];
                                 foreach($fee['session_id'] as $sid => $f){
                                     $discount_per_session = $f['amount'];

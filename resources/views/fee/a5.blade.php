@@ -70,7 +70,14 @@
     .tg .tg-l2oz{font-weight:bold;text-align:right;vertical-align:top}
     .tg .tg-sjuo{background-color:white;text-align:left;vertical-align:top}
     .tg .tg-cgaz{background-color:#white;text-align:right;vertical-align:top}
-
+    input, textarea{
+        outline: 0;
+        border-width: 0 0 0.4px;
+        border-color: green
+    }
+    input:focus {
+        border-color: blue
+    }
     * {
         line-height: inherit;
     }
@@ -80,7 +87,9 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<?php
 
+?>
 <body class="A5">
 
     <!-- Each sheet element should have the class "sheet" -->
@@ -120,8 +129,7 @@
                         <tr>
                             <th class="tg-1wig" style="text-align: center; vertical-align: middle;">Lớp </th>
                             <th class="tg-1wig">Nội dung</th>
-                            <th class="tg-l2oz">Đơn giá</th>
-                            <th class="tg-1wig">Số ca/buổi</th>
+                            <th class="tg-l2oz">Đơn giá * Số ca/buổi</th>
                             <th class="tg-l2oz">Thành tiền</th>
                         </tr>
                         </thead>
@@ -131,8 +139,8 @@
                             <tr>
                                 <td class="tg-sjuo" style="text-align: center; vertical-align: middle;" rowspan={{sizeof($fee)+1}}>{{$key}}</td>
                                 <td class="tg-sjuo">{{$fee[0]['content']}}</td>
-                                <td class="tg-cgaz">{{number_format ($fee[0]['dg'])}}</td>
-                                <td class="tg-sjuo">{{$fee[0]['sl']}}</td>
+                                <td class="tg-cgaz">{{$fee[0]['session_fee']}}                                        
+                                </td>
                                 <td class="tg-cgaz">{{number_format ($fee[0]['amount'])}}</td>
                             </tr>  
                             
@@ -141,8 +149,7 @@
                                     @if($n == 0)
                                     @else 
                                         <td class="tg-sjuo">{{$f['content']}}</td>
-                                        <td class="tg-cgaz">{{number_format ($f['dg'])}}</td>
-                                        <td class="tg-sjuo">{{$f['sl']}}</td>
+                                        <td class="tg-cgaz">{{$f['session_fee']}}</td>
                                         <td class="tg-cgaz">{{number_format ($f['amount'])}}</td>
                                     @endif
                                 </tr>  
@@ -152,24 +159,20 @@
                             <tr>
                                 <td class="tg-sjuo"></td>
                                 <td class="tg-sjuo"></td>
-                                <td class="tg-cgaz"></td>
                                 <td class="tg-sjuo" style="font-weight: bold;">Tổng</td>
                                 <td class="tg-cgaz" style="font-weight: bold;">{{number_format ($result['sum_amount'])}}đ</td>
                             </tr>
                             
                         </tbody>
                     </table>   
-                    <span class="sum">Tổng học phí cần đóng: <strong>{{number_format ($result['sum_amount'])}}đ</strong></span>
+                    <span class="sum">Tổng học phí cần đóng: <strong>{{number_format ($result['sum_amount'])}}đ</strong></span> <br>
+                    <span><i>Ghi chú: <textarea rows="1" cols="80"></textarea></i></span>
                 </div>
                 <div class="col-4">
                     <i><b>Chú ý: </b></i>
                     <ul>
                         <li><i>Học phí bắt buộc phải hoàn thành trước ngày</i> <strong>
-                        @if($result['center_id'] == 3)
-                            21/10/2020
-                        @else
-                            21/10/2020
-                        @endif
+                        <input id="max_date" type="text" name="max_date" value="{{$result['max_date']}}">
                         </strong> </li>
                         <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
                         <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
