@@ -132,18 +132,18 @@ class AttendanceController extends Controller
         $to_email = $datas[0]['parent']->email;        
         $to_name = '';
       
-            $backup = Mail::getSwiftMailer();
+            // $backup = Mail::getSwiftMailer();
 
-            // Setup your outlook mailer
-            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-            $transport->setUsername($mail);
-            $transport->setPassword($password);
-            // Any other mailer configuration stuff needed...
+            // // Setup your outlook mailer
+            // $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+            // $transport->setUsername($mail);
+            // $transport->setPassword($password);
+            // // Any other mailer configuration stuff needed...
             
-            $outlook = new \Swift_Mailer($transport);
+            // $outlook = new \Swift_Mailer($transport);
 
-            // Set the mailer as gmail
-            Mail::setSwiftMailer($outlook);           
+            // // Set the mailer as gmail
+            // Mail::setSwiftMailer($outlook);           
             
             if($session_type == "exam"){
                 Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month) {
@@ -163,7 +163,7 @@ class AttendanceController extends Controller
                     $message->from($mail,'VIETELITE EDUCATION CENTER');
                 });
             }
-            Mail::setSwiftMailer($backup);
+            
             return response()->json(200);
             try{  }
         catch(\Exception $e){
