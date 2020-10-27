@@ -125,7 +125,7 @@ class AttendanceController extends Controller
         // }
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
-            $password = 'V33du2020';
+            $password = 'VeEdu2020';
         }
 
         // return view('emails.thht', compact('datas'));

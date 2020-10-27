@@ -12,9 +12,22 @@ use App\Entrance;
 use App\Relationship;
 use App\Step;
 use App\Status;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp;
+
 class GuestController extends Controller
 {
     //
+    public function testContact(){
+        $students = Student::all();
+        $url = "https://vietelite.bitrix24.com/rest/5/qi82s82j7jkk1uft/crm.contact.add.json?";
+        $param = "ID=John&Họ tên HS=Smith&Ngày sinh=mail@example.com&Trường=WORK&Họ tên PH=555888&Phone=WORK&Email=&Phone 2=&Email 2=&NEW_PARAM=";
+        $client = new GuzzleHttp\Client();
+        $res = $client->get('https://vietelite.bitrix24.com/rest/5/qi82s82j7jkk1uft/crm.contact.add.json?ID=John&Họ tên HS=Smith&Ngày sinh=mail@example.com&Trường=WORK&Họ tên PH=555888&Phone=WORK&Email=&Phone 2=&Email 2=&NEW_PARAM=');
+        echo $res->getStatusCode(); // 200
+        echo $res->getBody();
+
+    }
     public function formPublic(){
         $schools = Schools::Select('name')->get()->toArray();
         $schools = array_column($schools, 'name');

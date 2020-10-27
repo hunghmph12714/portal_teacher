@@ -304,8 +304,4 @@ class TransactionController extends Controller
             $t->save();
         }
     }
-    
-    
-
-
 }

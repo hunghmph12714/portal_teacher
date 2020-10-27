@@ -794,5 +794,15 @@ class ClassController extends Controller
         echo "<pre>";
         print_r($sc->toArray());
     }
+    protected function duplicate(){
+        $sc = StudentClass::all();
+        foreach($sc as $s){
+            $check = StudentClass::where('student_id', $s->student_id)->where('class_id', $s->class_id)->where('id', '!=', $s->id)->first();
+            if($check){
+                echo "<pre>";
+                print_r($check->toArray());
+            }
+        }
+    }
     
 }

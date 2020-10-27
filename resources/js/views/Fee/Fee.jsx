@@ -281,8 +281,7 @@ const ListFee = React.memo(props => {
                             }                      
                         </div>
                     ),
-                    isFreeAction: true,
-                    onClick: (evt) => props.handleSendEmail(fees)
+                    onClick: (evt,data) => props.handleSendEmail(data)
                 },
                 {                                  
                     icon: () => (
@@ -290,8 +289,7 @@ const ListFee = React.memo(props => {
                             <PrintOutlinedIcon fontSize='inherit' />
                         </IconButton>
                     ),
-                    isFreeAction: true,
-                    onClick: (evt) => props.handlePrint(fees)
+                    onClick: (evt,data) => props.handlePrint(data)
                 },
                 {                                  
                     icon: () => (<span className="thu-hoc-phi">Thu học phí</span>),
@@ -395,8 +393,7 @@ class Fee extends React.Component{
                     var date = new Date(this.state.from);
                     var today = new Date();
                     var max_date = new Date(date.getFullYear(), date.getMonth(), 10);
-                    console.log(today)
-                    console.log(max_date)
+                   
                     if(today > max_date){
                         max_date = new Date(today.getFullYear(), today.getMonth(), today.getDate()+2);
                     }else {max_date = new Date(max_date.getFullYear(), max_date.getMonth(), max_date.getDate())

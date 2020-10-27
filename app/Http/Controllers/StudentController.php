@@ -89,7 +89,7 @@ class StudentController extends Controller
         $rules = ['students' => 'required', 'show_all'=>'required'];
         $this->validate($request, $rules);
         $from = ($request->from) ? date('Y-m-01', strtotime($request->from)) : '2010-01-01';
-        $to = ($request->to) ? date('Y-m-t', strtotime($request->to)) : '2099-01-01';
+        $to = ($request->to) ? date('Y-m-t 23:59:59', strtotime($request->to)) : '2099-01-01';
 
         $student_ids = array_column($request->students, 'sid');
         return response()->json($this->generateFee($student_ids, $request->show_all, true, $from, $to));
@@ -97,7 +97,8 @@ class StudentController extends Controller
     protected function generateFee($student_id, $show_all, $show_detail, $from, $to){
         // $student = Student::find($student_id);
         // $classes = $student->classes;
-        
+        // print_r($from);
+        // print_r($to);
         $acc = Account::where('level_2','131')->first();
         $result = [];
         $id = -1;
@@ -118,7 +119,8 @@ class StudentController extends Controller
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
                             ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
                             ->get();
-        
+        //                     echo "<pre>";
+        // print_r($transactions->toArray());
         foreach($transactions as $key => $t){
             $month = Date('m-Y', strtotime($t->time));     
             $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();
@@ -589,7 +591,7 @@ class StudentController extends Controller
             }
             if($center_id == 3){
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
-                $password = 'V33du2020';
+                $password = 'VeEdu2020';
             }
             try{
                 $backup = Mail::getSwiftMailer();

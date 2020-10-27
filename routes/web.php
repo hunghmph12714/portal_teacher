@@ -197,6 +197,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/admin/dt', function(){
                 return redirect('/report/revenue');
             });
+            Route::get('/check/duplicate', 'ClassController@duplicate');
     });
     //Password Change
     //Import database 
@@ -292,9 +293,9 @@ Route::get('/testtime',function(){
     echo date('Y:m:d H:i:m', strtotime('2020-06-15T03:23:20.775Z'));
 });
 Route::get('/ta/{email}', 'UserController@createNewTa');
-Route::get('/delete/ts', 'SessionController@deleteTransactionSession');
-Route::get('/transaction/discount', 'TransactionController@discountId');
-Route::get('/transaction/content', 'TransactionController@changeContent');
+// Route::get('/delete/ts', 'SessionController@deleteTransactionSession');
+// Route::get('/transaction/discount', 'TransactionController@discountId');
+// Route::get('/transaction/content', 'TransactionController@changeContent');
 // 
 // Route::get('/regenerate', 'SessionController@reGenerateFee');
 // Route::get('/delete-attendance', 'AttendanceController@delete');
@@ -304,4 +305,5 @@ Route::get('/transaction/content', 'TransactionController@changeContent');
 // Route::get('/sc/drop', 'ClassController@fuckDrop');
 
 // Route::get('/lnda', 'StudentController@lnda');
-Route::get('/receipt/id','PaperController@regenerateId');
+// Route::get('/receipt/id','PaperController@regenerateId');
+Route::get('/test-contact','GuestController@testContact');

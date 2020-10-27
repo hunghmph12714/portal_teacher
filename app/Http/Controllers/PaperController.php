@@ -268,7 +268,7 @@ class PaperController extends Controller
                         $td->class_id = $t['selected_class']['value'];
                         // $td->session_id = $t['selected_session']['value'];
                         // $td->
-                        $tags = array_column($t['tags'], 'value');
+                        $tags = ($t['tags'])? array_column($t['tags'], 'value'): [];
                         $td->tags()->sync($tags);
                         $td->save();                        
                     }
