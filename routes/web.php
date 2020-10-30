@@ -307,4 +307,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 
 // Route::get('/lnda', 'StudentController@lnda');
 // Route::get('/receipt/id','PaperController@regenerateId');
-Route::get('/test-contact','GuestController@testContact');
+// Route::get('/test-contact','GuestController@testContact');

@@ -32,6 +32,7 @@ import { TwitterPicker } from 'react-color';
 import axios from 'axios'
 import { withSnackbar } from 'notistack'
 const baseUrl = window.Laravel.baseUrl;
+var student_id = 0;
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
 
@@ -53,20 +54,23 @@ function NumberFormatCustom(props) {
         />
     );
 }
+//
 const ClassSelect = React.memo(props => {
-    const {center, course} = props
+    const {center, course, student} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
         const fetchData = async() => {
-            const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            var r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            if(student){
+                r = await axios.post(baseUrl + '/class/student', {'student_id': student})
+            }
             setClasses(r.data.map(c => {
-                    // console.log(c)
-                    return {label: c.code + ' - ' +c.name, value: c.id}
-                })
-            )
+                return {label: c.code + ' - ' +c.name, value: c.id}
+            }))        
+            
         }
         fetchData()
-    }, [])
+    }, [student])
     
     return( 
         <Select className = "select-box"
@@ -121,8 +125,8 @@ class Discount extends React.Component{
                         <StudentSearch
                             student_name={props.value}
                             handleStudentChange={newValue => {
-                                // console.log(newValue)
                                 props.onChange(newValue)
+                                student_id = newValue.sid
                             }}
                         />
                     )
@@ -147,10 +151,13 @@ class Discount extends React.Component{
                             return (
                                 <ClassSelect 
                                     selected_class = {props.value}
-                                    handleChange={newValue => {props.onChange(newValue)}}
+                                    handleChange={newValue => {
+                                        props.onChange(newValue)                                
+                                    }}
                                     course = {-1}
                                     center = {-1}
-                            />
+                                    student = {student_id}
+                                />
                         )
                     }
                         

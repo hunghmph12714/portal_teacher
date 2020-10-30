@@ -70,12 +70,27 @@ class DiscountController extends Controller
             'max_use' => 'required'
         ];
         $this->validate($request, $rules);
-        
-        
         $c = StudentClass::where('student_id', $request->student['value'])->where('class_id', $request->class['value'])->first();
         if($c){
             $d = Discount::find($request->did);
             if($d){
+                if($d->percentage != $request->percentage || $d->active_at != explode('T', $request->active_at)[0]
+                    || $d->expired_at != explode('T', $request->expired_at)[0] || $d->amount != $request->amount
+                ){
+                    $transactions = Transaction::where('discount_id', $request->did)->get();
+                    foreach($transactions as $t){
+                        $t->forceDelete();
+                    }
+                    $d->active_at = explode('T', $request->active_at)[0];
+                    $d->expired_at = explode('T', $request->expired_at)[0];
+                    $d->percentage = $request->percentage;
+                    $d->amount = $request->amount;
+                    $d->max_use = $request->max_use;
+                    $d->status = $request->status;
+                    $d->student_class_id = $c->id;
+                    $d->save();
+                    $this->applyDiscount($d->id);
+                }
                 $d->active_at = explode('T', $request->active_at)[0];
                 $d->expired_at = explode('T', $request->expired_at)[0];
                 $d->percentage = $request->percentage;
