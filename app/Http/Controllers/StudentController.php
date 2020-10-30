@@ -576,7 +576,7 @@ class StudentController extends Controller
         }else{
             $result['max_date'] = $request->max_date;
             $d = ['result' => $result];
-            $to_email = 'tranthanhuet@gmail.com';        
+            $to_email = $parent_email;        
             $to_name = '';
             $mail = 'ketoantrungyen@vietelite.edu.vn';
             $password = 'Mot23457';
@@ -593,19 +593,18 @@ class StudentController extends Controller
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
                 $password = 'VeEdu2020';
             }
-            print_r($center_id);
-                // $backup = Mail::getSwiftMailer();
+                $backup = Mail::getSwiftMailer();
 
-                // // Setup your outlook mailer
-                // $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-                // $transport->setUsername($mail);
-                // $transport->setPassword($password);
-                // // Any other mailer configuration stuff needed...
+                // Setup your outlook mailer
+                $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+                $transport->setUsername($mail);
+                $transport->setPassword($password);
+                // Any other mailer configuration stuff needed...
                 
-                // $outlook = new \Swift_Mailer($transport);
+                $outlook = new \Swift_Mailer($transport);
 
-                // // Set the mailer as gmail
-                // Mail::setSwiftMailer($outlook);
+                // Set the mailer as gmail
+                Mail::setSwiftMailer($outlook);
             
                 // Send your message
                 Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
@@ -617,7 +616,7 @@ class StudentController extends Controller
                 });
 
                 // Restore your original mailer
-                // Mail::setSwiftMailer($backup);
+                Mail::setSwiftMailer($backup);
                 return response()->json(200);
                 
                 try{}
