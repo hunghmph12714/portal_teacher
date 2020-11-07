@@ -14,6 +14,7 @@ export { default as BaseSalary } from './BaseSalary';
 export { default as Room } from './Room';
 export { default as Courses } from './Courses';
 export { Classes, ClassDetail } from './Classes';
+export { StudentDetail } from './Students'
 export { default as Relationship } from './Relationship';
 export { default as Step } from './Step';
 export { default as Status } from './Status';

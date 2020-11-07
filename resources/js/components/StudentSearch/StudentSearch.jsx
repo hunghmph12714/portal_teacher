@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import { throttle } from "lodash";
 import './StudentSearch.scss';
@@ -29,7 +29,14 @@ const customChip = (color) => ({
 const CustomOption = props => {
     const { data, innerRef, innerProps } = props;
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+    const textAreaRef = useRef(null);
+    function copyToClipboard(e) {
+        textAreaRef.current.select();
+        textAreaRef
+        document.execCommand('copy');
+        e.target.focus();
+        setCopySuccess('Copied!');
+    };
     return data.custom ? (
         <Card className= "search-card" ref={innerRef} {...innerProps}>
             <CardContent>
@@ -48,18 +55,29 @@ const CustomOption = props => {
                             <b>Phụ huynh: </b>{data.p_name}
                         <br />
                             SDT:{data.p_phone}
-                            <CopyToClipboard text={data.p_phone} onCopy={() => enqueueSnackbar('Đã sao chép', {'variant': 'success'})}>
                                 <Tooltip title="Sao chép">
-                                    <FileCopyIcon fontSize="small" />
-                                </Tooltip>                                
-                            </CopyToClipboard>
+                                    <FileCopyIcon fontSize="small" 
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            var dummy = $('<input>').val(data.p_phone).appendTo('body').select()
+                                            document.execCommand('copy')
+                                            enqueueSnackbar('Đã sao chép', {'variant': 'success'})
+                                        }}
+                                    />
+                                </Tooltip> 
                             <br />
-                           EMAIL: {data.p_email}
-                           <CopyToClipboard text={data.p_email} onCopy={() => enqueueSnackbar('Đã sao chép', {'variant': 'success'})}>
-                                <Tooltip title="Sao chép">
-                                    <FileCopyIcon fontSize="small" />
-                                </Tooltip>                                
-                            </CopyToClipboard>
+                            EMAIL: {data.p_email}
+                            <Tooltip title="Sao chép">
+                                <FileCopyIcon fontSize="small" 
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        var dummy = $('<input>').val(data.p_email).appendTo('body').select()
+                                        document.execCommand('copy')
+                                        enqueueSnackbar('Đã sao chép', {'variant': 'success'})
+                                    }}
+                                    
+                                />
+                            </Tooltip>
                         </Typography>
                     </Grid>                    
                 </Grid>
@@ -68,7 +86,9 @@ const CustomOption = props => {
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
                                 let cl = (c.pivot.status == 'active')? '' : ((c.pivot.status == 'droped') ? '#adadc9' : (c.pivot.status == 'waiting') ? '#b22222' : '#000000')
-                                return (<Chip style={customChip(cl)} variant="outlined" color="secondary" label={c.code} size="small" title={c.pivot.status} onClick = {() => window.location.href = "/class/" + c.pivot.class_id }/>)
+                                return (<Chip style={customChip(cl)} variant="outlined" color="secondary" label={c.code} size="small" title={c.pivot.status} onClick = {(e) => {
+                                    e.stopPropagation()
+                                    window.location.href = "/class/" + c.pivot.class_id} }/>)
                             })}
                         </Typography>                        
                     </Grid>          

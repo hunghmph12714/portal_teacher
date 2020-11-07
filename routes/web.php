@@ -247,7 +247,11 @@ Route::group(['middleware' => ['auth']], function() {
 //Student
     Route::post('/student/create', 'StudentController@createStudent');
     Route::get('/student/find/{key}' , 'StudentController@findStudents');
-    Route::post('/student/get', 'StudentController@getStudents');
+    Route::post('/student/get', 'StudentController@getStudents');    
+    Route::get('/student/{id}', 'StudentController@getStudent');
+    Route::post('/student/get-id', 'StudentController@getStudentById');
+    Route::post('/student/save', 'StudentController@saveStudent');
+    Route::post('/student/get-class', 'StudentController@getClass');
     // Route::get('/student/import', 'StudentController@importStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');

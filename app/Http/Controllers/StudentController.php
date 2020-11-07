@@ -20,6 +20,67 @@ use Mail;
 class StudentController extends Controller
 {
     //
+    protected function getStudent($id){
+        return view('welcome');
+    }
+    protected function getStudentById(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student = Student::where('students.id', $request->id)->select('students.id as sid','students.fullname as sname', 'dob', 'school','grade','students.email as semail',
+            'students.phone as sphone','gender','parents.id as pid', 'parents.fullname as pname', 'parents.email as pemail', 'parents.alt_fullname as pname2', 'parents.alt_email as pemail2', 'parents.phone as pphone', 'parents.alt_phone as pphone2','parents.note',
+            'relationships.id as r_id','relationships.name as r_name','relationships.color'
+            )
+            ->leftjoin('parents', 'students.parent_id', 'parents.id')
+            ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
+            ->first();
+        if($student){
+            $brothers = Student::where('id', '!=', $student->sid)->where('parent_id', $student->pid)->get();
+            return response()->json($student);
+        }else{
+            return response()->json('Không tìm thấy học sinh', 412);
+        }
+    }
+    protected function saveStudent(Request $request){
+        $rules = ['student' => 'required'];
+        $this->validate($request, $rules);
+
+        $s = $request->student;
+        $student = Student::find($s['sid']);
+        if($student){
+            $student->fullname = $s['sname'];
+            $student->dob = date('Y-m-d', strtotime($s['dob']));
+            $student->gender = $s['gender'];
+            $student->school = $s['school'];
+            $student->grade = $s['grade'];
+            $student->email = $s['semail'];
+            $student->phone = $s['pphone'];
+            $student->save();
+        }
+        $parent = Parents::find($s['pid']);
+        if($parent){
+            $parent->fullname = $s['pname'];
+            $parent->alt_fullname = $s['pname2'];
+            $parent->email = $s['pemail'];
+            $parent->phone = $s['pphone'];
+            $parent->alt_email = $s['pemail2'];
+            $parent->alt_phone = $s['pphone2'];
+            $parent->relationship_id = $s['relationship']['value'];
+            $parent->note = $s['note'];
+            $parent->save();
+        }
+        return response()->json(200);
+    }
+    protected function getClass(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student = Student::find($request->id);
+        if($student){
+            $classes = $student->activeClasses;
+            return response()->json($classes);
+        }
+    }
     public function findSchools($key){
         $schools = Schools::where('name', 'LIKE', '%'.$key.'%')->limit(10)->get()->toArray();
         return response()->json($schools);

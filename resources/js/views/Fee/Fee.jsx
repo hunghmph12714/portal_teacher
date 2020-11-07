@@ -338,7 +338,19 @@ class Fee extends React.Component{
             preview: '',
             note: '', max_date: '', preview_open: false, tmp_data: null,
         }
+        // axios.post('http://portal.vee.vn/api/user/login', {email: 'vee@v.vn', password:'123123'})
+        //     .then(response => {
+        //         axios.get('http://portal.vee.vn/api/user/all', {
+        //             headers:{
+        //                 'Authorization' : 'Bearer '+response.data.access_token
+        //             }
+        //         })
+        //         .then(response => {
+        //             console.log(response)
+        //         })
+        //     })
     }
+    
     handleClassChange = (newValue , event) => {
         if(this.state.selected_class != newValue){
             this.setState({selected_session: []})

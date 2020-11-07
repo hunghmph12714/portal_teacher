@@ -30,8 +30,10 @@ const Topbar = props => {
 
   const classes = useStyles();
   const [student_name, setStudentName] = useState('');
-  const handleStudentChange = () => {
-
+  const handleStudentChange = (value) => {
+    if(value){
+      window.open('/student/'+value.sid)
+    }
   }
   const [notifications] = useState([]);
   const signOut = () => {

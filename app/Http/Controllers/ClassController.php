@@ -258,11 +258,12 @@ class ClassController extends Controller
             }
         }
 
-        //Edit status 
+        //Edit status a
         $sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->class_id)->first();
         if($sc){
             $sc->status = $request->status;
             $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
+            
             if($sc->status == 'transfer'){
                 if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
                     return response()->json('Vui lòng điền đầy đủ *', 442);
@@ -291,6 +292,9 @@ class ClassController extends Controller
                 $stats = ($sc->stats) ? $sc->stats : [];                    
                 $stats['drop_reason'] = $request->drop_reason;                  
                 $sc->stats = $stats;
+            }
+            else{
+                $sc->drop_time = null;                
             }
             $sc->save();
         }

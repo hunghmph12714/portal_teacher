@@ -63,14 +63,16 @@ const initState = {
     new_active_date: null,
     transfer_class : null,
     transfer_reason: '',
+    disable: false
 }
-
+var disable = false
 class DialogCreate extends React.Component {    
     constructor(props){
         super(props)        
         this.state = initState
     }
     UNSAFE_componentWillReceiveProps(nextProps){
+        disable = false
         if(nextProps.type == 'edit'){
             this.setState({
                 student_id: nextProps.student.id,
@@ -205,15 +207,19 @@ class DialogCreate extends React.Component {
         this.setState({ transfer_class: newValue })
     }
     handleSubmitEdit = (e) => {
+        disable = true
         e.preventDefault();
         let data = this.state
         data.class_id = this.props.class_id
+        
         axios.post(baseUrl + '/class/edit-student', data)
-            .then(response => {
+            .then(response => {  
+                
+                this.props.handleClose()
                 this.props.enqueueSnackbar('Sửa học sinh thành công', { 
                     variant: 'success',
                 });
-                this.props.handleClose()
+                
             })
             .catch(err => {
                 this.props.enqueueSnackbar('Có lỗi, vui lòng thử lại', { 
@@ -224,15 +230,16 @@ class DialogCreate extends React.Component {
     }
     handleDialogCreate = (e) => {
         e.preventDefault();
+        disable = true
         let data = this.state
         data.class_id = this.props.class_id
-        console.log(data)
+        
         axios.post(baseUrl + '/class/add-student', data)
             .then(response => {
+                this.props.handleClose()
                 this.props.enqueueSnackbar('Thêm học sinh thành công', { 
                     variant: 'success',
                 });
-                this.props.handleClose()
             })
             .catch(err => {                
                 // console.log("create student bug: " + err.response.data)ư
@@ -453,11 +460,11 @@ class DialogCreate extends React.Component {
                     Hủy bỏ
                 </Button>
                 {(this.props.type == 'edit') ?  
-                    (<Button onClick={this.handleSubmitEdit} color="primary" id="btn-save">
+                    (<Button onClick={this.handleSubmitEdit} color="primary" id="btn-save" disabled={disable}>
                         Lưu
                     </Button>)
                     : 
-                    (<Button onClick={this.handleDialogCreate} color="primary" id="btn-save">
+                    (<Button onClick={this.handleDialogCreate} color="primary" id="btn-save" disabled={disable}>
                         Xác nhận
                     </Button>)}
                 

@@ -243,14 +243,11 @@ class StudentClassObserver
         }
         if($studentClass->getOriginal('status') == 'droped'){
             if($studentClass->status == 'active'){
-                $studentClass->drop_time = null;
-                $studentClass->save();
                 $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
                 $sessions_id = array_column($sessions->toArray(), 'id');
                 $student->sessions()->syncWithoutDetaching($sessions_id);
-                $students = Student::where('id', $student->id)->first();
-                //Create fee (transaction)
-                $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+                // //Create fee (transaction)
+                $this->generateTransactions($sessions, $student,  $studentClass->class_id);
             }
         }
         if($studentClass->getOriginal('entrance_date') < $studentClass->entrance_date){

@@ -27,7 +27,8 @@ import {
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
-  Financial, Revenue
+  Financial, Revenue, 
+  StudentDetail
 } from './views';
 
 const Routes = (props) => {
@@ -169,6 +170,11 @@ const Routes = (props) => {
         component = {ClassDetail}        
         layout={MainLayout}
         path="/class/:id"
+      />
+      <ProtectedRouteWithLayout 
+        component = {StudentDetail}        
+        layout={MainLayout}
+        path="/student/:id"
       />
       <ProtectedRouteWithLayout 
         component = {Attendance}        
