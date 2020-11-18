@@ -1,0 +1,28 @@
+.root-setting-documents{
+    margin: 10px;
+    .active_a{
+        color:white;
+    }
+    .select-box{
+        z-index: 999;
+    }
+    .MuiAccordionDetails-root{
+        display: block !important;
+    }
+    .question{
+        margin-top: 10px;
+    }
+    .answer{
+        margin-top: 10px;
+    }
+    
+}
+
+.MuiToolbar-gutters{
+    h6{
+        text-transform: capitalize;
+        font-size: 21px;
+        font-weight: 600;
+        line-height: 28px;
+    }
+}

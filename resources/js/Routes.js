@@ -28,7 +28,7 @@ import {
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
-  StudentDetail
+  StudentDetail, Documents
 } from './views';
 
 const Routes = (props) => {
@@ -226,6 +226,12 @@ const Routes = (props) => {
         component = {Revenue}
         layout = {MainLayout}
         path = "/report/revenue"
+      />
+      
+      <ProtectedRouteWithLayout 
+        component = {Documents}
+        layout = {MainLayout}
+        path = "/documents"
       />
       
       <Redirect to="/not-found" />

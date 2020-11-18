@@ -35,7 +35,10 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import MathJax from 'react-mathjax'
 
+import {CKEditor} from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from 'ckeditor5-classic-with-mathtype';
 import vi from "date-fns/locale/vi";
 const baseUrl = window.Laravel.baseUrl
 import {
@@ -44,7 +47,9 @@ import {
     DatePicker,
 } from "@material-ui/pickers";
 import { flatMap } from 'lodash';
-
+const tex = `f(x) = \\int_{-\\infty}^\\infty
+    \\hat f(\\xi)\\,e^{2 \\pi i \\xi x}
+    \\,d\\xi`
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
   color: '#000',
@@ -517,6 +522,7 @@ class Fee extends React.Component{
         document.title = "Học phí"
         return(
             <React.Fragment>
+                
                 <Paper className="form-fee form-index">
                     <Grid container spacing={1} className="select-session">
                         <Grid item lg={6} sm={12} xs={12}>

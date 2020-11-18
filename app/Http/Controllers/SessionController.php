@@ -861,4 +861,15 @@ class SessionController extends Controller
         // echo "<pre>";
         // print_r($t2->toArray());
     }
+    protected function sessionCount(){
+        $sessions = Session::all();
+        foreach($sessions as $s){
+            // $students = $s->students()->count();
+            $s->ss_number = $s->students()->count();
+            $a = $s->students()->where('attendance', 'present')->count();
+            $b = $s->students()->where('attendance', 'n_absence' )->count();
+            $s->save();
+            print('ss_number: '. $s->ss_number. ', a: '.$a.' b: '.$b. "<br>");
+        }
+    }
 }

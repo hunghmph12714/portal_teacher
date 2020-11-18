@@ -279,6 +279,14 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/e', function(){
         return view('emails.thht');
     });
+//Math 
+    Route::get('/documents', function(){
+        return view('welcome');
+    });
+    Route::post('/documents/create', 'DocumentController@create');
+    Route::post('/documents/edit', 'DocumentController@edit');
+    Route::post('/documents/delete', 'DocumentController@delete');
+    Route::post('/documents/get', 'DocumentController@get');
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
@@ -312,3 +320,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 // Route::get('/lnda', 'StudentController@lnda');
 // Route::get('/receipt/id','PaperController@regenerateId');
 // Route::get('/test-contact','GuestController@testContact');
+Route::get('/session-count', 'SessionController@sessionCount');

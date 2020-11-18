@@ -167,7 +167,7 @@ const SignIn = props => {
  
   const handleChange = event => {
     event.persist();
-
+    
     setFormState(formState => ({
       ...formState,
       values: {
