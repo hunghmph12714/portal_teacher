@@ -577,12 +577,13 @@ class StudentController extends Controller
             }
             $transaction = Transaction::find($d['id']);
             if($d['id'] == -1999){
-                $d['amount'] = abs($d['amount']);
+                
                 if($d['amount'] > 0){
                     $t['content'] = "Học phí thiếu kỳ trước";
                 }else{
                     $t['content'] = "Học phí thừa kỳ trước";
                 }
+                
                 $t['sl'] = 1;
                 $t['dg'] = $d['amount'];
                 $t['session_fee'] = [];
