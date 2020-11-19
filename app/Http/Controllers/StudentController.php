@@ -577,13 +577,11 @@ class StudentController extends Controller
             }
             $transaction = Transaction::find($d['id']);
             if($d['id'] == -1999){
-                
                 if($d['amount'] > 0){
                     $t['content'] = "Học phí thiếu kỳ trước";
                 }else{
                     $t['content'] = "Học phí thừa kỳ trước";
                 }
-                
                 $t['sl'] = 1;
                 $t['dg'] = $d['amount'];
                 $t['session_fee'] = [];
@@ -620,7 +618,13 @@ class StudentController extends Controller
         $student->fee_email_note = json_encode($logs);
         $student->save();
 
-        $max_date = date('d/m/Y', strtotime(date('Y-m-01', strtotime($request->from)) . ' + 9 days'));
+        if($center_id == 3){
+            $max_date = date('d/m/Y', strtotime(date('Y-m-01', strtotime($request->from)) . ' + 5 days'));
+        }else{
+            $max_date = date('d/m/Y', strtotime(date('Y-m-01', strtotime($request->from)) . ' + 9 days'));
+        }
+        
+        
         if(date('Y-m-d',strtotime(str_replace('/','-',$max_date))) < date('Y-m-d')){
             $max_date = date('d/m/Y', strtotime(date('Y-m-d'). '+ 2 days'));
         }
