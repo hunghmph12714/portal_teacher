@@ -2,25 +2,14 @@ import React from 'react';
 import './Document.scss'
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
-
+import { withSnackbar } from 'notistack'
 import {
     Grid,
-    Menu,
-    MenuItem,
     IconButton,
     Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     FormControl,
-    FormControlLabel,
-    RadioGroup,
-    Radio,
-    TextField,
     Select,
-    Tooltip, Paper,
+    Tooltip,
     InputLabel
   } from "@material-ui/core";
   import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
@@ -29,18 +18,10 @@ import {
 
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import MaterialTable from "material-table";
-import {MTableAction} from "material-table";
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import Icofont from "react-icofont";
 import NumberFormat from 'react-number-format';
-import { TwitterPicker } from 'react-color';
 import Creatable from 'react-select/creatable';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5vee/build/ckeditor';
@@ -76,7 +57,7 @@ function NumberFormatCustom(props) {
         />
     );
 }
-export default class Documents extends React.Component{
+class Documents extends React.Component{
     constructor(props){
         super(props)
         this.state  = {
@@ -201,35 +182,6 @@ export default class Documents extends React.Component{
             loading: false,
         }
     }
-    successNotification = (successMessage) => {
-        store.addNotification({
-          title: 'Thành công',
-          message: successMessage,
-          type: 'success',                         // 'default', 'success', 'info', 'warning'
-          container: 'bottom-right',                // where to position the notifications
-          animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-          animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-          width: 300,
-          dismiss: {
-            duration: 3000
-          }
-        })
-    }
-    errorNotification = (errorMessage) => {
-        store.addNotification({
-          title: 'Có lỗi',
-          message: errorMessage,
-          type: 'danger',                         // 'default', 'success', 'info', 'warning'
-          container: 'bottom-right',                // where to position the notifications
-          animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-          animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-          width: 300,
-          dismiss: {
-            duration: 3000
-          }
-        })
-    }
-
     getDocuments = () =>{
         this.setState({loading: true})
         axios.post(window.Laravel.baseUrl + "/documents/get")
@@ -242,12 +194,12 @@ export default class Documents extends React.Component{
                     relateds: tag,
                     loading: false,
                 })
+                
             })
             .catch(err => {
                 console.log('center bug: ' + err)
             })
-    }
-    
+    }    
     componentDidMount(){
         this.getDocuments()
     }
@@ -289,9 +241,9 @@ export default class Documents extends React.Component{
                     data.splice(data.indexOf(oldData), 1);
                     return { ...prevState, data };
                 });
+                this.props.enqueueSnackbar('Xoá thành công', {variant: 'success'})
             })
             .catch(err => {
-                this.props.errorNotification('Có lỗi')
                 console.log('delete Center bug: ' + err)
             })
     }
@@ -321,6 +273,7 @@ export default class Documents extends React.Component{
             .then(response => {
                 this.getDocuments()
                 this.setState({loading: false})
+                this.props.enqueueSnackbar('Lưu thành công', {variant: 'success'})
             })
             .catch(err => {
 
@@ -332,6 +285,7 @@ export default class Documents extends React.Component{
             .then(response => {
                 this.getDocuments()
                 this.setState({loading: false})
+                this.props.enqueueSnackbar('Lưu thành công', {variant: 'success'})
             })
             .catch(err => {
 
@@ -558,7 +512,7 @@ export default class Documents extends React.Component{
                             actions: ''
                         },
                         body: {
-                          emptyDataSourceMessage: 'Không tìm thấy quy trình',
+                          emptyDataSourceMessage: 'Không tìm thấy bài tập',
                           editRow:{
                             deleteText: 'Bạn có chắc muốn xóa dòng này ?',
                             cancelTooltip: 'Đóng',
@@ -622,4 +576,5 @@ export default class Documents extends React.Component{
         );
     }
 }
+export default withSnackbar(Documents)
 

@@ -20,7 +20,7 @@ class CreateMathDocumentsTable extends Migration
             $table->smallInteger('level')->default(10);
             $table->smallInteger('grade')->default(1);
             $table->enum('type', ['Trắc nghiệm', 'Tự luận', 'Vấn đáp', 'Khác'])->default('Tự luận');
-            $table->text('question');
+            $table->text('question')->nullable;
             $table->json('mc')->nullable;
             $table->text('answer')->nullable;
             $table->json('custom_field')->nullable;

@@ -577,7 +577,12 @@ class StudentController extends Controller
             }
             $transaction = Transaction::find($d['id']);
             if($d['id'] == -1999){
-                $t['content'] = $d['content'];
+                $d['amount'] = abs($d['amount']);
+                if($d['amount'] > 0){
+                    $t['content'] = "Học phí thiếu kỳ trước";
+                }else{
+                    $t['content'] = "Học phí thừa kỳ trước";
+                }
                 $t['sl'] = 1;
                 $t['dg'] = $d['amount'];
                 $t['session_fee'] = [];
@@ -654,33 +659,33 @@ class StudentController extends Controller
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
                 $password = 'VeEdu2020';
             }
-                $backup = Mail::getSwiftMailer();
+            $backup = Mail::getSwiftMailer();
 
-                // Setup your outlook mailer
-                $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-                $transport->setUsername($mail);
-                $transport->setPassword($password);
-                // Any other mailer configuration stuff needed...
-                
-                $outlook = new \Swift_Mailer($transport);
-
-                // Set the mailer as gmail
-                Mail::setSwiftMailer($outlook);
+            // Setup your outlook mailer
+            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+            $transport->setUsername($mail);
+            $transport->setPassword($password);
+            // Any other mailer configuration stuff needed...
             
-                // Send your message
-                Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
-                    $message->to($to_email, $to_name)
-                            ->to('webmaster@vietelite.edu.vn')
-                            ->subject($result['title'])
-                            ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
-                    $message->from($mail,'VIETELITE EDUCATION CENTER');
-                });
+            $outlook = new \Swift_Mailer($transport);
 
-                // Restore your original mailer
-                Mail::setSwiftMailer($backup);
-                return response()->json(200);
-                
-                try{}
+            // Set the mailer as gmail
+            Mail::setSwiftMailer($outlook);
+        
+            // Send your message
+            Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
+                $message->to($to_email, $to_name)
+                        ->to('webmaster@vietelite.edu.vn')
+                        ->subject($result['title'])
+                        ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
+                $message->from($mail,'VIETELITE EDUCATION CENTER');
+            });
+
+            // Restore your original mailer
+            Mail::setSwiftMailer($backup);
+            return response()->json(200);
+            
+            try{}
             catch(\Exception $e){
                 // Get error here
                 return response()->json(418);

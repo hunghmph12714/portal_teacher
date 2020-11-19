@@ -103,7 +103,6 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
         Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
         @break
-
     @case(2)
     @case(4)
         * NH: <strong>VIB CN Ba Đình </strong> <br/>
