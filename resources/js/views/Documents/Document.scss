@@ -15,7 +15,13 @@
     .answer{
         margin-top: 10px;
     }
-    
+    .btn{
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+    .MuiAccordion-root.Mui-expanded{
+        margin-top: 0px !important;
+    }
 }
 
 .MuiToolbar-gutters{
