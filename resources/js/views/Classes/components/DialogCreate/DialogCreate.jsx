@@ -4,13 +4,14 @@ import './DialogCreate.scss';
 import { Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Select from "react-select";
+import Select from '@material-ui/core/Select';
 
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Divider from '@material-ui/core/Divider';
 import {
     KeyboardTimePicker,
@@ -23,7 +24,7 @@ import vi from "date-fns/locale/vi";
 import {format, subDays } from 'date-fns';
 
 import NumberFormat from 'react-number-format';
-
+import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -61,17 +62,18 @@ const DefaultConfig = React.memo( props => {
         
     let i = 0;
     let j = 0;
-    
+    const [inputValue, setInputValue] = React.useState('');
     if(props.config && props.class_per_week > 0 && props.session_per_class > 0 && props.class_per_week < 8 && props.session_per_class < 8){
         for(i = 0; i < props.class_per_week; i++){
+            
             let session = [];
             for(j = 0 ; j < props.session_per_class; j++){
                 let current_node = i*props.session_per_class + j                
                 session.push(
-                    <Grid container spacing={4} key = {'session_'+j}>
+                    <Grid container spacing={4} key={'session_'+j}>
                         <Grid item lg={3} md={12}> 
                             <div className="date-time">
-                            <MuiPickersUtilsProvider utils={DateFnsUtils} >
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} >
                                     <KeyboardTimePicker
                                         autoOk
                                         minutesStep= {15}
@@ -81,12 +83,10 @@ const DefaultConfig = React.memo( props => {
                                         label= "Giờ vào lớp"
                                         views={["hours","minutes"]}
                                         value= {props.config[current_node].from}
-                                        onChange = {props.onChangeTime(current_node, 'from')}
-    
+                                        onChange = {props.onChangeTime(current_node, 'from')}    
                                     />                     
                                 </MuiPickersUtilsProvider>
                             </div>
-                            
                         </Grid>
                         <Grid item lg={3} md={12}> 
                             <div className="date-time">
@@ -106,45 +106,75 @@ const DefaultConfig = React.memo( props => {
                                 </MuiPickersUtilsProvider>
                             </div>
                         </Grid>
-                        <Grid item lg={3} md={12}>
-                            <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select className = "select-box"
-                                    value={props.config[current_node].teacher}
-                                    onChange={props.onChangeTeacher(current_node)}
-                                    options={props.teachers}
-                                    placeholder="Giáo viên"
-                                />
-    
-                            </FormControl>        
+                        <Grid item lg={3} md={12}>                              
+                            <Autocomplete
+                                className="teacher-select"
+                                options={props.teachers}
+                                getOptionLabel={(option) => option.label}
+                                value={props.config[current_node].teacher}
+                                onChange={(event, newValue) => {
+                                    props.onChangeTeacher(current_node, newValue)
+                                }}
+                                
+                                renderInput={(params) => 
+                                    <TextField {...params} 
+                                        label="Giáo viên" 
+                                        variant="outlined"
+                                        size="small"
+                                        fullWidth
+                                    />}
+                            />
                         </Grid>
-                        <Grid item lg={3} md={12}>
-                            <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select className = "select-box"
-                                    value={props.config[current_node].room}
-                                    onChange={props.onChangeRoom(current_node)}
-                                    options={props.rooms}
-                                    placeholder="Phòng học"
-                                />
-    
-                            </FormControl> 
+                        <Grid item lg={3} sm={12}>      
+                            <Autocomplete
+                                className="room-select"
+                                options={props.rooms}
+                                getOptionLabel={(option) => option.label}
+                                value={props.config[current_node].room}
+                                onChange={(event, newValue) => {
+                                    props.onChangeRoom(current_node, newValue)
+                                }}
+                                renderInput={(params) => 
+                                    <TextField {...params} 
+                                        label="Phòng học" 
+                                        variant="outlined"
+                                        size="small"
+                                        fullWidth
+                                    />
+                                }
+                            />
                         </Grid>
-                        
                     </Grid>
                 )
             }
-            classes.push(
+            // console.log(i)
+            let current_i = i
+            classes.push(                
                 <div className="div-class" key = {'div_'+i}>
                     <Grid container spacing={4} key = {'class_'+i}>
                         <Grid item md={12} lg={3}>
-                            <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                <Select className = "select-box"
-                                    value={props.config[i*props.session_per_class].date}
-                                    onChange={props.onChangeDay(i)}
+                            
+                            <FormControl variant="outlined" size="small" fullWidth>
+                                
+                                <Autocomplete
+                                    className="room-select"
+                                    key={"date_"+i}
                                     options={props.days}
-                                    placeholder="Ngày học"
+                                    getOptionLabel={(option) => option.label}
+                                    value={props.config[i*props.session_per_class].date}
+                                    onChange={ (event, newValue)  =>{
+                                        props.onChangeDay(current_i, newValue)
+                                    }}
+                                    renderInput={(params) => 
+                                        <TextField {...params} 
+                                            label="Ngày học" 
+                                            variant="outlined"
+                                            size="small"
+                                            fullWidth
+                                        />
+                                    }
                                 />
-
-                            </FormControl>
+                            </FormControl> 
                         </Grid>
                     </Grid>
                     {session}
@@ -164,9 +194,9 @@ const initState = {
     session_per_class: 0,
     class_per_week: 0,
     centers : [],
-    center_selected: '',
+    center_selected: null,
     courses: [],
-    course_selected: '',
+    course_selected: null,
     teachers: [],
     rooms: [],
     config: [],
@@ -291,7 +321,7 @@ class DialogCreate extends React.Component {
         let c = [];
         for(let i = 0 ; i < x; i++){
             for(let j = 0; j < y ; j++){
-                c.push({from: new Date(),to: new Date(),teacher:'',room:'', date:''})
+                c.push({from: new Date(),to: new Date(),teacher:null, room:null, date:null})
             }
         }
         this.setState({ config:c })
@@ -309,13 +339,15 @@ class DialogCreate extends React.Component {
         })
         this.updateConfigState(this.state.class_per_week, parseInt(e.target.value));
     }
-    handleCenterChange = (center)=> {
-        this.setState({ center_selected: center })
-        this.getRoom(center.value)
+    handleCenterChange = (event)=> {
+        this.setState({ center_selected: event })
+        this.getRoom(event.value)
     }
-    handleCourseChange = (course) => {
+    handleCourseChange = (event) => {
+        let course = this.state.courses.filter(c => c.value == event.value)[0]
+        console.log(course)
         this.setState({ 
-            course_selected: course,
+            course_selected: event,
             fee: course.fee,
             class_per_week: course.class_per_week,
             session_per_class: course.session_per_class,
@@ -339,7 +371,7 @@ class DialogCreate extends React.Component {
             code : this.state.code,
             name : this.state.name,
             config : JSON.stringify(this.state.config.map(c => {
-                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: c.date}
+                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: c.date.value}
             })),
             open_date : this.state.open_date.getTime()/1000,
             note : (this.state.note)?this.state.note:'',
@@ -418,7 +450,8 @@ class DialogCreate extends React.Component {
         })              
     }
     
-    onChangeTeacher = (c) => teacher => {
+    onChangeTeacher = (c, teacher) => {
+        console.log(teacher)
         let totalSession = this.state.session_per_class
         let totalClass = this.state.class_per_week
         this.setState(prevState => {
@@ -431,7 +464,7 @@ class DialogCreate extends React.Component {
         })
 
     }
-    onChangeRoom = (c) => room => {
+    onChangeRoom = (c, room) => {
         let totalSession = this.state.session_per_class
         let totalClass = this.state.class_per_week
         this.setState(prevState => {
@@ -443,13 +476,14 @@ class DialogCreate extends React.Component {
             return {...prevState, config}
         })
     }
-    onChangeDay = (i) => day => {
+    onChangeDay = (i, value) => {
+        console.log(i)
         let current_class = i * this.state.session_per_class
         for(let a = 0; a < this.state.session_per_class ; a++){
-            let current_node = current_class + a
+            let current_node = current_class + a            
             this.setState(prevState => {
                 let config = [...prevState.config]
-                config[current_node].date = day
+                config[current_node].date = value
                 return {...prevState, config}
             })
         }
@@ -462,6 +496,7 @@ class DialogCreate extends React.Component {
                     Open form dialog
                 </Button> */}
                 <Dialog 
+                    className="dialog-class-create"
                     fullWidth 
                     TransitionComponent={Transition}
                     keepMounted
@@ -488,17 +523,25 @@ class DialogCreate extends React.Component {
                                     md={12}
                                     lg={6}
                                 >
-                                    <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                        <Select className = "select-box"
-                                            className="select-box"
-                                            value={this.state.center_selected}
-                                            onChange={this.handleCenterChange}
+                                    <FormControl variant="outlined" size="small" fullWidth>                                        
+                                        <Autocomplete
                                             options={this.state.centers}
-                                            placeholder="Cơ sở"
+                                            getOptionLabel={(option) => option.label}
+                                            value={this.state.center_selected}
+                                            onChange={(event, newValue) => {
+                                                this.handleCenterChange(newValue)
+                                            }}
+                                            renderInput={(params) => 
+                                                <TextField {...params} 
+                                                    label="Cơ sở" 
+                                                    variant="outlined"
+                                                    size="small"
+                                                    fullWidth
+                                                />
+                                            }
                                         />
                                         <FormHelperText >Cơ sở học tập</FormHelperText>
-
-                                    </FormControl>                                   
+                                    </FormControl>                         
                                     <TextField  label="Tên lớp" 
                                         id="name"
                                         required
@@ -576,16 +619,26 @@ class DialogCreate extends React.Component {
                                     md={12}
                                     lg={6}
                                 >
-                                    <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                        <Select className = "select-box"
-                                            value={this.state.course_selected}
-                                            onChange={this.handleCourseChange}
+                                    <FormControl variant="outlined" size="small" fullWidth >
+                                        <Autocomplete
                                             options={this.state.courses}
-                                            placeholder="Khóa học"
+                                            getOptionLabel={(option) => option.label}
+                                            value={this.state.course_selected}
+                                            onChange={(event, newValue) => {
+                                                this.handleCourseChange(newValue)
+                                            }}
+                                            renderInput={(params) => 
+                                                <TextField {...params} 
+                                                    label="Khoá học" 
+                                                    variant="outlined"
+                                                    size="small"
+                                                    fullWidth
+                                                />
+                                            }
                                         />
-                                        <FormHelperText >Khóa học của lớp </FormHelperText>
-
-                                    </FormControl>
+                                        <FormHelperText >Cơ sở học tập</FormHelperText>
+                                    </FormControl>     
+                                    
                                     <TextField  label="Mã lớp" 
                                         variant="outlined"
                                         size="small"
@@ -598,21 +651,20 @@ class DialogCreate extends React.Component {
                                         onChange = {this.onChange}
                                     />  
                                     <div className="date-time">
-                                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            className="input-date"
-                                            variant="inline"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                            placeholder= "Ngày khai giảng"
-                                            views={["year", "month", "date"]}
-                                            value={this.state.open_date}
-                                            onChange={this.handleDateChange}
-
-                                        />                     
-                                        </MuiPickersUtilsProvider>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                                            <KeyboardDatePicker
+                                                autoOk
+                                                className="input-date"
+                                                variant="inline"
+                                                inputVariant="outlined"
+                                                format="dd/MM/yyyy"
+                                                placeholder= "Ngày khai giảng"
+                                                views={["year", "month", "date"]}
+                                                value={this.state.open_date}
+                                                onChange={this.handleDateChange}
+                                            />                     
+                                            </MuiPickersUtilsProvider>
+                                        
                                     </div>  
                                     <TextField  label="Ghi chú" 
                                         variant="outlined"

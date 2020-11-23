@@ -64,7 +64,7 @@ class ClassController extends Controller
     }
     // Khóa học
     protected function getCourse(){
-        $courses = Course::all()->toArray();
+        $courses = Course::orderBy('grade', 'ASC')->orderBy('name','ASC')->get()->toArray();
         return response()->json($courses);
     }
     protected function createCourse(Request $request){
@@ -308,6 +308,7 @@ class ClassController extends Controller
 
         $result = Classes::where('center_id', $center_operator, $center_value)->
                         where('course_id', $course_operator, $course_value)->
+                        where('classes.type', 'class')->
                         select('classes.id as id','classes.name as name','classes.code as code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
@@ -788,25 +789,25 @@ class ClassController extends Controller
         return response()->json($students);
         
     }
-    protected function fuckDrop(){
-        // $sc = StudentClass::where('status', 'active')->whereNotNull('drop_time')->get();
-        $sc = StudentClass::where('drop_time', '1970-01-01')->get();
-        foreach($sc as $a){
-            $a->drop_time = $a->entrance_date;
-            $a->save();
-        }
-        echo "<pre>";
-        print_r($sc->toArray());
-    }
-    protected function duplicate(){
-        $sc = StudentClass::all();
-        foreach($sc as $s){
-            $check = StudentClass::where('student_id', $s->student_id)->where('class_id', $s->class_id)->where('id', '!=', $s->id)->first();
-            if($check){
-                echo "<pre>";
-                print_r($check->toArray());
-            }
-        }
-    }
+    // protected function fuckDrop(){
+    //     // $sc = StudentClass::where('status', 'active')->whereNotNull('drop_time')->get();
+    //     $sc = StudentClass::where('drop_time', '1970-01-01')->get();
+    //     foreach($sc as $a){
+    //         $a->drop_time = $a->entrance_date;
+    //         $a->save();
+    //     }
+    //     echo "<pre>";
+    //     print_r($sc->toArray());
+    // }
+    // protected function duplicate(){
+    //     $sc = StudentClass::all();
+    //     foreach($sc as $s){
+    //         $check = StudentClass::where('student_id', $s->student_id)->where('class_id', $s->class_id)->where('id', '!=', $s->id)->first();
+    //         if($check){
+    //             echo "<pre>";
+    //             print_r($check->toArray());
+    //         }
+    //     }
+    // }
     
 }

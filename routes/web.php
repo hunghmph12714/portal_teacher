@@ -199,6 +199,10 @@ Route::group(['middleware' => ['auth']], function() {
                 return redirect('/report/revenue');
             });
             Route::get('/check/duplicate', 'ClassController@duplicate');
+        //Events 
+            Route::get('/events', function(){
+                return view('welcome');
+            });
     });
     //Password Change
     //Import database 
