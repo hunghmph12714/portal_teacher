@@ -33,6 +33,13 @@ class StudentSessionObserver
     public function updated(StudentSession $studentSession)
     {
         //
+        $s = Session::find($studentSession->session_id);
+        if($s){
+            $s->ss_number = $s->students()->count();
+            $s->present_number = $s->students()->where('attendance', 'present')->count();
+            $s->absent_number = $s->students()->where('attendance', 'n_absence' )->count();
+            $s->save();
+        }    
     }
 
     /**

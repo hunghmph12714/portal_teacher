@@ -178,7 +178,7 @@ class StudentController extends Controller
                             ->leftJoin('students','transactions.student_id','students.id')
                             ->leftJoin('classes','transactions.class_id','classes.id')
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('classes.id','DESC')->orderBy('transactions.time', 'ASC')
+                            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')->orderBy('classes.id','DESC')
                             ->get();
         //                     echo "<pre>";
         // print_r($transactions->toArray());
@@ -567,6 +567,7 @@ class StudentController extends Controller
         $classes = [];
         $max_date = date('Y-m-d');
         $center_id = 0;
+        
         foreach($request->data as $key => $d){
             if($d['id'] < 0 && $d['id'] != '-1999') continue;            
             //Class
@@ -585,6 +586,7 @@ class StudentController extends Controller
                 $t['sl'] = 1;
                 $t['dg'] = $d['amount'];
                 $t['session_fee'] = [];
+                $t['cname'] = '';
             }else{
                 $class = Classes::find($transaction->class_id);
                 if($class){
@@ -611,6 +613,7 @@ class StudentController extends Controller
                 $data[$d['month']][] = $t;
             }
         }
+        // print_r($data);
         //aadf
         $logs = $student->fee_email_note ?  json_decode($student->fee_email_note):new \stdClass();
         $logs->sent_user = auth()->user()->name;
