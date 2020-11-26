@@ -426,6 +426,71 @@ class ClassController extends Controller
         // $results = Classes::where('code','LIKE', '%'.$request->key.'%')->get();
         // return response()->json($results);
     }
+    //Event
+    protected function getClassName(){
+        $classes = Classes::select('code','id')->get();
+        return response()->json($classes->toArray());
+    }
+    protected function getEvents(){
+
+        $result = Classes::where('classes.type', 'event')->
+                        select('classes.id as id','classes.name as name','classes.code as code',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                        'student_number','open_date','classes.active as status',
+                        'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->get();
+        $classes = $result->toArray();
+        
+        return response()->json($classes);
+    }
+    protected function createEvent(Request $request){
+        $rules = [
+            'code' => 'required',
+            'name' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $request = $request->toArray();
+        $request['open_date'] = date('Y-m-d', strtotime($request['open_date']));
+        $resquest['fee'] = 0;
+        $request['center_id'] = -1;
+        $request['course_id'] = -1;
+        $request['type'] = 'event';
+        $class = Classes::create($request);
+
+        $result = Classes::where('classes.id', $class->id)->
+                        select('classes.id as id','classes.name as name','classes.code',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                        'student_number','open_date','classes.active as status','online_id','password',
+                        'config','classes.fee as fee')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->first()->toArray();
+        return response()->json($result);
+    }
+    protected function editEvent(Request $request){
+        $rules = [
+            'class_id' => 'required',
+            'code' => 'required',
+            'name' => 'required',
+        ];
+        $this->validate($request, $rules);
+        
+        $class = Classes::find($request->class_id);
+        if($class){
+            $class->code = $request->code;
+            $class->name = $request->name;
+            $class->open_date = date('Y-m-d', strtotime($request->open_date));
+            $class->save();
+            $result = Classes::where('classes.id', $class->id)->
+                        select('classes.id as id','classes.name as name','classes.code',
+                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                        'student_number','open_date','classes.active as status','online_id','password',
+                        'config','classes.fee as fee')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->first()->toArray();
+            return response()->json($result);
+        }
+    }
     //HELPER
     public function importDB(){
         $row = 1;

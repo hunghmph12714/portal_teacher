@@ -83,7 +83,6 @@ const Sidebar = props => {
         },        
       ]
     },
-    
     {
       title: 'Công tác học sinh',
       href: '#',
@@ -145,19 +144,14 @@ const Sidebar = props => {
       icon: <AssignmentIndIcon />
     },
     {
-      title: 'Nhận sự',
+      title: 'Sự kiện',
       href: '#',
       icon: <PeopleIcon />,
-      children: [
+      children: [        
         {
-          title: 'Giáo viên',
-          href: '/teachers',
+          title: 'Thi thử',
+          href: '/events',
         },
-        {
-          title: 'Lương tối thiểu',
-          href: '/base-salary',
-        }
-
       ]
     },
     {
@@ -176,6 +170,14 @@ const Sidebar = props => {
         {
           title: 'Cấu hình trạng thái',
           href: '/settings/status'
+        },
+        {
+          title: 'Giáo viên',
+          href: '/teachers',
+        },
+        {
+          title: 'Lương tối thiểu',
+          href: '/base-salary',
         }
 
       ]
@@ -200,9 +202,6 @@ const Sidebar = props => {
         />
         <Divider className={classes.divider} />
         <Profile />
-        
-        
-        
       </div>
     </Drawer>
   );

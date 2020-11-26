@@ -200,7 +200,19 @@ Route::group(['middleware' => ['auth']], function() {
             });
             Route::get('/check/duplicate', 'ClassController@duplicate');
         //Events 
-            Route::get('/events', function(){
+            
+            Route::get('/events', function(){                
+                return view('welcome');
+            });
+            Route::get('/event/get', 'ClassController@getEvents');
+            
+            Route::post('/event/create', 'ClassController@createEvent');
+            Route::post('/event/edit', 'ClassController@editEvent');
+            Route::get('/event/get-class', 'ClassController@getClassName');
+            Route::post('/event/add-product', 'SessionController@addProduct');
+            Route::post('/event/edit-product', 'SessionController@editProduct');
+            Route::post('/event/delete-product', 'SessionController@deleteProduct');
+            Route::get('/event/{id}', function(){
                 return view('welcome');
             });
     });

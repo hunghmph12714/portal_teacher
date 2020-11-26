@@ -88,9 +88,10 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
     <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
 </ul>
-Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh toán chuyển khoản. <br/>
-<strong>THÔNG TIN THANH TOÁN:</strong> <br/>
-
+<h3></b>Chú ý: Hiện tại hệ thống tài khoản ngân hàng của trung tâm đang gặp sự cố, quý Phụ Huynh vui lòng nộp tiền mặt tại quầy lễ tân</b></h3><br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
+<!-- <strong>THÔNG TIN THANH TOÁN:</strong> <br/> -->
+<!-- 
 @switch($result['center_id'])
     @case(5)
         * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
@@ -138,11 +139,8 @@ Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh to�
         Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
         Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
         @break
-@endswitch
-
-
-Trân trọng! 
-
+@endswitch -->
+Trân trọng!
 </p>
 </p>
 @endsection

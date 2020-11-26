@@ -17,10 +17,112 @@ import axios from 'axios';
 import {format, subDays } from 'date-fns';
 
 const baseUrl = window.Laravel.baseUrl;
-
+const col = [
+  {
+      title: "Tên lớp",
+      field: "name",
+      headerStyle: {
+          padding: '0px',
+          fontWeight: '600',
+      },
+      cellStyle: {
+          padding: '0px',
+      },
+  },
+  {
+      title: "Mã lớp",
+      field: "code",
+      headerStyle: {
+          padding: '0px',
+          fontWeight: '600',
+      },
+      cellStyle: {
+          padding: '0px',
+      },
+  },                  
+  {
+      title: "Cơ sở",
+      field: "center",         
+      headerStyle: {
+          padding: '0px',
+          fontWeight: '600',
+      },  
+      cellStyle: {
+          padding: '0px',
+      },             
+      // defaultGroupOrder: 2
+  },
+  {
+      title: "Học phí",
+      field: "fee",
+      filtering: false,
+      headerStyle: {
+          padding: '0px',
+          fontWeight: '600',
+          textAlign: 'right'
+      },
+      type: "currency", 
+      currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
+      
+  },
+  {
+    title: "Sĩ số",
+    field: "student_number",
+    type: "number",
+    filtering: false,
+    headerStyle: {
+        padding: '0px',
+        fontWeight: '600',
+        
+    },
+    cellStyle: {
+        padding: '0px',
+    },
+  },
+  {
+    title: "Đã nghỉ",
+    field: "droped_number",
+    type: "number",
+    filtering: false,
+    headerStyle: {
+        padding: '0px',
+        fontWeight: '600',
+        
+    },
+    cellStyle: {
+        padding: '0px',
+    },
+  },
+  {
+    title: "Đang chờ",
+    field: "waiting_number",
+    type: "number",
+    filtering: false,
+    headerStyle: {
+        padding: '0px',
+        fontWeight: '600',
+        
+    },
+    cellStyle: {
+        padding: '0px',
+    },
+  },
+  {
+    title: "Khai giảng",
+    field: "open_date",
+    headerStyle: {
+        padding: '0px',
+        fontWeight: '600',
+    },
+    cellStyle: {
+        padding: '0px',
+    },
+  },
+]
 class Classes extends React.Component{
     constructor(props){
         super(props)
+        
         this.state = {
           open_create: false,
           open_edit: false,
@@ -28,166 +130,10 @@ class Classes extends React.Component{
           selectedClass: [],
           selectedRow: '',
           dialogType: '',
-          openCreateSession: false,
-          columns: [
-            {
-              title: "",
-              field: "action",
-              filtering: false,
-              disableClick: true,
-              sorting: false,
-              headerStyle: {
-                  padding: '0px',
-                  width: '90px',
-              },
-              cellStyle: {
-                  width: '90px',
-                  padding: '0px',
-              },
-              render: rowData => (
-                  <div style = {{display: 'block'}}>
-                      {/* {rowData.tableData.id} */}
-                      <Tooltip title="Chỉnh sửa" arrow>
-                        <IconButton onClick={() => {this.handleOpenEditDialog(rowData)}}>
-                          <EditOutlinedIcon fontSize='inherit' />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Thêm ca học" arrow>
-                        <IconButton onClick={() => {this.handleOpenCreateSession(rowData)}}>
-                          <PlaylistAddIcon fontSize='inherit' />
-                        </IconButton>
-                      </Tooltip>                                
-                  </div>
-              )
-          },
-          {
-              title: "Tên lớp",
-              field: "name",
-              headerStyle: {
-                  padding: '0px',
-                  fontWeight: '600',
-              },
-              cellStyle: {
-                  padding: '0px',
-              },
-          },
-          {
-              title: "Mã lớp",
-              field: "code",
-              headerStyle: {
-                  padding: '0px',
-                  fontWeight: '600',
-              },
-              cellStyle: {
-                  padding: '0px',
-              },
-          },                  
-          {
-              title: "Cơ sở",
-              field: "center",         
-              headerStyle: {
-                  padding: '0px',
-                  fontWeight: '600',
-              },  
-              cellStyle: {
-                  padding: '0px',
-              },             
-              // defaultGroupOrder: 2
-          },
-          {
-              title: "Học phí",
-              field: "fee",
-              filtering: false,
-              headerStyle: {
-                  padding: '0px',
-                  fontWeight: '600',
-                  textAlign: 'right'
-              },
-              type: "currency", 
-              currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
-              
-          },
-          {
-            title: "Sĩ số",
-            field: "student_number",
-            type: "number",
-            filtering: false,
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-                
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-          },
-          {
-            title: "Đã nghỉ",
-            field: "droped_number",
-            type: "number",
-            filtering: false,
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-                
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-          },
-          {
-            title: "Đang chờ",
-            field: "waiting_number",
-            type: "number",
-            filtering: false,
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-                
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-          },
-          {
-            title: "Khai giảng",
-            field: "open_date",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-          },
-          // {
-          //   title: "Lớp Online",
-          //   field: "online_id",
-          //   headerStyle: {
-          //       padding: '0px',
-          //       fontWeight: '600',
-          //   },
-          //   cellStyle: {
-          //       padding: '0px',
-          //   },
-          //   disableClick: true,
-          // },
-          // {
-          //   title: "Mật khẩu Online",
-          //   field: "password",
-          //   headerStyle: {
-          //       padding: '0px',
-          //       fontWeight: '600',
-          //   },
-          //   cellStyle: {
-          //       padding: '0px',
-          //   },
-          //   disableClick: true,
-          // },
-          
-          ]
+          openCreateSession: false,          
         }
     }
+    
     getClass = () => {
       axios.get(window.Laravel.baseUrl + "/class/get/-1/-1")
           .then(response => {    
@@ -325,6 +271,22 @@ class Classes extends React.Component{
                                   this.handleOpenDialogCreate()
                               },
                           },
+                          {
+                            icon: () => <EditOutlinedIcon />,
+                            tooltip: 'Chỉnh sửa',
+                            text: 'Chỉnh sửa',
+                            onClick: (event, rowData) => {
+                              this.handleOpenEditDialog(rowData)
+                            }
+                          },
+                          {
+                            icon: () => <PlaylistAddIcon />,
+                            tooltip: 'Thêm ca học',
+                            text: 'Thêm ca học',
+                            onClick: (event, rowData) => {
+                              this.handleOpenCreateSession(rowData)
+                          },
+                        },
                       ]}
                       localization={{
                           body: {
@@ -347,7 +309,7 @@ class Classes extends React.Component{
                             placeholder: 'Kéo tên cột vào đây để nhóm'
                           }
                       }}
-                    columns={this.state.columns}
+                    columns={col}
                     detailPanel={rowData => {
                       let configs = JSON.parse(rowData.config)
                       if(!configs){
@@ -371,6 +333,7 @@ class Classes extends React.Component{
                                 paging: false,
                                 search: false
                               }}
+                              
                               data= {c}
                               columns={[
                                 {

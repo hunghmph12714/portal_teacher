@@ -33,8 +33,8 @@ const ListSession = (props) => {
     const [openDocument, setOpenDocument] = useState(false);
     const [document, setDocument] = useState('');
     const [exercice, setExercice] = useState('');
+    const [classes, setClasses] = useState([]);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
 
     function handleOpenDocument(rowData){
       setOpenDocument(true)
@@ -62,7 +62,7 @@ const ListSession = (props) => {
     function handleDeactivateSession(session_id, table_id){
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
-          enqueueSnackbar('Xóa buổi học thành công', {variant: 'success'})
+          enqueueSnackbar('Xóa sản phẩm thành công', {variant: 'success'})
           fetchDataa()          
         })
         .catch(err => {
@@ -85,6 +85,8 @@ const ListSession = (props) => {
             return r
           })
         )
+        const c = await axios.get('/event/get-class')
+        setClasses(c.data.map( r => {return {label: r.code, value: r.id}}))
         setLoading(true)
     }
     useEffect(() => {
@@ -93,7 +95,7 @@ const ListSession = (props) => {
     return (
         <React.Fragment>
             <MaterialTable
-                title="Danh sách ca học"
+                title="Danh sách sản phẩm"
                 data={data}
                 isLoading={!isLoading}
                 options={{
@@ -108,20 +110,20 @@ const ListSession = (props) => {
                         filterCellStyle: {
                           paddingLeft: '0px'
                         }
-                    }}
+                }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
                 actions={[                       
                         {
                             icon: () => <AddBoxIcon />,
-                            tooltip: 'Thêm mới ca học',
+                            tooltip: 'Thêm mới môn học',
                             isFreeAction: true,
-                            text: 'Thêm ca học',
+                            text: 'Thêm môn học',
                             onClick: handleCreateSession,
                         },
-                    ]}
+                ]}
                 localization={{
                         body: {
-                            emptyDataSourceMessage: 'Không tìm thấy ca học'
+                            emptyDataSourceMessage: 'Không tìm thấy môn học'
                         },
                         toolbar: {
                             searchTooltip: 'Tìm kiếm',
@@ -151,10 +153,10 @@ const ListSession = (props) => {
                         sorting: false,
                         headerStyle: {
                             padding: '0px', 
-                            width: '140px',
+                            width: '90px',
                         },
                         cellStyle: {
-                            width: '114px',
+                            width: '90px',
                             padding: '0px',
                         },
                         render: rowData => (
@@ -165,7 +167,7 @@ const ListSession = (props) => {
                                     <EditOutlinedIcon fontSize='inherit' />
                                   </IconButton>
                                 </Tooltip>
-                                <Tooltip title="Xóa ca học" arrow>
+                                <Tooltip title="Xóa môn học" arrow>
                                   <IconButton onClick={() => {
                                     if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
                                       handleDeactivateSession(rowData.id, rowData.tableData.id)}
@@ -178,8 +180,8 @@ const ListSession = (props) => {
                       },
                     //Thứ
                       {
-                        title: "Thứ",
-                        field: "day",
+                        title: "Sản phẩm",
+                        field: "content",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
@@ -187,21 +189,10 @@ const ListSession = (props) => {
                         cellStyle: {
                             padding: '0px',
                         },
-                        render: rowData => {
-                          return (                                
-                            <div>
-                                {Vndate[rowData.day]}
-                            </div>                           
-                          )
-                        },
-                        
-                        renderGroup: (day, groupData) => (
-                          <Chip variant="outlined" label={Vndate[day]} size="small" />      
-                        )
                       },
                     //Ngày học
                       {
-                        title: "Ngày học",
+                        title: "Ngày",
                         field: "date",
                         headerStyle: {
                             padding: '0px',
@@ -224,52 +215,79 @@ const ListSession = (props) => {
                       },
                     //Phòng học
                       {
-                        title: "Phòng học",
-                        field: "rname",
+                        title: "Cơ sở",
+                        field: "ctname",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',
                         },
                         cellStyle: {
                             padding: '0px',
-                        },
-                        render: rowData => {                            
-                          return (                              
-                            <Tooltip title={rowData.ctname}>
-                              <Chip variant="outlined" label={rowData.rname} size="small" />
-                            </Tooltip>                          
-                          )
-                        },
-                        renderGroup: (rname, groupData) => (                            
-                          <Chip variant="outlined" label={rname} size="small" />
-                        )                
-                      }, 
+                        },        
+                      },
                       {
-                        title: "Giáo viên",
-                        field: "tname",
-                        disableClick: true,
+                        title: "Đăng ký",
+                        field: "ss_number",
                         headerStyle: {
-                            padding: '0px',                            
+                            padding: '0px',
+                            width: '90px',
                             fontWeight: '600',
                         },
                         cellStyle: {
+                          width: '90px',
+                            padding: '0px 5px',
+                        },        
+                      },
+                      {
+                        title: "Xác nhận",
+                        field: "present_number",
+                        headerStyle: {
                             padding: '0px',
+                            width: '90px',
+                            fontWeight: '600',
                         },
-                        render: rowData => {
-                            return (                                
-                              <Typography variant="body2" component="p">                                    
-                                  <b>{rowData.tname}</b>
-                                  <br /> {rowData.phone}
-                                  <br /> {rowData.email}
-                              </Typography>
-                            )
-                          },
+                        cellStyle: {
+                            width: '90px',
+                            padding: '0px 5px',
+                        },        
+                      },
+                      // {
+                      //   title: "Địa điểm",
+                      //   field: "rname",
+                      //   headerStyle: {
+                      //       padding: '0px',
+                      //       fontWeight: '600',
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '0px',
+                      //   },      
+                      // },
+                      // {
+                      //   title: "Giáo viên",
+                      //   field: "tname",
+                      //   disableClick: true,
+                      //   headerStyle: {
+                      //       padding: '0px',                            
+                      //       fontWeight: '600',
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '0px',
+                      //   },
+                      //   render: rowData => {
+                      //       return (                                
+                      //         <Typography variant="body2" component="p">                                    
+                      //             <b>{rowData.tname}</b>
+                      //             <br /> {rowData.phone}
+                      //             <br /> {rowData.email}
+                      //         </Typography>
+                      //       )
+                      //     },
                           
-                        renderGroup: (tname, groupData) => (
-                            <Chip variant="outlined" label={tname} size="small" />      
-                        )
+                      //   renderGroup: (tname, groupData) => (
+                      //       <Chip variant="outlined" label={tname} size="small" />      
+                      //   )
                                        
-                      },      
+                      // },      
                       {
                         title: "Tài liệu",
                         field: "document",     
@@ -288,31 +306,31 @@ const ListSession = (props) => {
                           ): ("")
                         } 
                       },  
-                      {
-                        title: "Ghi chú",
-                        field: "note",
-                        grouping: false,
-                        headerStyle: {
-                          padding: '0px',
-                          fontWeight: '600',                      
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                      } ,
-                      {
-                        title: "Loại",
-                        field: "type",
-                        lookup: {'main': 'Chính khóa', 'tutor': 'Phụ đạo', 'tutor_online': 'Phụ đạo ONLINE','exam': 'KTĐK'},
-                        grouping: false,
-                        headerStyle: {
-                          padding: '4px',
-                          fontWeight: '600',                      
-                        },
-                        cellStyle: {
-                            padding: '4px',
-                        },
-                      },
+                      // {
+                      //   title: "Ghi chú",
+                      //   field: "note",
+                      //   grouping: false,
+                      //   headerStyle: {
+                      //     padding: '0px',
+                      //     fontWeight: '600',                      
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '0px',
+                      //   },
+                      // } ,
+                      // {
+                      //   title: "Loại",
+                      //   field: "type",
+                      //   lookup: {'main': 'Chính khóa', 'tutor': 'Phụ đạo', 'tutor_online': 'Phụ đạo ONLINE','exam': 'KTĐK'},
+                      //   grouping: false,
+                      //   headerStyle: {
+                      //     padding: '4px',
+                      //     fontWeight: '600',                      
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '4px',
+                      //   },
+                      // },
                       // {
                       //   title: "Trạng thái",
                       //   field: "status",
@@ -332,6 +350,7 @@ const ListSession = (props) => {
             <DialogSession
               open={open}
               class={{}}
+              classes={classes}
               session = {selected_session}
               class_id = {class_id}
               class_fee = {class_fee}

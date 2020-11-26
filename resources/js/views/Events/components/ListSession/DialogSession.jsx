@@ -40,6 +40,7 @@ import { withSnackbar } from 'notistack';
 import Slide from '@material-ui/core/Slide';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select  from '@material-ui/core/Select';
+import ReactSelect from 'react-select';
 
 const baseUrl = window.Laravel.baseUrl
 
@@ -117,14 +118,14 @@ const RoomSelect = React.memo(props => {
     
     return(         
         <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '4px'}}>
-            <InputLabel id="demo-simple-select-outlined-label">Phòng học</InputLabel>
+            <InputLabel id="demo-simple-select-outlined-label">Địa điểm</InputLabel>
             <Select
                 value={props.room}
                 onChange={props.handleChange}
-                label="Phòng học"
+                label="Địa điểm"
             >
             <MenuItem value="">
-                <em>Vui lòng chọn Phòng học</em>
+                <em>Vui lòng chọn Địa điểm</em>
             </MenuItem>
             {
                 rooms.map(c => {
@@ -157,6 +158,8 @@ const initState = {
     content: '',
     status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
     fetch_student: false,
+    selected_classes: [],
+    percentage: 0,
 }
 class DialogSession extends React.Component {
     constructor(props){
@@ -186,15 +189,20 @@ class DialogSession extends React.Component {
                 old_document: (s.document) ? s.document.split(',') : [],
                 old_exercice: (s.exercice) ? s.exercice.split(',') : [],
                 students: s.students,
+                percentage: s.percentage,
+                selected_classes: s.classes? JSON.parse(s.classes) : ''
             })
        
         }
-    }    
+    }  
     onChange = e => {
         this.setState({
             [e.target.name] : e.target.value
         })
     };
+    onClassChange = (newValue) => {
+        this.setState({ selected_classes: newValue })
+    }
     
     handleCenterChange = (event)=> {
         this.setState({ center: event.target.value })
@@ -232,20 +240,20 @@ class DialogSession extends React.Component {
             this.setState({fee: this.props.class_fee})
         }
     }
-    checkSession = () => {
-        axios.post(baseUrl+'/session/check-date', {date: this.state.from_date, class_id: this.props.class_id})
-            .then(response => {
-                if(!response.data.result){
-                    this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
-                        variant: 'warning',
-                    })
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        this.setState({fetch_student : !this.state.fetch_student})
-    }
+    // checkSession = () => {
+    //     axios.post(baseUrl+'/session/check-date', {date: this.state.from_date, class_id: this.props.class_id})
+    //         .then(response => {
+    //             if(!response.data.result){
+    //                 this.props.enqueueSnackbar('Buổi học đã tồn tại', { 
+    //                     variant: 'warning',
+    //                 })
+    //             }
+    //         })
+    //         .catch(err => {
+    //             console.log(err)
+    //         })
+    //     this.setState({fetch_student : !this.state.fetch_student})
+    // }
     handleRoomChange = event => {
         this.setState({room: event.target.value})
     }
@@ -302,19 +310,18 @@ class DialogSession extends React.Component {
         fd.append('center_id', this.state.center)
         fd.append('class_id', this.props.class_id)
         fd.append('room_id', (this.state.room))
+        fd.append('percentage', this.state.percentage)
         fd.append('from_date', from_date)
         fd.append('to_date', to_date)
-        fd.append('teacher_id', (this.state.teacher.value)?this.state.teacher.value:0)
         fd.append('note', this.state.note)
         fd.append('fee', this.state.fee)
-        fd.append('btvn_content', this.state.btvn_content)
         fd.append('content', this.state.content)
-        fd.append('type', this.state.type)
-        fd.append('students', JSON.stringify(this.state.students))
+        fd.append('classes', JSON.stringify(this.state.selected_classes))
+        // fd.append('students', JSON.stringify(this.state.students))
         if(this.props.dialogType == 'create'){
-            axios.post(baseUrl+'/session/add', fd)
+            axios.post(baseUrl+'/event/add-product', fd)
             .then(response => {
-                this.props.enqueueSnackbar('Thêm buổi học thành công', {
+                this.props.enqueueSnackbar('Thêm sản phẩm thành công', {
                     variant: 'success'
                 })
                 this.props.handleCloseDialog()
@@ -322,15 +329,14 @@ class DialogSession extends React.Component {
             .catch(err => {
                 console.log(err)
             })
-        
         }
         if(this.props.dialogType == 'edit'){
             fd.append('old_exercice', this.state.old_exercice.join(','))
             fd.append('old_document', this.state.old_document.join(','))
             fd.append('ss_id', this.props.session.id)
-            axios.post(baseUrl +'/session/edit' , fd)
+            axios.post(baseUrl +'/event/edit-product' , fd)
                 .then(response => {
-                    this.props.enqueueSnackbar('Sửa buổi học thành công', {
+                    this.props.enqueueSnackbar('Sửa sản phẩm thành công', {
                         variant: 'success'
                     })
                     this.props.handleCloseDialog()
@@ -354,14 +360,14 @@ class DialogSession extends React.Component {
                 open={this.props.open} onClose={this.props.handleCloseDialog} aria-labelledby="form-dialog-title"
             >
                 <DialogTitle id="form-dialog-title">{
-                    this.props.dialogType == "create" ? (<h4>Thêm buổi học</h4>):(<h4>Sửa thông tin buổi học</h4>)
+                    this.props.dialogType == "create" ? (<h4>Thêm sản phẩm</h4>):(<h4>Sửa thông tin sản phẩm</h4>)
                 }</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Vui lòng điền đầy đủ thông tin cần thiết (*)
                     </DialogContentText>
                     <form noValidate autoComplete="on">
-                    <h5>Thông tin buổi học</h5>
+                    <h5>Thông tin sản phẩm</h5>
                         <Grid
                             container
                             spacing={4}
@@ -371,15 +377,21 @@ class DialogSession extends React.Component {
                                 sm={12}
                                 lg={6}
                             >
-                                <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
-                                    <CenterSelect 
-                                        center = {this.state.center}
-                                        handleChange={this.handleCenterChange}
-                                    />
-                                </FormControl>                                   
+                                <TextField  label="Tên sản phẩm" 
+                                    variant="outlined"
+                                    size="medium"
+                                    type="text"
+                                    fullWidth
+                                    margin = "dense"
+                                    name = 'content'
+                                    value = {this.state.content}
+                                    onChange = {this.onChange}
+                                />
+                                
+                                                                  
                                 <Grid
                                     container
-                                    spacing={4}
+                                    spacing={2}
                                 >   
                                     <Grid
                                         item
@@ -392,7 +404,6 @@ class DialogSession extends React.Component {
                                                     minutesStep= {15}
                                                     value={this.state.from_date}                            
                                                     onChange={this.handleFromDate}
-                                                    onClose={this.checkSession}
                                                     placeholder="Thời gian bắt đầu"                            
                                                     className="input-date"
                                                     variant="inline"
@@ -413,7 +424,6 @@ class DialogSession extends React.Component {
                                                 minutesStep= {15}
                                                 value={this.state.to_date}                            
                                                 onChange={this.handleToDate}
-                                                onClose={this.checkSession}
                                                 minDate = {this.state.from_date}
                                                 maxDate = {this.state.from_date}
                                                 placeholder="Thời gian kết thúc"                            
@@ -426,50 +436,67 @@ class DialogSession extends React.Component {
                                         </div> 
                                     </Grid>
                                 </Grid>
-                                <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
+                                {/* <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
                                     <TeacherSearch
                                         teacher={this.state.teacher}
                                         handleChange={this.handleChangeTeacher}                                       
                                     />
-                                </FormControl>
-                                <FormControl fullWidth variant="outlined" margin="dense">
-                                    <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
-                                    <OutlinedInput
-                                        value={this.state.fee}
-                                        name = "fee"
-                                        onChange={this.onChange}
-                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
-                                        labelWidth={70}
-                                        inputComponent = {NumberFormatCustom}
-                                    >
-                                    </OutlinedInput>
-                                </FormControl>
-                                {
-                                    this.props.dialogType == 'create' ? '': ''
-                                }
+                                </FormControl> */}
+                                <Grid container spacing={2}>
+                                    <Grid item md={6} sm={12} className="fee">
+                                        <FormControl fullWidth variant="outlined" margin="dense">
+                                            <InputLabel htmlFor="outlined-adornment-amount">Lệ phí</InputLabel>
+                                            <OutlinedInput
+                                                value={this.state.fee}
+                                                name = "fee"
+                                                onChange={this.onChange}
+                                                startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                labelWidth={50}
+                                                inputComponent = {NumberFormatCustom}
+                                            >
+                                            </OutlinedInput>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item md={6} sm={12} className="fee">
+                                        <FormControl fullWidth variant="outlined" margin="dense">
+                                            <InputLabel htmlFor="outlined-adornment-amount">Ưu đãi</InputLabel>
+                                            <OutlinedInput
+                                                value = {this.state.percentage}
+                                                name = "percentage"
+                                                startAdornment={<InputAdornment position="start">%</InputAdornment>}
+                                                onChange = {this.onChange}
+                                                labelWidth = {70}
+                                            >
+                                            </OutlinedInput>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                             <Grid
                                 item
                                 sm={12}
                                 lg={6}
                             >
+                                <FormControl variant="outlined" className="select-input" fullWidth  margin="dense">
+                                    <CenterSelect 
+                                        center = {this.state.center}
+                                        handleChange={this.handleCenterChange}
+                                    />
+                                </FormControl> 
                                 <RoomSelect
                                     center={this.state.center}
                                     room = {this.state.room}
                                     handleChange = {this.handleRoomChange}
                                 />
-                                
-                                
-                                
-                                <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '8px'}}>
-                                    <InputLabel id="demo-simple-select-outlined-label">Loại buổi học</InputLabel>
+                                {/* <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '8px'}}>
+                                    <InputLabel id="demo-simple-select-outlined-label">Loại sản phẩm</InputLabel>
                                     <Select
                                         value={this.state.type}
                                         onChange={this.handleTypeChange}
-                                        label="Loại buổi học"
+                                        label="Loại sản phẩm"
                                     >
                                         <MenuItem value="">
-                                            <em>Vui lòng chọn loại buổi học</em>
+                                            <em>Vui lòng chọn loại sản phẩm</em>
                                         </MenuItem>
                                         <MenuItem value="main">Chính khóa</MenuItem>
                                         <MenuItem value="tutor">Phụ đạo</MenuItem>
@@ -477,8 +504,8 @@ class DialogSession extends React.Component {
                                         <MenuItem value="compensate">Học bù</MenuItem>
                                         <MenuItem value="exam">Kiểm tra định kỳ</MenuItem>
                                     </Select>
-                                </FormControl>
-                                <StudentClassSelect 
+                                </FormControl> */}
+                                {/* <StudentClassSelect 
                                     session_id = {this.props.session.id}
                                     class_id = {this.props.class_id}
                                     students = {this.state.students}
@@ -486,8 +513,8 @@ class DialogSession extends React.Component {
                                     dialogType = {this.props.dialogType}
                                     fetch_student = {this.state.fetch_student}
                                     handleChange = {this.handleStudentChange}
-                                />
-                                <TextField  label="Ghi chú" 
+                                /> */}
+                                {/* <TextField  label="Ghi chú" 
                                     variant="outlined"
                                     size="medium"
                                     type="text"
@@ -496,16 +523,26 @@ class DialogSession extends React.Component {
                                     name = 'note'
                                     value = {this.state.note}
                                     onChange = {this.onChange}
+                                /> */}
+                                <ReactSelect
+                                    className="class-select"
+                                    placeholder="Chọn lớp thuộc nhóm ưu đãi"
+                                    closeMenuOnSelect={false}
+                                    defaultValue={{}}
+                                    onChange = {this.onClassChange}
+                                    value={this.state.selected_classes}
+                                    isMulti
+                                    options={this.props.classes}
                                 />
                             </Grid>
                         </Grid>
-                    <h5>Tài liệu và Bài tập về nhà</h5>
+                    <h5>Tài liệu nội bộ và công khai</h5>
                         <Grid container spacing={4}>
                             <Grid item
                                 sm={12}
                                 lg={6} 
                             >
-                                <TextField  label="Nội dung bài tập về nhà" 
+                                {/* <TextField  label="Nội dung bài tập về nhà" 
                                     variant="outlined"
                                     size="medium"
                                     type="text"
@@ -514,7 +551,7 @@ class DialogSession extends React.Component {
                                     name = 'btvn_content'
                                     value = {this.state.btvn_content}
                                     onChange = {this.onChange}
-                                />
+                                /> */}
                                 {
                                     (this.state.old_exercice.length != 0 && this.props.dialogType == 'edit') ? (
                                         <List dense>
@@ -542,7 +579,7 @@ class DialogSession extends React.Component {
                                         filesLimit = {5}
                                         initialFiles= {[]}
                                         maxFileSize = {10000000}
-                                        dropzoneText = "Kéo thả tài bài tập về nhà (Ảnh, PDF, Word)"
+                                        dropzoneText = "Kéo thả tài liệu nội bộ (Ảnh, PDF, Word)"
                                     />
                                 </div>
                                 
@@ -551,16 +588,6 @@ class DialogSession extends React.Component {
                                 sm={12}
                                 lg={6}
                             >
-                                <TextField  label="Nội dung bài học" 
-                                    variant="outlined"
-                                    size="medium"
-                                    type="text"
-                                    fullWidth
-                                    margin = "dense"
-                                    name = 'content'
-                                    value = {this.state.content}
-                                    onChange = {this.onChange}
-                                />
                                 {
                                     (this.state.old_document.length != 0  && this.props.dialogType == 'edit') ? (
                                         <List dense>
@@ -588,7 +615,7 @@ class DialogSession extends React.Component {
                                         filesLimit = {5}
                                         initialFiles= {[]}
                                         maxFileSize = {10000000}
-                                        dropzoneText = "Kéo thả tài liệu buổi học(Ảnh, PDF, Word)"
+                                        dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
                                     />
                                 </div>
                             </Grid>
@@ -602,7 +629,7 @@ class DialogSession extends React.Component {
                     {
                         (this.props.dialogType == 'create') ? (
                             <Button onClick={this.handleAddSession} color="primary" id="btn-save">
-                                Tạo mới buổi học
+                                Tạo mới sản phẩm
                             </Button>
                         ) : (
                             <Button onClick={this.handleAddSession} color="primary" id="btn-save">

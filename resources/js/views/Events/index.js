@@ -1,2 +1,2 @@
-export { default as Classes } from './Classes';
-export { ClassDetail } from './ClassDetail';
+export { default as Events } from './Events';
+export { EventDetail } from './EventDetail';

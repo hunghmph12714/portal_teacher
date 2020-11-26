@@ -51,33 +51,32 @@ const DialogDocument = props => {
             open={open_dialog} onClose={handleCloseDialog} aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">
-                <h4>Tài liệu và Bài tập về nhà</h4>
+                <h4>Tài liệu</h4>
             </DialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>                    
                     <Typography variant="h5">
-                        Tài liệu
+                        Công Khai
                     </Typography>
-                    <div>
-                        <List dense>
-                            {(document)? document.split(',').map(doc => {
-                                return(
-                                <ListItem >
-                                    <ListItemIcon>
-                                        <FolderIcon />
-                                    </ListItemIcon>
-                                    <a href={doc} download> Tải về </a>
-                                </ListItem>
-                                )
-                            }): ''}
-                            
-                        </List>
-                    </div>
+                        <div>
+                            <List dense>
+                                {(document)? document.split(',').map(doc => {
+                                    return(
+                                    <ListItem >
+                                        <ListItemIcon>
+                                            <FolderIcon />
+                                        </ListItemIcon>
+                                        <a href={doc} download> Tải về </a>
+                                    </ListItem>
+                                    )
+                                }): ''}
+                            </List>
+                        </div>
                     </Grid>
                     <Grid item xs={12} md={6}>
                     <Typography variant="h5">
-                        Bài tập về nhà
+                        Nội bộ
                     </Typography>
                     <div >
                         <List dense>

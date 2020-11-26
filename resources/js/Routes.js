@@ -28,7 +28,9 @@ import {
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
-  StudentDetail, Documents
+  StudentDetail, Documents,
+  Events, EventDetail
+
 } from './views';
 
 const Routes = (props) => {
@@ -232,6 +234,16 @@ const Routes = (props) => {
         component = {Documents}
         layout = {MainLayout}
         path = "/documents"
+      />
+      <ProtectedRouteWithLayout 
+        component = {Events}
+        layout = {MainLayout}
+        path = "/events"
+      />
+      <ProtectedRouteWithLayout 
+        component = {EventDetail}
+        layout = {MainLayout}
+        path = "/event/:id"
       />
       
       <Redirect to="/not-found" />

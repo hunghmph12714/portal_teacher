@@ -299,8 +299,8 @@ class SessionController extends Controller
         if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Session::where('class_id', $request->class_id)->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
-                    'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                    'sessions.ss_number','sessions.present_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -309,11 +309,10 @@ class SessionController extends Controller
         else{
             $from = date('Y-m-d', strtotime($request->from_date));
             $to = date('Y-m-d', strtotime($request->to_date));
-            
             $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
-                    'sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                    'sessions.ss_number','sessions.present_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -869,6 +868,136 @@ class SessionController extends Controller
             $s->present_number = $s->students()->where('attendance', 'present')->count();
             $s->absent_number = $s->students()->where('attendance', 'n_absence' )->count();
             $s->save();
+        }
+    }
+
+
+    //Event 
+    protected function addProduct(Request $request){
+        $rules = ['class_id' => 'required', 
+            'center_id' => 'required',
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'fee' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
+        $input['class_id'] = $request->class_id;
+        $input['center_id'] = $request->center_id;
+        $input['room_id'] = $request->room_id;
+        $input['status'] = 1;
+        $input['teacher_id'] = -1;
+        $input['date'] = date('Y-m-d', ($request->from_date));
+        $input['from'] = date('Y-m-d H:i:00', ($request->from_date));
+        $input['to'] = date('Y-m-d H:i:00', ($request->to_date));
+        $input['ss_number'] = 0;
+        $input['note'] = $request->note;
+        $input['fee'] = $request->fee;
+        //Create new session
+        $session = Session::create($input);
+
+        $document = '';
+        //Upload document
+        for($i = 0 ; $i < $request->document_count; $i++){
+            if($request->has('document'.$i)){
+                $ans = $request->file('document'.$i);
+                $file_name = explode('.', $ans->getClientOriginalName())[0];
+                $name = $session->id."_". $file_name ."_".time();
+                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                if($i == 0){
+                    $document = $path;
+                }else{
+                    $document = $document.",".$path;
+                }
+            }
+        }
+        $exercice = '';
+        for($i = 0 ; $i < $request->exercice_count ; $i++){
+            if($request->has('exercice'.$i)){
+                $ans = $request->file('exercice'.$i);
+                $file_name = explode('.', $ans->getClientOriginalName())[0];
+                $name = $session->id."_". $file_name ."_".time();
+                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                if($i == 0){
+                    $exercice = str_replace(',','',$path);
+                }else{
+                    $exercice = $exercice.",". str_replace(',','',$path);
+                } 
+            }
+        }
+        $session->document = $document;
+        $session->exercice = $exercice;
+        $session->btvn_content = $request->btvn_content;
+        $session->classes = $request->classes;
+        $session->content = $request->content;
+        $session->percentage = $request->percentage;
+        $session->type = 'exam';
+
+        $session->save();        
+    }
+    protected function editProduct(Request $request){
+        $rules = [
+            'ss_id' => 'required', 
+            'from_date' => 'required',
+            'to_date' => 'required',
+            'fee' => 'required',
+        ];
+        $this->validate($request, $rules);
+
+        $session = Session::find($request->ss_id);
+        
+        if($session){
+            $class = Classes::find($session->class_id);
+            // $session->teacher_id = $request->teacher_id;
+            $session->center_id = $request->center_id;
+            $session->room_id = ($request->room_id != 'null')? $request->room_id : NULL;
+            $session->date = date('Y-m-d', $request->from_date);
+            $session->from = date('Y-m-d H:i:00', $request->from_date);
+            $session->to = date('Y-m-d H:i:00', $request->to_date);
+            $session->note = $request->note;
+            $session->percentage = $request->percentage;
+            $session->classes = $request->classes;
+            $session->type = 'exam';
+            $document = $request->old_document;
+            //Upload document
+            for($i = 0 ; $i < $request->document_count; $i++){
+                if($request->has('document'.$i)){
+                    $ans = $request->file('document'.$i);
+                    $file_name = explode('.', $ans->getClientOriginalName())[0];
+                    $name = $session->id."_". $file_name ."_".time();
+                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0 && $document == ''){
+                        $document = str_replace(',','',$path);
+                    }else{
+                        $document = $document.",".str_replace(',','',$path);
+                    }
+                }
+            }
+            $exercice = $request->old_exercice;
+            for($i = 0 ; $i < $request->exercice_count ; $i++){
+                if($request->has('exercice'.$i)){
+                    $ans = $request->file('exercice'.$i);
+                    $file_name = explode('.', $ans->getClientOriginalName())[0];
+                    $name = $session->id."_". $file_name ."_".time();
+                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0 && $exercice == ''){
+                        $exercice = str_replace(',','',$path);
+                    }else{
+                        $exercice = $exercice.",". str_replace(',','',$path);
+                    } 
+                }
+            }
+            $session->document = $document;
+            $session->exercice = $exercice;
+            $session->btvn_content = $request->btvn_content;
+            $session->content = $request->content;
+            
+            $session->save();
+            
         }
     }
 }
