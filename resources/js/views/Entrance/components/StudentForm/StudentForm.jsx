@@ -38,7 +38,7 @@ const loadOptions = (type, inputValue) => {
     if(type == 'school'){
         return findSchools(inputValue)
     }
-};        
+};
 const debouncedLoadOptions = throttle(loadOptions, wait)
 
 const StudentForm = props => {

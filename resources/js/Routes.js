@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Redirect } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
 
 import { RouteWithLayout, ProtectedRouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
@@ -29,13 +29,19 @@ import {
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
   StudentDetail, Documents,
-  Events, EventDetail
+  Events, EventDetail, PublicForm
 
 } from './views';
 
 const Routes = (props) => {
   return (
     <Switch>
+      <Route
+        component={PublicForm}
+        exact
+        layout={MinimalLayout}
+        path="/event-form"
+      />
       <Redirect
         exact
         from="/"
@@ -46,7 +52,7 @@ const Routes = (props) => {
         from="/home"
         to="/classes"
       />
-
+      
       <ProtectedRouteWithLayout
         component={DashboardView}
         exact

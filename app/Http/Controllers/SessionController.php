@@ -298,7 +298,7 @@ class SessionController extends Controller
         $result = [];
         if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Session::where('class_id', $request->class_id)->
-                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid',
+                select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.ss_number','sessions.present_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
@@ -369,7 +369,7 @@ class SessionController extends Controller
             $session->center_id = $request->center_id;
             $session->room_id = ($request->room_id != 'null')? $request->room_id : NULL;
             $session->date = date('Y-m-d', $request->from_date);
-            $session->from = date('Y-m-d H:i:00', $request->from_date);
+            $session->from = date('Y-m-d H:i:01', $request->from_date);
             $session->to = date('Y-m-d H:i:00', $request->to_date);
             $session->note = $request->note;
 
@@ -888,7 +888,7 @@ class SessionController extends Controller
         $input['status'] = 1;
         $input['teacher_id'] = -1;
         $input['date'] = date('Y-m-d', ($request->from_date));
-        $input['from'] = date('Y-m-d H:i:00', ($request->from_date));
+        $input['from'] = date('Y-m-d H:i:01', ($request->from_date));
         $input['to'] = date('Y-m-d H:i:00', ($request->to_date));
         $input['ss_number'] = 0;
         $input['note'] = $request->note;
@@ -954,12 +954,13 @@ class SessionController extends Controller
             $session->center_id = $request->center_id;
             $session->room_id = ($request->room_id != 'null')? $request->room_id : NULL;
             $session->date = date('Y-m-d', $request->from_date);
-            $session->from = date('Y-m-d H:i:00', $request->from_date);
+            $session->from = date('Y-m-d H:i:01', $request->from_date);
             $session->to = date('Y-m-d H:i:00', $request->to_date);
             $session->note = $request->note;
             $session->percentage = $request->percentage;
             $session->classes = $request->classes;
             $session->type = 'exam';
+            $session->fee = $request->fee;
             $document = $request->old_document;
             //Upload document
             for($i = 0 ; $i < $request->document_count; $i++){
@@ -999,5 +1000,12 @@ class SessionController extends Controller
             $session->save();
             
         }
+    }
+    protected function getProductInfo(Request $request){
+        $rules = ['event_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $sessions = Session::where('class_id', $request->event_id)->where('room_id', $request->location_id)->get();
+        return response()->json($sessions->toArray());
     }
 }

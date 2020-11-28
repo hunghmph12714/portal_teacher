@@ -101,6 +101,7 @@
         "react-redux": "^7.2.1",
         "react-select": "^3.1.0",
         "react-star-ratings": "^2.3.0",
+        "react-text-mask": "^5.4.3",
         "react-tooltip": "^4.2.10",
         "reducer": "^0.19.2",
         "reducers": "^3.0.0-alpha",

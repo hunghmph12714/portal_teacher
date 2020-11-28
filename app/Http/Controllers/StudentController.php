@@ -857,6 +857,27 @@ class StudentController extends Controller
         // return response()->json();
 
     }
+    public function checkPhone(Request $request){
+        $rules = ['phone' => 'required', 'student_name' => 'required'];
+        $this->validate($request, $rules);
+
+        $parent = Parents::where('phone', $request->phone)->orWhere('alt_phone', $request->phone)->first();
+        if($parent){
+            $student = Student::where('parent_id', $parent->id)->where('fullname','LIKE', '%'.$request->student_name.'%')->first();
+            if($student){
+                $classes = $student->activeClasses()->select('code','classes.id')->get();
+                if($classes->count() > 0){
+                    return response()->json($classes->toArray());
+                }
+                return response()->json('Không tìm thấy lớp học tại VietElite', 401);
+            }
+            else{
+                return response()->json('Không tìm thấy học sinh, vui lòng kiểm tra lại họ tên học sinh', 401);
+            }
+        }else{
+            return response()->json('Không tìm thấy số điện thoại, vui lòng nhập số điện thoại đã đăng ký học cho học sinh tại VietElite', 401);
+        }
+    }
     function vn_to_str ($str){
  
         $unicode = array(

@@ -189,10 +189,9 @@ class DialogSession extends React.Component {
                 old_document: (s.document) ? s.document.split(',') : [],
                 old_exercice: (s.exercice) ? s.exercice.split(',') : [],
                 students: s.students,
-                percentage: s.percentage,
+                percentage: (s.percentage)?s.percentage:0,
                 selected_classes: s.classes? JSON.parse(s.classes) : ''
             })
-       
         }
     }  
     onChange = e => {

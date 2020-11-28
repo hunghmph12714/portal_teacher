@@ -24,6 +24,7 @@ Route::get('/login', function () {
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
+Route::get('/event-form', function() { return view('welcome'); });
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard', function () {
         return view('welcome');
@@ -108,7 +109,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         //Schools
-            Route::get('/school/find/{key}', 'StudentController@findSchools');
+            
         //Entrance
             Route::get('/entrance/create', function(){
                 return view('welcome');
@@ -307,13 +308,11 @@ Route::group(['middleware' => ['auth']], function() {
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
 });
-//
-// Route::get('/create-use', function(){
-//     return Hash::make('12345Bay');
-// });
-// Auth::routes();
-// Route::get('/csv', 'StudentController@csv');
-// Route::get('/student/chuan-hoa', 'StudentController@chuanHoa');
+Route::get('/school/find/{key}', 'StudentController@findSchools');
+Route::get('/event-get-public', 'ClassController@getEventInfo');
+Route::get('/event-get-location', 'ClassController@getLocationInfo');
+Route::post('/event-get-product', 'SessionController@getProductInfo');
+Route::post('/check-phone', 'StudentController@checkPhone');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test', function(){
     return view('home');

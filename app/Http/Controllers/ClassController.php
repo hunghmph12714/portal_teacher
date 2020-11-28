@@ -441,7 +441,7 @@ class ClassController extends Controller
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
         $classes = $result->toArray();
-        
+        // print_r($classes);
         return response()->json($classes);
     }
     protected function createEvent(Request $request){
@@ -853,6 +853,29 @@ class ClassController extends Controller
         }
         return response()->json($students);
         
+    }
+    protected function getEventInfo(){
+        $events = Classes::where('type', 'event')->where('active', 1)->get();
+        $result = [];
+        foreach($events as $event){
+            $products = Session::where('class_id', $event->id)->get();
+            $result[] = $event;
+        }
+        return response()->json($result);
+    }
+    protected function getLocationInfo(){
+        $events = Classes::where('type', 'event')->where('active', 1)->get();
+        $result = [];
+        foreach($events as $event){
+            $rooms = Session::where('class_id', $event->id)->select('room_id', 'room.name')->leftJoin('room', 'sessions.room_id', 'room.id')->distinct('room_id')->get();
+            foreach($rooms as $r){
+                if(!in_array(['id'=> $r->room_id, 'label'=> $r->name ], $result)){
+                    $result[] = ['id'=> $r->room_id, 'label'=> $r->name ];
+                }
+                
+            }
+        }
+        return response()->json($result);
     }
     // protected function fuckDrop(){
     //     // $sc = StudentClass::where('status', 'active')->whereNotNull('drop_time')->get();
