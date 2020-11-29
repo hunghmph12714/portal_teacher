@@ -437,7 +437,7 @@ class ClassController extends Controller
                         select('classes.id as id','classes.name as name','classes.code as code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                         'student_number','open_date','classes.active as status',
-                        'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
+                        'config','classes.fee as fee','online_id','password','droped_number','waiting_number','classes.note')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
         $classes = $result->toArray();
@@ -480,6 +480,7 @@ class ClassController extends Controller
             $class->code = $request->code;
             $class->name = $request->name;
             $class->open_date = date('Y-m-d', strtotime($request->open_date));
+            $class->note = $request->note;
             $class->save();
             $result = Classes::where('classes.id', $class->id)->
                         select('classes.id as id','classes.name as name','classes.code',

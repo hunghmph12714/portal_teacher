@@ -376,16 +376,44 @@ class DialogSession extends React.Component {
                                 sm={12}
                                 lg={6}
                             >
-                                <TextField  label="Tên sản phẩm" 
-                                    variant="outlined"
-                                    size="medium"
-                                    type="text"
-                                    fullWidth
-                                    margin = "dense"
-                                    name = 'content'
-                                    value = {this.state.content}
-                                    onChange = {this.onChange}
-                                />
+                                <Grid
+                                    container
+                                    spacing={2}
+                                >   
+                                    <Grid
+                                        item
+                                        sm={12}
+                                        lg={6}
+                                    >
+                                        <TextField  label="Tên sản phẩm" 
+                                            variant="outlined"
+                                            size="medium"
+                                            type="text"
+                                            fullWidth
+                                            margin = "dense"
+                                            name = 'content'
+                                            value = {this.state.content}
+                                            onChange = {this.onChange}
+                                        />  
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        sm={12}
+                                        lg={6}
+                                    >
+                                        <TextField  label="Hình thức" 
+                                            variant="outlined"
+                                            size="medium"
+                                            type="text"
+                                            fullWidth
+                                            margin = "dense"
+                                            name = 'note'
+                                            value = {this.state.note}
+                                            onChange = {this.onChange}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                
                                 
                                                                   
                                 <Grid

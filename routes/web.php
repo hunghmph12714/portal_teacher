@@ -308,6 +308,8 @@ Route::group(['middleware' => ['auth']], function() {
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
 });
+//EVENT PUBLIC
+Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
 Route::get('/school/find/{key}', 'StudentController@findSchools');
 Route::get('/event-get-public', 'ClassController@getEventInfo');
 Route::get('/event-get-location', 'ClassController@getLocationInfo');

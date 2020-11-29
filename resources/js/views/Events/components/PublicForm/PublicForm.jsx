@@ -33,6 +33,10 @@ import {
 import {withSnackbar} from 'notistack'
 const baseUrl = window.Laravel.baseUrl
 var date = new Date();
+var formatter = new Intl.NumberFormat('vi-VN', {
+  style: 'currency',
+  currency: 'VND',
+});
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
   
@@ -195,8 +199,6 @@ class PublicForm extends React.Component{
             discount_fee: 0,
             final_fee: 0,
 
-            activeStep: 0,
-            steps: this.getSteps()
         }
     }
     componentDidMount = () => {
@@ -258,7 +260,7 @@ class PublicForm extends React.Component{
           .then(response => {
             this.setState({ classes: response.data.map(r => {return {label: r.code, value: r.id}}) })
             let classes = response.data.map(r => r.code).toString()
-            const key = this.props.enqueueSnackbar('Chào mừng phụ huynh em ' +  +', các lớp đang theo học tại VietElite: '+ classes, {
+            const key = this.props.enqueueSnackbar('Chào mừng, Các lớp đang theo học tại VietElite: '+ classes, {
               variant: 'success',
               anchorOrigin: {
                 vertical: 'top',
@@ -290,7 +292,7 @@ class PublicForm extends React.Component{
           }else return { ...event, active: false}
         })
         
-        return {...prevState, events, selected_event: evt.id}
+        return {...prevState, events, selected_event: evt.id , total_fee: 0, discount_fee: 0}
       }) 
     }
     getProducts = (evt, loc) => {
@@ -321,7 +323,8 @@ class PublicForm extends React.Component{
             return {...l, active: true }
           }else return { ...l, active: false}
         })
-        return {...prevState, locations}
+
+        return {...prevState, locations, total_fee: 0, discount_fee: 0}
       })
     }
     isDuplicated = (a, b) => {
@@ -341,6 +344,16 @@ class PublicForm extends React.Component{
       
     }
     onProductChange = (product) => {
+      if(this.state.phone == "" || this.state.student_name == ""){
+        this.props.enqueueSnackbar('Vui lòng điền thông tin học sinh.', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          } ,
+          variant: 'warning'
+        })
+        return ;
+      }
       this.setState(prevState => {
         var total_fee = prevState.total_fee
         var discount_fee  = prevState.discount_fee 
@@ -408,98 +421,38 @@ class PublicForm extends React.Component{
         return {...prevState, products, total_fee, discount_fee}
       })
     } 
-    getSteps() {
-      return ['Select master blaster campaign settings', 'Create an ad group', 'Create an ad'];
-    }
-    
-    getStepContent(stepIndex) {
-      switch (stepIndex) {
-        case 0:
-          return (<InfoForm
-            student_name = {this.state.student_name}
-            dob = {this.state.dob}
-            school = {this.state.school}
-            phone = {this.state.phone}
-            email = {this.state.email}
-            activated = {this.state.activated}
-            handleChangeSchool = {this.handleChangeSchool}
-            handleChangeDob = {this.handleChangeDob}
-            onChange = {this.onChange}
-            onPhoneChange = {this.onPhoneChange}
-            onActiveChange = {this.onActiveChange}
-
-          />);
-        case 1:
-          return 'What is an ad group anyways?';
-        case 2:
-          return 'This is the bit I really care about!';
-        default:
-          return 'Unknown stepIndex';
-      }
-    }
-    handleNext = () => {
-      this.setState( {activeStep: this.state.activeStep + 1 })
-    };
-  
-    handleBack = () => {
-      this.setState( {activeStep: this.state.activeStep - 1 })
-    };
-  
-    handleReset = () => {
-      this.setState( {activeStep: 0 })
-    };
     render(){
         document.title =  'FORM ĐĂNG KÝ'
         return (
           
           <div className="root-class-detail">
-            <div>
-            <Stepper activeStep={this.state.activeStep} alternativeLabel>
-              {this.state.steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-              <div>
-                {this.state.activeStep === this.state.steps.length ? (
-                  <div>
-                    <Typography >All steps completed</Typography>
-                    <Button onClick={this.handleReset}>Reset</Button>
-                  </div>
-                ) : (
-                  <div>
-                    <Typography >{this.getStepContent(this.state.activeStep)}</Typography>
-                    <div>
-                      <Button
-                        disabled={this.state.activeStep === 0}
-                        onClick={this.handleBack}                     
-                      >
-                        Back
-                      </Button>
-                      <Button variant="contained" color="primary" onClick={this.handleNext}>
-                        {this.state.activeStep === this.state.steps.length - 1 ? 'Finish' : 'Next'}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            
+            <InfoForm
+              student_name = {this.state.student_name}
+              dob = {this.state.dob}
+              school = {this.state.school}
+              phone = {this.state.phone}
+              email = {this.state.email}
+              activated = {this.state.activated}
+              handleChangeSchool = {this.handleChangeSchool}
+              handleChangeDob = {this.handleChangeDob}
+              onChange = {this.onChange}
+              onPhoneChange = {this.onPhoneChange}
+              onActiveChange = {this.onActiveChange}
+            />
             <Grid container spacing={2}>
-              <Grid item md={6} sm={12}>
+              <Grid item md={7} sm={12}>
                 <FormControl component="fieldset" size="small">
                   <FormLabel>Khối thi(*)</FormLabel>
                   <span>
                   {this.state.events.map( (evt , index)=> {
                       return(
-                        <Button 
+                        <Button
                           className="btn-vee"
                           // color={(this.state.events[index].active) ? 'primary' : 'default'} 
                           variant="outlined" 
                           name={evt.id} 
                           onClick={() => this.onEventChange(evt)}
-                          style={(!this.state.events[index].active) ? {fontWeight: 'bold', color: 'black',}:{fontWeight: 'bold', color: 'white', background: 'green'}}
+                          style={(!this.state.events[index].active) ? {fontWeight: 'bold', color: 'black',}:{fontWeight: 'bold', color: 'white', background: '#8bc34a'}}
                         >
                           {evt.note}
                         </Button>
@@ -510,8 +463,8 @@ class PublicForm extends React.Component{
                   <br/>
                 
               </Grid>
-              <Grid item md={6} sm={12}>
-                <FormControl component="fieldset" size="small">
+              <Grid item md={5} sm={12}>
+                <FormControl component="fieldset" size="small" fullWidth>
                   <FormLabel>Địa điểm thi(*)</FormLabel>
                   {this.state.locations.map( (loc , index)=> {
                       return(
@@ -522,7 +475,7 @@ class PublicForm extends React.Component{
                           onClick={() => this.onLocationChange(loc)}
                           style={(!this.state.locations[index].active) ? {fontWeight: 'bold', color: 'black', marginRight: '10px',align: 'left'}:
                           
-                          {fontWeight: 'bold', color: 'white', background: 'green', marginRight: '10px', align: 'left'}}
+                          {fontWeight: 'bold', color: 'white', background: '#8bc34a', marginRight: '10px', align: 'left'}}
                         >
                           {loc.label}
                         </Button>
@@ -533,8 +486,8 @@ class PublicForm extends React.Component{
               
             </Grid>
             <Grid container spacing={2}>
-              <Grid item md={6} sm={12}>
-                <FormControl component="fieldset" size="small">
+              <Grid item md={7} sm={12} className="mon-thi">
+                <FormControl component="fieldset" size="small" fullWidth>
                   <FormLabel>Chọn môn thi</FormLabel>
                   <span>
                   {this.state.products.map( (evt , index)=> {
@@ -555,16 +508,67 @@ class PublicForm extends React.Component{
                       )
                   })}
                 </span>
-                </FormControl>
-                  <br/>
-                
+                </FormControl>                
               </Grid>
-              <Grid item md={6} sm={12}>
-                {this.state.total_fee} <br/>
-                {this.state.discount_fee} <br/>
+              <Grid item md={5} sm={12}>
+                {(this.state.total_fee != 0)? 
+                  <React.Fragment>
+                    <Grid container spacing={2}> 
+                      <Grid item md={6} sm={12}>
+                        <FormControl component="fieldset" size="small" fullWidth>
+                          <Button 
+                            className="btn-vee btn-fee"
+                            variant="outlined" 
+                            style={{fontWeight: 'bold', color: 'black', marginRight: '10px',align: 'left'}}
+                          >
+                            Lệ phí: <span className="fee"> {formatter.format(this.state.total_fee)}</span>
+                            </Button>
+                        </FormControl>            
+                      </Grid>
+                      <Grid item md={6} sm={1212}>
+                        <FormControl component="fieldset" size="small" fullWidth>
+                          <Button 
+                            // color={(this.state.events[index].active) ? 'primary' : 'default'} 
+                            className="btn-vee btn-fee"
+                            variant="outlined" 
+                            style={ {fontWeight: 'bold', color: 'black', marginRight: '10px',align: 'left'}}
+                          >
+                            Ưu đãi: <span className="fee">{formatter.format(this.state.discount_fee)}</span>
+                          </Button>
+                        </FormControl>            
+                      </Grid>
+                    </Grid>
+                    <FormControl component="fieldset" size="small" fullWidth>
+                        <Button 
+                          // color={(this.state.events[index].active) ? 'primary' : 'default'} 
+                          className="btn-vee btn-fee"
+                          variant="outlined" 
+                          style={{fontWeight: 'bold', color: 'black', marginRight: '10px',align: 'left'}}
+                        >
+                         Tổng lệ phí:  <span className="fee">{formatter.format(this.state.total_fee - this.state.discount_fee)}</span>
+                        </Button>
+                  </FormControl>
+                </React.Fragment>
+                : ""}
               </Grid>
               
             </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12}
+                style={{
+                    textAlign:'center' // this does the magic
+                }}
+            >
+               <Button 
+                // color={(this.state.events[index].active) ? 'primary' : 'default'} 
+                color='primary'
+                className="btn-submit"
+                
+                style={ {fontWeight: 'bold', color: 'black'}}
+              >
+                ĐĂNG KÝ NGAY
+              </Button>
+            </Grid>
+            
           </div>
         )
     }

@@ -1008,4 +1008,29 @@ class SessionController extends Controller
         $sessions = Session::where('class_id', $request->event_id)->where('room_id', $request->location_id)->get();
         return response()->json($sessions->toArray());
     }
+    protected function getProductTable($event_code){
+        $week = ['Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7','Chủ nhật'];
+        $event = Classes::where('code', $event_code)->first();
+        if($event){
+            $sessions = Session::where('class_id', $event->id)->distinct('content')->orderBy('from')->get();
+            $result = [];
+            foreach($sessions as $s){
+                $from_0 = date('Y-m-d H:i:0',  strtotime($s->from));
+                $to_0 = date('Y-m-d H:i:0',  strtotime($s->to));
+
+                $from = date('h:i', strtotime($s->from));
+                $to = date('h:i', strtotime($s->to));
+                $date = $week[date('w', strtotime($s->from))] .", NGÀY " . date('d/m/Y', strtotime($s->from));
+                $duration = (strtotime($to_0) - strtotime($from_0))/60;
+                $name = $s->content. "(".$duration."')";
+
+                if(array_key_exists($date, $result)){
+                    $result[$date][] = ['time' => str_replace(':', 'h', $from.'-'.$to), 'name' => $name, 'note'=>$s->note];
+                }else{
+                    $result[$date][0] = ['time' => str_replace(':', 'h', $from.'-'.$to), 'name' => $name, 'note'=>$s->note];
+                }
+            }
+            return view('events/event-table', compact('result'));
+        }
+    }
 }
