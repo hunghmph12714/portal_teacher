@@ -91,7 +91,7 @@ const InfoForm = (props) => {
           <TextField  label="Họ tên học sinh(*)"  
               
               className = "input-text"
-              variant="outlined"
+              variant="filled"
               size="small"
               type="email"
               fullWidth
@@ -109,7 +109,7 @@ const InfoForm = (props) => {
                       fullWidth
                       className="input-date"
                       variant="inline"
-                      inputVariant="outlined"
+                      inputVariant="filled"
                       format="dd/MM/yyyy"
                       placeholder="Ngày sinh"
                       views={["year", "month", "date"]}
@@ -140,7 +140,7 @@ const InfoForm = (props) => {
           <TextField  label="Số điện thoại liên hệ(*)" 
               className = "input-text"
               pattern="\d*"
-              variant="outlined"
+              variant="filled"
               size="small"
               type="text"
               fullWidth
@@ -154,7 +154,7 @@ const InfoForm = (props) => {
         <Grid item md={4} sm={12}>
           <TextField  label="Email" 
                 className = "input-text"
-                variant="outlined"
+                variant="filled"
                 size="small"
                 type="text"
                 fullWidth
@@ -166,7 +166,7 @@ const InfoForm = (props) => {
         </Grid>
         <Grid item md={4} sm={12}>
           <FormControl component="fieldset" size="small" className="check-center">
-            <FormLabel>Học sinh đang học tại trung tâm VietElite ?</FormLabel>
+            <FormLabel style={{color: 'white'}}>Học sinh đang học tại trung tâm VietElite ?</FormLabel>
             <RadioGroup row aria-label="position" name="position" defaultValue="top" value={props.activated} 
               onChange={props.onActiveChange}>
               <FormControlLabel value={"1"} control={<Radio color="primary" />} label="Có" />
@@ -266,7 +266,17 @@ class PublicForm extends React.Component{
     handleChangeSchool = (value) => {this.setState({ school: value })}
     
     onActiveChange = (e) => {
-      this.setState({ activated: e.target.value })
+      if(this.state.phone == '' && this.state.student_name == ''){
+        this.props.enqueueSnackbar('Vui lòng điền số điện thoại và họ tên học sinh', {
+          variant: 'warning',
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+        })
+        return;
+      }
+      this.setState({ activated: e.target.value })      
       this.setState(prevState => {
         let products = [...prevState.products]
         products = products.map(p => {
@@ -457,7 +467,9 @@ class PublicForm extends React.Component{
         loading: true,
       })
       if(this.state.student_name != "" && this.state.phone == "" && this.state.selected_event){
-        this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)')
+        this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)', {
+
+        })
       }else{
         var numb = this.state.phone.match(/\d/g);
         numb = numb.join("");
@@ -507,7 +519,7 @@ class PublicForm extends React.Component{
             <Grid container spacing={2}>
               <Grid item md={7} sm={12}>
                 <FormControl component="fieldset" size="small">
-                  <FormLabel>Khối thi(*)</FormLabel>
+                  <FormLabel className="label-white">Khối thi(*)</FormLabel>
                   <span>
                   {this.state.events.map( (evt , index)=> {
                       return(
@@ -530,7 +542,7 @@ class PublicForm extends React.Component{
               </Grid>
               <Grid item md={5} sm={12}>
                 <FormControl component="fieldset" size="small" fullWidth>
-                  <FormLabel>Địa điểm thi(*)</FormLabel>
+                  <FormLabel className="label-white">Địa điểm thi(*)</FormLabel>
                   {this.state.locations.map( (loc , index)=> {
                       return(
                         <Button 
@@ -552,7 +564,7 @@ class PublicForm extends React.Component{
             <Grid container spacing={2}>
               <Grid item md={7} sm={12} className="mon-thi">
                 <FormControl component="fieldset" size="small" fullWidth>
-                  <FormLabel>Chọn môn thi</FormLabel>
+                  <FormLabel className="label-white">Chọn môn thi</FormLabel>
                   <span>
                   {this.state.products.map( (evt , index)=> {
                       return(

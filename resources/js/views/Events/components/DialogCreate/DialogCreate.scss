@@ -21,6 +21,10 @@
     .date-time{
         margin-top: 8px;
         margin-bottom: 9px;
+        .MuiInputBase-root{
+            height: 45px !important;
+            background: white !important; 
+        } 
     }
     .teacher-select{
         margin-top: 8px;
