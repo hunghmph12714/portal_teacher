@@ -465,7 +465,7 @@ class PublicForm extends React.Component{
       this.setState({
         loading: true,
       })
-      if(this.state.student_name == "" || this.state.phone == "" || this.state.selected_event){
+      if(this.state.student_name == "" || this.state.phone == "" || !this.state.selected_event){
         this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)', {
           variant: 'error',
           anchorOrigin: {
