@@ -89,12 +89,11 @@ const InfoForm = (props) => {
       <Grid container spacing={2}>
         <Grid item md={4} xs={12}>
           <TextField  label="Họ tên học sinh(*)"  
-              
+              fullWidth
               className = "input-text"
               variant="filled"
               size="small"
               type="email"
-              fullWidth
               margin = "dense"
               name = 'student_name'
               value = {props.student_name}
@@ -120,7 +119,7 @@ const InfoForm = (props) => {
               </MuiPickersUtilsProvider>     
           </div>
         </Grid>
-        <Grid item md={4} sm={12}>
+        <Grid item md={4} sm={12} >
           <AsyncSelectCreatable 
               cacheOptions
               autosize={true}
@@ -136,7 +135,7 @@ const InfoForm = (props) => {
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        <Grid item md={4} sm={12}>
+        <Grid item md={4} sm={12} className="full-grid">
           <TextField  label="Số điện thoại liên hệ(*)" 
               className = "input-text"
               pattern="\d*"
@@ -151,7 +150,7 @@ const InfoForm = (props) => {
               onChange = {props.onPhoneChange}
           />
         </Grid>
-        <Grid item md={4} sm={12}>
+        <Grid item md={4} sm={12} className="full-grid">
           <TextField  label="Email" 
                 className = "input-text"
                 variant="filled"
@@ -466,9 +465,16 @@ class PublicForm extends React.Component{
       this.setState({
         loading: true,
       })
-      if(this.state.student_name != "" && this.state.phone == "" && this.state.selected_event){
+      if(this.state.student_name == "" || this.state.phone == "" || this.state.selected_event){
         this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)', {
-
+          variant: 'error',
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+        })
+        this.setState({
+          loading: false,
         })
       }else{
         var numb = this.state.phone.match(/\d/g);

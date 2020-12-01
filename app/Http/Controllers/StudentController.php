@@ -145,7 +145,7 @@ class StudentController extends Controller
                                 ,'relationships.color', 'relationships.id as rid')
                             ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
                 $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
-                $result[$key]['sbd'] = $class->code.''.$student['detail']['id'];
+                $result[$key]['sbd'] = $class->code.''.$student['sc_id'];
                 $result[$key]['classes'] = $student->activeClasses;
                 $acc_131 = Account::where('level_1', '131')->first();
 
