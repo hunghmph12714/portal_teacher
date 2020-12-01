@@ -117,7 +117,7 @@ const RoomSelect = React.memo(props => {
     }, [props.center])
     
     return(         
-        <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '8px', marginBottom: '4px'}}>
+        <FormControl variant="outlined" size="small" fullWidth style={{marginTop: '16px', marginBottom: '4px'}}>
             <InputLabel id="demo-simple-select-outlined-label">Địa điểm</InputLabel>
             <Select
                 value={props.room}

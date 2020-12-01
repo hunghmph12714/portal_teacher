@@ -315,6 +315,7 @@ Route::get('/event-get-public', 'ClassController@getEventInfo');
 Route::get('/event-get-location', 'ClassController@getLocationInfo');
 Route::post('/event-get-product', 'SessionController@getProductInfo');
 Route::post('/check-phone', 'StudentController@checkPhone');
+Route::post('/event/dang-ky', 'StudentController@registerEvent');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test', function(){
     return view('home');

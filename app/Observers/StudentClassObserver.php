@@ -171,7 +171,7 @@ class StudentClassObserver
         $this->updateClassCount($class);
 
         $student = Student::find($studentClass->student_id);
-        if($studentClass->status == "active" && $student){
+        if($studentClass->status == "active" && $student && $class->type == "class"){
             //Create attendance for that student
             $sessions = Session::where('class_id', $studentClass->class_id)->where('type','!=', 'tutor')->where('type', '!=', 'tutor_online')->where('type', '!=', 'compensate')->whereDate('date','>=', $studentClass->entrance_date)->get();
             $sessions_id = array_column($sessions->toArray(), 'id');
@@ -179,7 +179,7 @@ class StudentClassObserver
             $students = Student::where('id', $student->id)->first();
             //Create fee (transaction)
             $this->generateTransactions($sessions, $students,  $studentClass->class_id);
-            
+
         }        
         
     }

@@ -1,101 +1,102 @@
-.root-class-detail{
-    input {
-        background : white;
-    }
-    .MuiStepper-root{
-        padding: 8px !important; 
-    }
-    padding: 10px;
-    margin: 0px !important;
-    width: 100%;
-    .date-time{
-        margin-top: 8px;
-        background:white;
-        .MuiInputBase-root{
-            height: 37px;
+body{
+    background: transparent;
+    .root-event-detail{
+        background: transparent;
+        
+        input {
+            background : white;
         }
-        input{
+        .MuiStepper-root{
+            padding: 8px !important; 
+        }
+        padding: 10px;
+        margin: 0px !important;
+        width: 100%;
+        .date-time{
+            margin-top: 8px;
+            background:white;
+            .MuiInputBase-root{
+                height: 37px;
+            }
+            input{
+                background: transparent;
+            }
+        }
+        .school-select{
+            margin-top: 7px;
+            z-index: 1000;
+        }
+        .check-center{
+            .MuiFormLabel-root{
+                margin-top: 8px;
+                margin-bottom: 0px; 
+            }
+        }
+        .btn-vee{
+            margin: 5px;
+        }
+        .btn-full{
+            width: 100%;
+        }
+        .btn-product{
+            display: inline-block;
+            background: white;
+            border: 1px solid gray;
+            padding: 4px 20px;
+            font-weight: bold;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.23);
+            p{
+                text-transform: uppercase;
+            }
+        }
+        .btn-product:hover{
+            background: #c9d1bf;
+            cursor: pointer;
+        }
+        .btn-active{
+            background: #8bc34a !important;
+            span{
+                color: white;
+            }
+        }
+        .btn-disabled{
+            span{color: gray}
             background: transparent;
         }
-    }
-    .school-select{
-        margin-top: 7px;
-        z-index: 1000;
-    }
-    .check-center{
-        .MuiFormLabel-root{
-            margin-top: 8px;
-            margin-bottom: 0px; 
+        .btn-disabled:hover{
+            cursor: not-allowed !important;
+            background: transparent;
+            span{color: gray}
         }
-    }
-    .btn-vee{
-        margin: 5px;
-    }
-    .btn-full{
-        width: 100%;
-    }
-    .btn-product{
-        display: inline-block;
-        background: white;
-        border: 1px solid gray;
-        padding: 4px 20px;
-        font-weight: bold;
-        align-items: center;
-        border-radius: 5px;
-        border: 1px solid rgba(0, 0, 0, 0.23);
-        p{
+        @media (min-width: 768px) {
+            .mon-thi{
+                position: relative;
+                bottom: 55px;
+            }
+        }
+        .fee{
+            color: #8bc34a
+        }
+        
+        .btn-submit{
+            background: white;
+            padding: 8px 25px;
+            font-size: 19px;
+            border-radius: 5px;
             text-transform: uppercase;
+            color: #8bc34a !important;
         }
-    }
-    .btn-product:hover{
-        background: #8bc34a;
-        cursor: pointer;
-
-        span{
-            color: white;
+        .btn-submit:hover{
+            background: #8bc34a;
+            color: white !important;
         }
-    }
-    .btn-active{
-        background: #8bc34a;
-        span{
-            color: white;
+        .btn-fee{
+            background: white;
         }
+        // input{
+        //     background: white;
+        // }
     }
-    .btn-disabled{
-        span{color: gray}
-        background: transparent;
-    }
-    .btn-disabled:hover{
-        cursor: not-allowed !important;
-        background: transparent;
-        span{color: gray}
-    }
-    @media (min-width: 768px) {
-        .mon-thi{
-            position: relative;
-            bottom: 55px;
-        }
-    }
-    .fee{
-        color: #8bc34a
-    }
-    
-    .btn-submit{
-        background: white;
-        padding: 8px 25px;
-        font-size: 19px;
-        border-radius: 5px;
-        text-transform: uppercase;
-        color: #8bc34a !important;
-    }
-    .btn-submit:hover{
-        background: #8bc34a;
-        color: white !important;
-    }
-    .btn-fee{
-        background: white;
-    }
-    // input{
-    //     background: white;
-    // }
 }

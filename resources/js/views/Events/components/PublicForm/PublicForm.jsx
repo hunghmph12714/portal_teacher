@@ -18,7 +18,8 @@ import {
   DialogContent ,
   DialogContentText,
   DialogTitle ,
-Typography ,
+  CircularProgress,
+  Typography ,
 } from "@material-ui/core";
 import { format, isAfter } from 'date-fns'
 import AsyncSelectCreatable from 'react-select/async-creatable';
@@ -87,7 +88,7 @@ const InfoForm = (props) => {
     <React.Fragment>
       <Grid container spacing={2}>
         <Grid item md={4} xs={12}>
-          <TextField  label="Họ tên học sinh"  
+          <TextField  label="Họ tên học sinh(*)"  
               
               className = "input-text"
               variant="outlined"
@@ -97,7 +98,7 @@ const InfoForm = (props) => {
               margin = "dense"
               name = 'student_name'
               value = {props.student_name}
-              onChange = {props.onChange}
+              onChange = {props.onStudentNameChange}
           />   
         </Grid>
         <Grid item md={4} xs={12}>
@@ -136,7 +137,7 @@ const InfoForm = (props) => {
       </Grid>
       <Grid container spacing={2}>
         <Grid item md={4} sm={12}>
-          <TextField  label="Số điện thoại liên hệ" 
+          <TextField  label="Số điện thoại liên hệ(*)" 
               className = "input-text"
               pattern="\d*"
               variant="outlined"
@@ -194,6 +195,8 @@ class PublicForm extends React.Component{
             locations: [],
             selected_location: null,
             classes: [],
+            student_id: null,
+            loading: false,
 
             total_fee: 0,
             discount_fee: 0,
@@ -214,6 +217,7 @@ class PublicForm extends React.Component{
 
         })
     }
+    
     getLocation = () => {
       axios.get('/event-get-location')
         .then(response => {
@@ -231,6 +235,16 @@ class PublicForm extends React.Component{
     handleChange = (event, newValue) => {
         this.setState({value: newValue})
     };
+    onStudentNameChange = (event) => {
+      let val = event.target.value
+      this.setState(prevState => {
+        let products = [...prevState.products]
+        products = products.map(p => {
+          return {...p, active: false, discount_fee: 0, className: '' }
+        })
+        return {...prevState, student_name: val, student_id: null, classes: [], products, total_fee:0, discount_fee: 0, activated: 0}
+      })
+    } 
     onChange = (event) => {
       this.setState({ [event.target.name]: event.target.value })
     }
@@ -253,12 +267,21 @@ class PublicForm extends React.Component{
     
     onActiveChange = (e) => {
       this.setState({ activated: e.target.value })
+      this.setState(prevState => {
+        let products = [...prevState.products]
+        products = products.map(p => {
+          return {...p, active: false, discount_fee: 0, className: '' }
+        })
+        return {...prevState, products, total_fee:0, discount_fee: 0}
+      })
       if(e.target.value=="1" && this.state.phone != '' && this.state.student_name){
         var numb = this.state.phone.match(/\d/g);
         numb = numb.join("");
+        
         axios.post('/check-phone', {phone: numb, student_name: this.state.student_name})
           .then(response => {
-            this.setState({ classes: response.data.map(r => {return {label: r.code, value: r.id}}) })
+            let student_id = response.data[0].pivot.student_id            
+            this.setState({ classes: response.data.map(r => {return {label: r.code, value: r.id, applied: false}}), student_id: student_id })
             let classes = response.data.map(r => r.code).toString()
             const key = this.props.enqueueSnackbar('Chào mừng, Các lớp đang theo học tại VietElite: '+ classes, {
               variant: 'success',
@@ -280,19 +303,22 @@ class PublicForm extends React.Component{
           })
       }
     }
-    
     onEventChange = (evt) => {
       this.setState({selected_event: evt.id})
       this.getProducts(evt.id, this.state.selected_location)
       this.setState(prevState => {
         var events = [...prevState.events]
+        var classes = [...prevState.classes]
+        classes = classes.map(c => {
+          return {...c, applied: false}
+        })
         events = events.map(event => {
           if(event.id == evt.id){
             return {...event, active: true }
           }else return { ...event, active: false}
         })
         
-        return {...prevState, events, selected_event: evt.id , total_fee: 0, discount_fee: 0}
+        return {...prevState, events, selected_event: evt.id , total_fee: 0, discount_fee: 0, classes}
       }) 
     }
     getProducts = (evt, loc) => {
@@ -306,7 +332,7 @@ class PublicForm extends React.Component{
           let from = format(new Date(d.from), 'HH:mm');
           let to = format(new Date(d.to), 'HH:mm');
           time_formated = time_formated + "(" + from + " - "+to+")"
-          return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes)}
+          return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
         })})
       })
       .catch(err => {
@@ -359,6 +385,7 @@ class PublicForm extends React.Component{
         var discount_fee  = prevState.discount_fee 
         var products = [...prevState.products]
         var tmp_products = [...prevState.products]
+        var tmp_classes = [...prevState.classes]
         for( let i = 0; i < tmp_products.length; i++){
           let p = products[i]
           if(p.id == product.id && p.className == 'btn-disabled'){
@@ -387,8 +414,11 @@ class PublicForm extends React.Component{
                 for( let u = 0 ; u < this.state.classes.length; u++){
                 loop2:
                   for( let v = 0 ; v < p.classes.length; v++){
-                  if(p.classes[v].value == this.state.classes[u].value){
-                    discount_fee -= p.fee/100*p.percentage
+                  if(p.classes[v].value == this.state.classes[u].value && this.state.classes[u].applied){                    
+                    if(this.state.classes[u].applied == p.id){
+                      discount_fee -= p.fee/100*p.percentage
+                      tmp_classes[u].applied = false;
+                    }                    
                     break loop1;
                   }
                 }
@@ -409,8 +439,9 @@ class PublicForm extends React.Component{
                 for( let u = 0 ; u < this.state.classes.length; u++){
                 loop2:
                   for( let v = 0 ; v < p.classes.length; v++){
-                  if(p.classes[v].value == this.state.classes[u].value){
+                  if(p.classes[v].value == this.state.classes[u].value  && !this.state.classes[u].applied){
                     discount_fee += p.fee/100*p.percentage
+                    tmp_classes[u].applied = p.id;
                     break loop1;
                   }
                 }
@@ -418,14 +449,47 @@ class PublicForm extends React.Component{
             }
           }
         }
-        return {...prevState, products, total_fee, discount_fee}
+        return {...prevState, products, total_fee, discount_fee, classes: tmp_classes}
       })
     } 
+    submitForm = (e) => {
+      this.setState({
+        loading: true,
+      })
+      if(this.state.student_name != "" && this.state.phone == "" && this.state.selected_event){
+        this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)')
+      }else{
+        var numb = this.state.phone.match(/\d/g);
+        numb = numb.join("");
+        axios.post('/event/dang-ky', {...this.state, phone: numb})
+          .then(response => {
+            this.setState({ loading: false })
+            this.props.enqueueSnackbar('Đăng ký thành công. Vui lòng kiểm tra hòm thư', {
+              variant: 'success',
+              anchorOrigin: {
+                vertical: 'top',
+                horizontal: 'center',
+              },
+            })
+          })
+          .catch(err => {
+            this.setState({ loading: false })
+            this.props.enqueueSnackbar(err.response.data, {
+              variant: 'err',
+              anchorOrigin: {
+                vertical: 'top',
+                horizontal: 'center',
+              },
+            })
+          })
+      }
+
+    }
     render(){
         document.title =  'FORM ĐĂNG KÝ'
         return (
           
-          <div className="root-class-detail">
+          <div className="root-event-detail">
             <InfoForm
               student_name = {this.state.student_name}
               dob = {this.state.dob}
@@ -438,6 +502,7 @@ class PublicForm extends React.Component{
               onChange = {this.onChange}
               onPhoneChange = {this.onPhoneChange}
               onActiveChange = {this.onActiveChange}
+              onStudentNameChange = {this.onStudentNameChange}
             />
             <Grid container spacing={2}>
               <Grid item md={7} sm={12}>
@@ -474,7 +539,6 @@ class PublicForm extends React.Component{
                           variant="outlined" 
                           onClick={() => this.onLocationChange(loc)}
                           style={(!this.state.locations[index].active) ? {fontWeight: 'bold', color: 'black', marginRight: '10px',align: 'left'}:
-                          
                           {fontWeight: 'bold', color: 'white', background: '#8bc34a', marginRight: '10px', align: 'left'}}
                         >
                           {loc.label}
@@ -558,14 +622,19 @@ class PublicForm extends React.Component{
                     textAlign:'center' // this does the magic
                 }}
             >
-               <Button 
+              <Button 
                 // color={(this.state.events[index].active) ? 'primary' : 'default'} 
                 color='primary'
                 className="btn-submit"
-                
+                onClick = {e => this.submitForm(e)}
                 style={ {fontWeight: 'bold', color: 'black'}}
+                disabled = {this.state.loading}
               >
                 ĐĂNG KÝ NGAY
+                {this.state.loading ? (
+                  <CircularProgress />
+                ): ""}
+               
               </Button>
             </Grid>
             

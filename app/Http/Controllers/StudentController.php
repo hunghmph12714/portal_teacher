@@ -15,6 +15,7 @@ use App\Teacher;
 use App\StudentSession;
 use App\Tag;
 use App\Paper;
+use App\StudentClass;
 use App\TransactionSession;
 use Mail;
 class StudentController extends Controller
@@ -120,8 +121,9 @@ class StudentController extends Controller
         $this->validate($request, $rules);
         $class_id = $request->class_id;
         $class = Classes::find($class_id);
+        
         $result = [];
-        if($class){
+        if($class && $class->type == 'class'){
             $students = $class->students()->orderBy('status')->get();
             $result = $students->toArray();
             foreach($students as $key=>$student){
@@ -131,6 +133,30 @@ class StudentController extends Controller
                                 ,'relationships.color', 'relationships.id as rid')
                             ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
                 $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
+            }
+        }
+        if($class && $class->type == 'event'){
+            $students = $class->students()->orderBy('status')->get();
+            $result = $students->toArray();
+            foreach($students as $key => $student){
+                $parent = Parents::where('parents.id',$student->parent_id)
+                            ->select('parents.fullname as pname','relationships.name as rname','parents.phone as pphone'
+                                ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
+                                ,'relationships.color', 'relationships.id as rid')
+                            ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
+                $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
+                $result[$key]['sbd'] = $class->code.''.$student['detail']['id'];
+                $result[$key]['classes'] = $student->activeClasses;
+                $acc_131 = Account::where('level_1', '131')->first();
+
+                $debit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('debit', $acc_131->id)->sum('amount');                
+                $credit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('credit', $acc_131->id)->sum('amount');
+                $result[$key]['debit'] = $debit;
+                $result[$key]['credit'] = $credit;
+                $sessions = $student->sessionsOfClass($class->id)->get()->toArray();
+                $sessions_content = array_column($sessions, 'content');
+                $result[$key]['sessions'] = $sessions_content;
+                $result[$key]['sessions_str'] = implode($sessions_content, ',');
             }
         }
         return response()->json($result);
@@ -878,6 +904,93 @@ class StudentController extends Controller
             return response()->json('Không tìm thấy số điện thoại, vui lòng nhập số điện thoại đã đăng ký học cho học sinh tại VietElite', 401);
         }
     }
+    public function registerEvent(Request $request){
+        $rules = [];
+        // print_r($request->toArray());
+        //Check học sinh có trong hệ thống
+        $parent = Parents::where('phone', $request->phone)->orWhere('alt_phone', $request->phone)->first();
+        if(!$parent){
+            $p['phone'] = $request->phone;
+            $p['fullname'] = 'PH ' . $request->student_name;
+            $p['email'] = $request->email;
+            $p['relationship_id'] = 1;
+            $parent = Parents::create($p);
+
+            $st['parent_id'] = $parent->id;
+            $st['fullname'] = $request->student_name;
+            $st['dob'] = date('Y-m-d', strtotime($request->dob));
+            $st['school'] = $request->school['label'];
+            $student = Student::create($st);
+        }else{
+            $student = Student::where('parent_id', $parent->id)->where('fullname','LIKE', '%'.$request->student_name.'%')->first();
+            if(!$student){
+                $st['parent_id'] = $parent->id;
+                $st['fullname'] = $request->student_name;
+                $st['dob'] = date('Y-m-d', strtotime($request->dob));
+                $st['school'] = $request->school['label'];
+                $student = Student::create($st);
+            }
+        }
+        
+        //Kiểm tra học sinh đã đăng ký sự kiện chưa
+        $check_event = StudentClass::where('student_id', $student->id)->where('class_id', $request->selected_event)->first();
+        if(!$check_event){
+            //Them hoc sinh vao event
+            // $student->classes()->attach([$request->selected_event]);
+            $input['student_id'] = $student->id;
+            $input['class_id'] = $request->selected_event;
+            $input['entrance_date'] = date('Y-m-d');
+            $input['status'] = 'waiting';
+            StudentClass::create($input);
+        }
+        $product_ids= [];
+        $total_amount = 0;
+        foreach($request->products as $product){
+            if($product['active'] == 1){
+                $check = StudentSession::where('student_id', $student->id)->where('session_id', $product['id'])->first();
+                if($check){
+                    
+                }
+                else{
+                    // add student to event 
+                    // $student->
+                    $input_ss['student_id'] = $student->id;
+                    $input_ss['session_id'] = $product['id'];
+                    $ss = StudentSession::create($input_ss);
+                    // $student->sessions()->attach([$product['id']]);
+                    $amount = $product['fee'];
+                    foreach($request->classes as $c){
+                        if($c['applied'] == $product['id']){
+                            $amount -= $product['fee']/100*$product['percentage'];
+                        }
+                    }
+                    $total_amount += $amount;
+                    $product_ids[$product['id']] = ['amount' => $amount ];
+                    //   
+                }
+            }
+        }
+        //Hach toan le phi
+        if($total_amount != 0){
+            $t['debit'] = Account::Where('level_2', '131')->first()->id;
+            $t['credit'] = Account::Where('level_2', '511')->first()->id;
+            $t['amount'] = $total_amount;
+            $t['time'] = Date('Y-m-d');
+            $t['student_id'] = $student->id;
+            $t['class_id'] = $request->selected_event;
+            $t['user'] = auth()->user()->id;
+            $t['content'] = 'Lệ phí thi thử' ;
+            $created_transaction = Transaction::create($t);
+            $created_transaction->tags()->syncWithoutDetaching([7]);
+            $created_transaction->sessions()->syncWithoutDetaching($product_ids);
+            return response()->json('Đăng ký thành công, vui lòng kiểm tra hòm thư đến', 200);
+        }
+        else{
+            return response()->json('Đã đăng ký, vui lòng kiểm tra hòm thư đến.', 402);
+        }
+        //Thêm học sinh vào event
+        
+    }
     function vn_to_str ($str){
  
         $unicode = array(
@@ -922,4 +1035,5 @@ class StudentController extends Controller
         return $str;
          
     }
+
 }
