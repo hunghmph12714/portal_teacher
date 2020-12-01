@@ -36,6 +36,7 @@ const ListStudent = (props) => {
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
+            console.log(response.data)
             setData(response.data.map(r => {
                     let date = new Date(r.dob)
                     r.dob_format = format(date , 'dd/MM/yyyy')      

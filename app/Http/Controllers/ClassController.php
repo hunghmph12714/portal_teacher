@@ -210,7 +210,7 @@ class ClassController extends Controller
         return response()->json('ok');
     }
     protected function editStudentInClass(Request $request){
-        $rules = ['class_id' => 'required', 'student_id'=>'                    '];
+        $rules = ['class_id' => 'required', 'student_id'=>'required'];
         $this->validate($request, $rules);
         //Edit student and parent info
         $student = Student::find($request->student_id);
@@ -225,7 +225,7 @@ class ClassController extends Controller
                 $student->gender = $request->student_gender;
                 $student->parent_id = $request->parent_id;                
                 $student->save();
-                print_r($student->toArray());
+                // print_r($student->toArray());
             }
             //Check parent exist
             if($request->parent_phone['__isNew__']){
@@ -260,10 +260,10 @@ class ClassController extends Controller
 
         //Edit status a
         $sc = StudentClass::where('student_id', $request->student_id)->where('class_id', $request->class_id)->first();
+    
         if($sc){
             $sc->status = $request->status;
             $sc->entrance_date = date('Y-m-d', strtotime($request->active_date));
-            
             if($sc->status == 'transfer'){
                 if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
                     return response()->json('Vui lòng điền đầy đủ *', 442);
