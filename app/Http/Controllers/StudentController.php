@@ -460,6 +460,57 @@ class StudentController extends Controller
         return response()->json(200);
         
     }
+    
+    protected function gatherEvent(Request $request){
+        $rules = [
+            'students' => 'required',
+            'center'=>'required',
+            'name' => 'required',
+            'account' => 'required',
+            'total_amount' => 'required',
+            'description' => 'required',
+        ];
+        $this->validate($request, $rules);
+              
+        $account = Account::find($request->account);
+        if($account->level_1 == '111'){
+            $p['method'] = 'TM';
+            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
+            $p['receipt_number'] = $max_receipt_number + 1;
+        }
+        if($account->level_1 == '112'){
+            $p['method'] = 'NH';
+            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
+            $p['receipt_number'] = $max_receipt_number + 1;
+        }
+        $p['center_id'] = $request->center;
+        $p['type'] = 'receipt';
+        $p['name'] = $request->name;
+        $p['description'] = $request->description;
+        $p['amount'] = $request->total_amount;
+        $p['user_created_id'] = auth()->user()->id;
+        $p['note'] = '';
+        $p['created_at'] = date('Y-m-d');
+        $p['status'] = NULL;
+        $p['address'] = '';
+        $p = Paper::create($p);
+        $total_amount = $request->total_amount;
+        foreach($request->students as $student){
+            $t['debit'] = $request->account;
+            $t['credit'] = Account::where('level_2', '131')->first()->id;
+            $t['time'] = date('Y-m-t', strtotime($student['entrance_date']));
+            $t['content'] = $request->description;
+            $t['student_id'] = $student['id'];
+            $t['class_id'] = (array_key_exists('class_id', $student))?$student['class_id']:NULL;
+            $t['session_id'] = NULL;
+            $t['user'] = auth()->user()->id;
+            $t['paper_id'] = $p->id;
+            $t['amount'] = $student['debit'] - $student['credit'];         
+            Transaction::create($t);
+        }
+        
+        return response()->json(200);
+    }
     public function printFee(Request $request){
         $rules = ['student_id' => 'required', 'from' => 'required', 'to' => 'required'];
         $this->validate($request, $rules);
@@ -693,33 +744,34 @@ class StudentController extends Controller
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
                 $password = 'VeEdu2020';
             }
-            $backup = Mail::getSwiftMailer();
+            try{
+                $backup = Mail::getSwiftMailer();
 
-            // Setup your outlook mailer
-            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-            $transport->setUsername($mail);
-            $transport->setPassword($password);
-            // Any other mailer configuration stuff needed...
+                // Setup your outlook mailer
+                $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+                $transport->setUsername($mail);
+                $transport->setPassword($password);
+                // Any other mailer configuration stuff needed...
+                
+                $outlook = new \Swift_Mailer($transport);
+
+                // Set the mailer as gmail
+                Mail::setSwiftMailer($outlook);
             
-            $outlook = new \Swift_Mailer($transport);
+                // Send your message
+                Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
+                    $message->to($to_email, $to_name)
+                            ->to('webmaster@vietelite.edu.vn')
+                            ->subject($result['title'])
+                            ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
+                    $message->from($mail,'VIETELITE EDUCATION CENTER');
+                });
 
-            // Set the mailer as gmail
-            Mail::setSwiftMailer($outlook);
-        
-            // Send your message
-            Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
-                $message->to($to_email, $to_name)
-                        ->to('webmaster@vietelite.edu.vn')
-                        ->subject($result['title'])
-                        ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
-                $message->from($mail,'VIETELITE EDUCATION CENTER');
-            });
-
-            // Restore your original mailer
-            Mail::setSwiftMailer($backup);
-            return response()->json(200);
+                // Restore your original mailer
+                Mail::setSwiftMailer($backup);
+                return response()->json(200);
             
-            try{}
+            }
             catch(\Exception $e){
                 // Get error here
                 return response()->json(418);
@@ -908,12 +960,14 @@ class StudentController extends Controller
         $rules = [];
         // print_r($request->toArray());
         //Check học sinh có trong hệ thống
+        $result = [];
         $parent = Parents::where('phone', $request->phone)->orWhere('alt_phone', $request->phone)->first();
+
         if(!$parent){
             $p['phone'] = $request->phone;
             $p['fullname'] = 'PH ' . $request->student_name;
             $p['email'] = $request->email;
-            $p['relationship_id'] = 1;
+            $p['relationship_id'] = 1; 
             $parent = Parents::create($p);
 
             $st['parent_id'] = $parent->id;
@@ -934,6 +988,10 @@ class StudentController extends Controller
         
         //Kiểm tra học sinh đã đăng ký sự kiện chưa
         $check_event = StudentClass::where('student_id', $student->id)->where('class_id', $request->selected_event)->first();
+        $event = Classes::find($request->selected_event);
+        if(!$event){
+            return response()->json('Không tìm thấy sự kiện', 403);
+        }
         if(!$check_event){
             //Them hoc sinh vao event
             // $student->classes()->attach([$request->selected_event]);
@@ -941,17 +999,14 @@ class StudentController extends Controller
             $input['class_id'] = $request->selected_event;
             $input['entrance_date'] = date('Y-m-d');
             $input['status'] = 'waiting';
-            StudentClass::create($input);
+            $check_event = StudentClass::create($input);
         }
         $product_ids= [];
         $total_amount = 0;
         foreach($request->products as $product){
             if($product['active'] == 1){
                 $check = StudentSession::where('student_id', $student->id)->where('session_id', $product['id'])->first();
-                if($check){
-                    
-                }
-                else{
+                if(!$check){
                     // add student to event 
                     // $student->
                     $input_ss['student_id'] = $student->id;
@@ -967,10 +1022,26 @@ class StudentController extends Controller
                     $total_amount += $amount;
                     $product_ids[$product['id']] = ['amount' => $amount ];
                     //   
+                    $result['product'][] = $product;
                 }
             }
         }
-        //Hach toan le phi
+
+        $result['student']['name'] = $student->fullname;
+        $result['student']['dob'] = date('d/m/Y', strtotime($student->dob));
+        $result['student']['school'] = $student->school;
+        $result['parent']['name'] = $parent->fullname;
+        $result['parent']['email'] = $parent->email;
+        $result['parent']['phone'] = $parent->phone;
+        
+        $result['event']['name'] = $event->name;
+        $result['event']['open_date'] = $event->open_date;
+        $result['total_fee'] = $total_amount;
+        foreach($request->locations as $location){
+            if($location['active']){
+                $result['location'] = $location['label'];
+            }
+        }
         if($total_amount != 0){
             $t['debit'] = Account::Where('level_2', '131')->first()->id;
             $t['credit'] = Account::Where('level_2', '511')->first()->id;
@@ -978,15 +1049,52 @@ class StudentController extends Controller
             $t['time'] = Date('Y-m-d');
             $t['student_id'] = $student->id;
             $t['class_id'] = $request->selected_event;
-            $t['user'] = auth()->user()->id;
+            $t['user'] = '-1';
             $t['content'] = 'Lệ phí thi thử' ;
             $created_transaction = Transaction::create($t);
             $created_transaction->tags()->syncWithoutDetaching([7]);
             $created_transaction->sessions()->syncWithoutDetaching($product_ids);
-            return response()->json('Đăng ký thành công, vui lòng kiểm tra hòm thư đến', 200);
+            // return response()->json('Đăng ký thành công, vui lòng kiểm tra hòm thư đến', 200);
         }
         else{
             return response()->json('Đã đăng ký, vui lòng kiểm tra hòm thư đến.', 402);
+        }
+
+        $to_email = $parent->email;        
+        $to_name = '';
+        $mail = 'thithu@vietelite.edu.vn';
+        $password = 'Pv$hn$ms26';
+        $d = ['result' => $result];
+        //Send Email
+        
+            $backup = Mail::getSwiftMailer();
+            // Setup your outlook mailer
+            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+            $transport->setUsername($mail);
+            $transport->setPassword($password);
+            // Any other mailer configuration stuff needed...
+            
+            $outlook = new \Swift_Mailer($transport);
+
+            // Set the mailer as gmail
+            Mail::setSwiftMailer($outlook);
+        
+            // Send your message
+            Mail::send('emails.events.confirm-form',$d, function($message) use ($to_name, $to_email, $result, $mail) {
+                $message->to($to_email, $to_name)
+                        ->to('webmaster@vietelite.edu.vn')
+                        ->subject($result['student']['name']. " - Xác nhận đăng ký " .$result['event']['name'] )
+                        ->replyTo($mail, 'Phụ huynh hs '.$result['student']['name']);
+                $message->from($mail,'VIETELITE EDUCATION CENTER');
+            });
+
+            // Restore your original mailer
+            Mail::setSwiftMailer($backup);
+            return response()->json(200);        
+        try{}
+        catch(\Exception $e){
+            // Get error here
+            return response()->json(418);
         }
         //Thêm học sinh vào event
         

@@ -1009,7 +1009,7 @@ class SessionController extends Controller
         return response()->json($sessions->toArray());
     }
     protected function getProductTable($event_code){
-        $week = ['Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7','Chủ nhật'];
+        $week = ['Chủ nhật','Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'];
         $event = Classes::where('code', $event_code)->first();
         if($event){
             $sessions = Session::where('class_id', $event->id)->distinct('content')->orderBy('from')->get();

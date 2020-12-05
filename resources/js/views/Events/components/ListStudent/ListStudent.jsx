@@ -6,12 +6,18 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 import DialogCreate from './DialogCreate'
+import DialogFee from './DialogFee'
 import {
     Menu,
     MenuItem,
     IconButton,
     Tooltip,
     Button,
+    Dialog ,
+DialogActions ,
+DialogContent ,
+DialogContentText ,
+DialogTitle 
   } from "@material-ui/core";
 import MaterialTable from "material-table";
 import Chip from '@material-ui/core/Chip';
@@ -232,6 +238,9 @@ const ListStudent = (props) => {
               
         } 
     ])
+    const [feeDialog, setOpenFeeDialog] = useState(false);
+    const [totalFee, setTotalFee] = useState(0);
+    const [name, setName] = useState('');
     useEffect(() => {
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -263,6 +272,26 @@ const ListStudent = (props) => {
         setType('edit')
         setSelectedData(rowData)
     }
+    function openFeeDialog(rowData){
+        setOpenFeeDialog(true)
+        setSelectedData(rowData)
+        var i = 0
+        var name = ''
+        for ( let j = 0; j< rowData.length; j++){
+            i = i + parseInt(rowData[j].debit) - parseInt(rowData[j].credit)
+            name = rowData[j].fullname + ', '+name
+        }
+        setTotalFee(i)
+        setName(name)
+        console.log(rowData)
+    }
+    function handleCloseFeeDialog (){
+        setOpenFeeDialog(false)
+        setSelectedData([])
+    }
+    function handleDialogFee () {
+
+    }
     return (
         <React.Fragment>
             <MaterialTable
@@ -272,6 +301,7 @@ const ListStudent = (props) => {
                 options={{
                     grouping: false,
                     filtering: true,
+                    selection: true,
                     exportButton: true,
                     paging: false,
                     rowStyle: rowData => {
@@ -320,11 +350,11 @@ const ListStudent = (props) => {
                             onClick: (event, rowData) => {handleOpenEditDialog(rowData)}
                         },
                         {
-                            icon: () => <DeleteForeverIcon />,
-                            tooltip: 'Xoá',
+                            icon: () => <AddBoxIcon />,
+                            tooltip: 'Thu tiền',
                             isFreeAction: false,
                             text: 'Xoá học sinh',
-                            onClick: (event, rowData) => {handleOpenEditDialog(rowData)}
+                            onClick: (event, rowData) => {openFeeDialog(rowData)}
                         },
                     ]}
                 localization={{
@@ -356,7 +386,16 @@ const ListStudent = (props) => {
                 handleClose = {closeCreateDialog}
                 class_id = {class_id}
                 type = {type}
+                student = {(selected_data[0])?selected_data[0]:{}}
+            />
+            <DialogFee
+                open = {feeDialog}
+                handleClose = {handleCloseFeeDialog}
+                handleDialogFee = {handleDialogFee}
                 student = {selected_data}
+                total_fee = {totalFee}
+                name = {name}
+                class_name = {'Lệ phí '+class_name}
             />
         </React.Fragment>
     )

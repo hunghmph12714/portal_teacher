@@ -112,14 +112,14 @@ const ListSession = (props) => {
                         }
                 }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                actions={[                       
-                        {
-                            icon: () => <AddBoxIcon />,
-                            tooltip: 'Thêm mới môn học',
-                            isFreeAction: true,
-                            text: 'Thêm môn học',
-                            onClick: handleCreateSession,
-                        },
+                actions={[
+                  {
+                      icon: () => <AddBoxIcon />,
+                      tooltip: 'Thêm mới môn học',
+                      isFreeAction: true,
+                      text: 'Thêm môn học',
+                      onClick: handleCreateSession,
+                  },
                 ]}
                 localization={{
                         body: {

@@ -379,6 +379,7 @@ class PaperController extends Controller
         }
         return response()->json($result);
     }
+
     public function regenerateId(){
         $receipts = Paper::where('type', 'receipt')->where('method', 'TM')->orderBy('receipt_number', 'ASC')->get();
         $ty = 1;       $tdh = 1;       $dq = 1;       $ptt = 1;

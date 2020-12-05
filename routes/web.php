@@ -206,7 +206,7 @@ Route::group(['middleware' => ['auth']], function() {
                 return view('welcome');
             });
             Route::get('/event/get', 'ClassController@getEvents');
-            
+            Route::post('/event-gather', 'StudentController@gatherEvent');
             Route::post('/event/create', 'ClassController@createEvent');
             Route::post('/event/edit', 'ClassController@editEvent');
             Route::get('/event/get-class', 'ClassController@getClassName');
@@ -316,6 +316,7 @@ Route::get('/event-get-location', 'ClassController@getLocationInfo');
 Route::post('/event-get-product', 'SessionController@getProductInfo');
 Route::post('/check-phone', 'StudentController@checkPhone');
 Route::post('/event/dang-ky', 'StudentController@registerEvent');
+// Route::post('/event-mail', )
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test', function(){
     return view('home');
