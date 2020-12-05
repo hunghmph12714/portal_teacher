@@ -196,75 +196,77 @@ class StudentClassObserver
         $class = Classes::find($studentClass->class_id);
        
         $this->updateClassCount($class);
-        $student = Student::find($studentClass->student_id);
-        if($studentClass->getOriginal('status') == 'waiting'){
-            if($studentClass->status == 'active'){
-                if($student){
-                    //Create attendance for that student
-                    $sessions = Session::where('class_id', $studentClass->class_id)
-                        ->where('type','!=', 'tutor')->where('type', '!=', 'tutor_online')->where('type', '!=', 'compensate')
-                        ->whereDate('date','>=', $studentClass->entrance_date)->get();
-                    $sessions_id = array_column($sessions->toArray(), 'id');
-                    $student->sessions()->syncWithoutDetaching($sessions_id);
-                    $students = Student::where('id', $student->id)->first();
-                    //Create fee (transaction)
-                    $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+        if($class->type == 'class'){
+            $student = Student::find($studentClass->student_id);
+            if($studentClass->getOriginal('status') == 'waiting'){
+                if($studentClass->status == 'active'){
+                    if($student){
+                        //Create attendance for that student
+                        $sessions = Session::where('class_id', $studentClass->class_id)
+                            ->where('type','!=', 'tutor')->where('type', '!=', 'tutor_online')->where('type', '!=', 'compensate')
+                            ->whereDate('date','>=', $studentClass->entrance_date)->get();
+                        $sessions_id = array_column($sessions->toArray(), 'id');
+                        $student->sessions()->syncWithoutDetaching($sessions_id);
+                        $students = Student::where('id', $student->id)->first();
+                        //Create fee (transaction)
+                        $this->generateTransactions($sessions, $students,  $studentClass->class_id);
+                    }
                 }
             }
-        }
-        if($studentClass->getOriginal('status') == 'active'){
-            if($studentClass->status == 'droped' || $studentClass->status == 'transfer'){
-                $sessions = Session::where('class_id', $studentClass->class_id)
-                                    ->whereDate('date','>=', $studentClass->drop_time)->get();
-                $sessions_id = array_column($sessions->toArray(), 'id');
-                // Xóa điểm danh
-                $student->sessions()->detach($sessions_id);
+            if($studentClass->getOriginal('status') == 'active'){
+                if($studentClass->status == 'droped' || $studentClass->status == 'transfer'){
+                    $sessions = Session::where('class_id', $studentClass->class_id)
+                                        ->whereDate('date','>=', $studentClass->drop_time)->get();
+                    $sessions_id = array_column($sessions->toArray(), 'id');
+                    // Xóa điểm danh
+                    $student->sessions()->detach($sessions_id);
+                    
+                    // Hoàn tiền theo session
+                    $total_fee = 0;
+                    foreach($sessions as $s){
+                        $fee = $s->fee;
+                        //Get transactions of that session
+                        $transactions = $s->transactions()->where('student_id', $studentClass->student_id)->get();
+                        foreach($transactions as $t){
+                            $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
+                            $ts->forceDelete();
+                        }
+                    }
+                    
+                }
+                if($studentClass->status == 'waiting'){
+                    $sessions = Session::where('class_id', $studentClass->class_id)->get();
+                    $sessions_id = array_column($sessions->toArray(), 'id');
+                    // Xóa điểm danh
+                    // $student->sessions()->detach($sessions_id);
+                    $transactions = Transaction::whereNull('paper_id')->where('student_id', $student->id)->where('class_id', $studentClass->class_id)->forceDelete();
+                }
+            }
+            if($studentClass->getOriginal('status') == 'droped'){
+                if($studentClass->status == 'active'){
+                    $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
+                    $sessions_id = array_column($sessions->toArray(), 'id');
+                    $student->sessions()->syncWithoutDetaching($sessions_id);
+                    // //Create fee (transaction)
+                    $this->generateTransactions($sessions, $student,  $studentClass->class_id);
+                }
+            }
+            if($studentClass->getOriginal('entrance_date') < $studentClass->entrance_date){
+                // Xóa các attendance
+                $from = $studentClass->getOriginal('entrance_date');
+                $to = $studentClass->entrance_date;
+                $sessions = $student->sessions()->whereBetween('date', [$from, $to])->where('class_id', $class->id)->get();
                 
-                // Hoàn tiền theo session
-                $total_fee = 0;
+                $session_ids = array_column($sessions->toArray(), 'id');
+
+                $student->sessions()->detach($session_ids);
+                //Xóa học phí
                 foreach($sessions as $s){
-                    $fee = $s->fee;
-                    //Get transactions of that session
-                    $transactions = $s->transactions()->where('student_id', $studentClass->student_id)->get();
-                    foreach($transactions as $t){
+                    $transactions = $s->transactions()->where('student_id', $student->id)->get();
+                    foreach($transactions as $t ){
                         $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
                         $ts->forceDelete();
                     }
-                }
-                
-            }
-            if($studentClass->status == 'waiting'){
-                $sessions = Session::where('class_id', $studentClass->class_id)->get();
-                $sessions_id = array_column($sessions->toArray(), 'id');
-                // Xóa điểm danh
-                // $student->sessions()->detach($sessions_id);
-                $transactions = Transaction::whereNull('paper_id')->where('student_id', $student->id)->where('class_id', $studentClass->class_id)->forceDelete();
-            }
-        }
-        if($studentClass->getOriginal('status') == 'droped'){
-            if($studentClass->status == 'active'){
-                $sessions = Session::where('class_id', $studentClass->class_id)->whereDate('date','>=', $studentClass->entrance_date)->get();
-                $sessions_id = array_column($sessions->toArray(), 'id');
-                $student->sessions()->syncWithoutDetaching($sessions_id);
-                // //Create fee (transaction)
-                $this->generateTransactions($sessions, $student,  $studentClass->class_id);
-            }
-        }
-        if($studentClass->getOriginal('entrance_date') < $studentClass->entrance_date){
-            // Xóa các attendance
-            $from = $studentClass->getOriginal('entrance_date');
-            $to = $studentClass->entrance_date;
-            $sessions = $student->sessions()->whereBetween('date', [$from, $to])->where('class_id', $class->id)->get();
-            
-            $session_ids = array_column($sessions->toArray(), 'id');
-
-            $student->sessions()->detach($session_ids);
-            //Xóa học phí
-            foreach($sessions as $s){
-                $transactions = $s->transactions()->where('student_id', $student->id)->get();
-                foreach($transactions as $t ){
-                    $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
-                    $ts->forceDelete();
                 }
             }
         }

@@ -150,6 +150,7 @@ class DialogFee extends React.Component {
 
     }
     handleDialogFee = () => {
+        
         if(this.state.center != "" || this.state.account != ""){
             axios.post(baseUrl + '/event-gather', {
                 center: this.state.center,
@@ -161,7 +162,10 @@ class DialogFee extends React.Component {
             })
                 .then(repsonse => {
                     this.setState({open: false})
+                    this.props.handleClose()
                     this.props.enqueueSnackbar('Đã thu lệ phí', {variant: 'success'})
+
+
                     // setTimeout(this.props.history.push('/receipt'), 1000)
                 })
                 .catch(err => {

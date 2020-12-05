@@ -38,6 +38,7 @@ const ListStudent = (props) => {
     const [data, setData] = useState([]);
     const [ openDialog, setOpen ] = useState(false);
     const [reload, setReload] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [type, setType] = useState('create');
     const [selected_data, setSelectedData] = useState([]);
     const [columns, setColumns] = useState([
@@ -242,6 +243,7 @@ const ListStudent = (props) => {
     const [totalFee, setTotalFee] = useState(0);
     const [name, setName] = useState('');
     useEffect(() => {
+        setLoading(true)
         const fetchData = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
             setData(response.data.map(r => {
@@ -257,6 +259,7 @@ const ListStudent = (props) => {
             )
         }
         fetchData()
+        setLoading(false)
     }, [reload])
     function openCreateDialog(){
         setType('create')
@@ -283,19 +286,20 @@ const ListStudent = (props) => {
         }
         setTotalFee(i)
         setName(name)
-        console.log(rowData)
+        
     }
     function handleCloseFeeDialog (){
         setOpenFeeDialog(false)
         setSelectedData([])
+        setReload(!reload)
     }
     function handleDialogFee () {
 
     }
     return (
         <React.Fragment>
-            <MaterialTable
-                className="table-student"
+            <div className="table-student-event">
+            <MaterialTable                
                 title="Danh sách học sinh"
                 data={data}
                 options={{
@@ -332,6 +336,7 @@ const ListStudent = (props) => {
                     }
                 }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                isLoading={loading}
                 actions={[                       
                         {
                             icon: () => <AddBoxIcon />,
@@ -397,6 +402,7 @@ const ListStudent = (props) => {
                 name = {name}
                 class_name = {'Lệ phí '+class_name}
             />
+            </div>
         </React.Fragment>
     )
 }

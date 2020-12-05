@@ -18,6 +18,8 @@ use App\Paper;
 use App\StudentClass;
 use App\TransactionSession;
 use Mail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 class StudentController extends Controller
 {
     //
@@ -507,8 +509,30 @@ class StudentController extends Controller
             $t['paper_id'] = $p->id;
             $t['amount'] = $student['debit'] - $student['credit'];         
             Transaction::create($t);
+        //Change trạng thái xác nhận
+            $student_event = StudentClass::where('student_id', $student['id'])->where('class_id', $student['class_id'])->first();
+            if($student_event){
+                $student_event->status = 'active';
+                $student_event->save();
+            }
+            $parent = Parents::find($student->id);
+            if($parent){
+                //Phu huynh chua co password
+                if(!$parent->password){
+                    $pass = Str::random(4);
+                    $parent->password = Hash::make($pass);
+                    $parent->save;
+                }
+                //Phu huynh da co password
+                //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
+                else{
+                    $pass 
+                }
+            }
+        //
         }
         
+        //Change trạng thái xác nhận
         return response()->json(200);
     }
     public function printFee(Request $request){
@@ -1065,8 +1089,9 @@ class StudentController extends Controller
         $mail = 'thithu@vietelite.edu.vn';
         $password = 'Pv$hn$ms26';
         $d = ['result' => $result];
-        //Send Email
         
+        try{
+        //Send 
             $backup = Mail::getSwiftMailer();
             // Setup your outlook mailer
             $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
@@ -1091,7 +1116,7 @@ class StudentController extends Controller
             // Restore your original mailer
             Mail::setSwiftMailer($backup);
             return response()->json(200);        
-        try{}
+        }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
