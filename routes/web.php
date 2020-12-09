@@ -24,7 +24,6 @@ Route::get('/login', function () {
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
-Route::get('/event-form', function() { return view('welcome'); });
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard', function () {
         return view('welcome');
@@ -213,6 +212,9 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/event/add-product', 'SessionController@addProduct');
             Route::post('/event/edit-product', 'SessionController@editProduct');
             Route::post('/event/delete-product', 'SessionController@deleteProduct');
+            Route::post('/event/get-students', 'SessionController@getStudentOfSession');
+            Route::post('/session-students', 'SessionController@getStudentOfProduct');
+            Route::post('/event-upload-score', 'SessionController@uploadEventScore');
             Route::get('/event/{id}', function(){
                 return view('welcome');
             });
@@ -316,14 +318,18 @@ Route::get('/event-get-location', 'ClassController@getLocationInfo');
 Route::post('/event-get-product', 'SessionController@getProductInfo');
 Route::post('/check-phone', 'StudentController@checkPhone');
 Route::post('/event/dang-ky', 'StudentController@registerEvent');
+
+Route::get('/event-form', function() { return view('welcome'); });
+Route::get('/event-tra-cuu', function() { return view('welcome'); });
+Route::post('/event-get-result', 'StudentController@getResult');
 // Route::post('/event-mail', )
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/test', function(){
-    return view('home');
-});
-Route::get('/testtime',function(){
-    echo date('Y:m:d H:i:m', strtotime('2020-06-15T03:23:20.775Z'));
-});
+// Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/test', function(){
+//     return view('home');
+// });
+// Route::get('/testtime',function(){
+//     echo date('Y:m:d H:i:m', strtotime('2020-06-15T03:23:20.775Z'));
+// });
 Route::get('/ta/{email}', 'UserController@createNewTa');
 // Route::get('/delete/ts', 'SessionController@deleteTransactionSession');
 // Route::get('/transaction/discount', 'TransactionController@discountId');
@@ -339,4 +345,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 // Route::get('/lnda', 'StudentController@lnda');
 // Route::get('/receipt/id','PaperController@regenerateId');
 // Route::get('/test-contact','GuestController@testContact');
-Route::get('/session-count', 'SessionController@sessionCount');
+// Route::get('/session-count', 'SessionController@sessionCount');

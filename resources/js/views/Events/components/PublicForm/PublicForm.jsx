@@ -151,7 +151,7 @@ const InfoForm = (props) => {
           />
         </Grid>
         <Grid item md={4} sm={12} className="full-grid">
-          <TextField  label="Email" 
+          <TextField  label="Email(*)" 
                 className = "input-text"
                 variant="filled"
                 size="small"
@@ -465,7 +465,7 @@ class PublicForm extends React.Component{
       this.setState({
         loading: true,
       })
-      if(this.state.student_name == "" || this.state.phone == "" || !this.state.selected_event){
+      if(this.state.student_name == "" || this.state.phone == "" ||this.state.email == "" || !this.state.selected_event ){
         this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)', {
           variant: 'error',
           anchorOrigin: {

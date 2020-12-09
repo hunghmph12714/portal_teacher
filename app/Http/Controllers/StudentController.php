@@ -509,24 +509,70 @@ class StudentController extends Controller
             $t['paper_id'] = $p->id;
             $t['amount'] = $student['debit'] - $student['credit'];         
             Transaction::create($t);
+            $t['debit'] = Account::where('level_2', '3387')->first()->id;
+            $t['credit'] = Account::where('level_2', '5112')->first()->id;
+            Transaction::create($t);
         //Change trạng thái xác nhận
             $student_event = StudentClass::where('student_id', $student['id'])->where('class_id', $student['class_id'])->first();
             if($student_event){
                 $student_event->status = 'active';
                 $student_event->save();
+
+                // $sessions = $student::sessionsOfClass($student)
             }
-            $parent = Parents::find($student->id);
+            $parent = Parents::find($student['parent_id']);
             if($parent){
                 //Phu huynh chua co password
                 if(!$parent->password){
-                    $pass = Str::random(4);
-                    $parent->password = Hash::make($pass);
-                    $parent->save;
+                    $pass = Str::random(5);
+                    $parent->password = $pass;
+                    $parent->save();
                 }
                 //Phu huynh da co password
                 //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
                 else{
-                    $pass 
+                    $pass = $parent->password;
+                }
+                $result['sbd'] = $student['sbd'];
+                $result['pass'] = $pass;
+                $result['student_name'] = $student['fullname'];
+                $result['total_fee'] = $t['amount'];
+                $result['receipt_number'] = $p->center_id."".$p->method."".$p->receipt_number;
+                $to_email = $parent->email;        
+                $to_name = '';
+                $mail = 'thithu@vietelite.edu.vn';
+                $password = '12345Bay';
+                $d = ['result' => $result];
+                
+                
+                //Send 
+                    $backup = Mail::getSwiftMailer();
+                    // Setup your outlook mailer
+                    $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+                    $transport->setUsername($mail);
+                    $transport->setPassword($password);
+                    // Any other mailer configuration stuff needed...
+                    
+                    $outlook = new \Swift_Mailer($transport);
+
+                    // Set the mailer as gmail
+                    Mail::setSwiftMailer($outlook);
+                
+                    // Send your message
+                    Mail::send('emails.events.confirm-fee',$d, function($message) use ($to_name, $to_email, $result, $mail) {
+                        $message->to($to_email, $to_name)
+                                ->to('webmaster@vietelite.edu.vn')
+                                ->subject($result['student_name']. " - Thông tin số báo danh")
+                                ->replyTo($mail, 'Phụ huynh hs '.$result['student_name']);
+                        $message->from($mail,'VIETELITE EDUCATION CENTER');
+                    });
+
+                    // Restore your original mailer
+                    Mail::setSwiftMailer($backup);
+                    try{}
+                catch(\Exception $e){
+                    // Get error here
+                    return response()->json(418);
                 }
             }
         //
@@ -1068,7 +1114,7 @@ class StudentController extends Controller
         }
         if($total_amount != 0){
             $t['debit'] = Account::Where('level_2', '131')->first()->id;
-            $t['credit'] = Account::Where('level_2', '511')->first()->id;
+            $t['credit'] = Account::Where('level_2', '3387')->first()->id;
             $t['amount'] = $total_amount;
             $t['time'] = Date('Y-m-d');
             $t['student_id'] = $student->id;
@@ -1087,7 +1133,7 @@ class StudentController extends Controller
         $to_email = $parent->email;        
         $to_name = '';
         $mail = 'thithu@vietelite.edu.vn';
-        $password = 'Pv$hn$ms26';
+        $password = '12345Bay';
         $d = ['result' => $result];
         
         try{
@@ -1123,6 +1169,77 @@ class StudentController extends Controller
         }
         //Thêm học sinh vào event
         
+    }
+    protected function getChart($session_id){
+        $session = Session::find($session_id);
+        $students = $session->students;
+        $label = [];
+        $result = [];
+        $max = 0;
+        // $max
+        //Label 
+        foreach($students as $key => $s){
+            if($s->pivot['max_score'] && count($label) == 0){
+                for($i = 0; $i < $s->pivot['max_score']; $i++){
+                    $label[] = $i."-".($i+1);
+                }
+                $max = $s->pivot['max_score'];
+                break;
+            }
+        }
+        if(count($label) == 0 ){
+            $label = ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9','9-10'];
+            $max = 10;
+        }
+        foreach($label as $key => $l){
+            $result[$key] = 0;
+        }
+        foreach($students as $key => $s){
+            if($s->pivot['score'] > 0 && $s->pivot['score'] < $max){
+                $score = floor($s->pivot['score']) ;
+                $result[$score]++ ;
+            }
+        }
+        return ['label' => $label, 'data' => $result];
+    }
+    protected function getResult(Request $request){
+        $rules = ['sbd' => 'required', 'passcode' => 'required'];
+        $this->validate($request, $rules);
+
+        $week = ['Chủ nhật','Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'];
+        $class_code = substr($request->sbd, 0, 5);
+        $student_class_id = substr($request->sbd, 5);
+        
+        $event = Classes::where('code', $class_code)->first();        
+        $studentClass = StudentClass::find($student_class_id);
+        if(!$event || !$studentClass){
+            return response()->json('Số báo danh không đúng, Vui lòng kiểm tra lại!', 401);
+        }
+        $result = [];
+        if($studentClass){
+            $student = Student::find($studentClass->student_id);
+            $parent = Parents::find($student->parent_id);
+            if($parent->password != $request->passcode){
+                return response()->json('Mã bảo mật không đúng', 401);
+            }else{
+                $result['student'] = ['fullname' => $student->fullname, 
+                    'dob' => date('d/m/Y', strtotime($student->dob)), 
+                    'school' => $student->school, 
+                    'phone' => $parent->phone, 'email'=> $parent->email, 'sbd' => $request->sbd];
+                $sessions = $student->sessionsOfClass($event->id)->select('room.name as location', 'content', 'from', 'to','sessions.id', 'document')->leftJoin('room', 'sessions.room_id', 'room.id')->get();
+                foreach($sessions as $s){
+                    $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
+                    $from = date('h:i', strtotime($s->from));
+                    $to = date('h:i', strtotime($s->to));
+                    $result['sessions'][] = ['sbd' => $request->sbd,
+                        'content' => $s['content'], 'location' => $s['location'], 
+                        'room' => $s['pivot']['btvn_comment'], 'score' => $s['pivot']['score'], 
+                        'comment' => $s['pivot']['comment'], 'time'=> $from." - ".$to, 'date'=>$date , 'chart' => $this->getChart($s->id), 'document' => $s->document];
+                    
+                }
+            }
+        }
+        return response()->json($result);
     }
     function vn_to_str ($str){
  

@@ -16,6 +16,7 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use App\TransactionSession;
+use DB;
 class SessionController extends Controller
 {
     //
@@ -296,6 +297,7 @@ class SessionController extends Controller
         ];
         $this->validate($request, $rules);
         $result = [];
+        $class = Classes::find($request->class_id);
         if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Session::where('class_id', $request->class_id)->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
@@ -321,9 +323,26 @@ class SessionController extends Controller
         
         foreach($sessions as $key => $value){
             $result[$key] = $value->toArray();
-            $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value')->get()->toArray();
+            if($class->type == 'class'){
+                $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+
+            }
         }
         return response()->json($result);
+    }
+    protected function getStudentOfProduct(Request $request){
+        $rules = ['session_id' => 'required'];
+        $this->validate($request, $rules);
+        
+        $session = Session::find($request->session_id);
+        if($session){
+            $event = Classes::find($session->class_id);
+            $students = $session->students()->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+            foreach($students as $key => $s){
+                $students[$key]['sbd'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s['value'])->first()->id;
+            }
+            return response()->json($students);
+        }
     }
     protected function generateFee(Session $session){
         $discount = Discount::where('class_id', $session->class_id)->whereNull('student_class_id')->where('status', 'expired')
@@ -1020,7 +1039,7 @@ class SessionController extends Controller
 
                 $from = date('h:i', strtotime($s->from));
                 $to = date('h:i', strtotime($s->to));
-                $date = $week[date('w', strtotime($s->from))] .", NGÀY " . date('d/m/Y', strtotime($s->from));
+                $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                 $duration = (strtotime($to_0) - strtotime($from_0))/60;
                 $name = $s->content. "(".$duration."')";
 
@@ -1032,5 +1051,59 @@ class SessionController extends Controller
             }
             return view('events/event-table', compact('result'));
         }
+    }
+    protected function getStudentOfSession(Request $request){
+        $rules = ['session_id' => 'required'];
+        $this->validate($request, $rules);
+        
+        $session = Session::find($request->session_id);
+        if($session){
+            $students = $session->students;
+            return response()->json($students);
+        }
+    }
+    protected function uploadEventScore(Request $request){
+        $rules = ['file' => 'required', 'session_id' => 'required', 'event_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $data = $request->file; 
+            foreach($data as $key => $val){
+                if($key == 0) continue;
+                
+                $studentClass = StudentClass::find(str_replace($request->event_id, '', $val[1]));
+                $student_id = Student::find($studentClass->student_id)->id;
+                if(count($val) >=6){
+                    $ss = StudentSession::where('student_id', $student_id)->where('session_id', $request->session_id)->first();
+                }
+                if(count($val) == 6){                    
+                    $ss->btvn_comment = $val[5];
+                    $ss->save();
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5]];
+                }
+                if(count($val) == 7){
+                    $ss->btvn_comment = $val[5];
+                    $ss->score = $val[6];
+                    $ss->save();
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6]];
+                }
+                if(count($val) == 8){
+                    $ss->btvn_comment = $val[5];
+                    $ss->score = $val[6];
+                    $ss->max_score = $val[7];
+                    $ss->save();
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6], 'max_score' => $val[7]];
+                }                
+                if(count($val) == 9){
+                    $ss->btvn_comment = $val[5];
+                    $ss->score = $val[6];
+                    $ss->max_score = $val[7];
+                    $ss->comment = $val[8];
+                    $ss->save();
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6], 'max_score' => $val[7], 'comment' => $val[8]];
+                }  
+            }
+            return response()->json($result);
+        
+
     }
 }

@@ -31,4 +31,4 @@ export { default as AdjustFee } from './AdjustFee';
 export { Financial } from './Report';
 export { default as Revenue } from './Revenue';
 export { default as Documents } from './Documents';
-export { Events, EventDetail, PublicForm } from './Events';
+export { Events, EventDetail, PublicForm, PublicResult } from './Events';

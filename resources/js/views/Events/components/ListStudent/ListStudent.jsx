@@ -119,7 +119,8 @@ const ListStudent = (props) => {
                 (                              
                 <Typography variant="body2" component="p">
                     <b>{rowData.pname}</b> 
-                    <br/><a target="_blank" href={"https://vietelite.3cx.vn:5001/webclient/#/call?phone=" + rowData.pphone} > {rowData.pphone} </a> 
+                    {/* <br/><a target="_blank" href={"https://vietelite.3cx.vn:5001/webclient/#/call?phone=" + rowData.pphone} > {rowData.pphone} </a>  */}
+                    <br/>{rowData.pphone}
                     <br/>{rowData.pemail}
                 </Typography>                              
                 ),
@@ -203,11 +204,11 @@ const ListStudent = (props) => {
             type: 'currency',
             currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
             headerStyle: {
-                padding: '0px 5px',
+                padding: '0px 10px',
                 fontWeight: '600',
             },
             cellStyle: {
-                padding: '0px 5px',
+                padding: '0px 10px',
             },
                     
         },
@@ -326,7 +327,6 @@ const ListStudent = (props) => {
                     exportCsv: (c, d) => {
                         const cols = ['ID','Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','SĐT 2','Email 2','Ngày nhập học','Ngày nghỉ','Trạng thái'];
                         const data = d.map(dt => [dt.student_id, dt.fullname,dt.dob_format ,dt.pname, dt.pphone,dt.pemail,dt.alt_phone, dt.alt_email, dt.entrance_date_format, dt.drop_date_format, dt.status]);
-                        console.log(data)
                         const builder = new CsvBuilder('DSHS lớp '+ class_name + '.csv');
                         builder
                         .setDelimeter(',')

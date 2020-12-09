@@ -72,6 +72,9 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
         <b> Tại các địa điểm </b>
         <ul>
           <li>
+            Nhà 23 lô 14A Trung Yên 11, Trung Hoà, Cầu Giấy, Hà Nội
+          </li>
+          <li>
             Nhà 33, ngõ 91 Trần Duy Hưng, Trung Hòa, Cầu Giấy, Hà Nội
           </li>
           <li>
@@ -80,6 +83,7 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
           <li>
             Nhà 2, ngõ 44 Đỗ Quang, Trung Hòa, Cầu Giấy, Hà Nội   
           </li>
+          
         </ul>
     </div>    
   </div>

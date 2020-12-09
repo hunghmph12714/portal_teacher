@@ -106,12 +106,14 @@ body{
         }
         
         .btn-submit{
+            margin-top: 20px;
             background: white;
             padding: 8px 25px;
             font-size: 19px;
             border-radius: 5px;
             text-transform: uppercase;
             color: #8bc34a !important;
+            border: 1px solid #8bc34a;
         }
         .btn-submit:hover{
             background: #8bc34a;

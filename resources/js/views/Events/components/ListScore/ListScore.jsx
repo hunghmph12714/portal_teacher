@@ -38,7 +38,7 @@ const ListScore = (props) => {
         id: 1}])
     useEffect(() => {
     async function fetchJSON () {
-        const resource = await axios.post(baseUrl + '/score/report', {class_id: props.class_id, from: props.from, to: props.to} )
+        const resource = await axios.post(baseUrl + '/score/report', {class_id: props.class_id, from: -1, to: -1} )
         const students = resource.data.students
         const sessions = resource.data.sessions
         const sheet = {

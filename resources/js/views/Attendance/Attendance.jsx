@@ -67,7 +67,7 @@ const SessionDateSelect = React.memo(props => {
             c.from = format(new Date(c.from), 'HH:mm')
             c.to = format(new Date(c.to), 'HH:mm')
             c.time = c.from + '-' + c.to
-            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+' )', value: c.id, date : c.date, time: c.time, selected: -1}
+            return {label: Vndate[c.day]+ ': '+c.date+' ('+c.time+')', value: c.id, date : c.date, time: c.time, selected: -1}
         })
         setSessions(data)
         setTmpSession(data)

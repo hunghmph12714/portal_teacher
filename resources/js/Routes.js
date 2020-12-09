@@ -29,7 +29,7 @@ import {
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
   StudentDetail, Documents,
-  Events, EventDetail, PublicForm
+  Events, EventDetail, PublicForm, PublicResult
 
 } from './views';
 
@@ -41,6 +41,12 @@ const Routes = (props) => {
         exact
         layout={MinimalLayout}
         path="/event-form"
+      />
+      <Route
+        component={PublicResult}
+        exact
+        layout={MinimalLayout}
+        path="/event-tra-cuu"
       />
       <Redirect
         exact

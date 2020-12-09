@@ -735,11 +735,16 @@ class ClassController extends Controller
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);
         $class_id = $request->class_id;
-        $from = date('Y-m-d 00:00:00', strtotime($request->from));
-        $to = date('Y-m-d 23:59:59', strtotime($request->to));
+        if($request->from == -1){
+             $from = '1999-01-01 00:00:00';
+        }else $from = date('Y-m-d 00:00:00', strtotime($request->from));
+        if($request->to == -1){
+           $to = '2100-01-01 00:00:00';
+        }else $to = date('Y-m-d 23:59:59', strtotimesadf($request->to));
+        
         $class = Classes::find($class_id);
         $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
-            whereBetween('date',[$from, $to])->where('class_id', $class_id)->join('teacher', 'sessions.teacher_id', 'teacher.id')->orderBy('sessions.date')->get();
+            whereBetween('date',[$from, $to])->where('class_id', $class_id)->leftJoin('teacher', 'sessions.teacher_id', 'teacher.id')->orderBy('sessions.date')->get();
         $result = [];
         if($class){            
             $students = $class->students;

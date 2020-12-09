@@ -50,7 +50,7 @@ class EventDetail extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            value: 2,
+            value: 1,
             selected_class: {},
             from: new Date(date.getFullYear(), date.getMonth(), 1),
             to: new Date(date.getFullYear(), date.getMonth()+1, 0),
@@ -95,28 +95,25 @@ class EventDetail extends React.Component{
               </Grid>
                 <AppBar position="static">
                     <Tabs value={this.state.value} onChange={this.handleChange} aria-label="simple tabs example" indicatorColor="primary">
-                        <Tab label="Thông tin lớp học" {...a11yProps(0)} />
-                        <Tab label="Danh sách " {...a11yProps(1)} />
-                        <Tab label="Danh sách học sinh" {...a11yProps(2)} />
-                        <Tab label="Tình hình học tập" {...a11yProps(3)} />
+                        <Tab label="Môn thi" {...a11yProps(0)} />
+                        <Tab label="Đăng ký" {...a11yProps(1)} />
+                        <Tab label="Điểm" {...a11yProps(2)} />
                     </Tabs>
                 </AppBar>
+                
                 <TabPanel value={this.state.value} index={0}>
-                  <ListAttendance class_id={this.props.match.params.id} 
-                    from = {-1}
-                    to = {this.state.to}/>
-                </TabPanel>
-                <TabPanel value={this.state.value} index={1}>
                     <ListSession class_id={this.props.match.params.id} 
                       class_name={this.state.selected_class.name}
                       class_fee = {this.state.selected_class.fee}
+                      class_code = {this.state.selected_class.code}
                       from = {-1}
-                      to = {-1} />
+                      to = {-1} 
+                    />
                 </TabPanel>
-                <TabPanel value={this.state.value} index={2}>
+                <TabPanel value={this.state.value} index={1}>
                   <ListStudent class_id={this.props.match.params.id} class_name={this.state.selected_class.name}/>
                 </TabPanel>
-                <TabPanel value={this.state.value} index={3}>
+                <TabPanel value={this.state.value} index={2}>
                   <ListScore 
                     class_id={this.props.match.params.id} 
                     class_name={this.state.selected_class.name}

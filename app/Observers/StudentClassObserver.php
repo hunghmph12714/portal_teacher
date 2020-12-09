@@ -194,10 +194,9 @@ class StudentClassObserver
     public function updated(StudentClass $studentClass)
     {
         $class = Classes::find($studentClass->class_id);
-       
+        $student = Student::find($studentClass->student_id);
         $this->updateClassCount($class);
-        if($class->type == 'class'){
-            $student = Student::find($studentClass->student_id);
+        if($class->type == 'class'){            
             if($studentClass->getOriginal('status') == 'waiting'){
                 if($studentClass->status == 'active'){
                     if($student){
@@ -266,6 +265,18 @@ class StudentClassObserver
                     foreach($transactions as $t ){
                         $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
                         $ts->forceDelete();
+                    }
+                }
+            }
+        }
+        if($class->type == 'event'){
+            if($studentClass->getOriginal('status') == 'waiting'){
+                if($studentClass->status == 'active'){
+                    $sessions = $student->sessionsOfClass($class->id)->get();
+                    foreach($sessions as $s){
+                        $s->present_number++;
+                        $s->ss_number--;
+                        $s->save();
                     }
                 }
             }
