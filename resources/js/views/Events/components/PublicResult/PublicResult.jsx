@@ -129,7 +129,7 @@ class PublicResult extends React.Component{
       document.title =  'FORM TRA CỨU'
       return (
         <div className="root-event-detail">
-          <Grid container spacing={4}>
+          <Grid container spacing={8}>
             <Grid item md={3} sm={12}>
               <h3>Nhập Thông Tin</h3>
               <TextField  label="Số báo danh"  
@@ -182,6 +182,13 @@ class PublicResult extends React.Component{
               {!this.state.existed ? (
                 <div>
                 <h3>Hướng dẫn</h3>
+                <p>Phụ huynh có thể sử dụng chức năng tra cứu để:</p>
+                <ul> 
+                  <li>Tra cứu địa điểm thi, thời gian thi thử</li>
+                  <li>Tra cứu kết quả, phổ điểm</li>
+                  <li>Truy cập nguồn tài liệu phù hợp</li>
+                </ul>
+                <p>(*)Lưu ý: Phụ huynh cần phải điền chính xác <b>Số báo danh</b> và <b> Mã cá nhân</b> được cung cấp qua email sau khi hoàn tất lệ phí thi.</p>
                 </div>
               ) : 
               <div>                
