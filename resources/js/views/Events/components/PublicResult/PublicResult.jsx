@@ -131,41 +131,44 @@ class PublicResult extends React.Component{
         <div className="root-event-detail">
           <Grid container spacing={8}>
             <Grid item md={3} sm={12}>
-              <h3>Nhập Thông Tin</h3>
-              <TextField  label="Số báo danh"  
-                  fullWidth
-                  className = "input-text"
-                  variant="filled"
-                  size="small"
-                  margin = "dense"
-                  name = 'sbd'
-                  value = {this.state.sbd}
-                  onChange = {this.onChange}
-              />
-              <TextField  label="Mã cá nhân"  
-                  fullWidth
-                  className = "input-text"
-                  variant="filled"
-                  size="small"
-                  margin = "dense"
-                  name = 'passcode'
-                  value = {this.state.passcode}
-                  onChange = {this.onChange}
-              />
-              <Button 
-                // color={(this.state.events[index].active) ? 'primary' : 'default'} 
-                color='primary'
-                className="btn-submit"
-                onClick = {e => this.submitForm(e)}
-                style={ {fontWeight: 'bold', color: 'black'}}
-                disabled = {this.state.loading}
-              >
-                Tra cứu
-                {this.state.loading ? (
-                  <CircularProgress />
-                ): ""}
-               
-              </Button>
+              <div className="form-tra-cuu">
+                <h3>Nhập Thông Tin</h3>
+                <TextField  label="Số báo danh"  
+                    fullWidth
+                    className = "input-text"
+                    variant="filled"
+                    size="small"
+                    margin = "dense"
+                    name = 'sbd'
+                    value = {this.state.sbd}
+                    onChange = {this.onChange}
+                />
+                <TextField  label="Mã cá nhân"  
+                    fullWidth
+                    className = "input-text"
+                    variant="filled"
+                    size="small"
+                    margin = "dense"
+                    name = 'passcode'
+                    value = {this.state.passcode}
+                    onChange = {this.onChange}
+                />
+                <Button 
+                  // color={(this.state.events[index].active) ? 'primary' : 'default'} 
+                  color='primary'
+                  className="btn-submit"
+                  onClick = {e => this.submitForm(e)}
+                  style={ {fontWeight: 'bold', color: 'black'}}
+                  disabled = {this.state.loading}
+                >
+                  Tra cứu
+                  {this.state.loading ? (
+                    <CircularProgress />
+                  ): ""}
+                
+                </Button>
+              </div>
+              
               {this.state.existed ? (
                 <div className="student-info">
                   <h3>Thông tin học sinh</h3>
@@ -180,15 +183,15 @@ class PublicResult extends React.Component{
             </Grid>
             <Grid item md={9} sm={12}>
               {!this.state.existed ? (
-                <div>
-                <h3>Hướng dẫn</h3>
-                <p>Phụ huynh có thể sử dụng chức năng tra cứu để:</p>
-                <ul> 
-                  <li>Tra cứu địa điểm thi, thời gian thi thử</li>
-                  <li>Tra cứu kết quả, phổ điểm</li>
-                  <li>Truy cập nguồn tài liệu phù hợp</li>
-                </ul>
-                <p>(*)Lưu ý: Phụ huynh cần phải điền chính xác <b>Số báo danh</b> và <b> Mã cá nhân</b> được cung cấp qua email sau khi hoàn tất lệ phí thi.</p>
+                <div className="huong-dan">
+                  <h3>Hướng dẫn</h3>
+                  <p>Phụ huynh có thể sử dụng chức năng tra cứu để:</p>
+                  <ul> 
+                    <li>Tra cứu địa điểm thi, thời gian thi thử</li>
+                    <li>Tra cứu kết quả, phổ điểm</li>
+                    <li>Truy cập nguồn tài liệu phù hợp</li>
+                  </ul>
+                  <p>(*)Lưu ý: Phụ huynh cần phải điền chính xác <b>Số báo danh</b> và <b> Mã cá nhân</b> được cung cấp qua email sau khi hoàn tất lệ phí thi.</p>
                 </div>
               ) : 
               <div>                
