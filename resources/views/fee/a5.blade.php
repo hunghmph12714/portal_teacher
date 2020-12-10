@@ -181,8 +181,9 @@
             </div>
             <div class="row footer">
             <div class="col-sm">   
-            Phụ huynh có thể nộp tiền mặt tại quầy lễ tân hoặc thanh toán chuyển khoản. <br/>
-            <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
+<h3></b>Hiện tại hệ thống tài khoản ngân hàng của trung tâm đang gặp sự cố, quý Phụ Huynh vui lòng nộp tiền mặt tại quầy lễ tân.</b></h3><br/>
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
+            <!-- <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
 
             @switch($result['center_id'])
                 @case(5)
@@ -241,7 +242,7 @@
                     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
                     @break
             @endswitch
-    
+     -->
         </div>
     </section>
 </body>

@@ -541,7 +541,7 @@ class StudentController extends Controller
                 $to_email = $parent->email;        
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
-                $password = '12345Bay';
+                $password = 'Mot23457';
                 $d = ['result' => $result];
                 
                 
@@ -1132,11 +1132,11 @@ class StudentController extends Controller
 
         $to_email = $parent->email;        
         $to_name = '';
-        $mail = 'thithu@vietelite.edu.vn';
-        $password = '12345Bay';
+        $mail = "thithu@vietelite.edu.vn";
+        $password = "Mot23457";
         $d = ['result' => $result];
         
-        try{
+        
         //Send 
             $backup = Mail::getSwiftMailer();
             // Setup your outlook mailer
@@ -1162,7 +1162,7 @@ class StudentController extends Controller
             // Restore your original mailer
             Mail::setSwiftMailer($backup);
             return response()->json(200);        
-        }
+            try{}
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
