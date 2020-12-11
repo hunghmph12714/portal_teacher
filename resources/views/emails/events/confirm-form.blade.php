@@ -66,6 +66,10 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
     <div class="col-sm">
       <h3> <u>Thanh toán Chuyển khoản </u></h3>
       
+      <b> Ngân hàng:</b> Quốc Tế VIB, chi nhánh Ba Đình <br/>
+      <b> Số tài khoản:</b> 385666888 <br/>
+      <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
+      <b> Nội dung CK:</b> {{$result['ck_content']}} <br/>
     </div>
     <div class="col-sm">
         <h3> <u>Thanh toán Tiền mặt </u></h3>

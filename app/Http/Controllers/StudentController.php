@@ -541,7 +541,7 @@ class StudentController extends Controller
                 $to_email = $parent->email;        
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
-                $password = 'Mot23457';
+                $password = '12345Bay';
                 $d = ['result' => $result];
                 
                 
@@ -1112,6 +1112,7 @@ class StudentController extends Controller
                 $result['location'] = $location['label'];
             }
         }
+        $result['ck_content'] = $this->vn_to_str( $student->fullname )."_".$result['student']['dob']."_".$result['parent']['phone'];
         if($total_amount != 0){
             $t['debit'] = Account::Where('level_2', '131')->first()->id;
             $t['credit'] = Account::Where('level_2', '3387')->first()->id;
@@ -1130,10 +1131,10 @@ class StudentController extends Controller
             return response()->json('Đã đăng ký, vui lòng kiểm tra hòm thư đến.', 402);
         }
 
-        $to_email = $parent->email;        
+        $to_email = $request->email;
         $to_name = '';
         $mail = "thithu@vietelite.edu.vn";
-        $password = "Mot23457";
+        $password = "12345Bay";
         $d = ['result' => $result];
         
         
@@ -1161,7 +1162,7 @@ class StudentController extends Controller
 
             // Restore your original mailer
             Mail::setSwiftMailer($backup);
-            return response()->json(200);        
+            return response()->json(200);
             try{}
         catch(\Exception $e){
             // Get error here

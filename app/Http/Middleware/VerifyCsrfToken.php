@@ -20,6 +20,8 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-	'mailgun-hooks',
+    'mailgun-hooks',
+    'event-get-result',
+    'event-get-product','event/dang-ky','check-phone'
     ];
 }
