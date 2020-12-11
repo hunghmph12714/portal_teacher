@@ -740,7 +740,7 @@ class ClassController extends Controller
         }else $from = date('Y-m-d 00:00:00', strtotime($request->from));
         if($request->to == -1){
            $to = '2100-01-01 00:00:00';
-        }else $to = date('Y-m-d 23:59:59', strtotimesadf($request->to));
+        }else $to = date('Y-m-d 23:59:59', strtotime($request->to));
         
         $class = Classes::find($class_id);
         $sessions = Session::Select('sessions.id','teacher.name','sessions.date')->
