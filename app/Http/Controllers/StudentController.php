@@ -1286,5 +1286,26 @@ class StudentController extends Controller
         return $str;
          
     }
+    public function deleteId($id){
+        $student = Student::find($id);
+        if($student){
+            $transactions = Transaction::where('student_id', $id)->get();
+            foreach($transactions as $t){
+                $t->forceDelete();
+            }
+            $sc = StudentClass::where('student_id', $id)->get();
+            foreach($sc as $x){
+                $x->forceDelete();
+            }
+            $ss = StudentSession::where('student_id', $id)->get();
+            foreach($ss as $x){
+                $x->forceDelete();
+            }
+            $parent = Parents::find($student->parent_id);
+            $parent->forceDelete();
+            $student->forceDelete();
+        }
+        
+    }
 
 }
