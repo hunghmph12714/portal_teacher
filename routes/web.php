@@ -346,3 +346,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 // Route::get('/receipt/id','PaperController@regenerateId');
 // Route::get('/test-contact','GuestController@testContact');
 // Route::get('/session-count', 'SessionController@sessionCount');
+Route::get('/test-mautic', 'ParentController@testMautic');

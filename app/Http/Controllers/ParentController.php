@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Parents;
+use Mautic\MauticApi;
+use Mautic\Auth\ApiAuth;
 class ParentController extends Controller
 {
     //
@@ -13,5 +15,29 @@ class ParentController extends Controller
             'relationships.id as rid','relationships.name as r_name','relationships.color')
         ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')->limit(10)->get()->toArray();
         return response()->json($s);
+    }
+    protected function testMautic(){
+        $settings = array(
+            'baseUrl'      => 'https://mautic.vietelite.edu.vn',
+            'version'      => 'OAuth2',
+            'clientKey'    => '1_68dufgi6rnk0wkgog8w8gck0ok8sockwkcs0gokc8wwcog0o8o',
+            'clientSecret' => '5sokei5g72g40ook8wksck4swggccw8w8kswso0okocw4so0o4', 
+        );
+        $initAuth   = new ApiAuth();
+        $auth       = $initAuth->newAuth($settings);
+        $apiUrl     = "https://mautic.vietelite.edu.vn";
+        $api        = new MauticApi();
+        $contactApi = $api->newApi("contacts", $auth, $apiUrl);
+
+        $data = array(
+            'firstname' => 'Jim',
+            'lastname'  => 'Contact',
+            'email'     => 'jim@his-site.com',
+            'ipAddress' => $_SERVER['REMOTE_ADDR'],
+            'overwriteWithBlank' => true,
+        );
+        
+        $contact = $contactApi->create($data);
+        dd( $contact );
     }
 }

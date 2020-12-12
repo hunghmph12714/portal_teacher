@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "031fee4c240ca0ccaacd06e099edde94",
+    "content-hash": "6848e1b1ea965724a0f7698dcb3c53d6",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1467,6 +1467,48 @@
                 }
             ],
             "time": "2020-10-18T11:50:25+00:00"
+        },
+        {
+            "name": "mautic/api-library",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mautic/api-library.git",
+                "reference": "557ce71ca1603324a781270f73334852fce10d0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mautic/api-library/zipball/557ce71ca1603324a781270f73334852fce10d0e",
+                "reference": "557ce71ca1603324a781270f73334852fce10d0e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.2.0",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.16.1",
+                "phpunit/phpunit": "~9.4.0",
+                "raveren/kint": "~0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mautic\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Mautic API Connector Library",
+            "support": {
+                "issues": "https://github.com/mautic/api-library/issues",
+                "source": "https://github.com/mautic/api-library/tree/3.0.0"
+            },
+            "time": "2020-10-17T14:04:17+00:00"
         },
         {
             "name": "monolog/monolog",

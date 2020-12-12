@@ -465,7 +465,21 @@ class PublicForm extends React.Component{
       this.setState({
         loading: true,
       })
-      if(this.state.student_name == "" || this.state.phone == "" ||this.state.email == "" || !this.state.selected_event ){
+      let activeProduct = this.state.products.filter(p => p.active == true);
+      if(activeProduct.length == 0){
+        this.props.enqueueSnackbar('Vui lòng chọn môn thi', {
+          variant: 'error',
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+        })
+        this.setState({
+          loading: false,
+        })
+        return 1;
+      }
+      if(this.state.student_name == "" || this.state.phone == "" ||this.state.email == "" || !this.state.selected_event){
         this.props.enqueueSnackbar('Vui lòng điền đầy đủ thông tin (*)', {
           variant: 'error',
           anchorOrigin: {
