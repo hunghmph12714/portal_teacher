@@ -7,6 +7,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 import DialogCreate from './DialogCreate'
 import DialogFee from './DialogFee'
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import {
     Menu,
     MenuItem,
@@ -243,6 +244,7 @@ const ListStudent = (props) => {
     const [feeDialog, setOpenFeeDialog] = useState(false);
     const [totalFee, setTotalFee] = useState(0);
     const [name, setName] = useState('');
+    const [sessions, setSessions] = useState([])
     useEffect(() => {
         setLoading(true)
         const fetchData = async() => {
@@ -258,7 +260,25 @@ const ListStudent = (props) => {
                     return a
                 })
             )
+            const s = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
+            setSessions(s.data.map(r => {
+                    let date = new Date(r.date)
+                    r.from_full = r.from
+                    r.to_full = r.to
+                    r.date = format(date , 'dd-MM-yyyy')
+                    r.day = format(date, 'i') 
+                    r.from = format(new Date(r.from), 'HH:mm')
+                    r.to = format(new Date(r.to), 'HH:mm')
+                    r.document = (r.document)?r.document:'',
+                    r.exercice = (r.exercice)?r.exercice:'',
+                    r.time = r.from + ' - ' + r.to
+                    r.value = r.id
+                    r.label = r.content+"-"+r.ctname
+                    return r
+                })
+            )
         }
+        
         fetchData()
         setLoading(false)
     }, [reload])
@@ -355,7 +375,7 @@ const ListStudent = (props) => {
                             onClick: (event, rowData) => {handleOpenEditDialog(rowData)}
                         },
                         {
-                            icon: () => <AddBoxIcon />,
+                            icon: () => <AccountBalanceIcon />,
                             tooltip: 'Thu tiền',
                             isFreeAction: false,
                             text: 'Xoá học sinh',
@@ -388,6 +408,7 @@ const ListStudent = (props) => {
             />
             <DialogCreate 
                 open = {openDialog}
+                sessions = {sessions}
                 handleClose = {closeCreateDialog}
                 class_id = {class_id}
                 type = {type}

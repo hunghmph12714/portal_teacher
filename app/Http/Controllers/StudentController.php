@@ -157,6 +157,7 @@ class StudentController extends Controller
                 $result[$key]['credit'] = $credit;
                 $sessions = $student->sessionsOfClass($class->id)->get()->toArray();
                 $sessions_content = array_column($sessions, 'content');
+                $result[$key]['sessions_arr'] = $sessions;
                 $result[$key]['sessions'] = $sessions_content;
                 $result[$key]['sessions_str'] = implode($sessions_content, ',');
             }

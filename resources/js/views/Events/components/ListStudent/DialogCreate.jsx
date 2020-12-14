@@ -15,6 +15,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import NumberFormat from 'react-number-format';
+
 import { StudentForm, ParentForm } from '../../../Entrance/components';
 import { withSnackbar } from 'notistack';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -22,8 +25,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import ReactSelect from 'react-select';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import vi from "date-fns/locale/vi";
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import {
   KeyboardDatePicker,
@@ -31,6 +36,26 @@ import {
 } from "@material-ui/pickers";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+function NumberFormatCustom(props) {
+    const { inputRef, onChange, name, ...other } = props;
+  
+    return (
+      <NumberFormat
+        {...other}
+        getInputRef={inputRef}
+        onValueChange={values => {
+          onChange({
+            target: {
+              name: name,
+              value: values.value,
+            },
+          });
+        }}
+        thousandSeparator
+        isNumericString
+      />
+    );
+}
 
 const baseUrl = window.Laravel.baseUrl
 const initState = {
@@ -63,7 +88,10 @@ const initState = {
     new_active_date: null,
     transfer_class : null,
     transfer_reason: '',
-    disable: false
+    disable: false,
+    
+    selected_sessions: null,
+    
 }
 var disable = false
 class DialogCreate extends React.Component {    
@@ -73,6 +101,7 @@ class DialogCreate extends React.Component {
     }
     UNSAFE_componentWillReceiveProps(nextProps){
         disable = false
+        const selected_sessions = (nextProps.student.sessions_arr)?nextProps.student.sessions_arr.map(s => {return {value: s.id, label: s.content}}):null
         if(nextProps.type == 'edit'){
             this.setState({
                 student_id: nextProps.student.id,
@@ -99,11 +128,16 @@ class DialogCreate extends React.Component {
                 drop_date : (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
                 transfer_date: (nextProps.student.transfer_date) ? new Date(nextProps.student.transfer_date) : null,
                 drop_reason : (nextProps.student.stats)?nextProps.student.stats.drop_reason : null,
+
+                selected_sessions
             })
         }
         if(nextProps.type == 'create'){
             this.setState(initState)
         }
+    }
+    onSessionChange = (newValue) => {
+        this.setState({selected_sessions: newValue})
     }
     handleStudentChange = (newValue) => {
         if(!newValue || newValue.__isNew__){
@@ -299,160 +333,36 @@ class DialogCreate extends React.Component {
                         handleChange = {this.handleChange}
                     />
                     <Divider/>
-                    <h5 className="title-header">Nhập học</h5>
+                    <h5 className="title-header">Đăng ký thi thử</h5>
                         <Grid container spacing={3}>
-                            <Grid item md={4} sm={12}>
-                                <FormControl variant="outlined" size="small" fullWidth className="input-text">
-                                    <InputLabel>Trạng thái</InputLabel>
-                                    <Select
-                                        name="status"
-                                        value={this.state.status}
-                                        onChange={this.onChange}
-                                        label="Trạng thái"
-                                    >
-                                        <MenuItem value={'active'}>Hoạt động</MenuItem>
-                                        <MenuItem value={'waiting'}>Chờ học</MenuItem>
-                                        <MenuItem value={'retain'}>Bảo lưu</MenuItem>
-                                        <MenuItem value={'droped'}>Nghỉ học</MenuItem>
-                                        <MenuItem value={'transfer'}>Chuyển lớp</MenuItem>
-                                    </Select>
-                                </FormControl>    
+                            <Grid item md={8} sm={12}>
+                                <ReactSelect
+                                    className="class-select"
+                                    placeholder="Chọn môn thi"
+                                    closeMenuOnSelect={false}
+                                    defaultValue={[]}
+                                    onChange = {this.onSessionChange}
+                                    value={this.state.selected_sessions}
+                                    isMulti
+                                    options={this.props.sessions}
+                                />    
                             </Grid>
                             <Grid item md={4} sm={12}> 
-                                <div className="date-time">
-                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            className="input-date input-text"
-                                            variant="inline"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                            placeholder="Ngày nhập học"
-                                            views={["year", "month", "date"]}
-                                            value={this.state.active_date}
-                                            onChange={this.handleActiveDateChange}
-                                        />                     
-                                    </MuiPickersUtilsProvider>     
-                                </div>
-                                {
-                                    this.state.status == 'droped'? (
-                                        <div className="date-time">
-                                                               <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                                <KeyboardDatePicker
-                                                    autoOk
-                                                    minDate = {this.state.active_date}
-                                                    className="input-date input-text"
-                                                    variant="inline"
-                                                    inputVariant="outlined"
-                                                    format="dd/MM/yyyy"
-                                                    placeholder="Ngày nghỉ học"
-                                                    views={["year", "month", "date"]}
-                                                    value={this.state.drop_date}
-                                                    onChange={this.handleDropDate}
-                                                />                     
-                                            </MuiPickersUtilsProvider>     
-                                        </div>
-                                    ):''
-                                }
-                                
-                                {
-                                    this.state.status == 'transfer'? (
-                                        <Grid container alignItems="center" spacing={2}>
-                                            <Grid item md={12} sm={12}>
-                                                <ClassSearch 
-                                                    selected_class = {this.state.transfer_class}
-                                                    handleChange={newValue => {this.onTranferClassChange(newValue)}}
-                                                    course = {-1}
-                                                    center = {-1}
-                                                />
-                                            </Grid>
-                                            <Grid item md={6} sm={12}>
-                                                <div className="date-time">
-                                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                                        <KeyboardDatePicker
-                                                            autoOk
-                                                            minDate = {this.state.active_date}
-                                                            className="input-date input-text"
-                                                            variant="inline"
-                                                            inputVariant="outlined"
-                                                            format="dd/MM/yyyy"
-                                                            placeholder="Ngày chuyển lớp"
-                                                            views={["year", "month", "date"]}
-                                                            value={this.state.transfer_date}
-                                                            onChange={this.handleTransferDate}
-                                                        />      
-                                                    </MuiPickersUtilsProvider>     
-                                                </div>
-                                            </Grid>
-                                            <Grid item md={6} sm={12}>
-                                            <div className="date-time">
-                                                                       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                                        <KeyboardDatePicker
-                                                            autoOk
-                                                            minDate = {this.state.active_date}
-                                                            className="input-date input-text"
-                                                            variant="inline"
-                                                            inputVariant="outlined"
-                                                            format="dd/MM/yyyy"
-                                                            placeholder="Ngày nhập lớp mới"
-                                                            views={["year", "month", "date"]}
-                                                            value={this.state.new_active_date}
-                                                            onChange={this.handleNewActiveDateChange}
-                                                        />      
-                                                    </MuiPickersUtilsProvider>     
-                                                </div>
-                                            </Grid>
-                                        </Grid>
-                                    ):''
-                                }
+                                {/* <FormControl fullWidth variant="outlined" margin="dense">
+                                    <InputLabel htmlFor="outlined-adornment-amount">Lệ phí</InputLabel>
+                                    <OutlinedInput
+                                        value={this.state.fee}
+                                        name = "fee"
+                                        onChange={this.onChange}
+                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                        labelWidth={50}
+                                        inputComponent = {NumberFormatCustom}
+                                    >
+                                    </OutlinedInput>
+                                </FormControl> */}
                                 
                             </Grid>
-                            <Grid item md={4} sm={12}>
-                            {
-                                (this.state.status == 'active') ? (
-                                    <FormControlLabel
-                                        control = {
-                                            <Checkbox checked={this.state.create_fee} onChange={this.handleChecked} name="create_fee" disabled={this.state.status == 'active'}/>
-                                        }
-                                        label="Khởi tạo học phí"
-                                        className="input-text"
-                                    />
-                                ):(
-                                    ''
-                                )
-                            }
-                            {
-                                this.state.status == 'droped'? (
-                                    <TextField 
-                                        id="outlined-basic" 
-                                        label="Lý do nghỉ học" 
-                                        variant="outlined" size="small"
-                                        name="drop_reason"
-                                        fullWidth
-                                        className="text-input"
-                                        value={this.state.drop_reason}
-                                        onChange={this.onChange}/>
-                                ):''
-                            }
                             
-                            {
-                                this.state.status == 'transfer'? (
-                                    <TextField 
-                                        id="outlined-basic" 
-                                        label="Lý do chuyển lớp" 
-                                        variant="outlined" size="small"
-                                        name="transfer_reason"
-                                        fullWidth
-                                        className="text-input"
-                                        value={this.state.transfer_reason}
-                                        onChange={this.onChange}/>
-                                ):''
-                            }
-                            </Grid>
                         </Grid>
             </DialogContent>
             <DialogActions>

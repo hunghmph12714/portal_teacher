@@ -125,6 +125,7 @@ class DialogFee extends React.Component {
             center: '',
             name: props.name,
             account: '',
+            disabled: false,
             description: 'Lệ phí ',
         }
     }
@@ -152,6 +153,7 @@ class DialogFee extends React.Component {
     handleDialogFee = () => {
         
         if(this.state.center != "" || this.state.account != ""){
+            this.setState({ disabled: true })
             axios.post(baseUrl + '/event-gather', {
                 center: this.state.center,
                 name: this.props.name,
@@ -232,7 +234,7 @@ class DialogFee extends React.Component {
                 <Button onClick={this.props.handleClose} color="primary">
                     Hủy bỏ
                 </Button>
-                <Button onClick={this.handleDialogFee} color="primary" id="btn-save">
+                <Button onClick={this.handleDialogFee} color="primary" id="btn-save" disabled={this.state.disabled}>
                     Xác nhận và Gửi Mail
                 </Button>
             </DialogActions>
