@@ -103,7 +103,6 @@ const SessionDateSelect = React.memo(props => {
 class Attendance extends React.Component{
     constructor(props){
         super(props)
-
         this.state = {
             data : [],
             selected_class : null,

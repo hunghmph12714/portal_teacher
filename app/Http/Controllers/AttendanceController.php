@@ -27,19 +27,23 @@ class AttendanceController extends Controller
         $attendances = StudentSession::whereIn('session_id', $sessions)->get();
         $result = [];
         foreach($attendances as $s){
-            if(!$s->logs){
-                $s->logs = [];
-            }     
-            $result[$s->student_id]['attendance'][] = $s;
-            if(sizeof($result[$s->student_id]['attendance']) == 1 ){
-                $result[$s->student_id]['student'] = Student::where('students.id',$s->student_id)
-                    ->select('students.id as sid','parents.id as pid',
-                            'students.fullname as sname', 'dob',
-                            'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone','parents.relationship_id as rid',
-                            'relationships.name as rname','relationships.color')
-                    ->leftJoin('parents', 'students.parent_id','parents.id')
-                    ->leftJoin('relationships','parents.relationship_id', 'relationships.id')->first();                
+            $student = Student::where('students.id',$s->student_id)
+                ->select('students.id as sid','parents.id as pid',
+                        'students.fullname as sname', 'dob',
+                        'parents.fullname as pname','parents.phone','parents.email','parents.alt_fullname','parents.alt_phone','parents.relationship_id as rid',
+                        'relationships.name as rname','relationships.color')
+                ->leftJoin('parents', 'students.parent_id','parents.id')
+                ->leftJoin('relationships','parents.relationship_id', 'relationships.id')->first();
+            if($student){
+                if(!$s->logs){
+                    $s->logs = [];
+                }     
+                $result[$s->student_id]['attendance'][] = $s;
+                if(sizeof($result[$s->student_id]['attendance']) == 1 ){
+                    $result[$s->student_id]['student'] = $student;
+                }
             }
+            
         }
         return response()->json(array_values($result));
     }

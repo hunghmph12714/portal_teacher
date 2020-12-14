@@ -349,3 +349,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 Route::get('/test-mautic', 'ParentController@testMautic');
 Route::get('/delete-student/{id}', 'StudentController@deleteId');
 Route::get('/count-event', 'SessionController@countEvent');
+Route::get('/delete-null-student', 'SessionController@deleteNullStudent');

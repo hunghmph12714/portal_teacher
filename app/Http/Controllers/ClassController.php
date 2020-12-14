@@ -304,6 +304,9 @@ class ClassController extends Controller
         if($class->type == 'event'){
             if($request->selected_sessions){
                 $session_ids = array_column($request->selected_sessions, 'value');
+                $current_sessions = $student->sessionsOfClass($class->id)->get()->toArray();
+                $current_ids = array_column($current_sessions, 'id');
+                
                 $student->sessions()->sync($session_ids);
             }else{
                 $student->sessions()->detach();

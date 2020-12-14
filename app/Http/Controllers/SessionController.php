@@ -1133,4 +1133,7 @@ class SessionController extends Controller
 
         }
     }
+    public function deleteNullStudent(){
+        // $session = $s->
+    }
 }
