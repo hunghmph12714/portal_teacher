@@ -542,7 +542,7 @@ class StudentController extends Controller
                 $to_email = $parent->email;        
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
-                $password = '12345Bay';
+                $password = 'Boc24038';
                 $d = ['result' => $result];
                 
                 
@@ -1135,7 +1135,7 @@ class StudentController extends Controller
         $to_email = $request->email;
         $to_name = '';
         $mail = "thithu@vietelite.edu.vn";
-        $password = "12345Bay";
+        $password = "Boc24038";
         $d = ['result' => $result];
         
         
