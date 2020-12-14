@@ -241,21 +241,9 @@ const ListSession = (props) => {
                           padding: '0px',
                       },        
                     },
+                    
                     {
-                      title: "Đăng ký",
-                      field: "ss_number",
-                      headerStyle: {
-                          padding: '0px',
-                          width: '90px',
-                          fontWeight: '600',
-                      },
-                      cellStyle: {
-                        width: '90px',
-                          padding: '0px 5px',
-                      },        
-                    },
-                    {
-                      title: "Xác nhận",
+                      title: "Tổng",
                       field: "present_number",
                       headerStyle: {
                           padding: '0px',

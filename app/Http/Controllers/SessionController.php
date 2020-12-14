@@ -337,7 +337,7 @@ class SessionController extends Controller
         $session = Session::find($request->session_id);
         if($session){
             $event = Classes::find($session->class_id);
-            $students = $session->students()->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+            $students = $session->students()->where('attendance', 'present')->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
             foreach($students as $key => $s){
                 $students[$key]['sbd'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s['value'])->first()->id;
             }
@@ -1105,5 +1105,32 @@ class SessionController extends Controller
             return response()->json($result);
         
 
+    }
+    public function countEvent(){
+        $events = Classes::where('type','event')->get();
+        foreach($events as $event){
+            $event->student_number = $event->activeStudents()->count();
+            $event->waiting_number = $event->waitingStudents()->count();
+            $event->save();
+
+            $students = $event->activeStudents;
+            $sessions = $event->sessions;
+
+            foreach($students as $student){
+                foreach($sessions as $s){
+                    $ss  = StudentSession::where('student_id', $student->id)->where('session_id', $s->id)->first();
+                    if($ss){
+                        $ss->attendance = 'present';
+                        $ss->save();
+                    }
+                }
+            }
+            foreach($sessions as $s){
+                $s->ss_number = $s->students()->where('attendance', 'holding')->count();
+                $s->present_number = $s->students()->where('attendance', 'present')->count();
+                $s->save();
+            }
+
+        }
     }
 }

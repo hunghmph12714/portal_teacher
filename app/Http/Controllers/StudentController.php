@@ -512,6 +512,7 @@ class StudentController extends Controller
             Transaction::create($t);
             $t['debit'] = Account::where('level_2', '3387')->first()->id;
             $t['credit'] = Account::where('level_2', '5112')->first()->id;
+            $t['paper_id'] = null;
             Transaction::create($t);
         //Change trạng thái xác nhận
             $student_event = StudentClass::where('student_id', $student['id'])->where('class_id', $student['class_id'])->first();
@@ -519,7 +520,15 @@ class StudentController extends Controller
                 $student_event->status = 'active';
                 $student_event->save();
 
-                // $sessions = $student::sessionsOfClass($student)
+                $class = Classes::find($student['class_id']);
+                $sessions = Session::where('class_id', $student['class_id'])->get();
+                foreach($sessions as $session){
+                    $ss = StudentSession::where('student_id', $student['id'])->where('session_id', $session->id)->first();
+                    if($ss){
+                        $ss->attendance = 'present';
+                        $ss->save();
+                    }
+                }
             }
             $parent = Parents::find($student['parent_id']);
             if($parent){
