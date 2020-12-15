@@ -53,7 +53,7 @@ VietElite xin gửi tới quý phụ huynh một số thông tin quan trọng đ
             <b> Mã cá nhân: </b> {{$result['pass']}} 
           </li>
           <li>
-             Tra cứu thông tin và kết quả thi: <a href="https://thithu.info/tra-cuu-ket-qua">https://thithu.info/tra-cuu-ket-qua</a>
+             Tra cứu thông tin và kết quả thi: <a href="https://thithu.info/tra-cuu">https://thithu.info/tra-cuu</a>
           </li>
         </ul>
     </div>    

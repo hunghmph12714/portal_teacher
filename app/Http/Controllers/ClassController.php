@@ -302,14 +302,17 @@ class ClassController extends Controller
             }
         }
         if($class->type == 'event'){
+            $current_sessions = $student->sessionsOfClass($class->id)->get()->toArray();
+            $current_ids = array_column($current_sessions, 'id');
             if($request->selected_sessions){
-                $session_ids = array_column($request->selected_sessions, 'value');
-                $current_sessions = $student->sessionsOfClass($class->id)->get()->toArray();
-                $current_ids = array_column($current_sessions, 'id');
-                
-                $student->sessions()->sync($session_ids);
+                $session_ids = array_column($request->selected_sessions, 'value');                
+                $diff = array_diff($current_ids, $session_ids);
+                print_r($current_ids);
+                print_r($session_ids);
+                print_r($diff);
+                $student->sessions()->detach($diff);
             }else{
-                $student->sessions()->detach();
+                $student->sessions()->detach($current_ids);
             }
             
 
