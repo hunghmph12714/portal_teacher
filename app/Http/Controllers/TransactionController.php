@@ -171,8 +171,6 @@ class TransactionController extends Controller
         }
         else{
             $result['page'] = $request->page;
-            
-            // print_r($request->filter);
             foreach($request->filter as $f){
                 $sname = '';
                 if($f['column']['field'] == 'sname'){     

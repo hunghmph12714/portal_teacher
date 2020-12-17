@@ -29,6 +29,9 @@ class Student extends Model
     public function sessions(){
         return $this->belongsToMany('App\Session','student_session','student_id','session_id');
     }
+    public function scopeParentFind($query, $value){
+        return $query->join('parents', 'students.parent_id', 'parents.id')->where('parents.phone', 'LIKE', '%'.$value.'%')->orWhere('parents.fullname', 'LIKE', '%'.$value.'%');
+    }
     public function sessionsOfClass($class_id){
         return $this->belongsToMany('App\Session','student_session','student_id','session_id')
                     ->withPivot('score','comment','btvn_comment')

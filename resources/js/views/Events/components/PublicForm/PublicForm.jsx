@@ -241,7 +241,7 @@ class PublicForm extends React.Component{
         products = products.map(p => {
           return {...p, active: false, discount_fee: 0, className: '' }
         })
-        return {...prevState, student_name: val, student_id: null, classes: [], products, total_fee:0, discount_fee: 0, activated: 0}
+        return {...prevState, student_name: val, student_id: null, classes: [], products, total_fee:0, discount_fee: 0, activated: null}
       })
     } 
     onChange = (event) => {
@@ -379,6 +379,16 @@ class PublicForm extends React.Component{
       
     }
     onProductChange = (product) => {
+      if(!this.state.activated){
+        this.props.enqueueSnackbar('Vui lòng lựa chọn "Học sinh có đang theo học tại trung tâm VietElite?" để được giảm lệ phí!', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          } ,
+          variant: 'warning'
+        })
+        return ;
+      }
       if(this.state.phone == "" || this.state.student_name == ""){
         this.props.enqueueSnackbar('Vui lòng điền thông tin học sinh.', {
           anchorOrigin: {

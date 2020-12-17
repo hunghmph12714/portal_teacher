@@ -20,6 +20,15 @@ class Classes extends Model
                     ->withPivot('status', 'entrance_date','stats','drop_time','id as sc_id')
                     ->withTimestamps()->orderBy('student_class.status')->orderBy('students.fullname');
     }
+    public function studentsOffset($limit, $offset){
+        return $this->belongsToMany('App\Student','student_class','class_id','student_id')                    
+                    ->as('detail')
+                    ->using('App\StudentClass')
+                    ->withPivot('status', 'entrance_date','stats','drop_time','id as sc_id')
+                    ->withTimestamps()->offset($offset)->limit($limit)->orderBy('student_class.status')->orderBy('students.fullname');
+    }
+    //filter Student
+    
     public function activeStudents(){
         return $this->belongsToMany('App\Student','student_class','class_id','student_id')
             ->wherePivot('status', 'active')

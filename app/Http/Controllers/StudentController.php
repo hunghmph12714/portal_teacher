@@ -137,30 +137,73 @@ class StudentController extends Controller
                 $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
             }
         }
-        if($class && $class->type == 'event'){
-            $students = $class->students()->orderBy('status')->get();
-            $result = $students->toArray();
-            foreach($students as $key => $student){
-                $parent = Parents::where('parents.id',$student->parent_id)
-                            ->select('parents.fullname as pname','relationships.name as rname','parents.phone as pphone'
-                                ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
-                                ,'relationships.color', 'relationships.id as rid')
-                            ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
-                $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
-                $result[$key]['sbd'] = $class->code.''.$student['sc_id'];
-                $result[$key]['classes'] = $student->activeClasses;
-                $acc_131 = Account::where('level_1', '131')->first();
+        
+        return response()->json($result);
+    }
+    protected function getStudentEvent(Request $request){
+        $rules = [
+            'class_id' => 'required',
+            'page' => 'required',
+            'per_page' => 'required',
+        ];
+        $this->validate($request, $rules);
 
-                $debit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('debit', $acc_131->id)->sum('amount');                
-                $credit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('credit', $acc_131->id)->sum('amount');
-                $result[$key]['debit'] = $debit;
-                $result[$key]['credit'] = $credit;
-                $sessions = $student->sessionsOfClass($class->id)->get()->toArray();
-                $sessions_content = array_column($sessions, 'content');
-                $result[$key]['sessions_arr'] = $sessions;
-                $result[$key]['sessions'] = $sessions_content;
-                $result[$key]['sessions_str'] = implode($sessions_content, ',');
+        $offset = $request->page * ($request->per_page);
+        $result = ['data' => []];
+        $result['page'] = $request->page;
+
+        $class_id = $request->class_id;
+        $class = Classes::find($class_id);
+        if(empty($request->filter)){
+            $students = $class->studentsOffset($request->per_page,$offset )->orderBy('status')->get();
+            $result['page'] = $request->page;
+            $result['total'] = $class->students()->count();
+            $result['data'] = $students->toArray();             
+        }else{
+            foreach($request->filter as $filter){
+                $students = $class->studentsOffset($request->per_page,$offset );
+                $result['page'] = $request->page;
+
+                if($filter['column']['field'] == 'fullname'){
+                    $students = $students->where('students.fullname', 'LIKE', '%'.$filter['value'].'%')->orderBy('status')->get();                    
+                    $result['data'] = $students->toArray();  
+                }
+                if($filter['column']['field'] == 'pname'){
+                    $students = $students->parentFind($filter['value'])->orderBy('status')->get();
+                    $result['data'] = $students->toArray();
+                }
+                if($filter['column']['field'] == 'status'){
+                    if(count($filter['value'])>0){
+                        $students = $students->whereIn('status', $filter['value'])->orderBy('status')->get();
+                    }else{
+                        $students->orderBy('status')->get();
+                    }
+                    $result['data'] = $students->toArray();
+                }
+                $result['total'] = count($result['data']);
+                // $students = $students->get();
             }
+        }
+        foreach($students as $key => $student){
+            $parent = Parents::where('parents.id',$student->parent_id)
+                        ->select('parents.fullname as pname','relationships.name as rname','parents.phone as pphone'
+                            ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
+                            ,'relationships.color', 'relationships.id as rid')
+                        ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
+            $result['data'][$key]['parent'] = ($parent) ? $parent->toArray() : [];
+            $result['data'][$key]['sbd'] = $class->code.''.$student['sc_id'];
+            $result['data'][$key]['classes'] = $student->activeClasses;
+            $acc_131 = Account::where('level_1', '131')->first();
+
+            $debit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('debit', $acc_131->id)->sum('amount');                
+            $credit = Transaction::where('student_id', $student->id)->where('class_id', $class->id)->where('credit', $acc_131->id)->sum('amount');
+            $result['data'][$key]['debit'] = $debit;
+            $result['data'][$key]['credit'] = $credit;
+            $sessions = $student->sessionsOfClass($class->id)->get()->toArray();
+            $sessions_content = array_column($sessions, 'content');
+            $result['data'][$key]['sessions_arr'] = $sessions;
+            $result['data'][$key]['sessions'] = $sessions_content;
+            $result['data'][$key]['sessions_str'] = implode($sessions_content, ',');
         }
         return response()->json($result);
     }

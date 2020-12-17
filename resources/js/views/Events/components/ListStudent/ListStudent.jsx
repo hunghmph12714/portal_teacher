@@ -6,6 +6,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 import DialogCreate from './DialogCreate'
+import DialogNew from './DialogNew'
 import DialogFee from './DialogFee'
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import {
@@ -34,6 +35,7 @@ const exportCsv = (columnList, initialData) => {
     
 };
 const ListStudent = (props) => {
+    const tableRef = React.useRef();
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const { class_id, class_name } = props
     const [data, setData] = useState([]);
@@ -47,6 +49,7 @@ const ListStudent = (props) => {
         {
             title: "STT",
             field: "id",
+            filtering: false,
             headerStyle: {
                 width: '10px',
                 fontWeight: '600',
@@ -56,7 +59,6 @@ const ListStudent = (props) => {
                 width: '10px',
                 padding: '0px'
             },
-            filtering: false,
             render: rowData => {
                 return (                                
                     <span key={rowData.tableData.id }> {rowData.tableData.id + 1} </span>                             
@@ -70,6 +72,7 @@ const ListStudent = (props) => {
         {
             title: "SBD",
             field: "sbd",
+            filtering: false,
             headerStyle: {
                 width: '20px',
                 fontWeight: '600',
@@ -153,22 +156,24 @@ const ListStudent = (props) => {
         //     )                
         // },
         //Quan hệ
-        {
-            title: "Ghi chú",
-            field: "pnote",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
+        // {
+        //     title: "Ghi chú",
+        //     field: "pnote",
+        //     headerStyle: {
+        //         padding: '0px',
+        //         fontWeight: '600',
+        //     },
+        //     cellStyle: {
+        //         padding: '0px',
+        //     },
                     
-        },
+        // },
         {
             title: "Đăng ký",
             field: "sessions_str",
             grouping: false,
+            filtering: false,
+
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
@@ -187,6 +192,7 @@ const ListStudent = (props) => {
         {
             title: "Lệ phí",
             field: "debit",
+            filtering: false,
             type: 'currency',
             currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
             headerStyle: {
@@ -202,6 +208,7 @@ const ListStudent = (props) => {
         {
             title: "Đã đóng",
             field: "credit",
+            filtering: false,
             type: 'currency',
             currencySetting: {currencyCode: 'VND', minimumFractionDigits: 0, maximumFractionDigits:0},
             headerStyle: {
@@ -217,6 +224,7 @@ const ListStudent = (props) => {
         {
             title: "Ngày đăng ký",
             field: "entrance_date_format",
+            filtering: false,
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
@@ -245,23 +253,13 @@ const ListStudent = (props) => {
     const [totalFee, setTotalFee] = useState(0);
     const [name, setName] = useState('');
     const [sessions, setSessions] = useState([])
+    const [openDialogNew, setOpenNew] = useState(false)
+
+
     useEffect(() => {
-        setLoading(true)
-        const fetchData = async() => {
-            const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
-            setData(response.data.map(r => {
-                    let date = new Date(r.dob)
-                    r.dob_format = format(date , 'dd/MM/yyyy')      
-                    r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
-                    r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''
-                    const d = r.detail
-                    const o = r.parent
-                    let a = Object.assign(r, o, d)
-                    return a
-                })
-            )
-            const s = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
-            setSessions(s.data.map(r => {
+        axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
+            .then(response => {
+                setSessions(response.data.map(r => {
                     let date = new Date(r.date)
                     r.from_full = r.from
                     r.to_full = r.to
@@ -275,13 +273,19 @@ const ListStudent = (props) => {
                     r.value = r.id
                     r.label = r.content+"-"+r.ctname
                     return r
-                })
-            )
-        }
-        
-        fetchData()
-        setLoading(false)
+                }))
+            })
+        .catch(err => {
+
+        })
     }, [reload])
+    function openNewDialog(){
+        setOpenNew(true) 
+    }
+    function closeNewDialog(){
+        setOpenNew(false) 
+        setReload(!reload)
+    }
     function openCreateDialog(){
         setType('create')
         setOpen(true)        
@@ -317,18 +321,47 @@ const ListStudent = (props) => {
     function handleDialogFee () {
 
     }
+    function handleReloadTable() {
+        tableRef.current.onQueryChange();
+    }
     return (
         <React.Fragment>
             <div className="table-student-event">
-            <MaterialTable                
+            <MaterialTable    
+                tableRef={tableRef}            
                 title="Danh sách học sinh"
-                data={data}
+                data={(query) => new Promise((resolve, reject) => {
+                    axios.post(baseUrl + '/event-student/get', {
+                        class_id: class_id,
+                        filter: query.filters, page: query.page, per_page: query.pageSize})
+                        .then(response => {
+                            resolve(
+                                {
+                                    data: response.data.data.map(r => {
+                                        let date = new Date(r.dob)
+                                        r.dob_format = format(date , 'dd/MM/yyyy')      
+                                        r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
+                                        r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''
+                                        const d = r.detail
+                                        const o = r.parent
+                                        let a = Object.assign(r, o, d)
+                                        return a
+                                    }),
+                                    page: response.data.page,
+                                    totalCount: response.data.total
+                                }
+                            )
+                             
+                        })
+                    })
+                }
                 options={{
                     grouping: false,
                     filtering: true,
                     selection: true,
                     exportButton: true,
-                    paging: false,
+                    pageSize: 20,
+                    pageSizeOptions: [20, 50, 100],                    
                     rowStyle: rowData => {
                         return {padding: '0px',}                         
                         
@@ -364,7 +397,7 @@ const ListStudent = (props) => {
                             isFreeAction: true,
                             text: 'Thêm học sinh',
                             onClick: (event) => {
-                                openCreateDialog()
+                                openNewDialog()
                             },
                         },   
                         {
@@ -413,6 +446,10 @@ const ListStudent = (props) => {
                 class_id = {class_id}
                 type = {type}
                 student = {(selected_data[0])?selected_data[0]:{}}
+            />
+            <DialogNew 
+                open = {openDialogNew}
+                handleClose = {closeNewDialog}
             />
             <DialogFee
                 open = {feeDialog}
