@@ -517,46 +517,58 @@ class StudentController extends Controller
             'description' => 'required',
         ];
         $this->validate($request, $rules);
-              
-        $account = Account::find($request->account);
-        if($account->level_1 == '111'){
-            $p['method'] = 'TM';
-            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
-            $p['receipt_number'] = $max_receipt_number + 1;
+
+        if($request->total_amount > 0){
+            $account = Account::find($request->account);
+            if($account->level_1 == '111'){
+                $p['method'] = 'TM';
+                $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
+                $p['receipt_number'] = $max_receipt_number + 1;
+            }
+            if($account->level_1 == '112'){
+                $p['method'] = 'NH';
+                $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
+                $p['receipt_number'] = $max_receipt_number + 1;
+            }
+            $p['center_id'] = $request->center;
+            $p['type'] = 'receipt';
+            $p['name'] = $request->name;
+            $p['description'] = $request->description;
+            $p['amount'] = $request->total_amount;
+            $p['user_created_id'] = auth()->user()->id;
+            $p['note'] = '';
+            $p['created_at'] = date('Y-m-d');
+            $p['status'] = NULL;
+            $p['address'] = '';
+            $p = Paper::create($p);
         }
-        if($account->level_1 == '112'){
-            $p['method'] = 'NH';
-            $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'NH')->max('receipt_number') : 0;
-            $p['receipt_number'] = $max_receipt_number + 1;
+        else{
+            $student = $request->students[0];
+            $t = Transaction::where('student_id', $student['id'])->where('class_id', $student['class_id'])->whereNotNull('paper_id')->first();
+            if($t){
+                $p = Paper::find($t->paper_id);
+            }
         }
-        $p['center_id'] = $request->center;
-        $p['type'] = 'receipt';
-        $p['name'] = $request->name;
-        $p['description'] = $request->description;
-        $p['amount'] = $request->total_amount;
-        $p['user_created_id'] = auth()->user()->id;
-        $p['note'] = '';
-        $p['created_at'] = date('Y-m-d');
-        $p['status'] = NULL;
-        $p['address'] = '';
-        $p = Paper::create($p);
         $total_amount = $request->total_amount;
         foreach($request->students as $student){
-            $t['debit'] = $request->account;
-            $t['credit'] = Account::where('level_2', '131')->first()->id;
-            $t['time'] = date('Y-m-t', strtotime($student['entrance_date']));
-            $t['content'] = $request->description;
-            $t['student_id'] = $student['id'];
-            $t['class_id'] = (array_key_exists('class_id', $student))?$student['class_id']:NULL;
-            $t['session_id'] = NULL;
-            $t['user'] = auth()->user()->id;
-            $t['paper_id'] = $p->id;
-            $t['amount'] = $student['debit'] - $student['credit'];         
-            Transaction::create($t);
-            $t['debit'] = Account::where('level_2', '3387')->first()->id;
-            $t['credit'] = Account::where('level_2', '5112')->first()->id;
-            $t['paper_id'] = null;
-            Transaction::create($t);
+            if($student['debit'] - $student['credit'] > 0){
+                $t['debit'] = $request->account;
+                $t['credit'] = Account::where('level_2', '131')->first()->id;
+                $t['time'] = date('Y-m-t', strtotime($student['entrance_date']));
+                $t['content'] = $request->description;
+                $t['student_id'] = $student['id'];
+                $t['class_id'] = (array_key_exists('class_id', $student))?$student['class_id']:NULL;
+                $t['session_id'] = NULL;
+                $t['user'] = auth()->user()->id;
+                $t['paper_id'] = $p->id;
+                $t['amount'] = $student['debit'] - $student['credit'];         
+                Transaction::create($t);
+                $t['debit'] = Account::where('level_2', '3387')->first()->id;
+                $t['credit'] = Account::where('level_2', '5112')->first()->id;
+                $t['paper_id'] = null;
+                Transaction::create($t);
+            }
+            
         //Change trạng thái xác nhận
             $student_event = StudentClass::where('student_id', $student['id'])->where('class_id', $student['class_id'])->first();
             if($student_event){

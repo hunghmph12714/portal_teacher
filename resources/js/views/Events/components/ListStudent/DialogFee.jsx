@@ -163,7 +163,7 @@ class DialogFee extends React.Component {
                 description: this.props.class_name
             })
                 .then(repsonse => {
-                    this.setState({open: false})
+                    this.setState({open: false, disabled: false})
                     this.props.handleClose()
                     this.props.enqueueSnackbar('Đã thu lệ phí', {variant: 'success'})
 
@@ -172,6 +172,7 @@ class DialogFee extends React.Component {
                 })
                 .catch(err => {
                     this.props.enqueueSnackbar('Có lỗi xảy ra, vui lòng kiểm tra lại', {variant: 'error'})
+                    this.setState({ disabled: false })
                 })
         }
         else{
