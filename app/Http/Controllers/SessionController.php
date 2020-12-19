@@ -394,33 +394,73 @@ class SessionController extends Controller
 
             $document = $request->old_document;
             //Upload document
+            $new_dir = public_path().'/docs/'.$class->code.'/'.$session->date.'_'.$session->id;
+            if (!is_dir($new_dir)) {
+                mkdir($new_dir.'/documents', 0775, true);
+                mkdir($new_dir.'/exercices', 0775, true);
+            }
+            //Xoá file
+            $old_documents = $session->document;
+            if($old_documents != $document){
+                $old_documents = str_replace($document, '', $old_documents);
+                $old_documents = explode(',', $old_documents);
+                foreach($old_documents as $od){
+                    if($od != ""){
+                        unlink(base_path().$od);
+                    }
+                }
+            }
+            //Thêm mới upload files
             for($i = 0 ; $i < $request->document_count; $i++){
                 if($request->has('document'.$i)){
-                    $ans = $request->file('document'.$i);
-                    $name = $session->id."_document_".$i."_".time();
-                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
-                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    $ans = $request->file('document'.$i);                    
+                    $name = $ans->getClientOriginalName();
+                    $ans->move($new_dir.'/documents/',$name);
+                    $path = "/public/docs/".$class->code.'/'.$session->date.'_'.$session->id.'/documents/'.$name;
                     if($i == 0 && $document == ''){
                         $document = str_replace(',','',$path);
                     }else{
-                        $document = $document.",".str_replace(',','',$path);
+                        if (strpos($document, str_replace(',','',$path)) !== false) {
+                            
+                        }else{
+                            $document = $document.",".str_replace(',','',$path);
+                        }
+                        
                     } 
                 }
             }
             $exercice = $request->old_exercice;
-            for($i = 0 ; $i < $request->exercice_count ; $i++){
+            //Xoá file
+            $old_exercices = $session->exercice;
+            if($old_exercices != $exercice){
+                $old_exercices = str_replace($exercice, '', $old_exercices);
+                $old_exercices = explode(',', $old_exercices);
+                foreach($old_exercices as $od){
+                    if($od != ""){
+                        unlink(base_path().$od);
+                    }
+                }
+            }
+            //Thêm mới upload files
+            for($i = 0 ; $i < $request->exercice_count; $i++){
                 if($request->has('exercice'.$i)){
-                    $ans = $request->file('exercice'.$i);
-                    $name = $session->id."_exercice_".$i."_".time();
-                    $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
-                    $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                    $ans = $request->file('exercice'.$i);                    
+                    $name = $ans->getClientOriginalName();
+                    $ans->move($new_dir.'/exercices/',$name);
+                    $path = "/public/docs/".$class->code.'/'.$session->date.'_'.$session->id.'/exercices/'.$name;
                     if($i == 0 && $exercice == ''){
                         $exercice = str_replace(',','',$path);
                     }else{
-                        $exercice = $exercice.",". str_replace(',','',$path);
+                        if (strpos($exercice, str_replace(',','',$path)) !== false) {
+                            
+                        }else{
+                            $exercice = $exercice.",".str_replace(',','',$path);
+                        }
+                        
                     } 
                 }
             }
+
             $session->document = $document;
             $session->exercice = $exercice;
             $session->btvn_content = $request->btvn_content;
@@ -654,6 +694,7 @@ class SessionController extends Controller
         ];
         $this->validate($request, $rules);
         $class_id = $request->class_id;
+        $class = Classes::find($class_id);
         $input['class_id'] = $request->class_id;
         $input['teacher_id'] = $request->teacher_id;
         $input['center_id'] = $request->center_id;
@@ -669,31 +710,36 @@ class SessionController extends Controller
         $session = Session::create($input);
 
         $document = '';
-        //Upload document
+        $new_dir = public_path().'/docs/'.$class->code.'/'.$session->date.'_'.$session->id;
+        mkdir($new_dir.'/documents', 0775, true);
+        
+        //Thêm mới upload files
         for($i = 0 ; $i < $request->document_count; $i++){
             if($request->has('document'.$i)){
-                $ans = $request->file('document'.$i);
-                $name = $session->id."_document_".$i."_".time();
-                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
-                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                $ans = $request->file('document'.$i);                    
+                $name = $ans->getClientOriginalName();
+                $ans->move($new_dir.'/documents/',$name);
+                $path = "/public/docs/".$class->code.'/'.$session->date.'_'.$session->id.'/documents/'.$name;
                 if($i == 0){
                     $document = $path;
                 }else{
                     $document = $document.",".$path;
-                }
+                } 
             }
         }
+        
         $exercice = '';
-        for($i = 0 ; $i < $request->exercice_count ; $i++){
+        mkdir($new_dir.'/exercices', 0775, true);
+        for($i = 0 ; $i < $request->exercice_count; $i++){
             if($request->has('exercice'.$i)){
-                $ans = $request->file('exercice'.$i);
-                $name = $session->id."_exercice_".$i."_".time();
-                $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
-                $path = "/public/document/".$name.".".$ans->getClientOriginalExtension();
+                $ans = $request->file('exercice'.$i);                    
+                $name = $ans->getClientOriginalName();
+                $ans->move($new_dir.'/exercices/',$name);
+                $path = "/public/docs/".$class->code.'/'.$session->date.'_'.$session->id.'/exercices/'.$name;
                 if($i == 0){
-                    $exercice = str_replace(',','',$path);
+                    $exercice = $path;
                 }else{
-                    $exercice = $exercice.",". str_replace(',','',$path);
+                    $exercice = $exercice.",".$path;
                 } 
             }
         }
@@ -705,7 +751,6 @@ class SessionController extends Controller
 
         $session->save();
         //Add student to session
-        $class = Classes::find($class_id);
         $students = json_decode($request->students);
         // print_r($students);
         foreach($students as $student){
@@ -1135,5 +1180,58 @@ class SessionController extends Controller
     }
     public function deleteNullStudent(){
         // $session = $s->
+    }
+    public function moveFiles(){
+        $sessions = Session::Where('document', '!=', '')->orWhere('exercice', '!=', '')->offset(483+373)->limit(500)->get();
+        foreach($sessions as $key => $session){
+            echo $key."-SESSION: ". $session->id;
+            $class = Classes::find($session->class_id);
+            if($class){
+                // $ans->move(public_path(). "/document/",$name.".".$ans->getClientOriginalExtension());
+                $new_dir = public_path().'/docs/'.$class->code.'/'.$session->date.'_'.$session->id;
+                if (!is_dir($new_dir)) {
+                    mkdir($new_dir.'/documents', 0775, true);
+                    mkdir($new_dir.'/exercices', 0775, true);
+                }
+                $docs = explode(',', $session->document);
+                $exercice = explode(',', $session->exercice);
+                $new_documents_dir = [];
+                foreach($docs as $key=>$doc){
+                    $doc = base_path().$doc;
+                    $dir = explode('/', $doc);
+                    $dir = $dir[count($dir)-1];
+                    $new_documents_dir[] = 'public/docs/'.$class->code.'/'.$session->date.'_'.$session->id.'/documents/'.$dir;
+                    try{
+                        copy($doc, $new_dir.'/documents/'.$dir);
+                        echo "Đã di chuyển\n";
+                    }
+                    catch(\Exception $e){
+                        echo " Không tìm thấy file \n";
+                        continue;
+                    }
+                }
+                $session->document = implode(',', $new_documents_dir);
+                $new_exercices_dir = [];
+                foreach($exercice as $key=>$doc){
+                    $doc = base_path().$doc;
+                    $dir = explode('/', $doc);
+                    $dir = $dir[count($dir)-1];
+                    $new_exercices_dir[] = 'public/docs/'.$class->code.'/'.$session->date.'_'.$session->id.'/exercices/'.$dir;
+                    try{
+                        copy($doc, $new_dir.'/exercices/'.$dir);
+                        echo "Đã di chuyển";
+                        echo "<br/>";
+                    }
+                    catch(\Exception $e){
+                        echo " Không tìm thấy file \n";
+                        echo "<br/>";
+                        continue;
+                    }
+                }
+                $session->exercice = implode(',', $new_exercices_dir);
+                $session->save();
+            }
+            
+        }
     }
 }

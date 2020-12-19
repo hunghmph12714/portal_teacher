@@ -3,6 +3,8 @@ import './Document.scss'
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { withSnackbar } from 'notistack'
+import {DropzoneArea} from 'material-ui-dropzone'
+
 import {
     Grid,
     IconButton,
@@ -180,7 +182,30 @@ class Documents extends React.Component{
             level: 10,
             selected_id:'',
             loading: false,
+            upload_document: [],
+            upload_preview: [],
+            upload_answer: []
         }
+    }
+    handleDocumentUpload = (doc) => {
+        let upload = [];
+        if(doc.length == 0){
+            this.setState({upload_document: []})
+        }
+        for(let i = 0; i< doc.length; i++){
+            var reader = new FileReader();
+            // reader.onload = function(e){
+            reader.readAsDataURL(doc[i]);            
+    
+            // }
+            reader.onloadend = function (e) {
+                upload.push({file: doc[i], data: e.target.result, answer:[]})
+                this.setState({
+                    upload_document: upload,
+                })
+            }.bind(this);
+        }    
+        // this.setState({ upload_document: doc })
     }
     getDocuments = () =>{
         this.setState({loading: true})
@@ -309,6 +334,7 @@ class Documents extends React.Component{
                             FORM TẠO MỚI - SỬA KHI BÀI TẬP
                         </span>
                     </AccordionSummary>
+                
                     <AccordionDetails>
                        <Grid container spacing={1}>
                             <Grid item md={1} xs={12}>
@@ -412,13 +438,6 @@ class Documents extends React.Component{
                                         <option value={1}>1</option>
                                         <option value={2}>2</option>
                                         <option value={3}>3</option>
-                                        <option value={4}>4</option>
-                                        <option value={5}>5</option>
-                                        <option value={6}>6</option>
-                                        <option value={7}>7</option>
-                                        <option value={8}>8</option>
-                                        <option value={9}>9</option>
-                                        <option value={10}>10</option>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -487,10 +506,45 @@ class Documents extends React.Component{
                                 } }
                             />
                         </div>
+                        <div className = 'upload'>
+                            <DropzoneArea 
+                                onChange={this.handleDocumentUpload}
+                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                filesLimit = {20}
+                                initialFiles= {[]}
+                                maxFileSize = {10000000}
+                                clearOnUnmount                                
+                                dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
+                            />
+                        </div>
+                        <div>asdf
+                            {this.state.upload_document.map(d => {
+                                return (
+                                    <Grid container spacing={2}>
+                                        <Grid item md={6}>
+                                            <img src={d.data}/>
+                                        </Grid>
+                                        <Grid item md={6}>
+                                            <DropzoneArea 
+                                                onChange={this.handleDocumentUpload}
+                                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                                filesLimit = {20}
+                                                initialFiles= {[]}
+                                                maxFileSize = {10000000}
+                                                clearOnUnmount
+                                                showPreviews={false}                                                
+                                                dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                )
+                            })}
+                        </div>
                         {this.state.edit ? <Button className="btn" variant="contained" color="primary" onClick={this.handleCreate}>Tạo mới</Button>: ""}
                         <Button className="btn" variant="contained" color="primary" onClick={this.handleSave}>Lưu</Button>
                         <Button className="btn" variant="contained"  onClick={this.cancelEdit}>Huỷ</Button>
                     </AccordionDetails>
+                
                 </Accordion>
                 <ReactNotification />
                 <MaterialTable

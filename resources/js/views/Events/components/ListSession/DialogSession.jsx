@@ -606,6 +606,7 @@ class DialogSession extends React.Component {
                                         filesLimit = {5}
                                         initialFiles= {[]}
                                         maxFileSize = {10000000}
+                                        clearOnUnmount
                                         dropzoneText = "Kéo thả tài liệu nội bộ (Ảnh, PDF, Word)"
                                     />
                                 </div>
@@ -625,7 +626,7 @@ class DialogSession extends React.Component {
                                                         <FolderIcon />
                                                     </ListItemIcon>
                                                     {
-                                                        <span> {doc.replace('/public/document/', '')}</span>
+                                                        <span> {doc.split('/')[doc.split('/').length()-1]}</span>
                                                     }
                                                     <a href={doc} download className="a_document">Tải về</a>
                                                     <a href="#" onClick={(e) => this.deleteDocument(doc, e)} className="a_document">Xóa</a>
@@ -642,6 +643,7 @@ class DialogSession extends React.Component {
                                         filesLimit = {5}
                                         initialFiles= {[]}
                                         maxFileSize = {10000000}
+                                        
                                         dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
                                     />
                                 </div>
