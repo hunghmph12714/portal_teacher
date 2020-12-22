@@ -694,7 +694,6 @@ class PublicForm extends React.Component{
                       color="secondary"
                     />
                   }
-                  label={""}
                 />
               <span onClick={this.handleTos}>Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh-thi-thu'>quy định</a> của kỳ thi </span>
               </span>
