@@ -525,9 +525,9 @@ class DialogSession extends React.Component {
                                                         <FolderIcon />
                                                     </ListItemIcon>
                                                     {
-                                                        <span> {doc.replace('/public/document/', '')}</span>
+                                                         <span> {doc.split('/')[doc.split('/').length-1]}</span>
                                                     }
-                                                    <a href={doc} download className="a_document">Tải về</a>
+                                                    <a href={baseUrl+"/"+doc} download className="a_document">Tải về</a>
                                                     <a href="#" onClick={(e) => this.deleteExercice(doc, e)} className="a_document">Xóa</a>
                                                 </ListItem>
                                                 )
@@ -571,9 +571,9 @@ class DialogSession extends React.Component {
                                                         <FolderIcon />
                                                     </ListItemIcon>
                                                     {
-                                                        <span> {doc.replace('/public/document/', '')}</span>
+                                                         <span> {doc.split('/')[doc.split('/').length-1]}</span>
                                                     }
-                                                    <a href={doc} download className="a_document">Tải về</a>
+                                                    <a href={baseUrl+"/"+doc} download className="a_document">Tải về</a>
                                                     <a href="#" onClick={(e) => this.deleteDocument(doc, e)} className="a_document">Xóa</a>
                                                 </ListItem>
                                                 )
