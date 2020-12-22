@@ -1181,8 +1181,11 @@ class SessionController extends Controller
     public function deleteNullStudent(){
         // $session = $s->
     }
+    public function redirectFile($filename){
+        echo $filename;
+    }
     public function moveFiles(){
-        $sessions = Session::Where('document', '!=', '')->orWhere('exercice', '!=', '')->offset(483+373)->limit(500)->get();
+        $sessions = Session::Where('document', '!=', '')->orWhere('exercice', '!=', '')->offset(2000)->limit(2000)->get();
         foreach($sessions as $key => $session){
             echo $key."-SESSION: ". $session->id;
             $class = Classes::find($session->class_id);
