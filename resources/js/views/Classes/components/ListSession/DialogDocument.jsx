@@ -15,6 +15,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
+const baseUrl = window.Laravel.baseUrl
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,7 +68,7 @@ const DialogDocument = props => {
                                     <ListItemIcon>
                                         <FolderIcon />
                                     </ListItemIcon>
-                                    <a href={doc} download> Tải về </a>
+                                    <a href={baseUrl+'/'+doc} download> Tải về </a>
                                 </ListItem>
                                 )
                             }): ''}
@@ -87,7 +88,7 @@ const DialogDocument = props => {
                                     <ListItemIcon>
                                         <FolderIcon />
                                     </ListItemIcon>
-                                    <a href={doc} download> Tải về </a>
+                                    <a href={baseUrl+'/'+doc} download> Tải về </a>
                                 </ListItem>
                                 )
                             }): ''}

@@ -2,7 +2,8 @@
 /public/hot
 /public/storage
 /public/document/
-/public/images/documents
+/public/images/documents/
+/public/images/answers/
 /public/docs
 /public/js/app.js
 /storage/*.key
