@@ -19,10 +19,11 @@ import {
   DialogContentText,
   DialogTitle ,
   CircularProgress,
-  Typography ,
+  Typography , Checkbox
 } from "@material-ui/core";
 import { format, isAfter } from 'date-fns'
 import AsyncSelectCreatable from 'react-select/async-creatable';
+
 import MaskedInput from 'react-text-mask'
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import vi from "date-fns/locale/vi";
@@ -200,7 +201,7 @@ class PublicForm extends React.Component{
             total_fee: 0,
             discount_fee: 0,
             final_fee: 0,
-
+            checkedB: false,
         }
     }
     componentDidMount = () => {
@@ -246,6 +247,9 @@ class PublicForm extends React.Component{
     } 
     onChange = (event) => {
       this.setState({ [event.target.name]: event.target.value })
+    }
+    handleTos = () => {
+      this.setState({ checkedB: !this.state.checkedB })
     }
     formatPhoneNumber = (phoneNumberString) => {
       var cleaned = ('' + phoneNumberString).replace(/\D/g, '')
@@ -476,6 +480,7 @@ class PublicForm extends React.Component{
         loading: true,
       })
       let activeProduct = this.state.products.filter(p => p.active == true);
+      
       if(activeProduct.length == 0){
         this.props.enqueueSnackbar('Vui lòng chọn môn thi', {
           variant: 'error',
@@ -500,7 +505,21 @@ class PublicForm extends React.Component{
         this.setState({
           loading: false,
         })
-      }else{
+      }else
+      if(!this.state.checkedB){
+        this.props.enqueueSnackbar('Vui lòng đồng ý với quy định của kỳ thi', {
+          variant: 'error',
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+        })
+        this.setState({
+          loading: false,
+        })
+        return 1;
+      }else
+      {
         var numb = this.state.phone.match(/\d/g);
         numb = numb.join("");
         axios.post('/event/dang-ky', {...this.state, phone: numb})
@@ -664,6 +683,20 @@ class PublicForm extends React.Component{
                     textAlign:'center' // this does the magic
                 }}
             >
+              <span className="tos">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.checkedB}
+                      onChange={this.handleTos}
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label={""}
+                />
+              Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh'>quy định</a> của kỳ thi
+              </span>
               <Button 
                 // color={(this.state.events[index].active) ? 'primary' : 'default'} 
                 color='primary'
