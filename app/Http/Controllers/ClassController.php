@@ -747,6 +747,30 @@ class ClassController extends Controller
         }
         return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
     }
+    protected function getCenterReport($id){
+        $center = Center::find($id);
+        if($center){
+            $classes = Classes::where('center_id', $id);
+            $class_count = $classes->count();
+            $classes = $classes->get();
+            $arr_student = [];
+            $sum_student = 0;
+            foreach($classes as $class){
+                $students = $class->activeStudents;
+                foreach($students as $student){
+                    $sum_student++;
+                    if(!in_array($student->id, $arr_student)){
+                        $arr_student[] = $student->id;
+                    }
+                }
+            }
+            print_r("Tổng số lớp: ".$class_count);
+            echo "<br>";
+            print_r("Tổng lượt học: ".$sum_student);
+            echo "<br>";
+            print_r("Tổng học sinh: ".count($arr_student));
+        }
+    }
     protected function getScoreReport(Request $request){
         $rules = ['class_id' => 'required'];
         $this->validate($request, $rules);

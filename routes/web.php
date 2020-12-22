@@ -262,6 +262,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('/class/active-student', 'ClassController@getActiveStudent');
     
+    Route::get('/center/report/{id}', 'ClassController@getCenterReport');
 
     
 //Student
@@ -353,5 +354,4 @@ Route::get('/ta/{email}', 'UserController@createNewTa');
 Route::get('/test-mautic', 'ParentController@testMautic');
 Route::get('/delete-student/{id}', 'StudentController@deleteId');
 Route::get('/count-event', 'SessionController@countEvent');
-Route::get('/delete-null-student', 'SessionController@deleteNullStudent');
 Route::get('/move-file', 'SessionController@moveFiles');
