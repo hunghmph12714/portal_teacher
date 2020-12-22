@@ -685,6 +685,7 @@ class PublicForm extends React.Component{
             >
               <span className="tos">
                 <FormControlLabel
+                  className="tos-checkbox"
                   control={
                     <Checkbox
                       checked={this.state.checkedB}
@@ -695,7 +696,7 @@ class PublicForm extends React.Component{
                   }
                   label={""}
                 />
-              Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh'>quy định</a> của kỳ thi
+              <span onClick={this.handleTos}>Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh'>quy định</a> của kỳ thi </span>
               </span>
               <Button 
                 // color={(this.state.events[index].active) ? 'primary' : 'default'} 
@@ -712,7 +713,6 @@ class PublicForm extends React.Component{
                
               </Button>
             </Grid>
-            
           </div>
         )
     }
