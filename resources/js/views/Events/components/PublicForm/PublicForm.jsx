@@ -691,12 +691,12 @@ class PublicForm extends React.Component{
                       checked={this.state.checkedB}
                       onChange={this.handleTos}
                       name="checkedB"
-                      color="primary"
+                      color="secondary"
                     />
                   }
                   label={""}
                 />
-              <span onClick={this.handleTos}>Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh'>quy định</a> của kỳ thi </span>
+              <span onClick={this.handleTos}>Tôi đã đọc và đồng ý với <a target="_blank" rel="noopener noreferrer" href='https://thithu.info/quy-dinh-thi-thu'>quy định</a> của kỳ thi </span>
               </span>
               <Button 
                 // color={(this.state.events[index].active) ? 'primary' : 'default'} 
