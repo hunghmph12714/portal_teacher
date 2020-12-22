@@ -17,18 +17,20 @@ import {
   import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
   import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
   import Accordion from '@material-ui/core/Accordion';
-
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+  import DoneAllOutlinedIcon from '@material-ui/icons/DoneAllOutlined';
+  import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import MaterialTable from "material-table";
 import NumberFormat from 'react-number-format';
 import Creatable from 'react-select/creatable';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5vee/build/ckeditor';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 // import ClassicEditor from 'ckeditor5-classic-with-mathtype';
 
 import axios from 'axios'
@@ -59,114 +61,99 @@ function NumberFormatCustom(props) {
         />
     );
 }
+const columns = [
+                
+    { title: 'Môn', field: 'major' ,  
+        lookup: { 'Toán':'Toán', 'Văn': 'Văn', 'Tiếng việt': 'Tiếng việt', 'Anh':'Anh', 'Lý':'Lý', 'Hoá':'Hoá' }, 
+        headerStyle: {
+            padding: '0px',
+            width: '50px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+            width: '50px',
+        },
+    },
+    { title: 'Khối', field: 'grade' , 
+        lookup: { '1':'1', '2': '2', '3': '3', '4':'4', '5':'5', '6':'6','7':'7','8':'8','9':'9','10':'10','11':'11', '12':'12' },
+        headerStyle: {
+            padding: '0px',
+            width: '90px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+            width: '90px',
+        },  },
+    { title: 'Chuyên đề', field: 'topic', 
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },},
+    { title: 'Dạng bài', field: 'tag', 
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+    },},
+    { title: 'Loại', field: 'type',  
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },},
+    { title: 'Độ khó', field: 'level', 
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },
+    },
+    
+    { title: 'Ngày tạo', field: 'created_at_formated' , editable: 'never',
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },
+    },            
+    { title: 'Người tạo', field: 'name' , editable: 'never',
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },
+    },            
+    { title: 'Trạng thái', field: 'status' , editable: 'never',
+        headerStyle: {
+            padding: '0px',
+            fontWeight: '600',
+        },  
+        cellStyle: {
+            padding: '0px 8px 0px 0px',
+        },
+    },            
+]
 class Documents extends React.Component{
     constructor(props){
         super(props)
         this.state  = {
-            edit: false,
-            columns: [
-                {
-                    title: "",
-                    field: "action",
-                    filtering: false,
-                    disableClick: true,
-                    sorting: false,
-                    headerStyle: {
-                        padding: '0px',
-                        width: '10px',
-                        width: '90px',
-                },
-                cellStyle: {
-                    width: '90px',
-                    width: '10px',
-                    padding: '0px',
-                },
-                render: rowData => (
-                    <div style = {{display: 'block'}}>
-                        {/* {rowData.tableData.id} */}
-                        <Tooltip title="Chỉnh sửa" arrow>
-                            <IconButton onClick={() => {this.editDocuments(rowData)}}>
-                            <EditOutlinedIcon fontSize='inherit' />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Xóa" arrow>
-                            <IconButton onClick={() => {
-                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                this.deleteDocuments(rowData)}
-                            }>
-                            <DeleteForeverIcon fontSize='inherit' />
-                            </IconButton>
-                        </Tooltip>                                
-                    </div>
-                )
-                },
-                { title: 'Môn', field: 'major' ,  
-                    lookup: { 'Toán':'Toán', 'Văn': 'Văn', 'Tiếng việt': 'Tiếng việt', 'Anh':'Anh', 'Lý':'Lý', 'Hoá':'Hoá' }, 
-                    headerStyle: {
-                        padding: '0px',
-                        width: '50px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                        width: '50px',
-                    },
-                },
-                { title: 'Khối', field: 'grade' , 
-                    lookup: { '1':'1', '2': '2', '3': '3', '4':'4', '5':'5', '6':'6','7':'7','8':'8','9':'9','10':'10','11':'11', '12':'12' },
-                    headerStyle: {
-                        padding: '0px',
-                        width: '90px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                        width: '90px',
-                    },  },
-                { title: 'Chuyên đề', field: 'topic', 
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                    },},
-                { title: 'Dạng bài', field: 'tag', 
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                },},
-                { title: 'Loại', field: 'type',  
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                    },},
-                { title: 'Độ khó', field: 'level', 
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                    },
-                },
-                
-                { title: 'Ngày tạo', field: 'created_at' , editable: 'never',
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                    },  
-                    cellStyle: {
-                        padding: '0px 8px 0px 0px',
-                    },    
-            },            
-            ],
+            edit: false,            
+            checkedB: false,
             data: [],
             c: 10000,
             expanded: 'panel1',
@@ -257,7 +244,44 @@ class Documents extends React.Component{
             edit: true,
         })
     }
-    
+    confirmDocument = (oldData) => {
+        axios.post(baseUrl + '/documents/confirm', {id: oldData.id})    
+            .then(response => {
+                this.setState(prevState => {
+                    let data = [...prevState.data];
+                    data = data.map(d => {
+                        if(d.id == oldData.id){
+                            d.status = 'Đã duyệt'
+                        }
+                        return d;
+                    })
+                    return { ...prevState, data };
+                });
+                this.props.enqueueSnackbar('Duyệt thành công', {variant: 'success'})
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar('Có lỗi xảy ra', {variant: 'error'})
+            })
+    }
+    reportDocument = (oldData) => {
+        axios.post(baseUrl + '/documents/report', {id: oldData.id})    
+            .then(response => {
+                this.setState(prevState => {
+                    let data = [...prevState.data];
+                    data = data.map(d => {
+                        if(d.id == oldData.id){
+                            d.status = 'Sai đáp án'
+                        }
+                        return d;
+                    })
+                    return { ...prevState, data };
+                });
+                this.props.enqueueSnackbar('Báo cáo thành công', {variant: 'success'})
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar('Có lỗi xảy ra', {variant: 'error'})
+            })
+    }
     deleteDocuments = (oldData) => {
         return axios.post(baseUrl+ '/documents/delete', {id: oldData.id})
             .then(response => {
@@ -273,7 +297,6 @@ class Documents extends React.Component{
             })
     }
     onChange = e => {
-        console.log(e.target.name)
         this.setState({
             [e.target.name] : e.target.value
         })
@@ -305,7 +328,7 @@ class Documents extends React.Component{
             })
     }
     handleCreate = () => {
-        this.setState({loading: true, edit: false})
+        
         axios.post('/documents/create', { state: this.state })
             .then(response => {
                 this.getDocuments()
@@ -315,6 +338,49 @@ class Documents extends React.Component{
             .catch(err => {
 
             })
+    }
+    handleBundleCreate = () => {
+        this.setState({loading: true})
+        let fd = new FormData()
+        let count = []
+        for(let i = 0; i < this.state.upload_document.length; i++){
+            fd.append('document'+i, this.state.upload_document[i].file, this.state.upload_document[i].file.name)
+            for(let j = 0; j< this.state.upload_document[i].answer.length; j++){
+                fd.append('answer'+i+'_'+j, this.state.upload_document[i].answer[j], this.state.upload_document[i].answer[j].name)
+            }
+            count.push(this.state.upload_document[i].answer.length)  
+        }
+        fd.append('count', count)
+        fd.append('major', this.state.major)
+        fd.append('grade', this.state.grade)
+        fd.append('topic', JSON.stringify(this.state.topic))
+        fd.append('related', JSON.stringify(this.state.related))
+        fd.append('tag', this.state.tag)
+        fd.append('type', this.state.type)
+        fd.append('level', this.state.level)
+        axios.post('/documents/bulk-create', fd)
+            .then(r => {
+                this.getDocuments()
+                this.setState({loading: false})
+                this.props.enqueueSnackbar('Lưu thành công', {variant: 'success'})
+            })
+            .catch(err => {
+
+            })
+
+    }
+    handleCheckChange = () => {        
+        this.setState({ checkedB: !this.state.checkedB })
+        if(this.state.checkedB){
+            this.setState({upload_document: []})
+        }
+    }
+    handleExerciceUpload = (exercices, index) => {
+        this.setState(prevState => {
+            let upload_document = [...prevState.upload_document];
+            upload_document[index].answer = exercices
+            return {...prevState, upload_document}
+        })
     }
     render(){ 
         return(
@@ -327,19 +393,26 @@ class Documents extends React.Component{
                         aria-controls="additional-actions1-content"
                         id="additional-actions1-header"
                     >
-                        <span 
-                            onClick={(event) => event.stopPropagation()}
-                            onFocus={(event) => event.stopPropagation()}
-                        >
-                            FORM TẠO MỚI - SỬA KHI BÀI TẬP
-                        </span>
+                        <FormControlLabel
+                            control={
+                            <Switch
+                                checked={this.state.checkedB}
+                                onChange={this.handleCheckChange}
+                                name="checkedB"
+                                color="primary"
+                            />
+                            }
+                            label="Thêm ảnh hàng loạt"
+                            onClick={e => {e.stopPropagation()}}
+
+                        />
                     </AccordionSummary>
                 
                     <AccordionDetails>
                        <Grid container spacing={1}>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Môn</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Môn(*)</InputLabel>
                                     <Select
                                         native
                                         value={this.state.major}
@@ -358,7 +431,7 @@ class Documents extends React.Component{
                             </Grid>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Khối</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Khối(*)</InputLabel>
                                     <Select
                                         native
                                         value={this.state.grade}
@@ -387,7 +460,7 @@ class Documents extends React.Component{
                                 <Creatable 
                                     options={this.state.topics}
                                     autosize={true}
-                                    placeholder={'Chuyên đề'}
+                                    placeholder={'Chuyên đề(*)'}
                                     onChange={this.handleTopicChange}
                                     value={this.state.topic}
                                     formatCreateLabel={promptTextCreator} 
@@ -409,7 +482,7 @@ class Documents extends React.Component{
                             </Grid>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Loại bài</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Loại bài(*)</InputLabel>
                                     <Select
                                         native
                                         value={this.state.type}
@@ -426,7 +499,7 @@ class Documents extends React.Component{
                             </Grid>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Độ khó</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Độ khó(*)</InputLabel>
                                     <Select
                                         native
                                         value={this.state.level}
@@ -442,106 +515,116 @@ class Documents extends React.Component{
                                 </FormControl>
                             </Grid>
                         </Grid>
-                        <div className="question">
-                            <CKEditor
-                                editor={ClassicEditor}
-                                config={{
-                                    toolbar: {
-                                        items: [
-                                            'heading', 'MathType', 'ChemType',
-                                            '|',
-                                            'bold',
-                                            'italic',
-                                            'link',
-                                            'bulletedList',
-                                            'numberedList',
-                                            'imageUpload',
-                                            'mediaEmbed',
-                                            'insertTable',
-                                            'blockQuote',
-                                            'undo',
-                                            'redo'
-                                        ]
-                                    },
-                                }}
-                                data= {this.state.question}
-                                onReady={editor => {
-                                    // You can store the "editor" and use when it is needed.
-                                    // console.log( 'Editor is ready to use!', editor );
-                                }}
-                                onChange={ ( event, editor ) => {
-                                    this.setState({question: editor.getData()})
-                                } }
-                            />
-                        </div>
-                        <div className="answer">
-                            <CKEditor
-                                editor={ClassicEditor}
-                                config={{
-                                    toolbar: {
-                                        items: [
-                                            'heading', 'MathType', 'ChemType',
-                                            '|',
-                                            'bold',
-                                            'italic',
-                                            'link',
-                                            'bulletedList',
-                                            'numberedList',
-                                            'imageUpload',
-                                            'mediaEmbed',
-                                            'insertTable',
-                                            'blockQuote',
-                                            'undo',
-                                            'redo'
-                                        ]
-                                    },
-                                }}
-                                data= {this.state.answer}
-                                onReady={editor => {
-                                    // You can store the "editor" and use when it is needed.
-                                    // console.log( 'Editor is ready to use!', editor );
-                                }}
-                                onChange={ ( event, editor ) => {
-                                    this.setState({answer: editor.getData()})
-                                } }
-                            />
-                        </div>
-                        <div className = 'upload'>
-                            <DropzoneArea 
-                                onChange={this.handleDocumentUpload}
-                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
-                                filesLimit = {20}
-                                initialFiles= {[]}
-                                maxFileSize = {10000000}
-                                clearOnUnmount                                
-                                dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
-                            />
-                        </div>
-                        <div>asdf
-                            {this.state.upload_document.map(d => {
-                                return (
-                                    <Grid container spacing={2}>
-                                        <Grid item md={6}>
-                                            <img src={d.data}/>
-                                        </Grid>
-                                        <Grid item md={6}>
-                                            <DropzoneArea 
-                                                onChange={this.handleDocumentUpload}
-                                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
-                                                filesLimit = {20}
-                                                initialFiles= {[]}
-                                                maxFileSize = {10000000}
-                                                clearOnUnmount
-                                                showPreviews={false}                                                
-                                                dropzoneText = "Kéo thả tài liệu công khai(Ảnh, PDF, Word)"
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                )
-                            })}
-                        </div>
-                        {this.state.edit ? <Button className="btn" variant="contained" color="primary" onClick={this.handleCreate}>Tạo mới</Button>: ""}
-                        <Button className="btn" variant="contained" color="primary" onClick={this.handleSave}>Lưu</Button>
+                        {this.state.checkedB ? (
+                            <div>
+                                <div className = 'upload'>
+                                    <DropzoneArea 
+                                        onChange={this.handleDocumentUpload}
+                                        acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                        filesLimit = {20}
+                                        initialFiles= {[]}
+                                        maxFileSize = {10000000}
+                                        clearOnUnmount                                
+                                        dropzoneText = "Kéo thả đề baì(Ảnh, PDF, Word)"
+                                    />
+                                </div>
+                                <div>
+                                    {this.state.upload_document.map((d, index) => {
+                                        return (
+                                            <Grid container spacing={2}>
+                                                <Grid item md={6}>
+                                                    <img src={d.data}/>
+                                                </Grid>
+                                                <Grid item md={6}>
+                                                    <DropzoneArea 
+                                                        onChange={loadedFiles => this.handleExerciceUpload(loadedFiles, index)}
+                                                        acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                                        filesLimit = {20}
+                                                        initialFiles= {[]}
+                                                        maxFileSize = {10000000}
+                                                        clearOnUnmount
+                                                        showPreviews={false}                                                
+                                                        dropzoneText = "Kéo thả đáp án(Ảnh, PDF, Word)"
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="question">
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        config={{
+                                            toolbar: {
+                                                items: [
+                                                    'heading', 'MathType', 'ChemType',
+                                                    '|',
+                                                    'bold',
+                                                    'italic',
+                                                    'link',
+                                                    'bulletedList',
+                                                    'numberedList',
+                                                    'imageUpload',
+                                                    'mediaEmbed',
+                                                    'insertTable',
+                                                    'blockQuote',
+                                                    'undo',
+                                                    'redo'
+                                                ]
+                                            },
+                                        }}
+                                        data= {this.state.question}
+                                        onReady={editor => {
+                                            // You can store the "editor" and use when it is needed.
+                                            // console.log( 'Editor is ready to use!', editor );
+                                        }}
+                                        onChange={ ( event, editor ) => {
+                                            this.setState({question: editor.getData()})
+                                        } }
+                                    />
+                                </div>
+                                <div className="answer">
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    config={{
+                                        toolbar: {
+                                            items: [
+                                                'heading', 'MathType', 'ChemType',
+                                                '|',
+                                                'bold',
+                                                'italic',
+                                                'link',
+                                                'bulletedList',
+                                                'numberedList',
+                                                'imageUpload',
+                                                'mediaEmbed',
+                                                'insertTable',
+                                                'blockQuote',
+                                                'undo',
+                                                'redo'
+                                            ]
+                                        },
+                                    }}
+                                    data= {this.state.answer}
+                                    onReady={editor => {
+                                        // You can store the "editor" and use when it is needed.
+                                        // console.log( 'Editor is ready to use!', editor );
+                                    }}
+                                    onChange={ ( event, editor ) => {
+                                        this.setState({answer: editor.getData()})
+                                    } }
+                                />
+                            </div>
+                            </div>
+                        )
+                        }
+                       
+                        {this.state.edit&&!this.state.checkedB ? <Button className="btn" variant="contained" color="primary" onClick={this.handleCreate}>Tạo mới</Button>: ""}
+                        {this.state.checkedB ? <Button className="btn" variant="contained" color="primary" onClick={this.handleBundleCreate}>Tạo mới</Button>: <Button className="btn" variant="contained" color="primary" onClick={this.handleSave}>Lưu</Button>}
+                        
                         <Button className="btn" variant="contained"  onClick={this.cancelEdit}>Huỷ</Button>
                     </AccordionDetails>
                 
@@ -549,7 +632,7 @@ class Documents extends React.Component{
                 <ReactNotification />
                 <MaterialTable
                     title="Tài liệu"
-                    columns={this.state.columns}
+                    columns={columns}
                     data={this.state.data}
                     options = {{
                         grouping: true,
@@ -561,6 +644,44 @@ class Documents extends React.Component{
                             paddingLeft: '0px'
                           }
                     }}
+                    actions={[                 
+                        {
+                            icon: () => <EditOutlinedIcon />,
+                            tooltip: 'Sửa',
+                            isFreeAction: false,
+                            text: 'Sửa',
+                            onClick: (event, rowData) => {this.editDocuments(rowData)},
+                        },
+                        {
+                            icon: () => <DeleteForeverIcon />,
+                            tooltip: 'Xoá',
+                            isFreeAction: false,
+                            text: 'Xoá',
+                            onClick: (event, rowData) => {
+                                if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) {
+                                    this.deleteDocuments(rowData)
+                                }
+                                    
+                            }
+                        }, 
+                        {
+                            icon: () => <DoneAllOutlinedIcon />,
+                            tooltip: 'Duyệt',
+                            isFreeAction: false,
+                            text: 'Xoá',
+                            onClick: (event, rowData) => { this.confirmDocument(rowData)    
+                            }
+                        }, 
+                        {
+                            icon: () => <ErrorOutlinedIcon />,
+                            tooltip: 'Báo sai',
+                            isFreeAction: false,
+                            text: 'Báo sai',
+                            onClick: (event, rowData) => { this.reportDocument(rowData)    
+                            }
+                        }, 
+                    ]}
+
                     localization={{
                         header: {
                             actions: ''
@@ -608,6 +729,7 @@ class Documents extends React.Component{
                                 </Grid>
                                 <Grid item md={6} sm={12}>
                                     <h5> Đáp án </h5>
+
                                     <CKEditor
                                         editor={ClassicEditor}
                                         config={{

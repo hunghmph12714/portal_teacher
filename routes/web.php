@@ -307,6 +307,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/documents/edit', 'DocumentController@edit');
     Route::post('/documents/delete', 'DocumentController@delete');
     Route::post('/documents/get', 'DocumentController@get');
+    Route::post('/documents/bulk-create', 'DocumentController@bulkCreate');
+    Route::post('/documents/confirm', 'DocumentController@confirm');
+    Route::post('/documents/report', 'DocumentController@report');
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
@@ -352,4 +355,3 @@ Route::get('/delete-student/{id}', 'StudentController@deleteId');
 Route::get('/count-event', 'SessionController@countEvent');
 Route::get('/delete-null-student', 'SessionController@deleteNullStudent');
 Route::get('/move-file', 'SessionController@moveFiles');
-// Route::get('/public/document/{filename}', 'SessionController@redirectFile');
