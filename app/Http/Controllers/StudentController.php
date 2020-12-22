@@ -1074,7 +1074,7 @@ class StudentController extends Controller
         $rules = ['phone' => 'required', 'student_name' => 'required'];
         $this->validate($request, $rules);
 
-        $parent = Parents::where('phone', $request->phone)->orWhere('alt_phone', $request->phone)->first();
+        $parent = Parents::where('phone', $request->phone)->first();
         if($parent){
             $student = Student::where('parent_id', $parent->id)->where('fullname','LIKE', '%'.$request->student_name.'%')->first();
             if($student){
