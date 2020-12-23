@@ -133,41 +133,6 @@ const ListStudent = (props) => {
             )
 
         },
-        //Quan hệ
-        // {
-        //     title: "Quan hệ",
-        //     field: "rname",
-        //     headerStyle: {
-        //         padding: '0px',
-        //         width: '120px',
-        //         fontWeight: '600',
-        //     },
-        //     cellStyle: {
-        //         padding: '0px',
-        //         width: '120px',
-        //     },
-        //     render: rowData => {
-        //         return (                              
-        //         <Chip style={customChip(rowData.color)} variant="outlined" label={rowData.rname} size="small" />                         
-        //         )
-        //     },
-        //     renderGroup: (rname, groupData) => (                            
-        //         <Chip variant="outlined" label={rname} size="small" />
-        //     )                
-        // },
-        //Quan hệ
-        // {
-        //     title: "Ghi chú",
-        //     field: "pnote",
-        //     headerStyle: {
-        //         padding: '0px',
-        //         fontWeight: '600',
-        //     },
-        //     cellStyle: {
-        //         padding: '0px',
-        //     },
-                    
-        // },
         {
             title: "Đăng ký",
             field: "sessions_str",
@@ -284,6 +249,7 @@ const ListStudent = (props) => {
     }
     function closeNewDialog(){
         setOpenNew(false) 
+        handleReloadTable()
         setReload(!reload)
     }
     function openCreateDialog(){
@@ -293,6 +259,7 @@ const ListStudent = (props) => {
     function closeCreateDialog(){
         setOpen(false)
         setSelectedData([])
+        handleReloadTable()
         setReload(!reload)
     }
     function handleOpenEditDialog(rowData){
@@ -316,7 +283,7 @@ const ListStudent = (props) => {
     function handleCloseFeeDialog (){
         setOpenFeeDialog(false)
         setSelectedData([])
-        setReload(!reload)
+        handleReloadTable()
     }
     function handleDialogFee () {
 
