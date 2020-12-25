@@ -1086,7 +1086,7 @@ class SessionController extends Controller
                 $to = date('h:i', strtotime($s->to));
                 $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                 $duration = (strtotime($to_0) - strtotime($from_0))/60;
-                $name = $s->content. "(".$duration."')";
+                $name = $s->content. " (".$duration."')";
 
                 if(array_key_exists($date, $result)){
                     $result[$date][] = ['time' => str_replace(':', 'h', $from.'-'.$to), 'name' => $name, 'note'=>$s->note];
