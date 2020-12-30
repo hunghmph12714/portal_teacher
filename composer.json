@@ -21,6 +21,7 @@
         "swiftmailer/swiftmailer": "6.0"
     },
     "require-dev": {
+        "beyondcode/laravel-er-diagram-generator": "^1.5",
         "facade/ignition": "^1.4",
         "fzaninotto/faker": "^1.4",
         "laravel/ui": "^1.1",
