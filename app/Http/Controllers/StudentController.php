@@ -1389,12 +1389,17 @@ class StudentController extends Controller
             //         }
             //     }
             // }
-            $students = $p->students()->select('students.fullname')->get()->toArray();
-            $unique_students = array_unique(array_column($students, 'fullname'));
+            $students = $p->students()->select('students.fullname','students.id')->get();
+
+            $unique_students = array_unique(array_column($students->toArray(), 'fullname'));
             if(count($students) > 1 && count($students) > count($unique_students)){
                 echo "<br>";
                 foreach($students as $student){
-                    print_r($student['fullname']. " - ");
+                    // print_r($student->fullname. " - ");
+                    $classes = $student->classes;
+                    if(count($classes) == 0){
+                        print_r($student->fullname. " - ");
+                    }
                 }
             }
             
