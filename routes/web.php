@@ -355,3 +355,4 @@ Route::get('/test-mautic', 'ParentController@testMautic');
 Route::get('/delete-student/{id}', 'StudentController@deleteId');
 Route::get('/count-event', 'SessionController@countEvent');
 Route::get('/move-file', 'SessionController@moveFiles');
+Route::get('/normalize-db','StudentController@normalizeDb');

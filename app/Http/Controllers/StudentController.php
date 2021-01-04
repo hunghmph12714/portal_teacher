@@ -1372,5 +1372,23 @@ class StudentController extends Controller
         }
         
     }
+    public function normalizeDb(){
+        $parents = Parents::all();
+        foreach($parents as $p){
+            if(strlen($p->phone )> 0){
+                if($p->phone[0] != 0){
+                    print_r($p->phone."<br>");
+                    $check_p = Parents::where('phone', '0'.$p->phone)->first();
+                    if($check_p){
+                        print('Trùng sđth phụ huynh: '. $check_p->phone.'<br>');
+                    }
+                    else{
+                        $p->phone = '0'.$p->phone;
+                        $p->save();
+                    }
+                }
+            }
+        }
+    }
 
 }
