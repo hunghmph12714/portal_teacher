@@ -978,7 +978,7 @@ class ClassController extends Controller
         ];
         $labels_3 = [];
         if($class && $class->type='event'){
-            $students = $class->students()->orderBy('student_class.created_at', 'ASC')->get();
+            $students = $class->studentsByEntranceTime;
             foreach($students as $student){
                 // Ngày đăng ký
                 $time = date('d/m', strtotime($student->detail['entrance_date']));
