@@ -165,7 +165,6 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
     <script>
         
         $( document ).ready(function() {
-            console.log(document.referrer)
             $('#url').val(document.referrer)
             var schools = {!! json_encode($schools, JSON_HEX_TAG) !!};
             $('#datepicker').datepicker({

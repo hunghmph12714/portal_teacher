@@ -522,7 +522,7 @@ class PublicForm extends React.Component{
       {
         var numb = this.state.phone.match(/\d/g);
         numb = numb.join("");
-        axios.post('/event/dang-ky', {...this.state, phone: numb})
+        axios.post('/event/dang-ky', {...this.state, phone: numb, url: window.location.href})
           .then(response => {
             this.setState({ loading: false })
             this.props.enqueueSnackbar('Đăng ký thành công. Vui lòng kiểm tra hòm thư', {

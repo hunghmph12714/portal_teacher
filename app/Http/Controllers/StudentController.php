@@ -1018,24 +1018,10 @@ class StudentController extends Controller
             
             if (strpos($p->phone, '(') !== false) {
                 
-                // $ex = Parents::where('phone', $p->phone)->first();
-                // if($ex){
-                //     // $ex->forceDelete();
-                //     print_r($ex->toArray());
-                //     echo "<pre>";
-                // }
             }
             $p->phone = str_replace('(', '', str_replace(')','', str_replace('-','', str_replace(' ','', $p->phone))));
             $p->save();
         }
-        // $student = Student::all();
-        // foreach($student as $s) {
-        //     $check_p  = Parents::find($s->parent_id);
-        //     if(!$check_p){
-        //         $s->parent_id = 0;
-        //         $s->save();
-        //     }
-        // }
     }
     public function testMail(){
         $ids = [1,2];
@@ -1044,31 +1030,18 @@ class StudentController extends Controller
             $data = [];
             $student_session = StudentSession::find($id);        
             if($student_session){
-    
                 $data['student'] = Student::find($student_session->student_id);
                 $data['parent'] = Parents::find($data['student']->parent_id);
-    
                 $data['session'] = Session::find($student_session->session_id);
-                $data['class'] = Classes::find($data['session']->class_id)->code;
-    
+                $data['class'] = Classes::find($data['session']->class_id)->code;    
                 $data['center'] = Center::find($data['session']->center_id);
-                $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
-    
+                $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;    
                 $data['student_session'] = $student_session;
             }
             $datas[$key]  =  $data;
         }
         $d = array('datas'=>$datas);
         return view('emails.thht', compact('datas'));
-        // $to_email = $datas[0]['parent']->email;        
-        // $to_name = '';
-        // Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas) {
-        //     $message->to($to_email, $to_name)
-        //             ->subject('[VIETELITE]Tình hình học tập học sinh '. $datas[0]['student']->fullname . ' lớp '. $datas[0]['class']);
-        //     $message->from('tranthanhsma@gmail.com','VIETELITE EDUCATION CENTER');
-        // });
-        // return response()->json();
-
     }
     public function checkPhone(Request $request){
         $rules = ['phone' => 'required', 'student_name' => 'required'];
@@ -1092,8 +1065,14 @@ class StudentController extends Controller
         }
     }
     public function registerEvent(Request $request){
-        $rules = [];
-        // print_r($request->toArray());
+        $rules = ['phone' => 'required'];
+        $this->validate($request, $rules);
+        
+        $query = ['utm_medium' => '', 'utm_source'=>'', 'utm_campaign'=>''];
+        $url = parse_url($request->url);
+        if(array_key_exists('query',$url)){
+            parse_str($url['query'], $query);
+        }
         //Check học sinh có trong hệ thống
         $result = [];
         $parent = Parents::where('phone', $request->phone)->orWhere('alt_phone', $request->phone)->first();
@@ -1134,6 +1113,10 @@ class StudentController extends Controller
             $input['class_id'] = $request->selected_event;
             $input['entrance_date'] = date('Y-m-d');
             $input['status'] = 'waiting';
+            $input['medium'] = $query['utm_medium'];
+            $input['source'] = $query['utm_source'];
+            $input['name'] = $query['utm_campaign'];
+
             $check_event = StudentClass::create($input);
         }
         $product_ids= [];
