@@ -207,6 +207,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/event/get', 'ClassController@getEvents');
             Route::post('/event-gather', 'StudentController@gatherEvent');
             Route::post('/event/create', 'ClassController@createEvent');
+            Route::post('/event-analytics', 'ClassController@getAnalytics');
             Route::post('/event/edit', 'ClassController@editEvent');
             Route::get('/event/get-class', 'ClassController@getClassName');
             Route::post('/event/add-product', 'SessionController@addProduct');

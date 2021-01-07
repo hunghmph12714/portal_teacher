@@ -943,5 +943,106 @@ class ClassController extends Controller
     //         }
     //     }
     // }
+    public function getAnalytics(Request $request){
+        $rules= ['class_id' => 'required'];
+        $this->validate($request, $rules);
+        
+        $class = Classes::find($request->class_id);
+        $data_1 = [[
+            'label' => 'Xác nhận',
+            'backgroundColor' => '#36a2eb',
+            'data' => [0,0,0,0],
+        ], [
+            'label' => 'Chưa xác nhận',
+            'backgroundColor' => '#ff6384',
+            'data' => [0,0,0,0],
+        ]];
+        $data_2 = [[
+            'label' => 'Xác nhận',
+            'backgroundColor' => '#36a2eb',
+            'data' => [0,0,0,0],
+        ], [
+            'label' => 'Chưa xác nhận',
+            'backgroundColor' => '#ff6384',
+            'data' => [0,0,0,0],
+        ]];
+        $data_3 = [
+            'labels' => [],
+            'datasets' => [
+                ['label' => 'CS Trung Yên', 'fill'=>false, 'borderColor' => '#36a2eb', 'data'=>[]],
+                ['label' => 'CS Phạm Tuấn Tài', 'fill'=>false, 'borderColor' => '#ff6384', 'data'=>[]],
+                ['label' => 'CS TDH-DQ', 'fill'=>false, 'borderColor' => '#E230FA', 'data'=>[]],
+                ['label' => 'Ngoài TT', 'fill'=>false, 'borderColor' => '#30FA80', 'data'=>[]],
+                ['label' => 'Tổng', 'fill'=>false, 'borderColor' => 'red', 'data'=>[]],
+            ]
+        ];
+        $labels_3 = [];
+        if($class && $class->type='event'){
+            $students = $class->students()->orderBy('student_class.created_at', 'ASC')->get();
+            foreach($students as $student){
+                // Ngày đăng ký
+                $time = date('d/m', strtotime($student->detail['entrance_date']));
+                if(!array_key_exists($time, $labels_3)){
+                    $labels_3[$time] = [0,0,0,0,0];
+                }
+                //Số môn đăng ký
+                $sessions = $student->sessionsOfClass($class->id)->count();
+                $center = 3;
+                //Check học sinh đang học tại trung tâm nào
+                $active_class = $student->activeClasses;
+                if(!count($active_class) == 0){
+                    $c = Classes::find($active_class[0]->id);
+                    switch ($c->center_id) {
+                        case 2:                           
+                        case 4:
+                            $center = 2;
+                            break;
+                        
+                        case 3:
+                            # code...
+                            $center = 1;
+                            break;
+                        
+                        case 5:
+                        case 1:
+                            $center = 0;
+                            # code...
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+                switch ($student->detail['status']) {
+                    case 'active':                        
+                        $data_1[0]['data'][$center]++;
+                        $data_2[0]['data'][$center]+= $sessions;
+                        break;
+                    
+                    case 'waiting':
+                        # code...
+                        $data_1[1]['data'][$center]++;
+                        $data_2[1]['data'][$center]+= $sessions;
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+                $labels_3[$time][$center]+= $sessions;
+                $labels_3[$time][4]+= $sessions;
+            }
+            $i = 0;
+            foreach($labels_3 as $time => $value){
+                $data_3['labels'][] = $time;
+                $data_3['datasets'][0]['data'][] = $value[0];
+                $data_3['datasets'][1]['data'][] = $value[1];
+                $data_3['datasets'][2]['data'][] = $value[2];
+                $data_3['datasets'][3]['data'][] = $value[3];
+                $data_3['datasets'][4]['data'][] = $value[4];
+            }
+        }
+        return response()->json(['data_1' => $data_1, 'data_2' => $data_2, 'data_3'=>$data_3]);
+    }
     
 }

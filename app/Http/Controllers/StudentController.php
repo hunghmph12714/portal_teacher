@@ -203,7 +203,7 @@ class StudentController extends Controller
             $sessions_content = array_column($sessions, 'content');
             $result['data'][$key]['sessions_arr'] = $sessions;
             $result['data'][$key]['sessions'] = $sessions_content;
-            $result['data'][$key]['sessions_str'] = implode($sessions_content, ',');
+            $result['data'][$key]['sessions_str'] =  implode(',', $sessions_content);
         }
         return response()->json($result);
     }
@@ -1087,7 +1087,7 @@ class StudentController extends Controller
             $st['parent_id'] = $parent->id;
             $st['fullname'] = $request->student_name;
             $st['dob'] = date('Y-m-d', strtotime($request->dob));
-            $st['school'] = $request->school['label'];
+            $st['school'] = ($request->school)? $request->school['label'] : '';
             $student = Student::create($st);
         }else{
             $student = Student::where('parent_id', $parent->id)->where('fullname','LIKE', '%'.$request->student_name.'%')->first();
@@ -1095,7 +1095,7 @@ class StudentController extends Controller
                 $st['parent_id'] = $parent->id;
                 $st['fullname'] = $request->student_name;
                 $st['dob'] = date('Y-m-d', strtotime($request->dob));
-                $st['school'] = $request->school['label'];
+                $st['school'] = ($request->school)? $request->school['label'] : '';
                 $student = Student::create($st);
             }
         }
@@ -1113,10 +1113,15 @@ class StudentController extends Controller
             $input['class_id'] = $request->selected_event;
             $input['entrance_date'] = date('Y-m-d');
             $input['status'] = 'waiting';
-            $input['medium'] = $query['utm_medium'];
-            $input['source'] = $query['utm_source'];
-            $input['name'] = $query['utm_campaign'];
-
+            if(array_key_exists('fbclid', $query)){
+                $input['source'] = 'Fb';
+                $input['medium'] = 'direct';
+                $input['name'] = 'direct';
+            }else{
+                $input['medium'] = $query['utm_medium'];
+                $input['source'] = $query['utm_source'];
+                $input['name'] = $query['utm_campaign'];    
+            }
             $check_event = StudentClass::create($input);
         }
         $product_ids= [];

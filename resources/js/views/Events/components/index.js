@@ -8,3 +8,4 @@ export { default as PublicForm } from './PublicForm';
 export { default as PublicResult } from './PublicResult';
 export { default as PublicStudent } from './PublicStudent';
 export { default as ScoreChart } from './ScoreChart';
+export { default as Analytics } from './Analytics';
