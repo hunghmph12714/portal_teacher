@@ -923,26 +923,6 @@ class ClassController extends Controller
         }
         return response()->json($result);
     }
-    // protected function fuckDrop(){
-    //     // $sc = StudentClass::where('status', 'active')->whereNotNull('drop_time')->get();
-    //     $sc = StudentClass::where('drop_time', '1970-01-01')->get();
-    //     foreach($sc as $a){
-    //         $a->drop_time = $a->entrance_date;
-    //         $a->save();
-    //     }
-    //     echo "<pre>";
-    //     print_r($sc->toArray());
-    // }
-    // protected function duplicate(){
-    //     $sc = StudentClass::all();
-    //     foreach($sc as $s){
-    //         $check = StudentClass::where('student_id', $s->student_id)->where('class_id', $s->class_id)->where('id', '!=', $s->id)->first();
-    //         if($check){
-    //             echo "<pre>";
-    //             print_r($check->toArray());
-    //         }
-    //     }
-    // }
     public function getAnalytics(Request $request){
         $rules= ['class_id' => 'required'];
         $this->validate($request, $rules);
@@ -1043,6 +1023,19 @@ class ClassController extends Controller
             }
         }
         return response()->json(['data_1' => $data_1, 'data_2' => $data_2, 'data_3'=>$data_3]);
+    }
+    public function mktAnalytics(){
+        $class_id = 185;
+        $class = Classes::find($class_id);
+        if($class){
+            $sessions = $class->sessions;
+            foreach($sessions as $session){
+                $students = $session->students();
+                foreach($students as $stud){
+                    
+                }
+            }
+        }
     }
     
 }
