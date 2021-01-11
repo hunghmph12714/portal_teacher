@@ -337,9 +337,35 @@ class SessionController extends Controller
         $session = Session::find($request->session_id);
         if($session){
             $event = Classes::find($session->class_id);
-            $students = $session->students()->where('attendance', 'present')->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+            $students = $session->students()->where('attendance', 'present')->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get();
             foreach($students as $key => $s){
-                $students[$key]['sbd'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s['value'])->first()->id;
+                $students[$key]['sbd'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s->value)->first()->id;
+                $active_class = $s->activeClasses;
+                if(!count($active_class) == 0){
+                    $c = Classes::find($active_class[0]->id);
+                    switch ($c->center_id) {
+                        case 2:                           
+                        case 4:
+                            # code...
+                            $students[$key]['center'] = 'TY';
+                            break;
+                        case 3:
+                            # code...
+                            $students[$key]['center'] = 'PTT';
+                            break;
+                        case 5:
+                        case 1:
+                            $students[$key]['center'] = 'TDH-DQ';
+                            # code...
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }else{
+                    $students[$key]['center'] = '';
+                }
+                
             }
             return response()->json($students);
         }
@@ -1117,34 +1143,34 @@ class SessionController extends Controller
                 
                 $studentClass = StudentClass::find(str_replace($request->event_id, '', $val[1]));
                 $student_id = Student::find($studentClass->student_id)->id;
-                if(count($val) >=6){
+                if(count($val) >=7){
                     $ss = StudentSession::where('student_id', $student_id)->where('session_id', $request->session_id)->first();
                 }
-                if(count($val) == 6){                    
-                    $ss->btvn_comment = $val[5];
+                if(count($val) == 7){                    
+                    $ss->btvn_comment = $val[6];
                     $ss->save();
-                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5]];
-                }
-                if(count($val) == 7){
-                    $ss->btvn_comment = $val[5];
-                    $ss->score = $val[6];
-                    $ss->save();
-                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6]];
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6]];
                 }
                 if(count($val) == 8){
-                    $ss->btvn_comment = $val[5];
-                    $ss->score = $val[6];
-                    $ss->max_score = $val[7];
+                    $ss->btvn_comment = $val[6];
+                    $ss->score = $val[7];
                     $ss->save();
-                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6], 'max_score' => $val[7]];
-                }                
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[65], 'score' => $val[7]];
+                }
                 if(count($val) == 9){
-                    $ss->btvn_comment = $val[5];
-                    $ss->score = $val[6];
-                    $ss->max_score = $val[7];
-                    $ss->comment = $val[8];
+                    $ss->btvn_comment = $val[6];
+                    $ss->score = $val[7];
+                    $ss->max_score = $val[8];
                     $ss->save();
-                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[5], 'score' => $val[6], 'max_score' => $val[7], 'comment' => $val[8]];
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8]];
+                }                
+                if(count($val) == 10){
+                    $ss->btvn_comment = $val[6];
+                    $ss->score = $val[7];
+                    $ss->max_score = $val[8];
+                    $ss->comment = $val[9];
+                    $ss->save();
+                    $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8], 'comment' => $val[9]];
                 }  
             }
             return response()->json($result);

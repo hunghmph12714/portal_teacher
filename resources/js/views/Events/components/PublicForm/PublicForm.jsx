@@ -211,7 +211,19 @@ class PublicForm extends React.Component{
     getEvent = () => {
       axios.get('/event-get-public')
         .then(response => {
-          this.setState({events: response.data.map( e => {return {...e, active: false}})})
+          this.setState({events: response.data.map(            
+            e => {
+              let now = new Date()
+              let d = new Date(e.open_date)
+              if(now > d){
+                return {...e, active: false, disabled: true}
+              }else{
+                return {...e, active: false, disabled: false}
+              }
+              
+            }
+          
+          )})
         })
         .catch(err => {
 
@@ -345,7 +357,16 @@ class PublicForm extends React.Component{
           let from = format(new Date(d.from), 'HH:mm');
           let to = format(new Date(d.to), 'HH:mm');
           time_formated = time_formated + "(" + from + " - "+to+")"
-          return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
+
+          let now = new Date();
+          let deadline = new Date(d.from)
+          deadline.setDate(deadline.getDate() - 7)
+          if(now < deadline){
+            return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
+          }else{
+            return {...d, active: false, time_formated: time_formated, className: 'btn-disabled', classes: JSON.parse(d.classes), discount_fee: 0}
+          }
+          
         })})
       })
       .catch(err => {
@@ -412,7 +433,7 @@ class PublicForm extends React.Component{
         for( let i = 0; i < tmp_products.length; i++){
           let p = products[i]
           if(p.id == product.id && p.className == 'btn-disabled'){
-            this.props.enqueueSnackbar('Môn thi trùng thời gian!', {
+            this.props.enqueueSnackbar('Hết thời gian đăng ký hoặc Môn thi trùng thời gian!', {
               anchorOrigin: {
                 vertical: 'top',
                 horizontal: 'center',
@@ -578,7 +599,8 @@ class PublicForm extends React.Component{
                           variant="outlined" 
                           name={evt.id} 
                           onClick={() => this.onEventChange(evt)}
-                          style={(!this.state.events[index].active) ? {fontWeight: 'bold', color: 'black',}:{fontWeight: 'bold', color: 'white', background: '#8bc34a'}}
+                          style={(!this.state.events[index].active) ? {fontWeight: 'bold', color: 'black',}:{fontWeight: 'bold', color: 'white', background: '#8bc34a'} 
+                        }
                         >
                           {evt.note}
                         </Button>
