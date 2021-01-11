@@ -348,7 +348,7 @@ class SessionController extends Controller
                         case 2:                           
                         case 4:
                             # code...
-                            $students[$key]['center'] = 'TY';
+                            $students[$key]['center'] = 'TDH-DQ';
                             break;
                         case 3:
                             # code...
@@ -356,7 +356,7 @@ class SessionController extends Controller
                             break;
                         case 5:
                         case 1:
-                            $students[$key]['center'] = 'TDH-DQ';
+                            $students[$key]['center'] = 'TY';
                             # code...
                             break;
                         default:
