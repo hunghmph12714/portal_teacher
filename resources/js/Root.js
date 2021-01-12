@@ -30,9 +30,9 @@ validate.validators = {
 
 export default class Root extends Component {
     constructor(props) {
-      super(props);      
-    }    
-    
+      super(props);
+    }
+
 
     render() {
         return (
@@ -44,7 +44,7 @@ export default class Root extends Component {
               <Router history={browserHistory}>
                 <Routes />
               </Router>
-            </SnackbarProvider>              
+            </SnackbarProvider>
           </ThemeProvider>
         );
       }
@@ -53,4 +53,3 @@ if (document.getElementById('root')) {
     ReactDOM.render(<Root />
                   , document.getElementById('root'));
   }
-  

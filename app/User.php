@@ -40,6 +40,6 @@ class User extends Authenticatable
 
     function ability()
     {
-        return $this->permissions;
+        return $this->getAllPermissions();
     }
 }

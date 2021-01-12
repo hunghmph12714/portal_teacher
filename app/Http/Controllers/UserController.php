@@ -35,7 +35,7 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
         foreach($ta as $key => $t){
             $input['email'] = $t;
             $input['password'] = Hash::make('12345Bay');
-            
+
             $name_arr = explode(' ', $name[$key]);
             $input['first_name'] = $name_arr[0];
             $input['last_name'] = end($name_arr);
@@ -48,7 +48,12 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
     protected function checkAuth(){
         if(Auth::check()){
             $user = auth()->user();
-            return response()->json(['auth' => true, 'user' => $user]);
+            return response()->json([
+                'auth' => true,
+                'user' => $user,
+                'role' => $user->getRoleNames(),
+                'ability' => $user->ability()
+            ]);
         }
         else return response()->json(['auth' => false]);
     }
@@ -83,7 +88,7 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
                 \File::delete(public_path()."/images/avatars/".$old_avatar_file);
             }
         }
-        
+
         if($request->has('croppedImage')){
             $avatar = $request->file('croppedImage');
             $name = $user->id."_".time();
@@ -102,11 +107,11 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
             $user->phone = $request->phone;
             $user->address = $request->address;
             $user->gender = $request->gender;
-            $user->dob = $request->dob; 
+            $user->dob = $request->dob;
             $jsDateTS = strtotime($request->dob. " +1 days");
-            if ($jsDateTS !== false) 
+            if ($jsDateTS !== false)
                 $user->dob =  date('Y-m-d', $jsDateTS );
-            else 
+            else
                 $user->dob = null;
             $user->save();
             return response()->json($user);
@@ -122,21 +127,21 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
         $user = auth()->user();
         $current_password = $user->password;
         if(Hash::check($request->current_password, $current_password))
-        {           
+        {
             $user->password = Hash::make($request->password);
             $user->save();
             return response()->json('ok', 200);
         }
         else
-        {           
-            return response()->json('Sai mật khẩu', 400);   
+        {
+            return response()->json('Sai mật khẩu', 400);
         }
     }
     protected function createNewTa($email){
         $input['email'] = $email;
         $input['password'] = Hash::make('12345Bay');
-        
-        
+
+
         $input['first_name'] = 'Trợ';
         $input['last_name'] = 'Giảng';
         $input['name'] ='';
