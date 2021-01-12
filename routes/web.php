@@ -221,6 +221,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/event/{id}', function(){
                 return view('welcome');
             });
+            Route::post('/event-score-report', 'ClassController@getEventScore');
     });
     //Password Change
     //Import database 

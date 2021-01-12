@@ -805,7 +805,11 @@ class ClassController extends Controller
                 //Attendance
                 foreach($sessions as $ss){
                     // $attendance = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();
-                    $attendance = $ss->student($s->id)->first()['pivot'];
+                    // print_r($ss->student($s->id)->get()->toArray());
+                    
+                    if($ss->student($s->id)->first()){
+                        $attendance = $ss->student($s->id)->first()['pivot'];
+                    }else $attendance = null;
                     // print_r($attendance->toArray());
                     if($attendance){
                         switch ($attendance->attendance) {
@@ -853,6 +857,65 @@ class ClassController extends Controller
                         $r['score']['btvn_comment'][] = '';
 
                     }
+                }
+                $result[] = $r;
+            }
+        }
+        return response()->json(['students' => $result , 'sessions'=>$sessions->toArray()]);
+    }
+    protected function getEventScore (Request $request){
+        $rules = ['class_id' => 'required'];
+        $this->validate($request, $rules);
+        $class_id = $request->class_id;
+        
+        $class = Classes::find($class_id);
+        $sessions = $class->sessions;
+        $result = [];
+        if($class){            
+            $students = $class->students;
+            foreach($students as $s){
+                $parent = Parents::find($s->parent_id);
+                if(!$parent){
+                    continue;
+                }
+                $r['fullname'] = $s->fullname;
+                $r['pname'] = $parent->fullname;
+                $r['dob'] = date('d-m-Y', strtotime($s->dob));
+                $r['phone'] = $parent->phone; $r['email'] = $parent->email; 
+                $r['school'] = $s->school;
+                $r['room'] = [];
+                $r['score'] = [];
+                $r['id'] = $class->code.''.$s['sc_id'];
+                //Check center
+                $active_class = $s->activeClasses;
+                if(count($active_class) > 0){
+                    $c = Classes::find($active_class[0]->id);
+                    switch ($c->center_id) {
+                        case 2:                           
+                        case 4:
+                            # code...
+                            $r['center'] = 'TDH-DQ';
+                            break;
+                        case 3:
+                            # code...
+                            $r['center'] = 'PTT';
+                            break;
+                        case 5:
+                        case 1:
+                            $r['center'] = 'TY';
+                            # code...
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }else{ $r['center'] = '';}
+                $r['status'] = $s->detail['status'];
+                //Attendance
+                foreach($sessions as $ss){
+                    $pivot = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();                    
+                    $r['score'][]  = ($pivot)?($pivot->score?$pivot->score: '-'):'';
+                    $r['room'][] = ($pivot)?($pivot->btvn_comment?$pivot->btvn_comment: '-'):'';
                 }
                 $result[] = $r;
             }

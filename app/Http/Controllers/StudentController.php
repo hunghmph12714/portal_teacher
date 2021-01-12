@@ -188,7 +188,7 @@ class StudentController extends Controller
             $parent = Parents::where('parents.id',$student->parent_id)
                         ->select('parents.fullname as pname','relationships.name as rname','parents.phone as pphone'
                             ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
-                            ,'relationships.color', 'relationships.id as rid')
+                            ,'relationships.color', 'relationships.id as rid','parents.password as passcode')
                         ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
             $result['data'][$key]['parent'] = ($parent) ? $parent->toArray() : [];
             $result['data'][$key]['sbd'] = $class->code.''.$student['sc_id'];
