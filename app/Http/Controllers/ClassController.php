@@ -872,7 +872,7 @@ class ClassController extends Controller
         $sessions = $class->sessions;
         $result = [];
         if($class){            
-            $students = $class->students;
+            $students = $class->activeStudents;
             foreach($students as $s){
                 $parent = Parents::find($s->parent_id);
                 if(!$parent){
