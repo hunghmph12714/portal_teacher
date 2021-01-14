@@ -222,6 +222,7 @@ Route::group(['middleware' => ['auth']], function() {
                 return view('welcome');
             });
             Route::post('/event-score-report', 'ClassController@getEventScore');
+            Route::post('/session/send-reminder', 'StudentController@sendReminder');
     });
     //Password Change
     //Import database 
@@ -359,3 +360,4 @@ Route::get('/delete-student/{id}', 'StudentController@deleteId');
 // Route::get('/count-event', 'SessionController@countEvent');
 // Route::get('/move-file', 'SessionController@moveFiles');
 // Route::get('/normalize-db','StudentController@normalizeDb');
+Route::get('test-email', 'JobController@processQueue');

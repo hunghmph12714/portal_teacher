@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import DialogSession from './DialogSession';
 import DialogDocument from './DialogDocument'
 import DialogStudent from './DialogStudent'
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import {
     Menu,
     MenuItem,
@@ -84,6 +85,18 @@ const ListSession = (props) => {
 
         })
     }
+    function handleSendEmailReminder(rowData){
+      console.log(rowData)
+      const sessions = rowData.map(r => r.id)
+      const class_id = rowData[0].cid
+      axios.post('/session/send-reminder', {class_id: class_id, sessions:sessions})
+        .then(response => {
+          
+        })
+        .catch(err => {
+
+        })
+    }
     const fetchDataa = async() => {
         const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
         setData(response.data.map(r => {
@@ -119,6 +132,7 @@ const ListSession = (props) => {
                       grouping: true,
                       filtering: true,
                       exportButton: true,
+                      selection: true,
                       rowStyle: rowData => {
                           return {padding: '0px',}                         
                         
@@ -135,6 +149,13 @@ const ListSession = (props) => {
                     isFreeAction: true,
                     text: 'Thêm môn học',
                     onClick: handleCreateSession,
+                },
+                {
+                  icon: () => <MailOutlineIcon />,
+                  tooltip: 'Gửi Email thông báo địa điểm',
+                  isFreeAction: false,
+                  text: 'Gửi Email thông báo địa điểm',
+                  onClick: (event, rowData) => { handleSendEmailReminder(rowData) }
                 },
               ]}
               localization={{
@@ -160,7 +181,7 @@ const ListSession = (props) => {
                   }}
               columns={
                 [
-                  //Actionsds
+                  //Action
                     {
                       title: "",
                       field: "action",

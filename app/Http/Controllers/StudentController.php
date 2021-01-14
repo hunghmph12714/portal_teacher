@@ -20,6 +20,9 @@ use App\TransactionSession;
 use Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use App\Jobs\SendEventNotify;
+use App\Jobs\SendEventReminder;
+
 class StudentController extends Controller
 {
     //
@@ -1190,33 +1193,10 @@ class StudentController extends Controller
         $password = "Boc24038";
         $d = ['result' => $result];
         
-        
-        //Send 
-            $backup = Mail::getSwiftMailer();
-            // Setup your outlook mailer
-            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-            $transport->setUsername($mail);
-            $transport->setPassword($password);
-            // Any other mailer configuration stuff needed...
-            
-            $outlook = new \Swift_Mailer($transport);
+        SendEventNotify::dispatch($result, $to_email, $to_name);
 
-            // Set the mailer as gmail
-            Mail::setSwiftMailer($outlook);
-        
-            // Send your message
-            Mail::send('emails.events.confirm-form',$d, function($message) use ($to_name, $to_email, $result, $mail) {
-                $message->to($to_email, $to_name)
-                        ->to('webmaster@vietelite.edu.vn')
-                        ->subject($result['student']['name']. " - Xác nhận đăng ký " .$result['event']['name'] )
-                        ->replyTo($mail, 'Phụ huynh hs '.$result['student']['name']);
-                $message->from($mail,'VIETELITE EDUCATION CENTER');
-            });
-
-            // Restore your original mailer
-            Mail::setSwiftMailer($backup);
-            return response()->json(200);
-            try{}
+        return response()->json(200);
+        try{}
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
@@ -1295,6 +1275,81 @@ class StudentController extends Controller
         }
         return response()->json($result);
     }
+    protected function sendReminder(Request $request){
+        $rules = ['class_id' => 'required', 'sessions' => 'required'];
+        $this->validate($request, $rules);
+
+        $week = ['Chủ nhật','Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'];
+
+        $class = Classes::find($request->class_id);
+        $students = $class->activeStudents;
+        foreach($students as $student){
+            $result = [];
+            $parent = Parents::find($student->parent_id);
+            $sessions = $student->sessionsOfClass($class->id)->get();
+            $result['student_name'] = $student->fullname;
+            $result['pass'] = $parent->password;
+            $mail_to = $parent->email;
+            $result['sbd'] = $class->code.''.$student->pivot['id'];  
+            foreach($sessions as $session){
+                if(in_array($session->id, $request->sessions)){
+                    $ss = $session->pivot;
+                    if($ss['btvn_comment']){
+                        $loc = explode('.', $ss['btvn_comment']);
+                        if(sizeof($loc) == 2){
+                            $room = $loc[1];
+                            $address = $loc[0];
+                        }else{
+                            $room = $loc[0];
+                            $address = $loc[0];
+                        }
+                        switch ($address) {
+                            case 'TDH':
+                                $loc = '33 ngõ 91 Trần Duy Hưng, Trung Hòa, Cầu Giấy';
+                                break;
+                            
+                            case 'DQ':
+                                $loc = 'Số 2 ngõ 44 Đỗ Quang, Trung Hòa, Cầu Giấy';
+                                # code...
+                                break;
+                            
+                            case 'TY':
+                                $loc = 'Số 23 Lô 14A Trung Yên 11, Trung Hòa, Cầu Giấy';
+                                # code...
+                                break;
+                            
+                            case 'PTT':
+                                $loc = '5 ngõ 3 Phạm Tuấn Tài, Dịch Vọng Hậu, Cầu Giấy';
+                                # code...
+                                break;
+                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        $from = date('G:i', strtotime($session->from));
+                        $to = date('G:i', strtotime($session->to));
+                        $date = $week[date('w', strtotime($session->from))] .", " . date('d/m/Y', strtotime($session->from));
+                        $result['event_name'] = $class->name." - ".$date;
+                        $time = str_replace(':', 'h', $from.'-'.$to);
+                        $result['product'][] = [
+                            'content' => $session->content,
+                            'room' => $room,
+                            'address' => $loc, 
+                            'date' => $date,
+                            'time' => $time,
+                        ];
+                        
+                    }
+                    else continue;
+                }
+            }
+            if(array_key_exists('product', $result)){
+                SendEventReminder::dispatch($result, $mail_to, '');
+            }
+        }
+        return response()->json('queued');
+    }
     function vn_to_str ($str){
  
         $unicode = array(
@@ -1360,38 +1415,38 @@ class StudentController extends Controller
         }
         
     }
-    public function normalizeDb(){
-        $parents = Parents::all();
-        foreach($parents as $p){
-            //Normalize phone
-            // if(strlen($p->phone )> 0){
-            //     if($p->phone[0] != 0){
-            //         print_r($p->phone."<br>");
-            //         $check_p = Parents::where('phone', '0'.$p->phone)->first();
-            //         if($check_p){
-            //             print('Trùng sđth phụ huynh: '. $check_p->phone.'<br>');
-            //         }
-            //         else{
-            //             $p->phone = '0'.$p->phone;
-            //             $p->save();
-            //         }
-            //     }
-            // }
-            $students = $p->students()->select('students.fullname','students.id')->get();
+    // public function normalizeDb(){
+    //     $parents = Parents::all();
+    //     foreach($parents as $p){
+    //         //Normalize phone
+    //         // if(strlen($p->phone )> 0){
+    //         //     if($p->phone[0] != 0){
+    //         //         print_r($p->phone."<br>");
+    //         //         $check_p = Parents::where('phone', '0'.$p->phone)->first();
+    //         //         if($check_p){
+    //         //             print('Trùng sđth phụ huynh: '. $check_p->phone.'<br>');
+    //         //         }
+    //         //         else{
+    //         //             $p->phone = '0'.$p->phone;
+    //         //             $p->save();
+    //         //         }
+    //         //     }
+    //         // }
+    //         $students = $p->students()->select('students.fullname','students.id')->get();
 
-            $unique_students = array_unique(array_column($students->toArray(), 'fullname'));
-            if(count($students) > 1 && count($students) > count($unique_students)){
-                echo "<br>";
-                foreach($students as $student){
-                    // print_r($student->fullname. " - ");
-                    $classes = $student->classes;
-                    if(count($classes) == 0){
-                        print_r($student->fullname. " - ");
-                    }
-                }
-            }
+    //         $unique_students = array_unique(array_column($students->toArray(), 'fullname'));
+    //         if(count($students) > 1 && count($students) > count($unique_students)){
+    //             echo "<br>";
+    //             foreach($students as $student){
+    //                 // print_r($student->fullname. " - ");
+    //                 $classes = $student->classes;
+    //                 if(count($classes) == 0){
+    //                     print_r($student->fullname. " - ");
+    //                 }
+    //             }
+    //         }
             
-        }
-    }
+    //     }
+    // }
 
 }
