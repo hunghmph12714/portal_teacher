@@ -1,0 +1,43 @@
+
+   ErrorException  : pcntl_alarm() has been disabled for security reasons
+
+  at /www/wwwroot/center.vietelite.edu.vn/vendor/laravel/framework/src/Illuminate/Queue/Worker.php:173
+    169|             $this->kill(1);
+    170|         });
+    171| 
+    172|         pcntl_alarm(
+  > 173|             max($this->timeoutForJob($job, $options), 0)
+    174|         );
+    175|     }
+    176| 
+    177|     /**
+
+  Exception trace:
+
+  1   pcntl_alarm("60")
+      /www/wwwroot/center.vietelite.edu.vn/vendor/laravel/framework/src/Illuminate/Queue/Worker.php:173
+
+  2   Illuminate\Queue\Worker::registerTimeoutHandler(Object(Illuminate\Queue\Jobs\DatabaseJob), Object(Illuminate\Queue\WorkerOptions))
+      /www/wwwroot/center.vietelite.edu.vn/vendor/laravel/framework/src/Illuminate/Queue/Worker.php:127
+
+  Please use the argument -v to see more details.
+[2021-01-14 21:36:04][4] Processing: App\Jobs\SendEventNotify
+[2021-01-14 21:36:05][4] Processed:  App\Jobs\SendEventNotify
+[2021-01-15 12:30:01][5] Processing: App\Jobs\SendEventNotify
+[2021-01-15 12:30:04][5] Processed:  App\Jobs\SendEventNotify
+[2021-01-15 13:51:30][6] Processing: App\Jobs\SendEventNotify
+[2021-01-15 13:51:31][6] Processed:  App\Jobs\SendEventNotify
+[2021-01-15 14:30:08][7] Processing: App\Jobs\SendThht
+[2021-01-15 14:30:08][7] Failed:     App\Jobs\SendThht
+[2021-01-15 14:35:32][8] Processing: App\Jobs\SendThht
+[2021-01-15 14:35:32][8] Failed:     App\Jobs\SendThht
+[2021-01-15 14:41:47][9] Processing: App\Jobs\SendThht
+[2021-01-15 14:41:47][9] Failed:     App\Jobs\SendThht
+[2021-01-15 14:42:26][10] Processing: App\Jobs\SendThht
+[2021-01-15 14:42:26][10] Failed:     App\Jobs\SendThht
+[2021-01-15 14:44:17][11] Processing: App\Jobs\SendThht
+[2021-01-15 14:44:17][11] Failed:     App\Jobs\SendThht
+[2021-01-15 14:45:14][12] Processing: App\Jobs\SendThht
+[2021-01-15 14:45:14][12] Failed:     App\Jobs\SendThht
+[2021-01-15 14:45:48][13] Processing: App\Jobs\SendThht
+[2021-01-15 14:45:48][13] Failed:     App\Jobs\SendThht

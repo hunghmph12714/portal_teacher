@@ -1344,6 +1344,7 @@ class StudentController extends Controller
                     else continue;
                 }
             }
+            // return view('emails.events.reminder', compact('result'));
             if(array_key_exists('product', $result)){
                 SendEventReminder::dispatch($result, $mail_to, '');
             }

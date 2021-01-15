@@ -15,6 +15,7 @@ use App\Teacher;
 use Mail;
 use Swift_SmtpTransport;
 use App\StudentSession;
+use App\Jobs\SendThht;
 
 class AttendanceController extends Controller
 {
@@ -74,7 +75,6 @@ class AttendanceController extends Controller
                 }
             }
         }
-        print_r($request->attendance);
     }
 //send emails
     public function sendEmail(Request $request){
@@ -117,66 +117,19 @@ class AttendanceController extends Controller
         $d = array('datas'=>$datas);
 
         $mail = 'info@vietelite.edu.vn';
-        $password = 'Pv$hn$ms26';
-        // if($center_id == 5){
-        //     $mail = 'ketoantrungyen@vietelite.edu.vn';
-        //     $password = 'Mot23457';
-        // }
-        
-        // if($center_id == 2 || $center_id == 4){
-        //     $mail = 'ketoancs1@vietelite.edu.vn';
-        //     $password = '12345Bay';
-        // }
+        $password = 'Daz91003';
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
             $password = 'VeEdu2020';
         }
-
-        // return view('emails.thht', compact('datas'));
        
         $to_email = filter_var($datas[0]['parent']->email, FILTER_VALIDATE_EMAIL) ? $datas[0]['parent']->email : '';        
         $to_email_2 = filter_var($datas[0]['parent']->alt_email, FILTER_VALIDATE_EMAIL) ? $datas[0]['parent']->alt_email : NULL;     
         $to_name = '';
-      
-            $backup = Mail::getSwiftMailer();
-
-            // Setup your outlook mailer
-            $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-            $transport->setUsername($mail);
-            $transport->setPassword($password);
-            // Any other mailer configuration stuff needed...
-            
-            $outlook = new \Swift_Mailer($transport);
-
-            // Set the mailer as gmail
-            Mail::setSwiftMailer($outlook);           
-            
-            if($session_type == "exam"){
-                Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month, $to_email_2) {
-                    $message->to($to_email, $to_name)
-                            ->to('webmaster@vietelite.edu.vn')
-                            ->subject('[VIETELITE]Kết quả Kiểm tra định kỳ tháng '.$session_month ." của con " . $datas[0]['student']->fullname . ' lớp '. $datas[0]['class'])
-                            ->replyTo($datas[0]['center']->email, '[KTDK] Phụ huynh hs '.$datas[0]['student']->fullname);
-                    $message->from($mail,'VIETELITE EDUCATION CENTER');
-                });
-            }
-            else{
-                Mail::send('emails.thht', $d, function($message) use ($to_name, $to_email, $datas, $mail, $to_email_2) {
-                    $message->to($to_email, $to_name)                            
-                            ->to('webmaster@vietelite.edu.vn')
-                            ->subject('[VIETELITE]Tình hình học tập buổi '. date('d/m', strtotime($datas[0]['session']->date)) .' lớp '. $datas[0]['class'])
-                            ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
-                    if($to_email_2){
-                        $message->to($to_email_2, $to_name)                            
-                            ->subject('[VIETELITE]Tình hình học tập buổi '. date('d/m', strtotime($datas[0]['session']->date)) .' lớp '. $datas[0]['class'])
-                            ->replyTo($datas[0]['center']->email, 'Phụ huynh hs '.$datas[0]['student']->fullname);
-                    }
-                    $message->from($mail,'VIETELITE EDUCATION CENTER');
-                });
-            }
-            Mail::setSwiftMailer($backup);
+        try{
+            SendThht::dispatch($datas, $to_email, $to_name, $mail, $password, $to_email_2, $session_type, $session_month);
             return response()->json(200);
-            try{  }
+        }
         catch(\Exception $e){
             // Get error here
             return response()->json(418);
