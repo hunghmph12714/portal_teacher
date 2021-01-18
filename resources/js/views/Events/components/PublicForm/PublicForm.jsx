@@ -360,7 +360,7 @@ class PublicForm extends React.Component{
 
           let now = new Date();
           let deadline = new Date(d.from)
-          deadline.setDate(deadline.getDate() - 7)
+          deadline.setDate(deadline.getDate() - 2)
           if(now < deadline){
             return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
           }else{
@@ -448,7 +448,7 @@ class PublicForm extends React.Component{
               for(let j = 0 ; j < products.length; j++){
                 if( products[j].className == "btn-disabled" && this.isDuplicated(products[j], p)){
                   products[j].className = ''
-                }                
+                }
               }
               products[i].className = ''
               products[i].active = false
