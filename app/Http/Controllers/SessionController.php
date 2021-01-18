@@ -108,6 +108,10 @@ class SessionController extends Controller
         foreach($student_attendance as $sa){
             $fees = [];            
             $fee_per_session = 0;
+            $hp_tag = Tag::where('name','Học phí')->first()->id;
+            $dc_tag = Tag::where('name', 'Điều chỉnh')->first()->id;
+            $mg_tag = Tag::where('name','Miễn giảm')->first()->id;
+                       
             //Dồn all session vào 1 tháng
             foreach($sa['sessions'] as $s){
                 $month = date('m-Y', strtotime($s['date']));
@@ -168,9 +172,25 @@ class SessionController extends Controller
                         $t['class_id'] = $class_id;
                         $t['user'] = auth()->user()->id;
                         $t['content'] = 'Học phí lớp ' .($class ? $class->code : ''). ' tháng '. $key ;
-                        $created_transaction = Transaction::create($t);
-                        $created_transaction->tags()->syncWithoutDetaching([7]);
-                        $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);
+                        
+                        $month_session = date('m', strtotime($t['time']));
+                        $year_session = date('Y', strtotime($t['time']));     
+                        //Check transaction of class for that month existed?
+                        $t_hp = Transaction::where('student_id', $s->id)->where('class_id', $class_id)
+                            ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                            ->whereHas('tags', function($query) use($hp_tag) {
+                                $query->where('tags.id', $hp_tag);
+                            })->first();
+                        if($t_hp){
+                            $t_hp->amount += $fee['amount'];
+                            $t_hp->sessions()->attach($fee['session_id']);
+                            $t_hp->save();
+                        }else{
+                            $created_transaction = Transaction::create($t);
+                            $created_transaction->tags()->syncWithoutDetaching([7]);   
+                            $created_transaction->sessions()->syncWithoutDetaching($fee['session_id']);                        
+                        }
+                        
                         //Apply adjust 
                         foreach($fee['adjust'] as $a => $adjust){
                             $total_adjust += $adjust['amount'];
@@ -187,14 +207,27 @@ class SessionController extends Controller
                             $ta['student_id'] = $s->id;
                             $ta['class_id'] = $class_id;
                             $ta['user'] = auth()->user()->id;
-                            $ta['content'] = $adjust['content'];
-                            $created_transaction = Transaction::create($ta);
-                            $created_transaction->tags()->syncWithoutDetaching([8]);
+                            $ta['content'] = $adjust['content'];                            
                             $adj = [];
                             foreach($adjust['session_ids'] as $akey => $amo){
                                 $adj[$akey] = ['amount' => abs($amo['amount'])];
                             }
-                            $created_transaction->sessions()->syncWithoutDetaching($adj);
+                            
+                            $t_dc = Transaction::where('student_id', $s->id)->where('class_id', $class_id)
+                                ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                                ->whereHas('tags', function($query) use($dc_tag) {
+                                    $query->where('tags.id', $dc_tag);
+                                })->first();
+                            if($t_dc){
+                                $t_dc->amount += $fee['amount'];
+                                $t_dc->sessions()->attach($adj);
+                                $t_dc->save();
+                            }else{
+                                $created_transaction = Transaction::create($ta);
+                                $created_transaction->tags()->syncWithoutDetaching([8]);
+                                $created_transaction->sessions()->syncWithoutDetaching($adj);               
+                            }
+                            
                         }
                         //Check Discount of student
                         $discounts = Discount::where('student_class_id', $sc->id)
@@ -210,7 +243,8 @@ class SessionController extends Controller
                             $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                             $dt['student_id'] = $s->id;
                             $dt['class_id'] = $class_id;
-                            $dt['user'] = auth()->user()->id;                                           
+                            $dt['user'] = auth()->user()->id;   
+                            $dt['discount_id'] = $d['percentage'];                                        
                             if($d['percentage']){
                                 $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
                                 $dt['content'] = 'Miễn giảm học phí '.$d['percentage'].'%'  . ' '.$key;
@@ -226,9 +260,21 @@ class SessionController extends Controller
                                     }
                                     $sids[$sid] = ['amount' => $discount_per_session/ 100 * intval($d['percentage']) ];
                                 }
-                                $created_transaction = Transaction::create($dt);
-                                $created_transaction->tags()->syncWithoutDetaching([9]);
-                                $created_transaction->sessions()->syncWithoutDetaching($sids);
+                                $t_dc = Transaction::where('student_id', $s->id)->where('class_id', $class_id)
+                                    ->whereMonth('time', $month_session )->whereYear('time', $year_session )
+                                    ->whereHas('tags', function($query) use($mg_tag) {
+                                        $query->where('tags.id', $mg_tag);
+                                    })->first();
+                                if($t_dc){
+                                    $t_dc->amount += $fee['amount'];
+                                    $t_dc->sessions()->attach($sids);
+                                    $t_dc->save();
+                                }else{
+                                    $created_transaction = Transaction::create($dt);
+                                    $created_transaction->tags()->syncWithoutDetaching([9]);
+                                    $created_transaction->sessions()->syncWithoutDetaching($sids);    
+                                }
+                                
                             }
                             if($d['amount']){
                                 $dt['amount'] = intval($d['amount']);
