@@ -885,7 +885,7 @@ class ClassController extends Controller
                 $r['school'] = $s->school;
                 $r['room'] = [];
                 $r['score'] = [];
-                $r['id'] = $class->code.''.$s['sc_id'];
+                $r['id'] = $class->code.''.$s['id'];
                 //Check center
                 $active_class = $s->activeClasses;
                 if(count($active_class) > 0){

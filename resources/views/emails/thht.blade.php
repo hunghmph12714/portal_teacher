@@ -31,7 +31,7 @@
                 Tài liệu ca học (nếu có):
                 @if($data['session']->document != '')
                     @foreach(explode(',', $data['session']->document) as $d)
-                        <a href="{{url($d)}}" download style="margin-right: 5px;"> Tải về </a> 
+                        <a href="{{'https://center.vietelite.edu.vn/'.$d}}" download style="margin-right: 5px;"> Tải về </a> 
                     @endforeach
                 @endif
             </li>
@@ -42,7 +42,7 @@
                 File bài tập về nhà (nếu có): 
                 @if($data['session']->exercice != '')
                     @foreach(explode(',', $data['session']->exercice) as $d)
-                        <a href="{{url($d)}}" download style="margin-right: 5px;"> Tải về </a> 
+                        <a href="{{'https://center.vietelite.edu.vn/'.$d}}" download style="margin-right: 5px;"> Tải về </a> 
                     @endforeach
                 @endif
             </li>
