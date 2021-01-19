@@ -224,6 +224,7 @@ const DialogStudent = props => {
                 })
                 .catch(err => {
                     enqueueSnackbar('Có lỗi xảy ra', {'variant': 'error'})
+                    setLoading(false)
                 })
             }
           });    
