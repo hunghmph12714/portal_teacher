@@ -693,7 +693,7 @@ class SessionController extends Controller
         $sc = StudentClass::where('class_id', $session->class_id)->where('student_id', $student->id)->first();
         $discount = Discount::where('student_class_id', $sc->id)->where('active_at', '<=', $session->date)->where('expired_at', '>=', $session->date)
             ->where('status', 'active')->first();
-        print_r($sc->id);
+        
         if($discount){
             $acc_511 = Account::where('level_2', '511')->first();
             $transaction['debit'] = $acc_511->id;
@@ -1185,52 +1185,50 @@ class SessionController extends Controller
         $this->validate($request, $rules);
 
         $data = $request->file; 
-            foreach($data as $key => $val){
-                if($key == 0 || sizeof($val) < 3) continue;
-                $studentClass = StudentClass::find(str_replace($request->event_id, '', $val[1]));
-                // print_r(str_replace($request->event_id, '', $val[1])."/");
-                if($studentClass){
-                    $student = Student::find($studentClass->student_id);
-                    if($student){
-                        $student_id = $student->id;
-                        if(count($val) >=7){
-                            $ss = StudentSession::where('student_id', $student_id)->where('session_id', $request->session_id)->first();
-                            if(!$ss){
-                                continue;
-                            }
+        foreach($data as $key => $val){
+            if($key == 0 || sizeof($val) < 3) continue;
+            $studentClass = StudentClass::find(str_replace($request->event_id, '', $val[1]));
+            // print_r(str_replace($request->event_id, '', $val[1])."/");
+            if($studentClass){
+                $student = Student::find($studentClass->student_id);
+                if($student){
+                    $student_id = $student->id;
+                    if(count($val) >=7){
+                        $ss = StudentSession::where('student_id', $student_id)->where('session_id', $request->session_id)->first();
+                        if(!$ss){
+                            continue;
                         }
-                        if(count($val) == 7){                    
-                            $ss->btvn_comment = $val[6];
-                            $ss->save();
-                            $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6]];
-                        }
-                        if(count($val) == 8){
-                            $ss->btvn_comment = $val[6];
-                            $ss->score = $val[7];
-                            $ss->save();
-                            $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[65], 'score' => $val[7]];
-                        }
-                        if(count($val) == 9){
-                            $ss->btvn_comment = $val[6];
-                            $ss->score = $val[7];
-                            $ss->max_score = $val[8];
-                            $ss->save();
-                            $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8]];
-                        }                
-                        if(count($val) == 10){
-                            $ss->btvn_comment = $val[6];
-                            $ss->score = $val[7];
-                            $ss->max_score = $val[8];
-                            $ss->comment = $val[9];
-                            $ss->save();
-                            $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8], 'comment' => $val[9]];
-                        }  
                     }
+                    if(count($val) == 7){                    
+                        $ss->btvn_comment = $val[6];
+                        $ss->save();
+                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6]];
+                    }
+                    if(count($val) == 8){
+                        $ss->btvn_comment = $val[6];
+                        $ss->score = $val[7];
+                        $ss->save();
+                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7]];
+                    }
+                    if(count($val) == 9){
+                        $ss->btvn_comment = $val[6];
+                        $ss->score = $val[7];
+                        $ss->max_score = $val[8];
+                        $ss->save();
+                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8]];
+                    }                
+                    if(count($val) == 10){
+                        $ss->btvn_comment = $val[6];
+                        $ss->score = $val[7];
+                        $ss->max_score = $val[8];
+                        $ss->comment = $val[9];
+                        $ss->save();
+                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8], 'comment' => $val[9]];
+                    }  
                 }
             }
-            return response()->json($result);
-        
-
+        }
+        return response()->json($result);
     }
     public function countEvent(){
         $events = Classes::where('type','event')->get();
