@@ -768,6 +768,7 @@ class StudentController extends Controller
         }
         return view('fee.a5', compact('result'));
     }
+    
     public function sendEmail(Request $request){
         $rules = ['data' => 'required', 'from'=>'required', 'to'=>'required'];
         $this->validate($request, $rules);

@@ -165,8 +165,7 @@ class StudentClassObserver
             }
         }
     }
-    public function created(StudentClass $studentClass)
-    {
+    public function created(StudentClass $studentClass){
         //
         $class = Classes::find($studentClass->class_id);
         $this->updateClassCount($class);
@@ -192,8 +191,7 @@ class StudentClassObserver
      * @return void
      */
    
-    public function updated(StudentClass $studentClass)
-    {
+    public function updated(StudentClass $studentClass){
         $class = Classes::find($studentClass->class_id);
         $student = Student::find($studentClass->student_id);
         $this->updateClassCount($class);
@@ -298,8 +296,7 @@ class StudentClassObserver
      * @param  \App\StudentClass  $studentClass
      * @return void
      */
-    public function deleted(StudentClass $studentClass)
-    {
+    public function deleted(StudentClass $studentClass){
         //
     }
 
