@@ -16,6 +16,9 @@ import validators from './common/validators';
 import Routes from './Routes';
 import { SnackbarProvider } from 'notistack';
 
+import { AbilityContext } from './Can'
+import ability from './config/ability'
+
 const browserHistory = createBrowserHistory();
 // const store = configureStore();
 
@@ -41,9 +44,11 @@ export default class Root extends Component {
                 vertical: 'bottom',
                 horizontal: 'center',
             }}>
-              <Router history={browserHistory}>
-                <Routes />
-              </Router>
+              <AbilityContext.Provider value={ability}>    
+                <Router history={browserHistory}>
+                  <Routes />
+                </Router>
+              </AbilityContext.Provider>
             </SnackbarProvider>
           </ThemeProvider>
         );
