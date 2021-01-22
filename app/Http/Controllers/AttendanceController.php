@@ -100,17 +100,21 @@ class AttendanceController extends Controller
                 $data['parent'] = Parents::find($data['student']->parent_id);
                 
                 $session = Session::find($student_session->session_id);
-                $all_students_in_session = $session->students;
+                
                 $data['max_score'] = 0;
                 $data['min_score'] = 100;
                 $data['avg'] = 0;
                 $sum = 0;
-                foreach($all_students_in_session as $student_in_session){
-                    $data['max_score'] = ($data['max_score'] > $student_in_session->pivot['score']) ? $data['max_score'] : $student_in_session->pivot['score'];
-                    $data['min_score'] = ($data['min_score'] < $student_in_session->pivot['score']) ? $data['min_score'] : $student_in_session->pivot['score'];
-                    $sum+= $student_in_session->pivot['score'];
+                if($session->type == 'exam'){
+                    $all_students_in_session = $session->students;
+                    foreach($all_students_in_session as $student_in_session){
+                        $data['max_score'] = ($data['max_score'] > $student_in_session->pivot['score']) ? $data['max_score'] : $student_in_session->pivot['score'];
+                        $data['min_score'] = ($data['min_score'] < $student_in_session->pivot['score']) ? $data['min_score'] : $student_in_session->pivot['score'];
+                        $sum+= $student_in_session->pivot['score'];
+                    }
+                    $data['avg'] = round($sum/sizeof($all_students_in_session->toArray()), 1);
                 }
-                $data['avg'] = round($sum/sizeof($all_students_in_session->toArray()), 1);
+                
                 $session_type = $session->type;
                 $session_month = date('m', strtotime($session->date));
                 $data['session'] = $session;

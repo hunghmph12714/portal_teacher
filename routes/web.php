@@ -318,6 +318,7 @@ Route::group(['middleware' => ['auth']], function() {
 //Danh sach hoc sinh
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
+    Route::get('/tkb', 'ClassController@tkb');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

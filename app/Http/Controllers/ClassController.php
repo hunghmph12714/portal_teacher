@@ -1100,5 +1100,14 @@ class ClassController extends Controller
             }
         }
     }
+    public function tkb(){
+        $firstday = date('Y-m-d', strtotime("this week")); 
+        $lastday = date('Y-m-d', strtotime($firstday. ' + 6 days'));
+        $sessions = Session::whereIn('date',[$firstday, $lastday])->get();
+        
+        echo "<pre>";
+        print_r($sessions->toArray());
+        echo "</pre>";
+    }
     
 }

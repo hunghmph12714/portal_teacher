@@ -2,6 +2,9 @@
     <br>
     {{$datas[0]['center']->name}} xin gửi tới quý phụ huynh thông tin tình hình học tập của con <strong>{{$datas[0]['student']->fullname}}</strong> tại lớp <strong>{{$datas[0]['class']}}</strong>
     @foreach($datas as $data)
+        @if(!is_array($data)) 
+            @continue
+        @endif
         <h4 style="font-size: 15px; font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">Buổi {{ date('d/m/Y', strtotime($data['session']->date)) }}, ca học của thầy/cô {{$data['teacher']}}:</h4>
         <h4 style="font-size: 15px;">1. Tình hình học trên lớp: </h4>
         <ul>
@@ -58,5 +61,6 @@
         
 
     @endforeach
-    Mọi thắc mắc quý phụ huynh vui lòng liên hệ hotline cơ sở {{$datas[0]['center']->name}}: {{$datas[0]['center']->phone}}
-
+    Mọi thắc mắc quý phụ huynh vui lòng liên hệ hotline cơ sở {{$datas[0]['center']->name}}: {{$datas[0]['center']->phone}}.<br>
+    Trân trọng.<br>
+    Hệ thống giáo dục VietElite.
