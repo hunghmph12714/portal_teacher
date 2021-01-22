@@ -88,55 +88,87 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
         </thead>
         <tbody>
             <tr>
-              <td>Toán 5 Cambridge</td>
-              <td>23 Lô 14a Trung Yên 11, Trung Hoà</td>
-              <td>Thứ 6, ngày 22/01/2021</td>
+              <td rowspan="2">Anh điều kiện 9</td>
+              <td rowspan="2">33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
+              <td>Thứ 4, ngày 27/01/2021</td>
               <td>18h00- 19h00</td>                
             </tr>
             <tr>
-              <td>Anh 5 Cambridge</td>
-              <td>23 Lô 14a Trung Yên 11, Trung Hoà</td>
-              <td>Thứ 7, ngày 23/01/2021</td>
-              <td>10h00- 11h00</td>                
+              
+              <td>Chủ nhật, ngày 31/01/2021</td>
+              <td>14h00- 15h00</td>                
             </tr>
             <tr>
-              <td rowspan="5">Toán Điều kiện 9</td>
-              <td rowspan="2">5 ngõ 3 Phạm Tuấn Tài, Dịch Vọng Hậu</td>
-              <td>Thứ 6, ngày 22/01/2021</td>
+              <td rowspan="4">Toán Chuyên 9</td>
+              <td rowspan="2">33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
+              <td>Thứ 3, ngày 26/01/2021</td>
               <td>18h00- 19h00</td>
             </tr>
             <tr>
-              <td>Thứ 5, ngày 28/01/2021</td>
+              <td>Thứ 6, ngày 29/01/2021</td>
               <td>18h00-19h00</td>
             </tr>
             <tr>
-              <td rowspan="3">33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
-              <td>Thứ 2, ngày 18/01/2021</td>
+              <td rowspan="2">5 ngõ 3 Phạm Tuấn Tài, Dịch Vọng Hậu</td>
+              <td>Thứ 5, ngày 28/01/2021</td>
               <td>18h00 - 19h00</td>
             </tr>
             <tr>
-              <td>Thứ 3, ngày 19/01/2021</td>
+              <td>Thứ 7, ngày 30/01/2021</td>
               <td>18h00- 19h00</td>
             </tr>
             <tr>
-              <td>Thứ 5, ngày 21/01/2021</td>
-              <td>18h00-19h00</td>
-            </tr>
-            <tr>
-              <td rowspan="3">Văn Điều kiện 9</td>
-              <td>5 ngõ 3 Phạm Tuấn Tài, Dịch Vọng Hậu</td>
+              <td>Sinh chuyên 9</td>
+              <td>33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
               <td>Thứ 4, ngày 27/01/2021</td>
               <td>18h00- 19h00</td>
             </tr>
             <tr>
-              <td rowspan="2">33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
-              <td>Thứ 4, ngày 20/01/2021</td>
+              <td rowspan="3">Anh chuyên 9</td>
+              <td rowspan="3">33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
+              <td>Thứ 2, ngày 25/01/2021</td>
               <td>18h00- 19h00</td>
             </tr>
             <tr>
-              <td>Thứ 6, ngày 22/01/2021</td>
+              <td>Thứ 6, ngày 29/01/2021</td>
               <td>18h00- 19h00</td>
             </tr>
+            <tr>
+              <td>Chủ nhật, ngày 31/01/2021</td>
+              <td>18h00- 19h00</td>
+            </tr>
+            <tr>
+              <td>Lý chuyên 9</td>
+              <td>33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
+              <td>Thứ 5, ngày 28/01/2021</td>
+              <td>18h00- 19h00</td>
+            </tr>
+            <tr>
+              <td>Hoá chuyên 9</td>
+              <td>33 ngõ 91 Trần Duy Hưng, Trung Hòa</td>
+              <td>Thứ 2, ngày 25/01/2021</td>
+              <td>18h00- 19h00</td>
+            </tr>
+            <tr><td></td><td></td><td></td><td></td></tr>
+            <tr>
+              <td>Toán CLC 5</td>
+              <td>23 lô 14a Trung Yên 11, Trung Hoà</td>
+              <td>Chủ nhật, ngày 24/01/2021</td>
+              <td>14h00- 15h00</td>
+            </tr>
+            <tr>
+              <td>Tiếng Việt CLC 5</td>
+              <td>23 lô 14a Trung Yên 11, Trung Hoà</td>
+              <td>Thứ 2, ngày 25/01/2021</td>
+              <td>18h00- 19h00</td>
+            </tr>
+            <tr>
+              <td>Tiếng Anh CLC 5</td>
+              <td>23 lô 14a Trung Yên 11, Trung Hoà</td>
+              <td>Thứ 3, ngày 26/01/2021</td>
+              <td>18h00- 19h00</td>
+            </tr>
+            
         </tbody>
       </table>
   </div>

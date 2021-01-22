@@ -125,6 +125,7 @@ class StudentClassObserver
                     //Check discount available
                     $dt['credit'] = Account::Where('level_2', '131')->first()->id;
                     $dt['debit'] = Account::Where('level_2', '511')->first()->id;
+                    $dt['discount_id'] = $d->id;
                     $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                     $dt['student_id'] = $s->id;
                     $dt['class_id'] = $class_id;
@@ -164,8 +165,7 @@ class StudentClassObserver
             }
         }
     }
-    public function created(StudentClass $studentClass)
-    {
+    public function created(StudentClass $studentClass){
         //
         $class = Classes::find($studentClass->class_id);
         $this->updateClassCount($class);
@@ -191,8 +191,7 @@ class StudentClassObserver
      * @return void
      */
    
-    public function updated(StudentClass $studentClass)
-    {
+    public function updated(StudentClass $studentClass){
         $class = Classes::find($studentClass->class_id);
         $student = Student::find($studentClass->student_id);
         $this->updateClassCount($class);
@@ -297,8 +296,7 @@ class StudentClassObserver
      * @param  \App\StudentClass  $studentClass
      * @return void
      */
-    public function deleted(StudentClass $studentClass)
-    {
+    public function deleted(StudentClass $studentClass){
         //
     }
 
