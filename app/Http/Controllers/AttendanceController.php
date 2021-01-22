@@ -94,11 +94,23 @@ class AttendanceController extends Controller
             $logs['sent_time'] = strtotime(date('d-m-Y H:i:m'));
             $student_session->logs = $logs;
             $student_session->save();
+            
             if($student_session){
                 $data['student'] = Student::find($student_session->student_id);
                 $data['parent'] = Parents::find($data['student']->parent_id);
                 
                 $session = Session::find($student_session->session_id);
+                $all_students_in_session = $session->students;
+                $data['max_score'] = 0;
+                $data['min_score'] = 100;
+                $data['avg'] = 0;
+                $sum = 0;
+                foreach($all_students_in_session as $student_in_session){
+                    $data['max_score'] = ($data['max_score'] > $student_in_session->pivot['score']) ? $data['max_score'] : $student_in_session->pivot['score'];
+                    $data['min_score'] = ($data['min_score'] < $student_in_session->pivot['score']) ? $data['min_score'] : $student_in_session->pivot['score'];
+                    $sum+= $student_in_session->pivot['score'];
+                }
+                $data['avg'] = round($sum/sizeof($all_students_in_session->toArray()), 1);
                 $session_type = $session->type;
                 $session_month = date('m', strtotime($session->date));
                 $data['session'] = $session;
@@ -109,7 +121,8 @@ class AttendanceController extends Controller
                 $center_id = $center->id;
                 $data['center'] = $center;
                 $data['teacher'] = Teacher::find($data['session']->teacher_id)->name;
-    
+                
+                
                 $data['student_session'] = $student_session;
             }
             $datas[$key]  = $data;
@@ -127,7 +140,10 @@ class AttendanceController extends Controller
         $to_email_2 = filter_var($datas[0]['parent']->alt_email, FILTER_VALIDATE_EMAIL) ? $datas[0]['parent']->alt_email : NULL;     
         $to_name = '';
         try{
-            SendThht::dispatch($datas, $to_email, $to_name, $mail, $password, $to_email_2, $session_type, $session_month);
+            $datas['session_type'] = $session_type;
+            $datas['session_month'] = $session_month;
+            SendThht::dispatch($datas, $to_email, $to_name, $mail, $password, $to_email_2);
+            
             return response()->json(200);
         }
         catch(\Exception $e){

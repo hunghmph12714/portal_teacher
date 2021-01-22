@@ -29,6 +29,9 @@
     <br>
     {{$datas[0]['center']->name}} xin thông báo kết quả kiểm tra định kỳ và nhận xét quá trình học tập của con <strong>{{$datas[0]['student']->fullname}}</strong> tại lớp <strong>{{$datas[0]['class']}}</strong>
     @foreach($datas as $data)
+        @if(!is_array($data)) 
+            @continue
+        @endif
         <h3 style="font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;">Ngày {{ date('d/m/Y', strtotime($data['session']->date)) }}</h3>
 
         <!-- <h4>1. Thông tin kiểm tra: </h4>
@@ -62,9 +65,22 @@
                 </li>
             @endif   
         </ul> -->
-        <h4>1. Kết quả kiểm tra: </h4>
+        <h4>1. Phổ điểm của lớp</h4>
         <ul>
+        
             <li>
+                Điểm cao nhất lớp: <b>{{$data['max_score']}}</b>
+            </li>
+            <li>
+                Điểm thấp nhất lớp: <b>{{$data['min_score']}}</b>
+            </li>
+            <li>
+                Điểm trung bình của lớp: <b>{{$data['avg']}}</b>
+            </li>
+        </ul>
+        <h4>2. Kết quả kiểm tra: </h4>
+        <ul>
+            <!-- <li>
                 Điểm danh: 
                 @switch($data['student_session']->attendance)
                     @case('holding')
@@ -86,9 +102,9 @@
                     @default
                         <span>Something went wrong, please try again</span>
                 @endswitch
-            </li>
+            </li> -->
             <li>
-                Điểm bài kiểm tra: {{$data['student_session']->score}}
+                <b>Điểm bài kiểm tra: <b>{{$data['student_session']->score}}
             </li>
             <?php 
                 $nx = explode('|', $data['student_session']->comment);
@@ -100,25 +116,25 @@
                 
             ?>
             <li>
-                Nhận xét bài kiểm tra: {{$nx_kt}}
+                Nhận xét bài kiểm tra: <b>{{$nx_kt}}</b>
             </li>
             <li>
-                Nhận xét quá trình học tập: {{$nx_qt}}
+                Nhận xét quá trình học tập: <b>{{$nx_qt}}</b>
             </li>
         </ul>
-        <h4>2. Kết quả bài tập về nhà buổi trước: </h4>
+        <h4>3. Kết quả bài tập về nhà buổi trước: </h4>
         <ul>
             <li>
-                Tổng số bài: {{$data['student_session']->btvn_max}}
+                Tổng số bài:  <b>{{$data['student_session']->btvn_max}}
             </li>
             <li>
-                Số bài đã hoàn thành: {{$data['student_session']->btvn_complete}}
+                Số bài đã hoàn thành:  <b>{{$data['student_session']->btvn_complete}}</b>
             </li>
             <li>
-                Số bài đạt yêu cầu: {{$data['student_session']->btvn_score}}
+                Số bài đạt yêu cầu:  <b>{{$data['student_session']->btvn_score}}</b>
             </li>
             <li>
-                Nhận xét bài tập về nhà: {{$data['student_session']->btvn_comment}}
+                Nhận xét bài tập về nhà:  <b>{{$data['student_session']->btvn_comment}}</b>
             </li>
 
         </ul>

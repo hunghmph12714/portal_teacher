@@ -24,9 +24,7 @@ class SendThht implements ShouldQueue
     public $mail = '';
     public $password = '';
     public $to_email_2 = '';
-    public $session_type = 'main';
-    public $session_month = '';
-    public function __construct($result, $to_email, $to_name, $mail, $password, $to_email_2, $session_type, $session_month)
+    public function __construct($result, $to_email, $to_name, $mail, $password, $to_email_2)
     {
         
         $this->datas = $result;
@@ -35,8 +33,6 @@ class SendThht implements ShouldQueue
         $this->mail = $mail;
         $this->password = $password;
         $this->$to_email_2 = $to_email_2;
-        $this->$session_type = $session_type;
-        $this->$session_month = $session_month;
         
     }
 
@@ -55,8 +51,8 @@ class SendThht implements ShouldQueue
         $to_email = $this->to_email;
         $mail = $this->mail; $password = $this->password;
         $to_email_2 = $this->to_email_2;
-        $session_type = $this->session_type;
-        $session_month = $this->session_month;
+        $session_type = $datas['session_type'];
+        $session_month = $datas['session_month'];
 
         $backup = Mail::getSwiftMailer();
 
@@ -69,8 +65,7 @@ class SendThht implements ShouldQueue
         $outlook = new \Swift_Mailer($transport);
 
         // Set the mailer as gmail
-        Mail::setSwiftMailer($outlook);           
-        
+        Mail::setSwiftMailer($outlook);    
         if($session_type == "exam"){
             Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month, $to_email_2) {
                 $message->to($to_email, $to_name)
