@@ -125,6 +125,7 @@ class StudentClassObserver
                     //Check discount available
                     $dt['credit'] = Account::Where('level_2', '131')->first()->id;
                     $dt['debit'] = Account::Where('level_2', '511')->first()->id;
+                    $dt['discount_id'] = $d->id;
                     $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                     $dt['student_id'] = $s->id;
                     $dt['class_id'] = $class_id;
