@@ -66,6 +66,7 @@ class SendThht implements ShouldQueue
 
         // Set the mailer as gmail
         Mail::setSwiftMailer($outlook);    
+        // print_r($datas);
         if($session_type == "exam"){
             Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month, $to_email_2) {
                 $message->to($to_email, $to_name)
