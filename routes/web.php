@@ -29,6 +29,16 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::group(['middleware' => ['admin']], function(){
+        //ROLE MANAGEMENT
+            Route::get('/settings/role', function(){
+                return view('welcome');
+            });
+            Route::post('/role/get', 'AdminSettingController@getRole'); 
+            Route::post('/role/create', 'AdminSettingController@createRole');
+            Route::post('/role/edit', 'AdminSettingController@editRole');
+            Route::post('/role/delete', 'AdminSettingController@deleteRole');
+        //Permission Managenment
+            Route::get('/permission/get', 'AdminSettingController@getPermission');
         //CENTER MANAGEMENT
             Route::get('/centers', function(){
                 return view('welcome');

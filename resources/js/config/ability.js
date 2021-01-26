@@ -1,14 +1,12 @@
 import { Ability } from '@casl/ability';
-
-export default new Ability([
-  {
-    action: 'read',
-    subject: 'Post'
-  },
-  {
-    inverted: true,
-    action: 'delete',
-    subject: 'Post',
-    conditions: { published: true }
+function subjectName(item) {
+  if (!item || typeof item === "string") {
+    return item;
   }
-])
+
+  return item.__type;
+}
+
+const ability = new Ability([], { subjectName });
+
+export default ability;

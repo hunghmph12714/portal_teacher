@@ -1,4 +1,5 @@
 import axios from "axios";
+import ability from './config/ability'
 const rnd = '2cfd4560539f887a5e420412b370b361';
 const now = new Date().getTime();
 const ttl = 6;
@@ -11,6 +12,7 @@ class Auth {
         if(response.data.auth == true){
           this.authenticated = true
           localStorage.setItem('user', JSON.stringify(response.data.user))
+          ability.update(response.data.rules)
         }
         else{
           this.authenticated = false

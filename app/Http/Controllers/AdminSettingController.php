@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Relationship;
 use App\Step;
+use App\Role;
 use App\Status;
+use Spatie\Permission\Guard;
+use App\Permission;
+
 class AdminSettingController extends Controller
 {
 //Setting Relationship
@@ -133,6 +137,100 @@ class AdminSettingController extends Controller
             return response()->json(422);
         }
         return response()->json(200);
+    }
+//Setting Roles
+    protected function getRole(Request $request){
+        if($request->type == -1){
+            $roles = Role::all();
+            $result = [];
+            foreach($roles as $key => $role){
+                $result[] = $role;
+                $result[$key]['permissions'] = $role->permissions;
+                
+            }
+            return response()->json($result);
+        }
+        else{
+            $roles = Role::where('type', $request->name)->orderBy('order','asc')->get()->toArray();
+            
+            return response()->json($roles);
+        }
+    }
+    protected function createRole(Request $request){
+        $rules = [
+            'name' => 'required',
+        ];
+        $message = [
+            'required' => 'Vui lòng điền đầy đủ các trường',
+        ];
+        $this->validate($request, $rules, $message);
+        // $user = auth()->user();
+        $guard = Guard::getDefaultName(static::class);
+        
+
+        $input = $request->toArray();
+        $input['guard_name'] = $guard;
+        // $input['user_created'] = $user->id;
+        $s = Role::create($input);
+        return response()->json($s);
+    }
+    protected function editRole(Request $request){
+        $rules = [
+            'id' => 'required',
+        ];
+        $message = [
+            'required' => 'Vui lòng điền đầy đủ các trường',
+        ];
+        $this->validate($request, $rules, $message);        
+        $role = Role::find($request->id);
+        $request = $request->newData;
+        if($role){
+            $role->department = $request['department'];
+            $role->note = $request['note'];
+            $role->name = $request['name'];
+            $role->save();
+        }
+        else{
+            return response()->json(422);
+        }
+        return response()->json(200);
+    }
+    protected function deleteRole(Request $request){
+        $rules = [
+            
+            'id' => 'required',
+        ];
+        $message = [
+            'required' => 'Vui lòng điền đầy đủ các trường',
+        ];
+        $this->validate($request, $rules, $message);
+
+        $step = Role::find($request->id);
+        if($step){
+            $step->forceDelete();
+        }
+        else{
+            return response()->json(422);
+        }
+        return response()->json(200);
+    }
+//Permission settings
+    protected function getPermission(Request $request){
+        $permissions = Permission::all()->toArray();
+        
+        $result = [];
+        $checked_result = [];
+        $key = 0;
+        foreach($permissions as $permission){
+            if(array_key_exists($permission['subject'], $checked_result)){
+                $result[$checked_result[$permission['subject']]][$permission['subject']][] = $permission;
+            }else{
+                $result[][$permission['subject']][0] = $permission;
+                $checked_result[$permission['subject']] = $key;
+                $key++;
+            }
+        }
+        return response()->json($result);
     }
 //Setting Status
     protected function getStatus(Request $request){

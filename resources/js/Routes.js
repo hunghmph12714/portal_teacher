@@ -23,6 +23,7 @@ import {
   Classes,
   Relationship,
   Step,
+  Roles,
   Status, 
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
   FinAccount, Transaction, Discount,
@@ -148,6 +149,12 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/settings/step"
+      />
+      <ProtectedRouteWithLayout
+        component={Roles}
+        exact
+        layout={MainLayout}
+        path="/settings/role"
       />
       <ProtectedRouteWithLayout
         component={Status}
