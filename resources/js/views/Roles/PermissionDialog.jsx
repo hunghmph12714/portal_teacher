@@ -24,16 +24,15 @@ import {
   } from "@material-ui/core";
 
 const PermissionDialog = props => {
-    const {selected_permission, ...rest} = props
-    const [ permissions, setPermissions ] = React.useState([])
-    useEffect(() => {
-        const fetchData = async() => {
-            const r = await axios.get('/permission/get')            
-            console.log(r.data)
-            setPermissions(r.data)
-        }
-        fetchData()
-    }, [])
+    const {selected_permission, onPermissionChange, permissions, ...rest} = props
+    // const [ permissions, setPermissions ] = React.useState([])
+    // useEffect(() => {
+    //     const fetchData = async() => {
+    //         const r = await axios.get('/permission/get')            
+    //         setPermissions(r.data)
+    //     }
+    //     fetchData()
+    // }, [])
     return (
         <Dialog
             open={props.open_permission}
@@ -59,20 +58,19 @@ const PermissionDialog = props => {
                                     <FormControl component="fieldset" >
                                         <FormLabel component="legend">{e}</FormLabel>
                                         <FormGroup>
-                                            {/* {
-                                                p.map(permission => (
+                                            {
+                                                p[e].map(permission => (
                                                     <FormControlLabel
-                                                        control={<Checkbox checked={permission.checked} onChange={() => {}} name="gilad" />}
+                                                        control={<Checkbox checked={permission.checked} onChange={() => {onPermissionChange(permission)}} name="gilad" />}
                                                         label={permission.name_vn}
                                                     />
                                                 ))
-                                            } */}
+                                            }
                                         </FormGroup>
                                     </FormControl>
                                 </GridListTile>
                             )
-                        }                            
-                        )
+                        })
                     }
                 </GridList>
             </DialogContent>

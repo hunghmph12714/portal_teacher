@@ -63,14 +63,66 @@ export default class Role extends React.Component{
             open_permission: false,
             selected_role: '',
             selected_permission: [],
+            permissions: [],
         }
     }
     handleOpenDialogPermission = (rowData) => {
-        console.log(rowData)
-        this.setState({
-            open_permission: true,
-            selected_role: rowData,
-            selected_permission: rowData.permissions,
+        const fetchData = async() => {
+            const response = await axios.get('/permission/get')
+            let data = response.data
+            let sp = rowData.permissions
+            for (const key in sp){
+                if (Object.hasOwnProperty.call(sp, key)) {
+                    const element = sp[key];
+                    data = response.data.map(d => {
+                        if(!d[element.subject]){
+                            return d
+                        }
+                        else{
+                            let tmp_data = d[element.subject].map(per => {
+                                if(per.id == element.id){
+                                    per.checked = true
+                                }else{
+                                    per.checked = false
+                                }
+                                return per
+                            })
+                            return {[element.subject]: tmp_data}
+                        }
+                        
+                    })
+                }
+            }
+            this.setState({
+                open_permission: true,
+                selected_role: rowData,  
+                selected_permission: rowData.permissions,
+                permissions: data
+            })
+        }
+        fetchData()
+    }
+    onPermissionChange = (p) => {
+        
+        this.setState(prevState => {
+            let permissions = [...prevState.permissions]
+            for (const key in permissions) {
+                if (Object.hasOwnProperty.call(permissions, key)) {
+                    let element = permissions[key];
+                    if(element[p.subject]){   
+                        let data = element[p.subject].map(per => {
+                            if(per.id === p.id){
+                                per.checked = per.checked ? !per.checked : true;
+                            }
+                            return per
+                        })
+                        
+                        permissions[key] = {[p.subject]:data}
+                    }
+                }
+            }
+            console.log(permissions)
+            return {...prevState, permissions}
         })
     }
     handleClosePermission = () => {
@@ -234,6 +286,8 @@ export default class Role extends React.Component{
                     open_permission = {this.state.open_permission}
                     selected_permission = {this.state.selected_permission}
                     selected_id = {this.state.selected_role.id}
+                    permissions = {this.state.permissions}
+                    onPermissionChange = { this.onPermissionChange }
                 />
             </div>
         );
