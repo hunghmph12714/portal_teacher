@@ -1216,7 +1216,7 @@ class StudentController extends Controller
         //Thêm học sinh vào event
         
     }
-    protected function getChart($session_id){
+    protected function getChart($session_id, $current_score){
         $session = Session::find($session_id);
         $students = $session->students;
         $label = [];
@@ -1240,13 +1240,31 @@ class StudentController extends Controller
         foreach($label as $key => $l){
             $result[$key] = 0;
         }
+        $max_score = 0;
+        $min_score = 100;
+        $sum = 0;
+        $count = 0;
+        $avg = 0;
+        $rank = sizeof($students);
         foreach($students as $key => $s){
             if($s->pivot['score'] > 0 && $s->pivot['score'] < $max){
                 $score = floor($s->pivot['score']) ;
+                if(is_numeric($score)){
+                    $count++;
+                    $sum+=$score;
+                    $max_score = ($max_score < $score)?$score:$max_score;
+                    $min_score = ($min_score > $score)?$score:$min_score;
+                }
+                if(!is_numeric($score) || $score < $current_score){
+                    $rank--;
+                }
                 $result[$score]++ ;
             }
+            if($count != 0){
+                $avg = $sum / $count;
+            }
         }
-        return ['label' => $label, 'data' => $result];
+        return ['chart'=>['label' => $label, 'data' => $result], 'max'=>$max, 'min'=>$min, 'avg'=>$avg, 'rank' => $rank.'/'.sizeof($students)];
     }
     protected function getResult(Request $request){
         $rules = ['sbd' => 'required', 'passcode' => 'required'];
@@ -1273,6 +1291,7 @@ class StudentController extends Controller
                     'school' => $student->school, 
                     'phone' => $parent->phone, 'email'=> $parent->email, 'sbd' => $request->sbd];
                 $sessions = $student->sessionsOfClass($event->id)->select('room.name as location', 'content', 'from', 'to','sessions.id', 'document')->leftJoin('room', 'sessions.room_id', 'room.id')->get();
+                $getChart = $this->getChart($s->id);
                 foreach($sessions as $s){
                     $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                     $from = date('h:i', strtotime($s->from));
@@ -1280,8 +1299,13 @@ class StudentController extends Controller
                     $result['sessions'][] = ['sbd' => $request->sbd,
                         'content' => $s['content'], 'location' => $s['location'], 
                         'room' => $s['pivot']['btvn_comment'], 'score' => $s['pivot']['score'], 
-                        'comment' => $s['pivot']['comment'], 'time'=> $from." - ".$to, 'date'=>$date , 'chart' => $this->getChart($s->id), 'document' => $s->document];
-                    
+                        'comment' => $s['pivot']['comment'], 'time'=> $from." - ".$to, 'date'=>$date , 
+                        'chart' => $getChart['chart'], 'document' => $s->document,
+                        'max' => $getChart['max'], 'min' => $getChart['min'], 'avg'=> $getChart['avg'],
+                        'rank' => $getChart['rank']
+
+                    ];
+
                 }
             }
         }
