@@ -107,18 +107,23 @@ class AttendanceController extends Controller
                 $sum = 0;
                 if($session->type == 'exam'){
                     $all_students_in_session = $session->students;
+                    $COUNT = 0;
                     foreach($all_students_in_session as $student_in_session){
                         $score = explode('/', $student_in_session->pivot['score'])[0];
                         if(!is_numeric($score)){
                             continue;
                         }
+                        $COUNT++;
                         $data['max_score'] = ($data['max_score'] > $score) ? $data['max_score'] : $score;
                         $data['min_score'] = ($data['min_score'] < $score) ? $data['min_score'] : $score;
                                                 
                         $sum+= is_numeric($score)?$score:0;
                         
                     }
-                    $data['avg'] = round($sum/sizeof($all_students_in_session->toArray()), 1);
+                    if($COUNT != 0){
+                        $data['avg'] = round($sum/$COUNT, 1);
+                    }
+                    
                 }
                 
                 $session_type = $session->type;
@@ -140,7 +145,7 @@ class AttendanceController extends Controller
         $d = array('datas'=>$datas);
 
         $mail = 'info@vietelite.edu.vn';
-        $password = 'Daz91003';
+        $password = "Ral25044";
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
             $password = 'VeEdu2020';

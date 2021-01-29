@@ -63,7 +63,7 @@ class SendThht implements ShouldQueue
         // Any other mailer configuration stuff needed...
         
         $outlook = new \Swift_Mailer($transport);
-
+        print_r($password);
         // Set the mailer as gmail
         Mail::setSwiftMailer($outlook);    
         // print_r($datas);

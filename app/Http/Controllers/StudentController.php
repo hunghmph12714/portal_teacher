@@ -1261,10 +1261,10 @@ class StudentController extends Controller
                 $result[$score]++ ;
             }
             if($count != 0){
-                $avg = $sum / $count;
+                $avg = floor($sum / $count);
             }
         }
-        return ['chart'=>['label' => $label, 'data' => $result], 'max'=>$max, 'min'=>$min, 'avg'=>$avg, 'rank' => $rank.'/'.sizeof($students)];
+        return ['chart'=>['label' => $label, 'data' => $result], 'max'=>$max_score, 'min'=>$min_score, 'avg'=>$avg, 'rank' => $rank.'/'.sizeof($students)];
     }
     protected function getResult(Request $request){
         $rules = ['sbd' => 'required', 'passcode' => 'required'];
@@ -1291,8 +1291,9 @@ class StudentController extends Controller
                     'school' => $student->school, 
                     'phone' => $parent->phone, 'email'=> $parent->email, 'sbd' => $request->sbd];
                 $sessions = $student->sessionsOfClass($event->id)->select('room.name as location', 'content', 'from', 'to','sessions.id', 'document')->leftJoin('room', 'sessions.room_id', 'room.id')->get();
-                $getChart = $this->getChart($s->id);
+                
                 foreach($sessions as $s){
+                    $getChart = $this->getChart($s->id, $s['pivot']['score']);
                     $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                     $from = date('h:i', strtotime($s->from));
                     $to = date('h:i', strtotime($s->to));
