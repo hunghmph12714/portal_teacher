@@ -76,12 +76,14 @@ const PermissionDialog = props => {
             </DialogContent>
             <DialogActions>
                 <Button
+                    onClick={props.handleClosePermission}
                     color="secondary"
                     className="button-cancel__upload-img"
                 >
                     Hủy bỏ
                 </Button>
                 <Button
+                    onClick={props.handleSubmitPermission}
                     className="button-comfirm__upload-img"
                 >
                     Xác nhận

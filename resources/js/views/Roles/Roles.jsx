@@ -103,7 +103,6 @@ export default class Role extends React.Component{
         fetchData()
     }
     onPermissionChange = (p) => {
-        
         this.setState(prevState => {
             let permissions = [...prevState.permissions]
             for (const key in permissions) {
@@ -116,12 +115,10 @@ export default class Role extends React.Component{
                             }
                             return per
                         })
-                        
-                        permissions[key] = {[p.subject]:data}
+                        permissions[key] = { [p.subject]:data }
                     }
                 }
             }
-            console.log(permissions)
             return {...prevState, permissions}
         })
     }
@@ -129,6 +126,14 @@ export default class Role extends React.Component{
         this.setState({  
             open_permission: false,
         })
+    }
+    handleSubmitPermission = () => {
+        axios.post('/role/change-permission', {
+            role: this.state.selected_role,
+            permissions: this.state.permissions,
+        })
+        console.log(this.state.permissions)
+        console.log(this.state.selected_role)
     }
     successNotification = (successMessage) => {
         store.addNotification({
@@ -288,6 +293,7 @@ export default class Role extends React.Component{
                     selected_id = {this.state.selected_role.id}
                     permissions = {this.state.permissions}
                     onPermissionChange = { this.onPermissionChange }
+                    handleSubmitPermission = {this.handleSubmitPermission}
                 />
             </div>
         );
