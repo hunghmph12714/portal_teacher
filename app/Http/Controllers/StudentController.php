@@ -1001,7 +1001,18 @@ class StudentController extends Controller
             array_push($arr, $p->email);
             $student = Student::where('parent_id', $p->id)->get();
             foreach($student as $s){
-                array_push($arr, $s->fullname);
+                $classes = $s->activeClasses()->get()->toArray();
+                if(sizeof($classes) > 0){
+                    array_push($arr, $s->fullname);
+                    array_push($arr, $s->dob);
+                    array_push($arr, $s->school);
+                    $class_str = "";
+                    foreach($classes as $class){
+                        $class_str = $class_str.",".$class['code'];
+                    }
+                    array_push($arr, $class_str);
+                }
+                
             }
             fputcsv($file, $arr);
         }        

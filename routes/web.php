@@ -25,6 +25,7 @@ Route::post('/login', 'Auth\LoginController@login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 Route::group(['middleware' => ['auth']], function() {
+    Route::get('/parent-export', 'StudentController@csv');
     Route::get('/dashboard', function () {
         return view('welcome');
     });
@@ -204,6 +205,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/events', function(){                
                 return view('welcome');
             });
+
             Route::get('/event/get', 'ClassController@getEvents');
             Route::post('/event-gather', 'StudentController@gatherEvent');
             Route::post('/event/create', 'ClassController@createEvent');
