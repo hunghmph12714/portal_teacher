@@ -1217,6 +1217,7 @@ class StudentController extends Controller
         
     }
     protected function getChart($session_id, $current_score){
+        $current_score = (float) $current_score;
         $session = Session::find($session_id);
         $students = $session->students;
         $label = [];
@@ -1249,13 +1250,14 @@ class StudentController extends Controller
         foreach($students as $key => $s){
             if($s->pivot['score'] > 0 && $s->pivot['score'] <= $max){
                 $score = ((int)$s->pivot['score']) ;
-                if(is_numeric($score)){
+                $real_score = (float)$s->pivot['score'];
+                if(is_numeric($real_score)){
                     $count++;
-                    $sum+=$score;
-                    $max_score = ($max_score < $score)?$score:$max_score;
-                    $min_score = ($min_score > $score)?$score:$min_score;
+                    $sum+=$real_score;
+                    $max_score = ($max_score < $real_score)?$real_score:$max_score;
+                    $min_score = ($min_score > $real_score)?$real_score:$min_score;
                 }
-                if(!is_numeric($score) || $score < $current_score){
+                if(!is_numeric($real_score) || $real_score < $current_score){
                     $rank--;
                 }
                 if($score == $max){
@@ -1265,7 +1267,7 @@ class StudentController extends Controller
                 }
             }
             if($count != 0){
-                $avg = floor($sum / $count);
+                $avg = round($sum / $count);
             }
         }
         return ['chart'=>['label' => $label, 'data' => $result], 'max'=>$max_score, 'min'=>$min_score, 'avg'=>$avg, 'rank' => $rank.'/'.sizeof($students)];

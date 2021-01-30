@@ -57,6 +57,10 @@ class PublicResult extends React.Component{
             score:'',
             comment: '',
             document: [],
+            min: 0,
+            max: 0,
+            avg: 0,
+            rank: 0,
         }
     }
     componentDidMount = () => {
@@ -82,7 +86,11 @@ class PublicResult extends React.Component{
         selected_name: rowData.content,
         score: rowData.score,
         comment: rowData.comment,
-        document: dc
+        document: dc,
+        min: rowData.min,
+        max: rowData.max,
+        avg: rowData.avg,
+        rank: rowData.rank,
       })
     }
     handleCloseResult = () => {
@@ -296,7 +304,11 @@ class PublicResult extends React.Component{
               <h3> Môn thi: {this.state.selected_name}</h3>
               <Grid container spacing={2}>
                 <Grid item md={4}>
-                  <h4><b> Điểm: </b> {this.state.score}</h4>
+                  <h4><b> Điểm: </b> {this.state.score}</h4>                  
+                  <h4><b> Xếp hạng: </b> {this.state.rank}</h4>
+                  <h4><b> Điểm cao nhất: </b> {this.state.max}</h4>
+                  <h4><b> Điểm thấp nhất: </b> {this.state.min}</h4>
+                  <h4><b> Điểm trung bình: </b> {this.state.avg}</h4>
                 </Grid>
                 <Grid item md={8}>
                 <h4><b> Nhận xét: </b> {this.state.comment}</h4>
