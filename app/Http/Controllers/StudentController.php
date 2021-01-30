@@ -1247,8 +1247,8 @@ class StudentController extends Controller
         $avg = 0;
         $rank = sizeof($students);
         foreach($students as $key => $s){
-            if($s->pivot['score'] > 0 && $s->pivot['score'] < $max){
-                $score = floor($s->pivot['score']) ;
+            if($s->pivot['score'] > 0 && $s->pivot['score'] <= $max){
+                $score = ((int)$s->pivot['score']) ;
                 if(is_numeric($score)){
                     $count++;
                     $sum+=$score;
@@ -1258,7 +1258,11 @@ class StudentController extends Controller
                 if(!is_numeric($score) || $score < $current_score){
                     $rank--;
                 }
-                $result[$score]++ ;
+                if($score == $max){
+                    $result[$max-1]++ ;
+                }else{
+                    $result[$score]++ ;
+                }
             }
             if($count != 0){
                 $avg = floor($sum / $count);
