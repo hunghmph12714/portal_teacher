@@ -1265,6 +1265,8 @@ class StudentController extends Controller
                 }else{
                     $result[$score]++ ;
                 }
+            }else{
+                $rank--;
             }
             if($count != 0){
                 $avg = round($sum / $count);
