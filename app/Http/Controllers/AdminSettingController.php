@@ -214,6 +214,27 @@ class AdminSettingController extends Controller
         }
         return response()->json(200);
     }
+    protected function editRolePermission(Request $request){
+        $rules = ['role_id' => 'required', 'permissions' => 'required'];
+        $role = Role::find($request->role_id);
+        // print_r($request->permissions);
+        $selected_permission = [];
+        foreach($request->permissions as $permission){
+            foreach($permission as $p){
+                foreach($p as $perm){
+                    if(array_key_exists('checked', $perm)){
+                        if($perm['checked']){
+                            $selected_permission[] = $perm['id'];
+                        }
+                    }
+                }
+            }
+        }
+        $permissions = Permission::whereIn('id', $selected_permission)->get();
+        // print_r($permissions->toArray());
+        $role->syncPermissions($permissions);
+        return response()->json('ok');
+    }
 //Permission settings
     protected function getPermission(Request $request){
         $permissions = Permission::all()->toArray();

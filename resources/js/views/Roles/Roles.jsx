@@ -1,31 +1,11 @@
 import React from 'react';
 import './Roles.scss'
-import ReactNotification from 'react-notifications-component'
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import PermissionDialog from './PermissionDialog';
-import {
-    Grid,
-    Menu,
-    MenuItem,
-    IconButton,
-    Button,
-    Dialog,
-    GridList,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    FormControlLabel,
-    RadioGroup,
-    Radio,
-    TextField,
-    Tooltip,
-  } from "@material-ui/core";
 import MaterialTable from "material-table";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import NumberFormat from 'react-number-format';
 import axios from 'axios'
-
+import { withSnackbar } from 'notistack'
 const baseUrl = window.Laravel.baseUrl;
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
@@ -48,7 +28,7 @@ function NumberFormatCustom(props) {
         />
     );
 }
-export default class Role extends React.Component{
+class Role extends React.Component{
     constructor(props){
         super(props)
         this.state  = {
@@ -66,41 +46,40 @@ export default class Role extends React.Component{
             permissions: [],
         }
     }
-    handleOpenDialogPermission = (rowData) => {
-        const fetchData = async() => {
-            const response = await axios.get('/permission/get')
-            let data = response.data
-            let sp = rowData.permissions
-            for (const key in sp){
-                if (Object.hasOwnProperty.call(sp, key)) {
-                    const element = sp[key];
-                    data = response.data.map(d => {
-                        if(!d[element.subject]){
-                            return d
-                        }
-                        else{
-                            let tmp_data = d[element.subject].map(per => {
-                                if(per.id == element.id){
-                                    per.checked = true
-                                }else{
-                                    per.checked = false
-                                }
-                                return per
-                            })
-                            return {[element.subject]: tmp_data}
-                        }
-                        
-                    })
-                }
+    fetchData = async(rowData) => {
+        const response = await axios.get('/permission/get')
+        let data = response.data
+        let sp = rowData.permissions
+        for (const key in sp){
+            if (Object.hasOwnProperty.call(sp, key)) {
+                const element = sp[key];
+                data = response.data.map(d => {
+                    if(!d[element.subject]){
+                        return d
+                    }
+                    else{
+                        const de = d[element.subject]
+                        const tmp_data = de.map(per => {
+                            if(per.id == element.id){
+                                per.checked = 1
+                            }
+                            return per
+                        })
+                        return {[element.subject]: tmp_data}
+                    }
+                    
+                })
             }
-            this.setState({
-                open_permission: true,
-                selected_role: rowData,  
-                selected_permission: rowData.permissions,
-                permissions: data
-            })
         }
-        fetchData()
+        this.setState({
+            open_permission: true,
+            selected_role: rowData,  
+            selected_permission: rowData.permissions,
+            permissions: data
+        })
+    }
+    handleOpenDialogPermission = (rowData) => {
+        this.fetchData(rowData)
     }
     onPermissionChange = (p) => {
         this.setState(prevState => {
@@ -128,40 +107,18 @@ export default class Role extends React.Component{
         })
     }
     handleSubmitPermission = () => {
-        axios.post('/role/change-permission', {
-            role: this.state.selected_role,
+        axios.post('/role/edit-permission', {
+            role_id: this.state.selected_role.id,
             permissions: this.state.permissions,
         })
-        console.log(this.state.permissions)
-        console.log(this.state.selected_role)
-    }
-    successNotification = (successMessage) => {
-        store.addNotification({
-          title: 'Thành công',
-          message: successMessage,
-          type: 'success',                         // 'default', 'success', 'info', 'warning'
-          container: 'bottom-right',                // where to position the notifications
-          animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-          animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-          width: 300,
-          dismiss: {
-            duration: 3000
-          }
+        .then(response => {
+            this.getRole()
+            this.props.enqueueSnackbar('Sửa quyền thành công', {variant: 'success'})
         })
-    }
-    errorNotification = (errorMessage) => {
-        store.addNotification({
-          title: 'Có lỗi',
-          message: errorMessage,
-          type: 'danger',                         // 'default', 'success', 'info', 'warning'
-          container: 'bottom-right',                // where to position the notifications
-          animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
-          animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
-          width: 300,
-          dismiss: {
-            duration: 3000
-          }
+        .catch(err => {
+            console.log(err)
         })
+        this.handleClosePermission()
     }
 
     getRole = () =>{
@@ -183,7 +140,7 @@ export default class Role extends React.Component{
     addNewRole = (newData) => {        
         return axios.post(baseUrl + '/role/create', newData)
             .then((response) => {
-                this.successNotification('Thêm thành công')
+                this.props.enqueueSnackbar('Thêm thành công', {variant: 'success'})
                 this.setState(prevState => {
                     const data = [...prevState.data];
                     data.push(response.data);
@@ -203,7 +160,8 @@ export default class Role extends React.Component{
                     data[oldData.tableData.id] = newData;
                     return { ...prevState, data };
                 });
-                this.successNotification('Sửa thành công')
+                this.props.enqueueSnackbar('Sửa thành công', {variant: 'success'})
+
             })
             .then(err => {
                 console.log(err)
@@ -212,7 +170,8 @@ export default class Role extends React.Component{
     deleteRole = (oldData) => {
         return axios.post(baseUrl+ '/role/delete', {id: oldData.id})
             .then(response => {
-                this.successNotification('Xóa thành công')
+                this.props.enqueueSnackbar('Xoá thành công', {variant: 'success'})
+
                 this.setState(prevState => {
                     const data = [...prevState.data];
                     data.splice(data.indexOf(oldData), 1);
@@ -220,8 +179,7 @@ export default class Role extends React.Component{
                 });
             })
             .catch(err => {
-                this.props.errorNotification('Có lỗi')
-                console.log('delete Center bug: ' + err)
+                this.props.enqueueSnackbar('Xoá không thành công', {variant: 'error'})
             })
     }
     onChange = e => {
@@ -232,7 +190,6 @@ export default class Role extends React.Component{
     render(){
         return(
             <div className="root-setting-role">
-                <ReactNotification />
                 <MaterialTable
                     title = "Phân Quyền"
                     columns = {this.state.columns}
@@ -299,4 +256,4 @@ export default class Role extends React.Component{
         );
     }
 }
-
+export default withSnackbar(Role)

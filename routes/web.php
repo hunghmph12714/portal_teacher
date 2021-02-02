@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/role/create', 'AdminSettingController@createRole');
             Route::post('/role/edit', 'AdminSettingController@editRole');
             Route::post('/role/delete', 'AdminSettingController@deleteRole');
+            Route::post('/role/edit-permission', 'AdminSettingController@editRolePermission');
         //Permission Managenment
             Route::get('/permission/get', 'AdminSettingController@getPermission');
         //CENTER MANAGEMENT
