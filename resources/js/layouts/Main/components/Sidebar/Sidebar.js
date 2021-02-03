@@ -168,6 +168,10 @@ const Sidebar = props => {
           href: '/settings/role',
         },
         {
+          title: 'Người dùng',
+          href: '/settings/user',
+        },
+        {
           title: 'Cấu hình quy trình',
           href: '/settings/step'
         },

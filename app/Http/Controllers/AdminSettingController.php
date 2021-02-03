@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Relationship;
 use App\Step;
 use App\Role;
+use App\User;
 use App\Status;
 use Spatie\Permission\Guard;
 use App\Permission;
-
+use Illuminate\Support\Str;
+use Hash;
+use Mail;
 class AdminSettingController extends Controller
 {
 //Setting Relationship
@@ -234,6 +237,87 @@ class AdminSettingController extends Controller
         // print_r($permissions->toArray());
         $role->syncPermissions($permissions);
         return response()->json('ok');
+    }
+//User Settings
+    protected function getUser(){
+        $all_user = User::all();
+        $users = [];
+        foreach($all_user as $key => $user){
+            $user->dob = date('d/m/Y', strtotime($user->dob));
+            $users[$key] = $user;
+            $user_role = $user->roles()->first();
+            if($user_role){
+                
+                $users[$key]['roles'] = $user_role->id;
+                $users[$key]['department'] = $user_role->department;
+            }else{
+                $users[$key]['roles'] = '';
+                $users[$key]['department'] = '';
+            }
+        }
+        $roles = Role::orderBy('name')->get();
+        $all_roles = [];
+        foreach($roles as $role){
+            $all_roles[$role->id] = $role->name;
+        }
+        return response()->json(['users' => $users, 'roles' => $all_roles]);
+    }
+    protected function createUser(Request $request){
+        $rules = ['name' => 'required', 'email' => 'required', 'roles' => 'required'];
+        $this->validate($request, $rules);
+
+        $input['name'] = $request->name;
+        $name = explode(' ', $request->name);
+        $input['last_name'] = $name[0];
+        $input['first_name'] = $name[sizeof($name) - 1];
+        $input['email'] = $request->email;
+        $input['email_verified_at'] = date("Y-m-d H:i:s");;
+        $input['dob'] = ($request->dob)?date("Y-m-d", strtotime($request->dob)): NULL;
+        $input['gender'] = $request->gender;
+        $rand = Str::random(8);
+        $input['password'] = Hash::make($rand);
+        $user = User::create($input);
+        
+        $role = Role::find($request->roles);
+        $user->assignRole($role);
+
+        $result = $user->toArray();
+        $result['roles'] = $user->roles()->first()->id;       
+
+
+        //Mail cho nhan vien
+        $datas['name'] = $user->name;
+        $to_email = $user->email;
+        $to_name = $user->name;
+        $datas['email'] = $to_email;
+        $datas['password'] = $rand;
+        $datas['url'] = 'https://center.vietelite.edu.vn/login';
+        $d = array('datas' => $datas);
+        Mail::send('emails.settings.notify_email', $d, function($message) use ($to_name, $to_email, $datas) {
+            $message->to($to_email, $to_name)
+                    ->to('webmaster@vietelite.edu.vn')
+                    ->subject('[VIETELITE] THÔNG TIN ĐĂNG NHẬP CENTER');
+            $message->from('info@vietelite.edu.vn','VIETELITE EDUCATION CENTER');
+        });
+
+        return response()->json($result);
+    }
+    protected function editUser(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $user = User::find($request->id);
+        if($user){
+            $data = $request->newData;
+            $user->name = $data['name'];
+            $user->dob = $data['dob']?date('Y-m-d', strtotime($data['dob'])) : NULL;
+            $user->email = $data['email'];
+            $user->gender = $data['gender'];
+            $role = Role::find($data['roles']);
+            $user->save();
+            $user->syncRoles($role);
+        }
+        return response()->json(200);
     }
 //Permission settings
     protected function getPermission(Request $request){

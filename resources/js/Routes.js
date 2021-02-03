@@ -30,7 +30,8 @@ import {
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
   StudentDetail, Documents,
-  Events, EventDetail, PublicForm, PublicResult
+  Events, EventDetail, PublicForm, PublicResult,
+  Users
 
 } from './views';
 
@@ -155,6 +156,12 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/settings/role"
+      />
+      <ProtectedRouteWithLayout
+        component={Users}
+        exact
+        layout={MainLayout}
+        path="/settings/user"
       />
       <ProtectedRouteWithLayout
         component={Status}

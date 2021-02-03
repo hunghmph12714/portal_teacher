@@ -34,7 +34,7 @@ class Role extends React.Component{
         this.state  = {
             columns: [
                 { title: 'Chức vụ', field: 'name' },
-                { title: 'Phòng ban', field: 'deparment' },
+                { title: 'Phòng ban', field: 'department' },
                 { title: 'Ghi chú', field: 'note'},
                 { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },               
             ],

@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::group(['middleware' => ['admin']], function(){
         //USER MANAGEMENT
-            Route::get('/settings/users', function() {
+            Route::get('/settings/user', function() {
                 return view('welcome');
             });
             Route::post('/settings/users/get', 'AdminSettingController@getUser'); 
