@@ -1,11 +1,16 @@
 import React from 'react';
 import './Users.scss'
-import PermissionDialog from './PermissionDialog';
+import {PermissionDialog} from '../Roles/components';
 import MaterialTable from "material-table";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import NumberFormat from 'react-number-format';
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import BlockIcon from '@material-ui/icons/Block';
 import axios from 'axios'
+import { colors } from '@material-ui/core';
+
 import { withSnackbar } from 'notistack'
+import { toPlainObject } from 'lodash';
 const baseUrl = window.Laravel.baseUrl;
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
@@ -62,7 +67,12 @@ class Users extends React.Component{
                         const tmp_data = de.map(per => {
                             if(per.id == element.id){
                                 per.checked = 1
+                                if(element.role){
+                                    per.disabled = 1
+                                }
                             }
+                            
+                            
                             return per
                         })
                         return {[element.subject]: tmp_data}
@@ -107,7 +117,7 @@ class Users extends React.Component{
         })
     }
     handleSubmitPermission = () => {
-        axios.post('/user/edit-permission', {
+        axios.post('/settings/users/edit-permission', {
             user_id: this.state.selected_user.id,
             permissions: this.state.permissions,
         })
@@ -169,15 +179,11 @@ class Users extends React.Component{
             })
     }
     deleteUsers = (oldData) => {
-        return axios.post(baseUrl+ '/user/delete', {id: oldData.id})
+        return axios.post(baseUrl+ '/settings/users/disable', {id: oldData.id})
             .then(response => {
                 this.props.enqueueSnackbar('Xoá thành công', {variant: 'success'})
 
-                this.setState(prevState => {
-                    const data = [...prevState.data];
-                    data.splice(data.indexOf(oldData), 1);
-                    return { ...prevState, data };
-                });
+                this.getUsers();
             })
             .catch(err => {
                 this.props.enqueueSnackbar('Xoá không thành công', {variant: 'error'})
@@ -212,6 +218,13 @@ class Users extends React.Component{
                     options = {{
                         grouping: true,
                         pageSize: 10,
+                        rowStyle: rowData => {
+                            
+                            if(!rowData.isVerified){
+                              return {backgroundColor: colors.orange[100]}
+                            }                           
+                            
+                        },
                     }}
                     editable={{
                         onRowAdd: newData => this.addNewUsers(newData) ,
@@ -220,15 +233,19 @@ class Users extends React.Component{
                     }}
                     actions = {[
                         {
-                            icon: () => <AddBoxIcon />,
-                            tooltip: 'Thêm ',
+                            icon: () => <VerifiedUserIcon />,
+                            tooltip: 'Phân quyền ',
                             isFreeAction: false,
-                            text: 'Thêm sự kiện',
+                            text: 'Phân quyền',
                             onClick: (event, rowData) => {
                                 this.handleOpenDialogPermission(rowData)
                             },
                         },
                     ]}
+                    icons = {{
+                        Delete: () => <BlockIcon/>,
+
+                    }}
                     localization={{
                         header: {
                             actions: ''
@@ -236,11 +253,12 @@ class Users extends React.Component{
                         body: {
                           emptyDataSourceMessage: 'Không tìm thấy phân người dùng',
                           editRow:{
-                            deleteText: 'Bạn có chắc muốn xóa dòng này ?',
+                            deleteText: 'Bạn có chắc muốn vô hiệu hoá người dùng này ?',
                             cancelTooltip: 'Đóng',
                             saveTooltip: 'Lưu'
                           },
-                          deleteTooltip: "Xóa",
+                          deleteTooltip: "Vô hiệu hoá tài khoản",
+                        //   deleteIcon: () => <BlockIcon/>,
                           addTooltip: "Thêm mới"
                         },
                         toolbar: {

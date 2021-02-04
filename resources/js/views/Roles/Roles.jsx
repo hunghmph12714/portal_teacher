@@ -1,6 +1,6 @@
 import React from 'react';
 import './Roles.scss'
-import PermissionDialog from './PermissionDialog';
+import {PermissionDialog} from './components';
 import MaterialTable from "material-table";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import NumberFormat from 'react-number-format';

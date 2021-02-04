@@ -21,7 +21,7 @@ Route::post('/handle-form', 'GuestController@handleForm');
 Route::get('/login', function () {
     return view('welcome');
 })->name('login');
-Route::post('/login', 'Auth\LoginController@login');
+Route::post('/login', 'Auth\LoginController@authenticate');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 Route::group(['middleware' => ['auth']], function() {
@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/settings/users/create', 'AdminSettingController@createUser');
             Route::post('/settings/users/edit', 'AdminSettingController@editUser');
             Route::post('/settings/users/disable', 'AdminSettingController@disableUser');
-            Route::post('/settings/users/edit-permission', 'AdminSettingController@editUserRole');
+            Route::post('/settings/users/edit-permission', 'AdminSettingController@editUserPermission');
 
         //ROLE MANAGEMENT
             Route::get('/settings/role', function(){

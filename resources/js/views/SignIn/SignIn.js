@@ -194,7 +194,6 @@ const SignIn = props => {
     axios.post(url, data)
       .then(response => {
           // console.log(response.data)
-          
           axios.get(window.Laravel.baseUrl + "/check-auth")
             .then(response => {
               auth.login()
@@ -211,11 +210,11 @@ const SignIn = props => {
           
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response.data)
         setFormState(formState => ({
           ...formState,
           isValid: false,
-          errors: {'password': err.response.data.errors.email},
+          errors: {'password': err.response.data},
         }));
       })
     
@@ -297,7 +296,7 @@ const SignIn = props => {
                   error={hasError('password')}
                   fullWidth
                   helperText={
-                    hasError('password') ? formState.errors.password[0] : null
+                    hasError('password') ? formState.errors.password : null
                   }
                   label="Password"
                   name="password"

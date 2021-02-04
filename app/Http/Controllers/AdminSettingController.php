@@ -154,8 +154,7 @@ class AdminSettingController extends Controller
             return response()->json($result);
         }
         else{
-            $roles = Role::where('type', $request->name)->orderBy('order','asc')->get()->toArray();
-            
+            $roles = Role::where('type', $request->name)->orderBy('order','asc')->get()->toArray();            
             return response()->json($roles);
         }
     }
@@ -244,15 +243,26 @@ class AdminSettingController extends Controller
         $users = [];
         foreach($all_user as $key => $user){
             $user->dob = date('d/m/Y', strtotime($user->dob));
-            $users[$key] = $user;
+            $users[$key] = $user->toArray();
             $user_role = $user->roles()->first();
             if($user_role){
                 
                 $users[$key]['roles'] = $user_role->id;
-                $users[$key]['department'] = $user_role->department;
+                $users[$key]['department'] = $user_role->department;       
+                         
             }else{
                 $users[$key]['roles'] = '';
                 $users[$key]['department'] = '';
+            }
+            $current_user = User::find($user->id);
+            $users[$key]['permissions'] = [];
+            $permissions = $current_user->getAllPermissions()->toArray();
+            foreach($permissions as $k => $p){
+                $users[$key]['permissions'][$k] = $p;
+                if($user_role){
+                    $users[$key]['permissions'][$k]['role'] = ($user_role->hasPermissionTo($p['name'])) ? 1 : 0; 
+                }
+                // print_r($p);
             }
         }
         $roles = Role::orderBy('name')->get();
@@ -263,7 +273,7 @@ class AdminSettingController extends Controller
         return response()->json(['users' => $users, 'roles' => $all_roles]);
     }
     protected function createUser(Request $request){
-        $rules = ['name' => 'required', 'email' => 'required', 'roles' => 'required'];
+        $rules = ['name' => 'required', 'email' => 'required'];
         $this->validate($request, $rules);
 
         $input['name'] = $request->name;
@@ -277,14 +287,14 @@ class AdminSettingController extends Controller
         $rand = Str::random(8);
         $input['password'] = Hash::make($rand);
         $user = User::create($input);
-        
-        $role = Role::find($request->roles);
-        $user->assignRole($role);
-
         $result = $user->toArray();
-        $result['roles'] = $user->roles()->first()->id;       
-
-
+        if($request->has('role')){
+            $role = Role::find($request->roles);
+            $user->assignRole($role);
+            $result['roles'] = $user->roles()->first()->id;      
+        }else{
+            $result['roles'] = '';
+        }
         //Mail cho nhan vien
         $datas['name'] = $user->name;
         $to_email = $user->email;
@@ -318,6 +328,36 @@ class AdminSettingController extends Controller
             $user->syncRoles($role);
         }
         return response()->json(200);
+    }
+    protected function editUserPermission(Request $request){
+        $rules = ['user_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $user = User::find($request->user_id);
+        // print_r($request->permissions);
+        $selected_permission = [];
+        foreach($request->permissions as $permission){
+            foreach($permission as $p){
+                foreach($p as $perm){
+                    if(array_key_exists('checked', $perm)){
+                        if($perm['checked'] && !array_key_exists('disabled', $perm)){
+                            $selected_permission[] = $perm['id'];
+                        }
+                    }
+                }
+            }
+        }
+        $permissions = Permission::whereIn('id', $selected_permission)->get();
+        $user->syncPermissions($permissions);
+        return response()->json('ok');
+        
+    }
+    protected function disableUser(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+        $user = User::find($request->id);
+        $user->isVerified = !$user->isVerified;
+        $user->save();
     }
 //Permission settings
     protected function getPermission(Request $request){
@@ -373,7 +413,7 @@ class AdminSettingController extends Controller
         $request = $request->newData;
         $status = Status::find($request->id);
         if($status){
-            $status->type = $request['type'];            
+            $status->type = $request['type'];      
             $status->name = $request['name'];
             $status->save();
         }
