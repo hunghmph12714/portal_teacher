@@ -48,15 +48,20 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
     protected function checkAuth(){
         if(Auth::check()){
             $user = auth()->user();
+            $permissions = $user->getAllPermissions();
+            $rules = [];
+            foreach($permissions as $p){
+                $rules[] = [
+                    'action' => $p->name,
+                    'subject' => $p->subject
+                ];
+            }
             return response()->json([
                 'auth' => true,
                 'user' => $user,
                 'role' => $user->getRoleNames(),
                 'ability' => $user->ability(),
-                'rules' => [
-                    ['action' => 'read',
-                    'subject' => 'Phone']
-                ]
+                'rules' => $rules
             ]);
         }
         else return response()->json(['auth' => false]);

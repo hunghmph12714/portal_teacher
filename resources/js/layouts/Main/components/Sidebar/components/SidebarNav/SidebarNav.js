@@ -9,6 +9,7 @@ import { List, ListItem, Button, colors, Collapse, ListItemIcon, ListItemText  }
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {Can} from '../../../../../../Can'
 // const useStyles = makeStyles(theme => ({
   
 // }));
@@ -76,49 +77,101 @@ class SidebarNav extends React.Component {
     const { state } = this
     return children.map( subOption => {
       if(!subOption.children){
-        return (
-          <div key = {subOption.title}>
-              <ListItem
-              className={classes.item}
-              disableGutters
-              key={subOption.title}
-            >
-              <Button
-                activeClassName={classes.active}
-                className={classes.button}
-                component={CustomRouterLink}
-                to={subOption.href}
-              >
-                <div className={classes.icon}>{subOption.icon}</div>
-                {subOption.title}
-              </Button>
-            </ListItem>
-          </div>
-        )
+        if(subOption.subject){
+          return (
+            <Can I={subOption.action} on={subOption.subject}>
+              <div key = {subOption.title}>
+                  <ListItem
+                  className={classes.item}
+                  disableGutters
+                  key={subOption.title}
+                >
+                  <Button
+                    activeClassName={classes.active}
+                    className={classes.button}
+                    component={CustomRouterLink}
+                    to={subOption.href}
+                  >
+                    <div className={classes.icon}>{subOption.icon}</div>
+                    {subOption.title}
+                  </Button>
+                </ListItem>
+              </div>
+            </Can>
+          )
+        }else{
+          return (
+            <div key = {subOption.title}>
+                  <ListItem
+                  className={classes.item}
+                  disableGutters
+                  key={subOption.title}
+                >
+                  <Button
+                    activeClassName={classes.active}
+                    className={classes.button}
+                    component={CustomRouterLink}
+                    to={subOption.href}
+                  >
+                    <div className={classes.icon}>{subOption.icon}</div>
+                    {subOption.title}
+                  </Button>
+                </ListItem>
+              </div>
+          )
+        }
+        
       }
       else{
         return(
           <div key = {subOption.title}>
-            <ListItem
-              className={classes.item}
-              disableGutters
-              key={subOption.title}
-              onClick = {() => this.handleClick( subOption.title )}
-            >
-              <Button
-                activeClassName={""}
-                className={classes.button}
-                component={CustomRouterLink}
-                to={subOption.href}
-              >
-                <div className={classes.icon}>{subOption.icon}</div>
-                {subOption.title}
-                { ! state[ subOption.title ] ? 
-                  <ExpandLessIcon className={classes.expandArrow}/> :
-                  <ExpandMoreIcon className={classes.expandArrow}/>
-                }
-              </Button>
-            </ListItem>
+            {subOption.subject ? (
+              <Can I={subOption.action} on={subOption.subject}>
+                <ListItem
+                  className={classes.item}
+                  disableGutters
+                  key={subOption.title}
+                  onClick = {() => this.handleClick( subOption.title )}
+                >
+                  <Button
+                    activeClassName={""}
+                    className={classes.button}
+                    component={CustomRouterLink}
+                    to={subOption.href}
+                  >
+                    <div className={classes.icon}>{subOption.icon}</div>
+                    {subOption.title}
+                    { ! state[ subOption.title ] ? 
+                      <ExpandLessIcon className={classes.expandArrow}/> :
+                      <ExpandMoreIcon className={classes.expandArrow}/>
+                    }
+                  </Button>
+                </ListItem>
+              </Can>
+              ) : (
+                <ListItem
+                  className={classes.item}
+                  disableGutters
+                  key={subOption.title}
+                  onClick = {() => this.handleClick( subOption.title )}
+                >
+                  <Button
+                    activeClassName={""}
+                    className={classes.button}
+                    component={CustomRouterLink}
+                    to={subOption.href}
+                  >
+                    <div className={classes.icon}>{subOption.icon}</div>
+                    {subOption.title}
+                    { ! state[ subOption.title ] ? 
+                      <ExpandLessIcon className={classes.expandArrow}/> :
+                      <ExpandMoreIcon className={classes.expandArrow}/>
+                    }
+                  </Button>
+                </ListItem>
+              )
+            }
+            
             <Collapse in={ state[subOption.title] } timeout="auto" unmountOnExit>
               {this.handler( subOption.children )}
             </Collapse>
