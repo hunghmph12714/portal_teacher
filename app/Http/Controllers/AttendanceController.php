@@ -148,7 +148,7 @@ class AttendanceController extends Controller
         $password = "Ral25044";
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
-            $password = 'VeEdu2020';
+            $password = 'Noz62824';
         }
        
         $to_email = filter_var($datas[0]['parent']->email, FILTER_VALIDATE_EMAIL) ? $datas[0]['parent']->email : '';        

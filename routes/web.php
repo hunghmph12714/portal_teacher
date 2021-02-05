@@ -21,7 +21,7 @@ Route::post('/handle-form', 'GuestController@handleForm');
 Route::get('/login', function () {
     return view('welcome');
 })->name('login');
-Route::post('/login', 'Auth\LoginController@login');
+Route::post('/login', 'Auth\LoginController@authenticate');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
 Route::group(['middleware' => ['auth']], function() {
@@ -30,6 +30,27 @@ Route::group(['middleware' => ['auth']], function() {
         return view('welcome');
     });
     Route::group(['middleware' => ['admin']], function(){
+        //USER MANAGEMENT
+            Route::get('/settings/user', function() {
+                return view('welcome');
+            });
+            Route::post('/settings/users/get', 'AdminSettingController@getUser'); 
+            Route::post('/settings/users/create', 'AdminSettingController@createUser');
+            Route::post('/settings/users/edit', 'AdminSettingController@editUser');
+            Route::post('/settings/users/disable', 'AdminSettingController@disableUser');
+            Route::post('/settings/users/edit-permission', 'AdminSettingController@editUserPermission');
+
+        //ROLE MANAGEMENT
+            Route::get('/settings/role', function(){
+                return view('welcome');
+            });
+            Route::post('/role/get', 'AdminSettingController@getRole'); 
+            Route::post('/role/create', 'AdminSettingController@createRole');
+            Route::post('/role/edit', 'AdminSettingController@editRole');
+            Route::post('/role/delete', 'AdminSettingController@deleteRole');
+            Route::post('/role/edit-permission', 'AdminSettingController@editRolePermission');
+        //Permission Managenment
+            Route::get('/permission/get', 'AdminSettingController@getPermission');
         //CENTER MANAGEMENT
             Route::get('/centers', function(){
                 return view('welcome');
@@ -243,6 +264,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/settings', function(){
         return view('welcome');
     });
+
 
 //Class Management
     Route::get('/classes', function(){

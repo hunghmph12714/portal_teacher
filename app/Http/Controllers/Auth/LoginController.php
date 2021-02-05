@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Http\Request;
+use Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -28,7 +29,7 @@ class LoginController extends Controller
      */
 
     protected $redirectTo = '/';
-
+    
     /**
      * Create a new controller instance.
      *
@@ -37,5 +38,16 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function authenticate(Request $request)
+    {
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password,  'isVerified' => 1])) {
+            // Authentication passed...
+            return redirect()->intended('/');
+        }else{
+            return response()->json('Mật khẩu không đúng hoặc tài khoản chưa được kích hoạt', 401);
+        }
     }
 }

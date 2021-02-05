@@ -23,13 +23,15 @@ import {
   Classes,
   Relationship,
   Step,
+  Roles,
   Status, 
   CreateEntrance, ViewEntrance, ClassDetail, Attendance,
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, 
   StudentDetail, Documents,
-  Events, EventDetail, PublicForm, PublicResult
+  Events, EventDetail, PublicForm, PublicResult,
+  Users
 
 } from './views';
 
@@ -148,6 +150,18 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/settings/step"
+      />
+      <ProtectedRouteWithLayout
+        component={Roles}
+        exact
+        layout={MainLayout}
+        path="/settings/role"
+      />
+      <ProtectedRouteWithLayout
+        component={Users}
+        exact
+        layout={MainLayout}
+        path="/settings/user"
       />
       <ProtectedRouteWithLayout
         component={Status}

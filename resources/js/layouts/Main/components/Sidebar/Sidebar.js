@@ -164,6 +164,18 @@ const Sidebar = props => {
           href: '/settings/relationship',
         },
         {
+          title: 'Chức vụ',
+          href: '/settings/role',
+          subject: 'Phân Quyền',
+          action: 'view_roles'
+        },
+        {
+          title: 'Người dùng',
+          href: '/settings/user',
+          subject: 'Người dùng',
+          action: 'view_users'
+        },
+        {
           title: 'Cấu hình quy trình',
           href: '/settings/step'
         },
@@ -196,6 +208,7 @@ const Sidebar = props => {
         {...rest}
         className={clsx(classes.root, className)}
       >
+
         <SidebarNav
           className={classes.nav}
           pages={pages}

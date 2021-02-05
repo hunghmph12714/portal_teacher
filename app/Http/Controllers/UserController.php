@@ -12,43 +12,57 @@ class UserController extends Controller
     protected function createTa(){
         $ta = ['vietha131298@gmail.com','lvd28102001@gmail.com','hoangtuannghiahn@gmail.com','tungdohp98@gmail.com','hathu070401@gmail.com','maintt240@gmail.com','minh1998yc@gmail.com','lycandylee4@gmail.com','linhseo2000@gmail.com','nguyenhue2112000@gmail.com','hongngo1404@gmail.com','tdnam1807@gmail.com','phungdieulinh198@gmail.com','linhnguyencp129@gmail.com','dothachthao26598@gmail.com','nguyenthingochnue@gmail.com','dangquynh230299@gmai.com','nguyenthengocphuong@gmail.com','thanhhanghnuek68@gmail.com','tranthiphuongthao1601@gmail.com','nguyenkhanhly18112000@gmail.com'];
 $name = ['Nguyễn Việt Hà','Lê Việt Đức',
-'Hoàng Tuấn Nghĩa',
-'Đỗ Trung Tùng',
-'Trần Thị Thu Hà',
-'Nguyễn Thị Thanh Mai',
-'Trần Tân Minh',
-'Đoàn Thị Khánh Ly',
-'Đàm Huyền Linh',
-'Nguyễn Thị Huế',
-'Ngô Thị Ánh Hồng',
-'Trịnh Đức Nam',
-'Phùng Diệu Linh',
-'Nguyễn Thị Diệp Linh',
-'Đỗ Thạch Thảo',
-'Nguyễn Thị Ngọc',
-'Đặng Thị Quỳnh',
-'Nguyễn Thế Ngọc Phượng',
-'Nguyễn Thị Thanh Hằng',
-'Trần Thị Phương Thảo',
-'Nguyễn Thị Khánh Ly'];
+    'Hoàng Tuấn Nghĩa',
+    'Đỗ Trung Tùng',
+    'Trần Thị Thu Hà',
+    'Nguyễn Thị Thanh Mai',
+    'Trần Tân Minh',
+    'Đoàn Thị Khánh Ly',
+    'Đàm Huyền Linh',
+    'Nguyễn Thị Huế',
+    'Ngô Thị Ánh Hồng',
+    'Trịnh Đức Nam',
+    'Phùng Diệu Linh',
+    'Nguyễn Thị Diệp Linh',
+    'Đỗ Thạch Thảo',
+    'Nguyễn Thị Ngọc',
+    'Đặng Thị Quỳnh',
+    'Nguyễn Thế Ngọc Phượng',
+    'Nguyễn Thị Thanh Hằng',
+    'Trần Thị Phương Thảo',
+    'Nguyễn Thị Khánh Ly'];
 
-        foreach($ta as $key => $t){
-            $input['email'] = $t;
-            $input['password'] = Hash::make('12345Bay');
-            
-            $name_arr = explode(' ', $name[$key]);
-            $input['first_name'] = $name_arr[0];
-            $input['last_name'] = end($name_arr);
-            $input['name'] = $name[$key];
-            User::create($input);
-        }
+    foreach($ta as $key => $t){
+        $input['email'] = $t;
+        $input['password'] = Hash::make('12345Bay');
+
+        $name_arr = explode(' ', $name[$key]);
+        $input['first_name'] = $name_arr[0];
+        $input['last_name'] = end($name_arr);
+        $input['name'] = $name[$key];
+        User::create($input);
+    }
 
 
     }
     protected function checkAuth(){
         if(Auth::check()){
             $user = auth()->user();
-            return response()->json(['auth' => true, 'user' => $user]);
+            $permissions = $user->getAllPermissions();
+            $rules = [];
+            foreach($permissions as $p){
+                $rules[] = [
+                    'action' => $p->name,
+                    'subject' => $p->subject
+                ];
+            }
+            return response()->json([
+                'auth' => true,
+                'user' => $user,
+                'role' => $user->getRoleNames(),
+                'ability' => $user->ability(),
+                'rules' => $rules
+            ]);
         }
         else return response()->json(['auth' => false]);
     }
@@ -83,7 +97,7 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
                 \File::delete(public_path()."/images/avatars/".$old_avatar_file);
             }
         }
-        
+
         if($request->has('croppedImage')){
             $avatar = $request->file('croppedImage');
             $name = $user->id."_".time();
@@ -102,11 +116,11 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
             $user->phone = $request->phone;
             $user->address = $request->address;
             $user->gender = $request->gender;
-            $user->dob = $request->dob; 
+            $user->dob = $request->dob;
             $jsDateTS = strtotime($request->dob. " +1 days");
-            if ($jsDateTS !== false) 
+            if ($jsDateTS !== false)
                 $user->dob =  date('Y-m-d', $jsDateTS );
-            else 
+            else
                 $user->dob = null;
             $user->save();
             return response()->json($user);
@@ -122,21 +136,21 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
         $user = auth()->user();
         $current_password = $user->password;
         if(Hash::check($request->current_password, $current_password))
-        {           
+        {
             $user->password = Hash::make($request->password);
             $user->save();
             return response()->json('ok', 200);
         }
         else
-        {           
-            return response()->json('Sai mật khẩu', 400);   
+        {
+            return response()->json('Sai mật khẩu', 400);
         }
     }
     protected function createNewTa($email){
         $input['email'] = $email;
         $input['password'] = Hash::make('12345Bay');
-        
-        
+
+
         $input['first_name'] = 'Trợ';
         $input['last_name'] = 'Giảng';
         $input['name'] ='';

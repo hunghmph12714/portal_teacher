@@ -37,7 +37,8 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
 import { AnswersDialog } from '../components';
-import { withSnackbar } from 'notistack'
+import { withSnackbar } from 'notistack';
+import { Can } from '../../../Can';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -166,7 +167,7 @@ class ViewEntrance extends React.Component{
                           (                              
                             <Typography variant="body2" component="p">
                                 <b>{rowData.pname}</b> 
-                                <br />{rowData.phone} 
+                                <Can I="read" on="Phone"><br />{rowData.phone} </Can>                                
                                 <br />{rowData.pemail}
                             </Typography>                              
                           ),

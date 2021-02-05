@@ -17,6 +17,8 @@ export { Classes, ClassDetail } from './Classes';
 export { StudentDetail } from './Students'
 export { default as Relationship } from './Relationship';
 export { default as Step } from './Step';
+export { default as Roles } from './Roles';
+export { default as Users } from './Users';
 export { default as Status } from './Status';
 export { Entrance } from './Entrance';
 export { CreateEntrance, ViewEntrance } from './Entrance';
