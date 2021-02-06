@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import validate from 'validate.js';
 import { withSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/styles';
+import ability from '../../config/ability'
+
 import {
   Grid,
   Button,
@@ -201,6 +203,7 @@ const SignIn = props => {
               props.enqueueSnackbar('Đăng nhập thành công!', { 
                   variant: 'success',
               });
+              ability.update(response.data.rules)
               setTimeout(history.push('/'), 1000)
             })
             .catch(err => {
