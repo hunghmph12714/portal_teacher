@@ -41,7 +41,7 @@ const PermissionDialog = props => {
             maxWidth="md"
             fullWidth={true}
         >
-            <DialogTitle id="form-dialog-title">Sửa phân quyền</DialogTitle>
+            <DialogTitle id="form-dialog-title">Sửa Phân quyền</DialogTitle>
             <DialogContent>
                 <GridList cellHeight={260} cols={3}>
                     {/* {tileData.map((tile) => (
@@ -56,7 +56,7 @@ const PermissionDialog = props => {
                             return (
                                 <GridListTile key={e} cols={1}>
                                     <FormControl component="fieldset" >
-                                        <FormLabel style={{padding: '10px'}} component="legend">{e}</FormLabel>
+                                        <FormLabel style={{padding: '10px'}} component="legend"><b>{e}</b></FormLabel>
                                         <FormGroup style={{padding: '10px'}}>
                                             {
                                                 p[e].map(permission => (

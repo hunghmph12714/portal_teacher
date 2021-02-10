@@ -203,6 +203,7 @@ const SignIn = props => {
               props.enqueueSnackbar('Đăng nhập thành công!', { 
                   variant: 'success',
               });
+              //Cập nhật rule của ability
               ability.update(response.data.rules)
               setTimeout(history.push('/'), 1000)
             })

@@ -70,6 +70,7 @@ $name = ['Nguyễn Việt Hà','Lê Việt Đức',
         $input['email'] = 'admin@vee.edu.vn';
         $input['password'] = Hash::make('abc123');
         $input['name'] = 'admin';
+        $input['isVerified'] = 1;
         User::create($input);
         return 'true';
     }

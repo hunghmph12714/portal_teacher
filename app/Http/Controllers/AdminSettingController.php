@@ -284,6 +284,7 @@ class AdminSettingController extends Controller
         $input['email_verified_at'] = date("Y-m-d H:i:s");;
         $input['dob'] = ($request->dob)?date("Y-m-d", strtotime($request->dob)): NULL;
         $input['gender'] = $request->gender;
+        $input['isVerified'] = 1;
         $rand = Str::random(8);
         $input['password'] = Hash::make($rand);
         $user = User::create($input);

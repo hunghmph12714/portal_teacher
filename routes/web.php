@@ -33,25 +33,27 @@ Route::group(['middleware' => ['auth']], function() {
         //USER MANAGEMENT
             Route::get('/settings/user', function() {
                 return view('welcome');
-            });
-            Route::post('/settings/users/get', 'AdminSettingController@getUser'); 
-            Route::post('/settings/users/create', 'AdminSettingController@createUser');
-            Route::post('/settings/users/edit', 'AdminSettingController@editUser');
-            Route::post('/settings/users/disable', 'AdminSettingController@disableUser');
-            Route::post('/settings/users/edit-permission', 'AdminSettingController@editUserPermission');
+            })->middleware(['permission:view_users']);
+            Route::post('/settings/users/get', 'AdminSettingController@getUser')->middleware(['permission:view_users']);
+            Route::post('/settings/users/create', 'AdminSettingController@createUser')->middleware(['permission:create_users']);
+            Route::post('/settings/users/edit', 'AdminSettingController@editUser')->middleware(['permission:edit_users']);
+            Route::post('/settings/users/disable', 'AdminSettingController@disableUser')->middleware(['permission:delete_users']);
+            Route::post('/settings/users/edit-permission', 'AdminSettingController@editUserPermission')->middleware(['permission:assign_permission']);
 
         //ROLE MANAGEMENT
             Route::get('/settings/role', function(){
                 return view('welcome');
-            });
-            Route::post('/role/get', 'AdminSettingController@getRole'); 
-            Route::post('/role/create', 'AdminSettingController@createRole');
-            Route::post('/role/edit', 'AdminSettingController@editRole');
-            Route::post('/role/delete', 'AdminSettingController@deleteRole');
-            Route::post('/role/edit-permission', 'AdminSettingController@editRolePermission');
+            })->middleware(['permission:view_roles']);
+            Route::post('/role/get', 'AdminSettingController@getRole')->middleware(['permission:view_roles']); 
+            Route::post('/role/create', 'AdminSettingController@createRole')->middleware(['permission:create_roles']);
+            Route::post('/role/edit', 'AdminSettingController@editRole')->middleware(['permission:edit_roles']);
+            Route::post('/role/delete', 'AdminSettingController@deleteRole')->middleware(['permission:delete_roles']);
+            Route::post('/role/edit-permission', 'AdminSettingController@editRolePermission')->middleware(['permission:assign_roles']);
+
         //Permission Managenment
             Route::get('/permission/get', 'AdminSettingController@getPermission');
-        //CENTER MANAGEMENT
+        Route::group(['middleware' => ['permission:view_settings']], function() {
+            //CENTER MANAGEMENT
             Route::get('/centers', function(){
                 return view('welcome');
             });
@@ -129,6 +131,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/status/create', 'AdminSettingController@createStatus');
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
+        });
+        
         //Schools
             
         //Entrance

@@ -191,7 +191,7 @@ class Role extends React.Component{
         return(
             <div className="root-setting-role">
                 <MaterialTable
-                    title = "Phân Quyền"
+                    title = "Phân quyền"
                     columns = {this.state.columns}
                     data = {this.state.data}
                     options = {{
@@ -219,7 +219,7 @@ class Role extends React.Component{
                             actions: ''
                         },
                         body: {
-                          emptyDataSourceMessage: 'Không tìm thấy phân quyền',
+                          emptyDataSourceMessage: 'Không tìm thấy Phân quyền',
                           editRow:{
                             deleteText: 'Bạn có chắc muốn xóa dòng này ?',
                             cancelTooltip: 'Đóng',

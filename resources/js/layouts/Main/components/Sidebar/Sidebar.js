@@ -58,18 +58,6 @@ const Sidebar = props => {
       icon: <LocalLibraryIcon />,
       children: [
         {
-          title: 'Cơ sở',
-          href: '/centers',
-        },
-        {
-          title: 'Phòng học',
-          href: '/rooms',
-        },
-        {
-          title: 'Khóa học',
-          href: '/courses',
-        },
-        {
           title: 'Lớp học',
           href: '/classes'
         },
@@ -80,7 +68,11 @@ const Sidebar = props => {
         {
           title: 'Kho bài tập',
           href: '/documents'
-        },        
+        },  
+        {
+          title: 'Thi thử',
+          href: '/events',
+        },      
       ]
     },
     {
@@ -110,6 +102,8 @@ const Sidebar = props => {
       title: 'Kế Toán',
       href: '#',
       icon: <AccountBalanceIcon />,
+      subject: 'Kế toán',
+      action: 'view_account',
       children: [
         {
           title: 'Tài khoản',
@@ -144,29 +138,16 @@ const Sidebar = props => {
       icon: <AssignmentIndIcon />
     },
     {
-      title: 'Sự kiện',
+      title: 'Nhân sự',
       href: '#',
       icon: <PeopleIcon />,
+      subject: 'Nhân sự',
+      action: 'view_hr',
       children: [        
-        {
-          title: 'Thi thử',
-          href: '/events',
-        },
-      ]
-    },
-    {
-      title: 'Cài đặt',
-      href: '#',
-      icon: <SettingsIcon />,
-      children: [
-        {
-          title: 'Cấu hình quan hệ',
-          href: '/settings/relationship',
-        },
         {
           title: 'Chức vụ',
           href: '/settings/role',
-          subject: 'Phân Quyền',
+          subject: 'Phân quyền',
           action: 'view_roles'
         },
         {
@@ -174,7 +155,41 @@ const Sidebar = props => {
           href: '/settings/user',
           subject: 'Người dùng',
           action: 'view_users'
+        },        
+        {
+          title: 'Giáo viên',
+          href: '/teachers',
+        },        
+        {
+          title: 'Lương tối thiểu',
+          href: '/base-salary',
+        }
+      ]
+    },
+    {
+      title: 'Cài đặt',
+      href: '#',
+      icon: <SettingsIcon />,
+      subject: 'Cài đặt',
+      action: 'view_settings',
+      children: [
+        {
+          title: 'Cơ sở',
+          href: '/centers',
         },
+        {
+          title: 'Phòng học',
+          href: '/rooms',
+        },
+        {
+          title: 'Khóa học',
+          href: '/courses',
+        },
+        {
+          title: 'Cấu hình quan hệ',
+          href: '/settings/relationship',
+        },
+        
         {
           title: 'Cấu hình quy trình',
           href: '/settings/step'
@@ -183,14 +198,6 @@ const Sidebar = props => {
           title: 'Cấu hình trạng thái',
           href: '/settings/status'
         },
-        {
-          title: 'Giáo viên',
-          href: '/teachers',
-        },
-        {
-          title: 'Lương tối thiểu',
-          href: '/base-salary',
-        }
 
       ]
     }
