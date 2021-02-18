@@ -28,11 +28,13 @@ class RoleSeeder extends Seeder
             ['name' => 'view_hr', 'name_vn' => 'Truy cập', 'subject' => 'Nhân sự'],
             ['name' => 'view_roles', 'name_vn' => 'Xem', 'subject' => 'Phân quyền'],
             ['name' => 'create_roles', 'name_vn' => 'Tạo mới', 'subject' => 'Phân quyền'],
+            ['name' => 'edit_roles', 'name_vn' => 'Sửa', 'subject' => 'Phân quyền'],
             ['name' => 'delete_roles', 'name_vn' => 'Xoá', 'subject' => 'Phân quyền'],
             ['name' => 'assign_roles', 'name_vn' => 'Thay đổi Phân quyền', 'subject' => 'Phân quyền'],
 
             ['name' => 'view_users', 'name_vn' => 'Xem', 'subject' => 'Người dùng'],
             ['name' => 'create_users', 'name_vn' => 'Tạo mới', 'subject' => 'Người dùng'],
+            ['name' => 'edit_users', 'name_vn' => 'Sửa', 'subject' => 'Người dùng'],
             ['name' => 'delete_users', 'name_vn' => 'Xoá', 'subject' => 'Người dùng'],
             ['name' => 'assign_permission', 'name_vn' => 'Thay đổi Phân quyền', 'subject' => 'Người dùng'],
 
@@ -45,7 +47,7 @@ class RoleSeeder extends Seeder
             //Kế toán
             ['name' => 'view_account', 'name_vn' => 'Xem', 'subject' => 'Kế toán'],
             // ['name' => 'view_settings', 'name_vn' => 'Xem', 'subject' => 'Cài đặt'],
-            
+
             
         ];
         $tpdt_permission = [

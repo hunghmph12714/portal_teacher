@@ -16,7 +16,7 @@ class CreateEntrancesTable extends Migration
         Schema::create('entrances', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('student_id');
-            $table->integer('course_id');
+            $table->integer('course_id')->nullable();
             $table->integer('center_id');
 
             $table->datetime('test_time')->nullable();

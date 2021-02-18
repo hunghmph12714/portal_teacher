@@ -139,12 +139,22 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/entrance/create', function(){
                 return view('welcome');
             });
+            Route::get('/entrance/quick-create', function(){
+                return view('welcome');
+            });
+            Route::get('/get-sources', 'EntranceController@getSource');
             Route::get('/entrance/list', function(){
+                return view('welcome');
+            });
+            Route::get('/entrance/list/{center_id}/{step_id}',  function(){
                 return view('welcome');
             });
             Route::post('/entrance/create', 'EntranceController@createEntrance');
             Route::post('/entrance', 'EntranceController@getEntrance');
-            Route::get('/get-entrance/{step}', 'EntranceController@getEntranceByStep');
+
+            Route::post('/entrance/get/init', 'EntranceController@getEntranceInit');
+            Route::post('/entrance/init/edit', 'EntranceController@initEdit');
+            Route::post('/entrance/step-init/fail-1', 'EntranceController@setFail1');
             Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
             Route::post('/entrance/edit', 'EntranceController@editEntrance');
             Route::post('/entrance/delete', 'EntranceController@deleteEntrance');

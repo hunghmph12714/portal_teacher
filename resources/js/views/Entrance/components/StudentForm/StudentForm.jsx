@@ -93,7 +93,7 @@ const StudentForm = props => {
                     className="select-box"    
                 />
 
-                <TextField  label="Lớp học"  
+                <TextField  label="Khối"  
                     className = "input-text"
                     variant="outlined"
                     size="small"

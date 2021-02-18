@@ -15,19 +15,21 @@ use App\Classes;
 use App\Transaction;
 use App\Discount;
 use App\Account;
+use App\Source;
+use App\Medium;
 use Illuminate\Http\Request;
 
 class EntranceController extends Controller
 {
     //
-    protected function handleCreateEntrance($student_id, $center_id, $course_id, $test_time, $note){
+    protected function handleCreateEntrance($student_id, $center_id, $course_id, $test_time, $note, $medium_id){
         // protected $fillable = ['student_id','course_id','center_id','test_time',
         // 'test_answers','test_score','test_note','note','priority','step_id','step_updated_at','status_id'];
         $input['student_id'] = $student_id;
         $input['center_id'] = $center_id;
         $input['course_id'] = $course_id;
         $input['test_time'] = $test_time;
-        $input['note'] = date('d-m-Y') . " - ". auth()->user()->name. ": " . $note ."|";
+        $input['note'] = $note;
         $s = Student::find($student_id);
         $input['priority'] = ($r = Relationship::find($s->relationship_id))? $r->weight : 0;
         
@@ -38,6 +40,12 @@ class EntranceController extends Controller
 
         $init_status = Status::where('type', 'Quy trình đầu vào')->orderBy('id', 'asc')->first();
         $input['status_id'] = ($init_status->id) ? $init_status->id : null;
+        //Get medium
+        $medium = Medium::find($medium_id);
+        if($medium){
+            $input['medium_id'] = $medium->id;
+            $input['source_id'] = $medium->source_id;
+        }
         $new_entrance = Entrance::create($input);
         return $new_entrance;
     }
@@ -72,7 +80,6 @@ class EntranceController extends Controller
         $rules = [
             'student_name' => 'required',
             'parent_name' => 'required',
-            'parent_email' => 'required | email',
             'parent_phone' => 'required',
             'entrance_center' => 'required',
         ];
@@ -97,7 +104,7 @@ class EntranceController extends Controller
         $p['alt_fullname'] = $request['parent_alt_name'];
         $p['alt_email'] = $request['parent_alt_email'];
         $p['alt_phone'] = $request['parent_alt_phone'];
-
+        $sid = NULL;
         //Check parent exist
         if($request['parent_phone']['__isNew__']){
         // New parent
@@ -107,9 +114,7 @@ class EntranceController extends Controller
             //Create new student
                 $student = $this->handleCreateStudent($parent->id, $request);
             //Create Entrance
-                foreach($request['entrance_courses'] as $entrance_course){
-                    $new_entrance = $this->handleCreateEntrance($student->id, $request['entrance_center']['value'], $entrance_course['value'], $request['entrance_date'], $request['entrance_note']);    
-                }
+                $sid = $student->id;
             }
         } 
         else{
@@ -121,17 +126,21 @@ class EntranceController extends Controller
                 $parent_id = $request['parent_phone']['value'];
                 $student = $this->handleCreateStudent($parent_id, $request);
             //Create Entrance
-                foreach($request['entrance_courses'] as $entrance_course){
-                    $new_entrance = $this->handleCreateEntrance($student->id, $request['entrance_center']['value'], $entrance_course['value'], $request['entrance_date'], $request['entrance_note']);    
-                }
+                $sid = $student->id;
             }
             else{
                 $student_id = $request['student_name']['value'];
                 $this->handleUpdateStudent($student_id, $request);
-                foreach($request['entrance_courses'] as $entrance_course){                    
-                    $new_entrance = $this->handleCreateEntrance($student_id, $request['entrance_center']['value'], $entrance_course['value'], $request['entrance_date'], $request['entrance_note']);    
-                }
+                $sid = $student_id;
             }
+        }
+        //check mdiu
+        $medium_id = (is_array($request['source'])) ? $request['source']['value'] : NULL;
+        foreach($request['entrance_courses'] as $entrance_course){                    
+            $new_entrance = $this->handleCreateEntrance($sid, $request['entrance_center']['value'], $entrance_course['value'], $request['entrance_date'], $request['entrance_note'], $medium_id);    
+        }
+        if(sizeof($request['entrance_courses']) == 0){
+            $new_entrance = $this->handleCreateEntrance($sid, $request['entrance_center']['value'], NULL, NULL, $request['entrance_note'], $medium_id);
         }
         return response()->json('ok');
 
@@ -157,23 +166,37 @@ class EntranceController extends Controller
         // $entrances = Entrance::where('step_id', $request->step)
 
     }
-    protected function getEntranceByStep($step){
-        // $sig = ($step == -1)? '!=' : '=';
-        $sig = '=';
-        if($step == -1){
-            $step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first()->id;
+    protected function getSource(){
+        $sources = Source::where('campaign_id', 1)->get();
+        $result = [];
+        foreach($sources as $key => $source){
+            $mediums = Medium::where('source_id', $source->id)->select('name as label','id as value','source_id')->get();
+            $result[] = [
+                'label' => $source->name,
+                'options' => $mediums->toArray(),
+            ];
         }
+        return response()->json($result);
+    }
+    protected function getEntranceInit(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
         // $entrances = Entrance::all();
         //     return response()->json($entrances);
         $entrances = Entrance::Select(
-            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as enote','priority','entrances.created_at as created_at', 'source',
+            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
             'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message'
-        )->where('entrances.step_id', $sig, $step)
+            ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
+        )->where('entrances.step_id', '1')
+        ->whereIn('entrances.center_id', $centers)
         ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
+        ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
         ->leftJoin('relationships','parents.relationship_id','relationships.id')
          ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
          ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
@@ -181,6 +204,7 @@ class EntranceController extends Controller
          ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
         return response()->json($entrances);
     }
+
     protected function editEntrance(Request $request){
         $rules = ['student_id' => 'required', 'entrance_id' => 'required'];
         $this->validate($request, $rules);
@@ -319,5 +343,52 @@ class EntranceController extends Controller
             return response()->json($r);
         }
         
+    }
+
+    protected function setFail1(Request $request){
+        $rules = ['id' => 'required', 'type'=> 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            switch ($request->type) {
+                case 'fail1':
+                    $entrance->status_id = 4;
+                    break;
+                case 'lost':
+                    $entrance->status_id = 5;
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            $entrance->save();
+        }
+        return response()->json('ok');
+    }
+    protected function initEdit(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $entrance->note = $request->note;
+            $entrance->status_id = $request->status['value'];
+            $entrance->save();
+            foreach($request->appointments as $key => $appointment){
+                if($appointment['course']){
+                    if($key != 0){
+                        $entrance = $entrance->replicate();
+                    }
+                    $entrance->course_id = $appointment['course']['value'];
+                    $entrance->test_time = date('Y-m-d H:i:s', strtotime($appointment['date']));
+                    $entrance->step_id = 2;
+                    $entrance->step_updated_at = date('Y-m-d H:i:s');
+                    $entrance->user_created = auth()->user()->id;
+                    $entrance->save();
+                }else continue;
+            }
+        }
     }
 }

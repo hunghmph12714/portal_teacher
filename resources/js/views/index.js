@@ -21,7 +21,7 @@ export { default as Roles } from './Roles';
 export { default as Users } from './Users';
 export { default as Status } from './Status';
 export { Entrance } from './Entrance';
-export { CreateEntrance, ViewEntrance } from './Entrance';
+export { CreateEntrance, ViewEntrance, QuickCreateEntrance } from './Entrance';
 export { default as Attendance } from './Attendance';
 export { default as FinAccount } from './FinAccount';
 export { default as Transaction } from './Transaction';

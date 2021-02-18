@@ -10,7 +10,29 @@ import SaveIcon from '@material-ui/icons/Save';
 import { StudentForm, ParentForm, EntranceForm } from '../components';
 import { withSnackbar } from 'notistack';
 const baseUrl = window.Laravel.baseUrl
-
+const CenterSelect = React.memo(props => {
+    const [centers, setCenters] = useState([])
+    useEffect(() => {
+        const fetchData = async() => {
+            const r = await axios.get(baseUrl + '/get-center')
+            setCenters(r.data.map(center => {
+                    return {label: center.name, value: center.id}
+                })
+            )
+        }
+        fetchData()
+    }, [])
+    
+    return( 
+        <Select className = "select-entrance"
+            key = "center-select"
+            value = {props.entrance_center}
+            name = "entrance_center"
+            placeholder="Cơ sở"
+            options={centers}
+            onChange={props.handleChange}
+        />)
+})
 class CreateEntrance extends React.Component {    
     constructor(props){
         super(props)        

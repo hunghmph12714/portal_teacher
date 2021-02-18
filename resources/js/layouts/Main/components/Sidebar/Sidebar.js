@@ -82,7 +82,7 @@ const Sidebar = props => {
       children: [
         {
           title: 'Đăng ký ghi danh',
-          href: '/entrance/create',
+          href: '/entrance/quick-create',
         },
         {
           title: 'Danh sách ghi danh',
