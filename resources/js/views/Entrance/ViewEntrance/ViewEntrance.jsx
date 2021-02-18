@@ -268,10 +268,10 @@ class ViewEntrance extends React.Component{
                     0: <StepInit 
                         centers = {this.state.selected_centers_param}
                       />,
-                    1: <StepAppointment />,
-                    2: <StepResult/>,
-                    3: <StepInform/>,
-                    4: <StepFinal/>,
+                    1: <StepAppointment  centers = {this.state.selected_centers_param}/>,
+                    2: <StepResult centers = {this.state.selected_centers_param}/>,
+                    3: <StepInform centers = {this.state.selected_centers_param}/>,
+                    4: <StepFinal centers = {this.state.selected_centers_param}/>,
                   }[this.state.activeStep]
                 }
                 

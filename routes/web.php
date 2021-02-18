@@ -153,8 +153,13 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance', 'EntranceController@getEntrance');
 
             Route::post('/entrance/get/init', 'EntranceController@getEntranceInit');
+            Route::post('/entrance/get/appointment', 'EntranceController@getEntranceAppointment');
             Route::post('/entrance/init/edit', 'EntranceController@initEdit');
             Route::post('/entrance/step-init/fail-1', 'EntranceController@setFail1');
+            Route::post('/entrance/comment/create', 'EntranceController@createComment');
+            Route::post('/entrance/get-messages', 'EntranceController@getMessage');
+            Route::post('/entrance/comment/delete', 'EntranceController@deleteMessage')->middleware(['permission:delete_comment']);;
+            
             Route::post('/entrance/upload-test', 'EntranceController@uploadTest');
             Route::post('/entrance/edit', 'EntranceController@editEntrance');
             Route::post('/entrance/delete', 'EntranceController@deleteEntrance');

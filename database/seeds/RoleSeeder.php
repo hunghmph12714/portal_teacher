@@ -47,7 +47,10 @@ class RoleSeeder extends Seeder
             //Kế toán
             ['name' => 'view_account', 'name_vn' => 'Xem', 'subject' => 'Kế toán'],
             // ['name' => 'view_settings', 'name_vn' => 'Xem', 'subject' => 'Cài đặt'],
-
+            //Ghi danh
+            ['name' => 'delete_comment', 'name_vn' => 'Xoá bình luận', 'subject' => 'Ghi danh'],
+            ['name' => 'soft_delete_entrance', 'name_vn' => 'Xoá ghi danh', 'subject' => 'Ghi danh'],
+            ['name' => 'read_phone', 'name_vn' => 'Xem số điện thoại PH', 'subject' => 'Ghi danh'],
             
         ];
         $tpdt_permission = [

@@ -17,6 +17,7 @@ use App\Discount;
 use App\Account;
 use App\Source;
 use App\Medium;
+use App\Comment;
 use Illuminate\Http\Request;
 
 class EntranceController extends Controller
@@ -178,13 +179,7 @@ class EntranceController extends Controller
         }
         return response()->json($result);
     }
-    protected function getEntranceInit(Request $request){
-        $rules = ['centers' => 'required']; 
-        $this->validate($request, $rules);
-
-        $centers = explode('_', $request->centers);
-        // $entrances = Entrance::all();
-        //     return response()->json($entrances);
+    protected function getEntranceByStep($step, $centers){
         $entrances = Entrance::Select(
             'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
@@ -193,7 +188,7 @@ class EntranceController extends Controller
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
             'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message'
             ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
-        )->where('entrances.step_id', '1')
+        )->where('entrances.step_id', $step)
         ->whereIn('entrances.center_id', $centers)
         ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
         ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
@@ -202,7 +197,23 @@ class EntranceController extends Controller
          ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
          ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
          ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
-        return response()->json($entrances);
+        return $entrances;
+    }
+    protected function getEntranceInit(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        // $entrances = Entrance::all();
+        return response()->json($this->getEntranceByStep(1, $centers));
+        
+    }
+    protected function getEntranceAppointment(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        return response()->json($this->getEntranceByStep(2, $centers));
     }
 
     protected function editEntrance(Request $request){
@@ -389,6 +400,44 @@ class EntranceController extends Controller
                     $entrance->save();
                 }else continue;
             }
+        }
+    }
+    protected function createComment(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $comment['entrance_id'] = $entrance->id;
+            $comment['content'] = $request->note;
+            $comment['user_id'] = auth()->user()->id;
+            $comment['method'] = $request->method;
+            $comment['step_id'] = $entrance->step_id;
+            Comment::create($comment);
+        }
+        return response()->json('ok');
+    }
+    protected function getMessage(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $comments = $entrance->comments()->select('entrance_comments.id as id','users.id as uid', 'users.avatar', 
+                'method', 'content', 'users.name','entrance_comments.created_at', DB::raw('DATE_FORMAT(entrance_comments.created_at, "%d-%m-%Y %H:%i") AS created_at_formated') ,'steps.name as sname')
+                ->leftJoin('users', 'entrance_comments.user_id', 'users.id')
+                ->leftJoin('steps', 'entrance_comments.step_id', 'steps.id')->orderBy('created_at', 'DESC')->get();
+            return response()->json($comments->toArray());
+        }
+    }
+
+    protected function deleteMessage(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $m = Comment::find($request->id);
+        if($m){
+            $m->forceDelete();
         }
     }
 }
