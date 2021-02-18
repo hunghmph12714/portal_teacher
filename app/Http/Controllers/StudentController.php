@@ -881,7 +881,7 @@ class StudentController extends Controller
             }
             if($center_id == 3){
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
-                $password = 'Gan71822';
+                $password = 'Map51152';
             }
             try{
                 $backup = Mail::getSwiftMailer();
