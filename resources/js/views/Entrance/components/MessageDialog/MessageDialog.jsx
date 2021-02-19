@@ -81,7 +81,7 @@ const MessageDialog = props => {
             open={props.open} onClose={props.handleCloseDialog} aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">
-                <h4>Thông điệp yêu thương - {props.selectedEntrance.sname}</h4>
+                <h4>Ghi chú  - {props.selectedEntrance.sname}</h4>
             </DialogTitle>
             <DialogContent>
                     {messages.map( a => {

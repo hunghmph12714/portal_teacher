@@ -6,8 +6,8 @@ import {
     IconButton,
     Tooltip,
     Button,
-    Chip, 
-    Typography 
+    Chip, colors ,
+    Typography ,LinearProgress
   } from "@material-ui/core";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
@@ -15,10 +15,12 @@ import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { AppointmentDialog, MessageDialog } from '../../components';
+import { TestDialog, MessageDialog } from '../../components';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
-
+import CheckIcon from '@material-ui/icons/Check';
+import orange from '@material-ui/core/colors/orange';
+import yellow from '@material-ui/core/colors/yellow';
 
 const lang = {
     body: {
@@ -125,8 +127,21 @@ const StepAppointment = (props) => {
               )                
             },    
           {
-            title: "Ngày tạo",
-            field: "created_at",
+            title: "Môn ĐK",
+            field: "course",
+            // type: "date",
+            headerStyle: {
+              padding: '0px',
+              fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+          },
+          {
+            title: "Ngày hẹn",
+            field: "test_time",
+            // type: "date",
             headerStyle: {
               padding: '0px',
               fontWeight: '600',
@@ -161,6 +176,7 @@ const StepAppointment = (props) => {
         ]
     )
     const [refresh, setRefresh] = useState(true)
+    const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
     const [openMessage, setOpenMessage] = useState(false)
     const [selectedEntrance, setSelectedEntrance] = useState({})
@@ -175,15 +191,16 @@ const StepAppointment = (props) => {
                 let d2 = []
                 let d3 = []
                 var d = new Date();
-                let yesterday = d.setDate(d.getDate() - 1);
+                d.setHours(0,0,0,0);
                 for (let i = 0; i < response.data.length; i++) {
                     const element = response.data[i];
-                    const date = new Date(element.created_at)
-                    if(element.status == 'Thất bại 1'){
+                    const date = new Date(element.test_time)
+                    
+                    if(element.status == 'Thất bại 2'){
                         d3.push(element)
                         continue
                     }
-                    if(date > yesterday){
+                    if(date >= d){
                         d1.push(element)
                         continue
                     }else{
@@ -194,6 +211,7 @@ const StepAppointment = (props) => {
                 setData1(d1)
                 setData2(d2)
                 setData3(d3)
+                setLoading(false)
             })
             .catch(err => {
                 console.log(err)
@@ -220,7 +238,7 @@ const StepAppointment = (props) => {
         fetchCourse()        
     }, [centers])    
     function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail1'})
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail2'})
             .then(response => { 
                 var d = new Date();
                 let yesterday = d.setDate(d.getDate() - 1);
@@ -259,7 +277,7 @@ const StepAppointment = (props) => {
         setSelectedEntrance(rowData)
     }
     function handleRemove(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost'})
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT'})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -270,157 +288,207 @@ const StepAppointment = (props) => {
             })
     }
     return(
-        <React.Fragment> 
-            <div className= "entrance_table"> 
-                <MaterialTable
-                    title="Danh sách ghi danh trong 24h"
-                    data={data1}
-                    options={{
-                        pageSize: 5,
-                        pageSizeOptions: [5, 20, 50, 200],
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,   
-                        filterCellStyle: {
-                            paddingLeft: '0px'
-                        }             
-                    }}
-                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                    actions={[  
-                        {
-                            icon: () => <AddCommentOutlinedIcon />,
-                            tooltip: 'Ghi chú',
-                            isFreeAction: false,
-                            text: 'Ghi chú',
-                            onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                        },
-                        {
-                            icon: () => <AddAlarmIcon />,
-                            tooltip: 'Hẹn lịch',
-                            isFreeAction: false,
-                            text: 'Hẹn lịch',
-                            onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
-                        },
-                        {
-                            icon: () => <DeleteOutlineOutlinedIcon />,
-                            tooltip: 'Cần tư vấn',
-                            isFreeAction: false,
-                            text: 'Cần tư vấn',
-                            onClick: (event, rowData) => {
-                                if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                    handleFailClick(rowData)
-                                },
-                        },
-                    ]}
-                    localization={lang}
-                    columns={column1}
-                />
-            </div>
-        
-            <div className= "entrance_table"> 
-                <MaterialTable
-                    title="Danh sách ghi danh quá 24h"
-                    data={data2}
-                    options={{
-                        pageSize: 5,
-                        pageSizeOptions: [5, 20, 50, 200],
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,                
-                    }}
-                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                    actions={[                       
-                        {
-                            icon: () => <AddCommentOutlinedIcon />,
-                            tooltip: 'Ghi chú',
-                            isFreeAction: false,
-                            text: 'Ghi chú',
-                            onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                        },
-                        {
-                            icon: () => <AddAlarmIcon />,
-                            tooltip: 'Hẹn lịch',
-                            isFreeAction: false,
-                            text: 'Hẹn lịch',
-                            onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
-                        },
-                        {
-                            icon: () => <DeleteOutlineOutlinedIcon />,
-                            tooltip: 'Cần tư vấn',
-                            isFreeAction: false,
-                            text: 'Cần tư vấn',
-                            onClick: (event, rowData) => {
-                                if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                    handleFailClick(rowData)
-                                },
-                        },
-                    ]}
-                    localization={lang}
-                    columns={column1}
+        <React.Fragment>
+            {
+                loading ? 
+                (<LinearProgress  className="loading"/>):
+                (
+                    <React.Fragment> 
+                        <div className= "entrance_table"> 
+                            <MaterialTable
+                                title="Ghi danh kiểm tra sắp tới"
+                                data={data1}
+                                options={{
+                                    pageSize: 5,
+                                    pageSizeOptions: [5, 20, 50, 200],
+                                    grouping: true,
+                                    filtering: true,
+                                    exportButton: true,   
+                                    rowStyle: rowData => {
+                                        let today = new Date()
+                                        if(rowData.test_time_formated){
+                                        let test_time = (rowData.test_time_formated) ? rowData.test_time_formated.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
+                                        if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
+                                            return {backgroundColor: yellow[200]}
+                                        }
+                                        }
+                                        
+                                        if(rowData.priority >= 8){
+                                        return {backgroundColor: colors.orange[300],}
+                                        }
+                                        if(rowData.priority >= 6){
+                                        return {backgroundColor: colors.orange[200],}
+                                        }
+                                        if(rowData.priority >= 4){
+                                        return {backgroundColor: colors.orange[100],}
+                                        }
+                                    },
+                                    filterCellStyle: {
+                                        paddingLeft: '0px'
+                                    }             
+                                }}
+                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                actions={[  
+                                    {
+                                        icon: () => <AddCommentOutlinedIcon />,
+                                        tooltip: 'Ghi chú',
+                                        isFreeAction: false,
+                                        text: 'Ghi chú',
+                                        onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
+                                    },
+                                    {
+                                        icon: () => <CheckIcon />,
+                                        tooltip: 'Đã đến kiểm tra',
+                                        isFreeAction: false,
+                                        text: 'Đã đến kiểm tra',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                    },
+                                    {
+                                        icon: () => <DeleteOutlineOutlinedIcon />,
+                                        tooltip: 'Cần tư vấn',
+                                        isFreeAction: false,
+                                        text: 'Cần tư vấn',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
+                                                handleFailClick(rowData)
+                                            },
+                                    },
+                                ]}
+                                localization={lang}
+                                columns={column1}
+                            />
+                        </div>
                     
-                />
-            </div>
-        
-            <div className= "entrance_table"> 
-                <MaterialTable
-                    title="Danh sách cần tư vấn"
-                    data={data3}
-                    options={{
-                        pageSize: 5,
-                        pageSizeOptions: [5, 20, 50, 200],
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,                
-                    }}
-                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                    actions={[                       
-                        {
-                            icon: () => <AddCommentOutlinedIcon />,
-                            tooltip: 'Ghi chú',
-                            isFreeAction: false,
-                            text: 'Ghi chú',
-                            onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                        },
-                        {
-                            icon: () => <AddAlarmIcon />,
-                            tooltip: 'Hẹn lịch',
-                            isFreeAction: false,
-                            text: 'Hẹn lịch',
-                            onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
-                        },
-                        {
-                            icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
-                            tooltip: 'Thất bại tư vấn',
-                            isFreeAction: false,
-                            text: 'Thất bại tư vấn',
-                            onClick: (event, rowData) => {
-                                if (window.confirm('Thất bại tư vấn ?')) 
-                                    handleRemove(rowData)
-                         
-                            },
-                        },
-                    ]}
-                    localization={lang}
-                    columns={column1}
+                        <div className= "entrance_table"> 
+                            <MaterialTable
+                                title="Ghi danh kiểm tra quá hạn"
+                                data={data2}
+                                options={{
+                                    pageSize: 5,
+                                    pageSizeOptions: [5, 20, 50, 200],
+                                    grouping: true,
+                                    filtering: true,
+                                    exportButton: true,      
+                                    rowStyle: rowData => {
+                                        
+                                        if(rowData.priority >= 8){
+                                        return {backgroundColor: colors.orange[300],}
+                                        }
+                                        if(rowData.priority >= 6){
+                                        return {backgroundColor: colors.orange[200],}
+                                        }
+                                        if(rowData.priority >= 4){
+                                        return {backgroundColor: colors.orange[100],}
+                                        }
+                                    },          
+                                }}
+                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                actions={[                       
+                                    {
+                                        icon: () => <AddCommentOutlinedIcon />,
+                                        tooltip: 'Ghi chú',
+                                        isFreeAction: false,
+                                        text: 'Ghi chú',
+                                        onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
+                                    },
+                                    {
+                                        icon: () => <CheckIcon />,
+                                        tooltip: 'Đã đến kiểm tra',
+                                        isFreeAction: false,
+                                        text: 'Đã đến kiểm tra',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                    },
+                                    {
+                                        icon: () => <DeleteOutlineOutlinedIcon />,
+                                        tooltip: 'Cần tư vấn',
+                                        isFreeAction: false,
+                                        text: 'Cần tư vấn',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
+                                                handleFailClick(rowData)
+                                            },
+                                    },
+                                ]}
+                                localization={lang}
+                                columns={column1}
+                                
+                            />
+                        </div>
                     
-                />
-                <AppointmentDialog
-                    open = {openAppointment}
-                    handleCloseDialog = {handleCloseAppointment}
-                    selectedEntrance = {selectedEntrance}
-                    statusOptions = {statusOptions}
-                    courseOptions = {courseOptions}
-                    fetchData = {fetchData}
-                />   
-                <MessageDialog
-                    open = {openMessage}
-                    handleCloseDialog = {handleCloseMessage}
-                    selectedEntrance = {selectedEntrance}
-                    fetchData = {fetchData}
-                />   
-            </div>
-        
-                 
+                        <div className= "entrance_table"> 
+                            <MaterialTable
+                                title="Danh sách cần tư vấn"
+                                data={data3}
+                                options={{
+                                    pageSize: 5,
+                                    pageSizeOptions: [5, 20, 50, 200],
+                                    grouping: true,
+                                    filtering: true,
+                                    exportButton: true,         
+                                    rowStyle: rowData => {
+                                        
+                                        if(rowData.priority >= 8){
+                                        return {backgroundColor: colors.orange[300],}
+                                        }
+                                        if(rowData.priority >= 6){
+                                        return {backgroundColor: colors.orange[200],}
+                                        }
+                                        if(rowData.priority >= 4){
+                                        return {backgroundColor: colors.orange[100],}
+                                        }
+                                    },            
+                                }}
+                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                actions={[                       
+                                    {
+                                        icon: () => <AddCommentOutlinedIcon />,
+                                        tooltip: 'Ghi chú',
+                                        isFreeAction: false,
+                                        text: 'Ghi chú',
+                                        onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
+                                    },
+                                    {
+                                        icon: () => <CheckIcon />,
+                                        tooltip: 'Đã đến kiểm tra',
+                                        isFreeAction: false,
+                                        text: 'Đã đến kiểm tra',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                    },
+                                    {
+                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
+                                        tooltip: 'Thất bại tư vấn',
+                                        isFreeAction: false,
+                                        text: 'Thất bại tư vấn',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Thất bại tư vấn ?')) 
+                                                handleRemove(rowData)
+                                    
+                                        },
+                                    },
+                                ]}
+                                localization={lang}
+                                columns={column1}
+                                
+                            />
+                            <TestDialog
+                                open = {openAppointment}
+                                handleCloseDialog = {handleCloseAppointment}
+                                selectedEntrance = {selectedEntrance}
+                                statusOptions = {statusOptions}
+                                courseOptions = {courseOptions}
+                                fetchData = {fetchData}
+                            />   
+                            <MessageDialog
+                                open = {openMessage}
+                                handleCloseDialog = {handleCloseMessage}
+                                selectedEntrance = {selectedEntrance}
+                                fetchData = {fetchData}
+                            />   
+                        </div>
+                    
+                    </React.Fragment>
+                )
+            }
         </React.Fragment>
     )
 }

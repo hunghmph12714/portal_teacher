@@ -181,12 +181,12 @@ class EntranceController extends Controller
     }
     protected function getEntranceByStep($step, $centers){
         $entrances = Entrance::Select(
-            'entrances.id as eid',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
+            'entrances.id as eid','entrances.test_time',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
-            'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message'
+            'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
             ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
         )->where('entrances.step_id', $step)
         ->whereIn('entrances.center_id', $centers)
@@ -214,6 +214,25 @@ class EntranceController extends Controller
 
         $centers = explode('_', $request->centers);
         return response()->json($this->getEntranceByStep(2, $centers));
+    }
+    protected function getEntranceResult(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        return response()->json($this->getEntranceByStep(3, $centers));
+    }
+    protected function getEntranceInform(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        $entrances = $this->getEntranceByStep(4, $centers);
+        foreach($entrances as &$e){
+            $e['deadline'] = date('d-m-Y',strtotime($e['step_updated_at'] . "+1 days"));
+            $e['deadline_formated'] = date('Y-m-d',strtotime($e['step_updated_at'] . "+1 days"));
+        }
+        return response()->json($entrances);
     }
 
     protected function editEntrance(Request $request){
@@ -370,6 +389,22 @@ class EntranceController extends Controller
                     $entrance->status_id = 5;
                     break;
                 
+                case 'fail2':
+                    $entrance->status_id = 6;
+                    break;
+                
+                case 'lostKT':
+                    $entrance->status_id = 7;
+                    break;
+                
+                case 'fail3':
+                    $entrance->status_id = 8;
+                    break;
+                
+                case 'lostKQ':
+                    $entrance->status_id = 9;
+                    break;
+                
                 default:
                     # code...
                     break;
@@ -440,4 +475,53 @@ class EntranceController extends Controller
             $m->forceDelete();
         }
     }
+
+    protected function appointmentEdit(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $answers = null;
+            for($i = 0 ; $i < $request->count; $i++ ){
+                if($request->has('image'.$i)){
+                    $ans = $request->file('image'.$i);
+                    $name = $entrance->id."_answer".$i."_".time();
+                    $ans->move(public_path(). "/images/answers/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/images/answers/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0){
+                        $answers = $path;
+                    }else{
+                        $answers = $answers.",".$path;
+                    } 
+                }
+            }
+            if($answers){
+                $entrance->test_answers = $answers;            
+            }
+            
+            if($request->score){
+                $entrance->test_score = $request->score;
+                $entrance->test_note = $request->notevalue;
+
+                $entrance->step_id = 4;
+                $entrance->step_updated_at = date('Y-m-d H:i:s');
+            }else{
+                $entrance->step_updated_at = date('Y-m-d H:i:s');
+                $entrance->step_id = 3;
+            }
+            $entrance->save();
+        }
+    }
+    protected function increaseInform(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $entrance->attempts++;
+            $entrance->save();
+        }
+    }
+    
 }

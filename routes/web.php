@@ -154,7 +154,12 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::post('/entrance/get/init', 'EntranceController@getEntranceInit');
             Route::post('/entrance/get/appointment', 'EntranceController@getEntranceAppointment');
+            Route::post('/entrance/get/result', 'EntranceController@getEntranceResult');
+            Route::post('/entrance/get/inform', 'EntranceController@getEntranceInform');
+            Route::post('/entrance/inform/increase', 'EntranceController@increaseInform');
             Route::post('/entrance/init/edit', 'EntranceController@initEdit');
+            Route::post('/entrance/appointment/edit', 'EntranceController@appointmentEdit');
+            
             Route::post('/entrance/step-init/fail-1', 'EntranceController@setFail1');
             Route::post('/entrance/comment/create', 'EntranceController@createComment');
             Route::post('/entrance/get-messages', 'EntranceController@getMessage');
