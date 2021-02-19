@@ -404,6 +404,13 @@ class EntranceController extends Controller
                 case 'lostKQ':
                     $entrance->status_id = 9;
                     break;
+                case 'fail4':
+                    $entrance->status_id = 10;
+                    break;
+                
+                case 'lost4':
+                    $entrance->status_id = 3;
+                    break;
                 
                 default:
                     # code...
@@ -520,6 +527,24 @@ class EntranceController extends Controller
         $entrance = Entrance::find($request->id);
         if($entrance){
             $entrance->attempts++;
+            switch ($entrance->attempts) {
+                case 1:
+                    # code...
+                    $entrance->step_updated_at = date('Y-m-d H:i:s');
+                    break;
+                case 2:
+                    # code...
+                    $entrance->step_updated_at = date('Y-m-d H:i:s', strtotime('tomorrow'));
+                    break;
+                case 2:
+                    # code...
+                    $entrance->step_updated_at = date('Y-m-d H:i:s', strtotime('tomorrow'));
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
             $entrance->save();
         }
     }

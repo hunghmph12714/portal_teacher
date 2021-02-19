@@ -236,6 +236,10 @@ const StepInform = (props) => {
 
                 for (let i = 0; i < response.data.length; i++) {
                     const element = response.data[i];
+                    if(element.status == 'Thất bại 4'){
+                        d4.push(element)
+                        continue
+                    }
                     switch (element.attempts) {
                         case 0:
                             d1.push(element)
@@ -244,20 +248,22 @@ const StepInform = (props) => {
                             d2.push(element)
                             break;
                         case 2:
+
                             d3.push(element)
                             break;
                         case 3:
                             d4.push(element)
                             break;
-                    
+                        
                         default:
                             break;
                     }
                 }
+                console.log(d3)
                 setData1(d1)
                 setData2(d2)
                 setData3(d3)
-                setData3(d4)
+                setData4(d4)
                 setLoading(false)
             })
             .catch(err => {
@@ -284,23 +290,9 @@ const StepInform = (props) => {
         fetchCourse()        
     }, [centers])    
     function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail3'})
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail4'})
             .then(response => { 
-                var d = new Date();
-                let yesterday = d.setDate(d.getDate() - 1);
-                const date = new Date(rowData.created_at);
-                let element = {}
-                if(date > yesterday){
-                    element = data1.filter(d => d.eid == rowData.eid)
-                    const d1 = data1.filter(d => d.eid !== rowData.eid)
-                    setData1(d1)
-                }else{
-                    element = data2.filter(d => d.eid == rowData.eid)
-                    const d2 = data2.filter(d => d.eid !== rowData.eid)
-                    setData2(d2)
-                }
-                console.log(element)
-                setData3([...data3, element[0]])
+                fetchData()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -358,7 +350,15 @@ const StepInform = (props) => {
             })
     }
     function handleLostEntrance(rowData){
-
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost4'})
+            .then(response => { 
+                fetchData()
+                enqueueSnackbar('Đã cập nhật', {variant: 'success'});
+                
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
     return(
         <React.Fragment>
@@ -460,7 +460,7 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Thất bại ',
                                         onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
+                                            if (window.confirm('Chuyển trạng thái thất bại ?')) 
                                                 handleFailClick(rowData)
                                             },
                                     },
@@ -511,7 +511,7 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Thất bại ',
                                         onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
+                                            if (window.confirm('Chuyển trạng thái thất bại ?')) 
                                                 handleFailClick(rowData)
                                             },
                                     },
