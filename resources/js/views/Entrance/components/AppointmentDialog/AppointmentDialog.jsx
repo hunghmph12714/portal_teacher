@@ -24,6 +24,12 @@ const AppointmentDialog = props => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
+        console.log(selectedEntrance.course_id)
+
+        if(selectedEntrance.course_id){
+            let c = courseOptions.filter( course => course.value == selectedEntrance.course_id)
+            setAppointments([{course: c, date: new Date(), id: 0}])
+        }
         setNote(selectedEntrance.note)
         setStatus({label: selectedEntrance.status, value: selectedEntrance.status_id})
 

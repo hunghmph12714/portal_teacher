@@ -147,6 +147,17 @@ const StepInit = (props) => {
               },
           },
           {
+              title: "Môn đăng ký",
+              field: "course",
+              headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+              },
+              cellStyle: {
+                  padding: '0px',
+              },
+          },
+          {
             title: "Nguồn",
             field: "source",
             headerStyle: {
