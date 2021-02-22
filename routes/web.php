@@ -14,8 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::webhooks('mailgun-hooks');
 Route::get('/form-public','GuestController@formPublic');
+Route::get('/form-public-simplified','GuestController@formPublicSimplified');
+Route::post('/handle-simplified-form', 'GuestController@handleSimplifiedForm');
 Route::post('/get/courses', 'GuestController@getCourses');
 Route::post('/handle-form', 'GuestController@handleForm');
 Route::get('/login', function () {

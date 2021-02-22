@@ -12,6 +12,8 @@ use App\Entrance;
 use App\Relationship;
 use App\Step;
 use App\Status;
+use App\Source;
+use App\Medium;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp;
 
@@ -35,6 +37,12 @@ class GuestController extends Controller
         // return $schools;
         return view('form-public', compact('schools','centers'));
     }
+    public function formPublicSimplified(){
+        $centers = Center::Select('name','id')->where('name','!=', 'VietElite Trụ sở điều hành')->get()->toArray();
+        // return $schools;
+        return view('form-public-simplified', compact('centers'));
+    }
+    
     public function getCourses(Request $request){
         $courses = Course::select('name','id','grade')->where('grade', $request->grade)->get()->toArray();
         foreach($courses as $key => $c){
@@ -46,15 +54,41 @@ class GuestController extends Controller
         $e['student_id'] = $student->id;
         $e['center_id'] = $center;
         $e['course_id'] = $course;
-        $e['note'] = $note." Nguồn: Website";
+        $e['note'] = $note;
         $e['priority'] = Relationship::find($student->relationship_id)->weight;
-        $init_step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first();        
-        $e['step_id'] = ($init_step->id) ? $init_step->id : null;
+        $init_step = Step::where('type','Quy trình đầu vào')->orderBy('order','asc')->first();
+        
+        // Check source
+        $source_id = 1;
+        $medium_id = 1;
+        if($source['utm_source'] != ""){
+            $utm_source = Source::where('campaign_id', '1')->where('name', $source['utm_source'])->first();
+            if($utm_source){
+                $source_id = $utm_source->id;
+                //Check medium
+                $utm_medium = Medium::where('source_id', $utm_source->id)->where('name', $source['utm_medium'])->first();
+                if($utm_medium){
+                    $medium_id = $utm_medium->id;
+                }else{
+                    $medium = Medium::create(['source_id' => $utm_source->id, 'name' => $source['utm_medium']]);
+                    $medium_id = $medium->id;
+                }   
+            }else{
+                $source = Source::create(['campaign_id' => 1, 'name' => $source['utm_source']]);
+                $medium = Medium::create(['source_id' => $source->id, 'name' => $source['utm_medium']]);
+                $source_id = $source->id;
+                $medium_id = $medium->id;
+            }
+        }
+        $e['source_id'] = $source_id; $e['medium_id'] = $medium_id;
+        if($course){
+            $e['step_id'] = 2;
+        }else{
+            $e['step_id'] = ($init_step->id) ? $init_step->id : null;
+        }
         $e['step_updated_at'] = date("Y-m-d H:i:s");
-        $e['source'] = $source;
         $init_status = Status::where('type', 'Quy trình đầu vào')->orderBy('id', 'asc')->first();
         $e['status_id'] = ($init_status->id) ? $init_status->id : null;
-        
         Entrance::create($e);
     }
     public function handleForm(Request $request){
@@ -81,7 +115,7 @@ class GuestController extends Controller
             if($s){//Đã tồn tại học sinh
                 //Tạo mới ghi danh
                 foreach($request->course as $c){
-                    $this->createEntrance($s, $request->center, $c, $request->note, $source);
+                    $this->createEntrance($s, $request->center, $c, $request->note, $query);
                 }                
             }
             else{
@@ -92,7 +126,7 @@ class GuestController extends Controller
                 $student['relationship_id'] = $p->relationship_id;
                 $student = Student::create($student);
                 foreach($request->course as $c){
-                    $this->createEntrance($student, $request->center, $c, $request->note,  $source);
+                    $this->createEntrance($student, $request->center, $c, $request->note,  $query);
                 } 
             }
         }else{
@@ -111,10 +145,69 @@ class GuestController extends Controller
             $student = Student::create($student);
 
             foreach($request->course as $c){
-                $this->createEntrance($student, $request->center, $c, $request->note,  $source);
+                $this->createEntrance($student, $request->center, $c, $request->note,  $query);
             } 
         }
         return redirect('https://vietelite.edu.vn/dangkythanhcong/');
         // return response()->json($request->toArray());
+    }
+    public function handleSimplifiedForm(Request $request){
+        $rules = [
+            'sname' => 'required',
+            'dob' => 'required',
+            'pphone' => 'required',
+            'pemail' => 'required',
+            'g-recaptcha-response' => 'required|captcha'
+        ];
+        $messages = [
+            'g-recaptcha-response.required' => 'Vui lòng xác nhận bạn không phải ROBOT'
+        ];
+        $this->validate($request, $rules, $messages);
+        //Source query
+        $query = ['utm_medium' => '', 'utm_source'=>'', 'utm_campaign'=>''];
+        $url = parse_url($request->url);
+        if(array_key_exists('query',$url)){
+            parse_str($url['query'], $query);
+        }
+        //chuẩn hóa dữ liệu
+        $pphone = str_replace('(','', str_replace(')','', str_replace('-','',$request->pphone)));
+        $dob = date('Y-m-d', strtotime(str_replace('/','-', $request->dob)));
+
+        //Check dữ liệu phụ huynh
+        $p = Parents::where('phone', $pphone)->orWhere('alt_phone', $pphone)->first();
+        if($p){// Phụ huynh đã tồn tại trong csdl
+            //Check học sinh
+            $s = Student::where('fullname', $request->sname)->where('dob', $dob)->first();
+            if($s){//Đã tồn tại học sinh
+                //Tạo mới ghi danh
+                $this->createEntrance($s, $request->center, NULL, $request->note, $query);              
+            }
+            else{
+                $student['fullname'] = $request->sname;
+                $student['parent_id'] = $p->id;
+                $student['dob'] = $dob;
+                $student['school'] = $request->school;
+                $student['relationship_id'] = $p->relationship_id;
+                $student = Student::create($student);
+                $this->createEntrance($student, $request->center, NULL, $request->note, $query);
+            }
+        }else{
+            $relationship = Relationship::orderBy('weight', 'asc')->first();          
+            $parent['fullname'] = $request->pname;
+            $parent['phone'] = $pphone;
+            $parent['email'] = $request->pemail;
+            $parent['relationship_id'] = $relationship->id;
+            $parent = Parents::create($parent);
+
+            $student['fullname'] = $request->sname;
+            $student['dob'] = $dob;
+            $student['school'] = $request->school;
+            $student['parent_id'] = $parent->id;
+            $student['relationship_id'] = $relationship->id;
+            $student = Student::create($student);
+            $this->createEntrance($student, $request->center, NULL, $request->note, $query);
+        }
+        return redirect('https://vietelite.edu.vn/dangkythanhcong/');
+
     }
 }
