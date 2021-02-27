@@ -111,7 +111,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
             </div>
             <h2>Nguyện vọng đăng ký</h2>
             <div class="form-row">                
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                 <label for="center">Cơ sở</label>
                     <Select className = "select-box" id="center" class="form-control" name="center" required>
                         <option value="" hidden selected>Chọn cơ sở đăng ký</option>
@@ -120,34 +120,33 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="grade">Chọn khối</label>
-                    <Select className = "select-box" id="grade" class="form-control" name="grade" required>
-                        <option value=""  hidden selected>Chọn khối lớp</option>
-
-                        <option value="3">Khối 3</option>
-                        <option value="4">Khối 4</option>
-                        <option value="5">Khối 5</option>
-                        <option value="6">Khối 6</option>
-                        <option value="7">Khối 7</option>
-                        <option value="8">Khối 8</option>
-                        <option value="9">Khối 9</option>
-                        <option value="10">Khối 10</option>
-                        <option value="11">Khối 11</option>
-                        <option value="12">Khối 12</option>
+                    <select className = "select-box" id="grade" class="form-control" name="grade" required value={{$selected_grade}}>
+                        <option value=""  hidden {{ $selected_grade === "" ? "selected" : "" }}>Chọn khối lớp</option>
+                        <option value="3" {{ $selected_grade === "3" ? "selected" : "" }}>Khối 3</option>
+                        <option value="4" {{ $selected_grade === "4" ? "selected" : "" }}>Khối 4</option>
+                        <option value="5" {{ $selected_grade === "5" ? "selected" : "" }}>Khối 5</option>
+                        <option value="6" {{ $selected_grade === "6" ? "selected" : "" }}>Khối 6</option>
+                        <option value="7" {{ $selected_grade === "7" ? "selected" : "" }}>Khối 7</option>
+                        <option value="8" {{ $selected_grade === "8" ? "selected" : "" }}>Khối 8</option>
+                        <option value="9" {{ $selected_grade === "9" ? "selected" : "" }}>Khối 9</option>
+                        <option value="10" {{ $selected_grade === "10" ? "selected" : "" }}>Khối 10</option>
+                        <option value="11" {{ $selected_grade === "11" ? "selected" : "" }}>Khối 11</option>
+                        <option value="12" {{ $selected_grade === "12" ? "selected" : "" }}>Khối 12</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3" id = "course">
-                    <label for="course">Chọn khóa học</label>
-                    
-                </div>
-                <div class="form-group col-md-3" id = "note">
+                <div class="form-group col-md-4" id = "note">
                     <label for="note">Ghi chú</label>
-                    <textarea rows="4" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
-                </div>
+                    <textarea rows="1" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
+                </div>                
                 <input type="hidden" name="url" id= "url"> 
             </div>
             
+            <div class="form-group col-md-3" id = "course">
+                <label for="course">Chọn khóa học</label>
+                
+            </div>
             
             <button type="submit" class="btn btn-primary">Đăng ký</button>
         </form>
@@ -163,22 +162,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" crossorigin="anonymous"></script>
     
     <script>
-        
-        $( document ).ready(function() {
-            $('#url').val(document.referrer)
-            console.log(document.referrer)
-            var schools = {!! json_encode($schools, JSON_HEX_TAG) !!};
-            $('#datepicker').datepicker({
-                format: "dd/mm/yyyy"
-            });
-            $( "#schools" ).autocomplete({
-                source: schools
-            });
-            $('#phone').mask('(000)-000-0000');
-            $('#grade').change(function () {
-            var id = $(this).find(':selected')[0].value;
-            console.log(id)
-            //alert(id); 
+        function getCourses(id){
             $.ajax({
                 type: 'POST',
                 url: '/get/courses',
@@ -199,8 +183,25 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
                     }
                 }
             });
-
-        });
+        }
+        $( document ).ready(function() {
+            $('#url').val(document.referrer)
+            let grade = $('#grade').find(':selected')[0].value;
+            if(grade !== ""){
+                getCourses(grade)
+            }
+            var schools = {!! json_encode($schools, JSON_HEX_TAG) !!};
+            $('#datepicker').datepicker({
+                format: "dd/mm/yyyy"
+            });
+            $( "#schools" ).autocomplete({
+                source: schools
+            });
+            $('#phone').mask('(000)-000-0000');
+            $('#grade').change(function(){
+                var id = $(this).find(':selected')[0].value;
+                getCourses(id)
+            });
         });
     </script>
   </body>

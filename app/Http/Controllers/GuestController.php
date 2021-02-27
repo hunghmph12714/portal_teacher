@@ -31,11 +31,28 @@ class GuestController extends Controller
 
     }
     public function formPublic(){
+        // print_r($_SERVER['HTTP_REFERER']);
         $schools = Schools::Select('name')->get()->toArray();
         $schools = array_column($schools, 'name');
         $centers = Center::Select('name','id')->where('name','!=', 'VietElite Trụ sở điều hành')->get()->toArray();
+        $arr = explode('/', $_SERVER['HTTP_REFERER']);
+        print_r($arr);
+        $selected_grade = '';
+        if(sizeof($arr) >= 4){
+            switch ($arr[3]) {
+                case 'tuyen-sinh-khoi-lop-3':
+                    # code...
+                    $selected_grade = '3';
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
         // return $schools;
-        return view('form-public', compact('schools','centers'));
+        print_r($selected_grade);
+        return view('form-public', compact('schools','centers', 'selected_grade'));
     }
     public function formPublicSimplified(){
         $centers = Center::Select('name','id')->where('name','!=', 'VietElite Trụ sở điều hành')->get()->toArray();
