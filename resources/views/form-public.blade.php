@@ -53,6 +53,29 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
         font-weight: 700;
         font-size: 1.25em;
     }
+    h4{
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    .domain{
+        margin-right: 15px;
+    }
+    #course{
+        padding: 15px;
+    }
+    h5{
+        background: #6ebe45;
+        padding: 5px;
+        color: white;
+    }
+    .btn-vee{
+        background: linear-gradient(90deg, rgba(117,186,100,1) 0%, rgba(25,165,124,1) 54%, rgba(0,158,139,1) 100%);
+        font-size: 19px;
+        padding: 10px 54px;
+        font-weight: 500;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
     </style>
   </head>
   <body>
@@ -138,17 +161,18 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
                 </div>
                 <div class="form-group col-md-4" id = "note">
                     <label for="note">Ghi chú</label>
-                    <textarea rows="1" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
+                    <textarea rows="2" class="form-control" name="note" placeholder="Quý phụ huynh có thêm thắc mắc cần tư vấn, vui lòng để lại lời nhắn"></textarea>
                 </div>                
                 <input type="hidden" name="url" id= "url"> 
             </div>
             
-            <div class="form-group col-md-3" id = "course">
-                <label for="course">Chọn khóa học</label>
+            <h4>Chọn khóa học</h4>
+            <div class="form-group row" id = "course">
+                
                 
             </div>
             
-            <button type="submit" class="btn btn-primary">Đăng ký</button>
+            <button type="submit" class="btn btn-primary btn-vee">Đăng ký ngay</button>
         </form>
     </div>
 
@@ -174,12 +198,18 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
                     // the next thing you want to do 
                     var $course = $('#course');
                     $course.empty();
-                    $("#course").append('<label for="course">Chọn khóa học</label>')
                     if(data.length == 0){
                         $("#course").append('<div> Hiện tại chưa có khóa học nào.</div>')
                     }
-                    for (var i = 0; i < data.length; i++) {
-                        $('#course').append('<div class="checkbox"> <label><input type="checkbox" value="'+data[i].id+'" name="course[]">  ' + data[i].name + '</label></div>')
+                    
+                    // console.log(data)
+                    for (const [key, value] of Object.entries(data)) {
+                        k = key.replace(' ', '');
+                        $('#course').append('<div class="domain" id="'+k+'"><h5 class="domain_h5"> '+key+'</h5></div>')
+                        for (var i = 0; i < value.length; i++) {
+                            $('#'+k).append('<div class="checkbox"> <label><input type="checkbox" value="'+value[i].id+'" name="course[]">  ' + value[i].name + '</label></div>')
+                            
+                        }
                     }
                 }
             });

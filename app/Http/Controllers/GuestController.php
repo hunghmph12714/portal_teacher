@@ -36,7 +36,6 @@ class GuestController extends Controller
         $schools = array_column($schools, 'name');
         $centers = Center::Select('name','id')->where('name','!=', 'VietElite Trụ sở điều hành')->get()->toArray();
         $arr = explode('/', $_SERVER['HTTP_REFERER']);
-        print_r($arr);
         $selected_grade = '';
         if(sizeof($arr) >= 4){
             switch ($arr[3]) {
@@ -45,13 +44,56 @@ class GuestController extends Controller
                     $selected_grade = '3';
                     break;
                 
+                case 'tuyen-sinh-khoi-lop-4':
+                    # code...
+                    $selected_grade = '4';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-5':
+                    # code...
+                    $selected_grade = '5';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-6':
+                    # code...
+                    $selected_grade = '6';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-7':
+                    # code...
+                    $selected_grade = '7';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-8':
+                    # code...
+                    $selected_grade = '8';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-9':
+                    # code...
+                    $selected_grade = '9';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-10':
+                    # code...
+                    $selected_grade = '10';
+                    break;
+                
+                case 'tuyen-sinh-khoi-lop-11':
+                    # code...
+                    $selected_grade = '11';
+                    break;
+                case 'tuyen-sinh-khoi-lop-12':
+                    # code...
+                    $selected_grade = '12';
+                    break;
+                
                 default:
                     # code...
                     break;
             }
         }
         // return $schools;
-        print_r($selected_grade);
         return view('form-public', compact('schools','centers', 'selected_grade'));
     }
     public function formPublicSimplified(){
@@ -61,11 +103,17 @@ class GuestController extends Controller
     }
     
     public function getCourses(Request $request){
-        $courses = Course::select('name','id','grade')->where('grade', $request->grade)->get()->toArray();
+        $courses = Course::select('name','id','grade','domain')->where('grade', $request->grade)->get()->toArray();
+        $result = [];
         foreach($courses as $key => $c){
-            $courses[$key]['name'] = $c['name'] . ' '. $c['grade'];
+            if(!array_key_exists($c['domain'], $result)){
+                $result[$c['domain']] = [['id' => $c['id'], 'name' => $c['name'] . ' '. $c['grade']]];
+            }else{
+                $result[$c['domain']][] =  ['id' => $c['id'], 'name' => $c['name'] . ' '. $c['grade']];
+            }
+            // $courses[$key]['name'] = $c['name'] . ' '. $c['grade'];
         }
-        return response()->json($courses);
+        return response()->json($result);
     }
     public function createEntrance($student, $center, $course, $note,  $source){
         $e['student_id'] = $student->id;
