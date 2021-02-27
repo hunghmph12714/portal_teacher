@@ -55,6 +55,7 @@ export default class Courses extends React.Component{
             columns: [
                 { title: 'Tên khóa học', field: 'name' },
                 { title: 'Khối', field: 'grade' },
+                { title: 'Môn', field: 'domain' },
                 { title: 'Tài liệu', field: 'document'},         
                 { title: 'Ngày tạo', field: 'created_at' , editable: 'never' },      
                 { title: 'Học phí/ca', field: 'fee', type: "currency", 

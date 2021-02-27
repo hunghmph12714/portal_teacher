@@ -85,6 +85,7 @@ class ClassController extends Controller
             $course->name = $newCourse['name'];
             $course->grade = $newCourse['grade'];
             $course->document = $newCourse['document'];
+            $course->domain = $newCourse['domain'];
             $course->fee = $newCourse['fee'];
             $course->class_per_week = $newCourse['class_per_week'];
             $course->session_per_class = $newCourse['session_per_class'];
