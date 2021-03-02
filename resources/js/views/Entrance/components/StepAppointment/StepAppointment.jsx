@@ -15,7 +15,7 @@ import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { TestDialog, MessageDialog } from '../../components';
+import { TestDialog, MessageDialog, StatusDialog } from '../../components';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -175,6 +175,8 @@ const StepAppointment = (props) => {
         
         ]
     )
+    const [openStatus, setOpenStatus] = useState(false)
+    const [typeStatus, setTypeStatus] = useState('')
     const [refresh, setRefresh] = useState(true)
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
@@ -237,8 +239,8 @@ const StepAppointment = (props) => {
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail2'})
+    function handleFailClick(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail2', reason: reason, comment: comment})
             .then(response => { 
                 var d = new Date();
                 let yesterday = d.setDate(d.getDate() - 1);
@@ -276,8 +278,8 @@ const StepAppointment = (props) => {
         setOpenMessage(true)
         setSelectedEntrance(rowData)
     }
-    function handleRemove(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT'})
+    function handleRemove(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -286,6 +288,14 @@ const StepAppointment = (props) => {
             .catch(err => {
                 console.log(err)
             })
+    }
+    function handleOpenDialogStatus(rowData, type){
+        setOpenStatus(true)
+        setTypeStatus(type)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseStatus(){
+        setOpenStatus(false)
     }
     return(
         <React.Fragment>
@@ -483,6 +493,12 @@ const StepAppointment = (props) => {
                                 handleCloseDialog = {handleCloseMessage}
                                 selectedEntrance = {selectedEntrance}
                                 fetchData = {fetchData}
+                            />   
+                            <StatusDialog
+                                open = {openStatus}
+                                handleClose = {handleCloseStatus}
+                                selectedEntrance = {selectedEntrance}
+                                handleStatusChange = {(typeStatus == 'type1') ? handleFailClick : handleRemove}
                             />   
                         </div>
                     

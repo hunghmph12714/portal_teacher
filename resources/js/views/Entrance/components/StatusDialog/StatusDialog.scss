@@ -1,0 +1,21 @@
+#status-dialog{
+    .MuiDialog-paper{
+        overflow-y: visible !important;
+    }
+    .MuiDialogContent-root{
+        overflow-y: visible !important;
+    }
+    
+    .appointments{
+        margin-bottom: 15px;
+        .icon{
+            margin-top: 7px;
+            cursor: pointer;
+        }
+    }
+
+    .select-reason{
+        z-index: 1000;
+        
+    }
+}

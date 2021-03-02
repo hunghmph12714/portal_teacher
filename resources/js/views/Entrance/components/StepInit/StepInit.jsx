@@ -15,7 +15,7 @@ import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { AppointmentDialog, MessageDialog } from '../../components';
+import { AppointmentDialog, MessageDialog, StatusDialog } from '../../components';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
 
@@ -171,6 +171,8 @@ const StepInit = (props) => {
         
         ]
     )
+    const [openStatus, setOpenStatus] = useState(false)
+    const [typeStatus, setTypeStatus] = useState('')
     const [loading , setLoading] = useState(true)
     const [refresh, setRefresh] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
@@ -232,8 +234,8 @@ const StepInit = (props) => {
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail1'})
+    function handleFailClick(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment})
             .then(response => { 
                 var d = new Date();
                 let yesterday = d.setDate(d.getDate() - 1);
@@ -271,8 +273,8 @@ const StepInit = (props) => {
         setOpenMessage(true)
         setSelectedEntrance(rowData)
     }
-    function handleRemove(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost'})
+    function handleRemove(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -281,6 +283,14 @@ const StepInit = (props) => {
             .catch(err => {
                 console.log(err)
             })
+    }
+    function handleOpenDialogStatus(rowData, type){
+        setOpenStatus(true)
+        setTypeStatus(type)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseStatus(){
+        setOpenStatus(false)
     }
     return(
         <React.Fragment>
@@ -324,10 +334,7 @@ const StepInit = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                 ]}
                                 localization={lang}
@@ -340,8 +347,8 @@ const StepInit = (props) => {
                                 title="Danh sách ghi danh quá 24h"
                                 data={data2}
                                 options={{
-                                    pageSize: 5,
-                                    pageSizeOptions: [5, 20, 50, 200],
+                                    pageSize: 10,
+                                    pageSizeOptions: [5 ,10 ,20 ,50 ,200],
                                     grouping: true,
                                     filtering: true,
                                     exportButton: true,                
@@ -367,10 +374,7 @@ const StepInit = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                 ]}
                                 localization={lang}
@@ -411,11 +415,7 @@ const StepInit = (props) => {
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Thất bại tư vấn ?')) 
-                                                handleRemove(rowData)
-                                    
-                                        },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
                                 ]}
                                 localization={lang}
@@ -436,6 +436,13 @@ const StepInit = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 fetchData = {fetchData}
                             />   
+                            <StatusDialog
+                                open = {openStatus}
+                                handleClose = {handleCloseStatus}
+                                selectedEntrance = {selectedEntrance}
+                                handleStatusChange = {(typeStatus == 'type1') ? handleFailClick : handleRemove}
+                            />   
+
                         </div>
                     </React.Fragment>
         

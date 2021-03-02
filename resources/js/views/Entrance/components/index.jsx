@@ -13,3 +13,4 @@ export { default as StepFinal } from './StepFinal';
 export { default as AppointmentDialog } from './AppointmentDialog';
 export { default as MessageDialog } from './MessageDialog';
 export { default as TestDialog } from './TestDialog';
+export { default as StatusDialog } from './StatusDialog';

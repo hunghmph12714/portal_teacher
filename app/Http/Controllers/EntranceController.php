@@ -18,6 +18,7 @@ use App\Account;
 use App\Source;
 use App\Medium;
 use App\Comment;
+use App\EntranceStatus;
 use Illuminate\Http\Request;
 
 class EntranceController extends Controller
@@ -293,7 +294,13 @@ class EntranceController extends Controller
                 $e->test_time = ($request->entrance_date) ? date('Y-m-d H:i:m', strtotime($request->entrance_date)) : null;
                 
                 $e->note = $request->entrance_note;
-                $e->status_id = $request->entrance_status['value'];
+                //Status changed                
+                if($e->status_id != $request->entrance_status['value']){
+                    $e->status_id = $request->entrance_status['value'];
+                    $e->status()->attach([
+                        $e->status_id => ['active' => '1', 'user_id' => auth()->user()->id]
+                    ]);
+                }
                 //Check step changed
                 if($e->step_id != $request->entrance_step['value']){
                     $e->step_updated_at = date('Y-m-d H:i:s');
@@ -416,8 +423,10 @@ class EntranceController extends Controller
                     # code...
                     break;
             }
+            $entrance->status()->attach([$entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id, 'comment' => $request->comment, 'reason' => $request->reason]]);
             $entrance->save();
         }
+        
         return response()->json('ok');
     }
     protected function initEdit(Request $request){

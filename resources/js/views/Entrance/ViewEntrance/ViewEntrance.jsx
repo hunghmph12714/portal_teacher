@@ -236,6 +236,7 @@ class ViewEntrance extends React.Component{
                       <h4>CƠ SỞ GHI DANH</h4>
                       <Select
                         isMulti
+                        isClearable={false}
                         name="centers"
                         options={this.state.centers}
                         value = {this.state.selected_centers}

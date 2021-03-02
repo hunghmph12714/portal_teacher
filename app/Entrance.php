@@ -12,8 +12,13 @@ class Entrance extends Model
         'test_answers','test_score','test_note','note','priority','step_id','step_updated_at','status_id','message','source','source_id','medium_id','attempts'];
     protected $casts = ['message'=> 'array'];
 
-    public function comments()    {
+    public function comments(){
         return $this->hasMany('App\Comment');
+    }
+    public function status(){
+        return $this->belongsToMany('App\Status','entrance_status','entrance_id','status_id')->using('App\EntranceStatus')
+            ->withPivot('user_id', 'comment', 'reason', 'active')
+            ->withTimestamps();
     }
     
 }

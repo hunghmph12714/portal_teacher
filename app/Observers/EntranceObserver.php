@@ -20,6 +20,11 @@ class EntranceObserver
         $weight = Relationship::find($relation_id) ? Relationship::find($relation_id)->weight: 0;
         $entrance->priority += $weight;
         $entrance->save();
+
+        $entrance->status()->attach([
+            $entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id]
+        ]);
+
     }
 
     /**
@@ -31,6 +36,23 @@ class EntranceObserver
     public function updated(Entrance $entrance)
     {
         //
+        //Find current active status
+        // if($entrance->getOriginal('status_id') != $entrance->status_id){
+        //     $active_status = $entrance->status()->where('active', '1')->first();
+        //     if($active_status){
+        //         if($active_status->status_id != $entrance->status_id){
+        //             $entrance->status()->updateExistingPivot($active_status->status_id, ['active' => '0'] );
+        //             $entrance->status()->attach([
+        //                 $entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id]
+        //             ]);
+        //         }
+        //     }else{
+        //         $entrance->status()->attach([
+        //             $entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id]
+        //         ]);
+        //     }
+        // }
+        
     }
 
     /**
