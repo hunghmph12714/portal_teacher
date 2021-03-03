@@ -111,17 +111,19 @@ class EntranceController extends Controller
         if($request['parent_phone']['__isNew__']){
         // New parent
             $parent = Parents::create($p);
-
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
                 $student = $this->handleCreateStudent($parent->id, $request);
             //Create Entrance
                 $sid = $student->id;
             }
-        } 
+        }
         else{
         //Existed parent
-            //Update parent 
+            //Update parent \
+            $par = Parents::find($request['parent_phone']['value']);            
+            $p['relationship_id'] = $par->relationship_id;
+        
             Parents::find($request['parent_phone']['value'])->update($p);
             if($request['student_name']['__isNew__']){ // New Student
             //Create new student
@@ -145,9 +147,7 @@ class EntranceController extends Controller
             $new_entrance = $this->handleCreateEntrance($sid, $request['entrance_center']['value'], NULL, NULL, $request['entrance_note'], $medium_id);
         }
         return response()->json('ok');
-
     }
-
     protected function getEntrance(Request $request){
         $rules = [
             'center_id' => 'required',
@@ -182,7 +182,7 @@ class EntranceController extends Controller
     }
     protected function getEntranceByStep($step, $centers){
         $entrances = Entrance::Select(
-            'entrances.id as eid','entrances.test_time',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
+            'entrances.id as eid','entrances.test_time','entrances.test_results',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
@@ -235,7 +235,6 @@ class EntranceController extends Controller
         }
         return response()->json($entrances);
     }
-
     protected function editEntrance(Request $request){
         $rules = ['student_id' => 'required', 'entrance_id' => 'required'];
         $this->validate($request, $rules);
@@ -243,7 +242,7 @@ class EntranceController extends Controller
         // Edit Student and Parent
         $student = Student::find($request->student_id);
             if($student){
-                $student->relationship_id = $request->selected_relationship['value'];
+                // $student->relationship_id = $request->selected_relationship['value'];
                 $student->fullname = $request->student_name['label'];
                 $student->school = $request->student_school['label'];
                 $student->grade = $request->student_grade;
@@ -266,7 +265,6 @@ class EntranceController extends Controller
                 $p['alt_fullname'] = $r['parent_alt_name'];
                 $p['alt_email'] = $r['parent_alt_email'];
                 $p['alt_phone'] = $r['parent_alt_phone'];
-                print_r($p);
                 $parent = Parents::create($p);
                 $student->parent_id = $parent->id;
                 $student->save();
@@ -274,7 +272,7 @@ class EntranceController extends Controller
         if($request->parent_changed && !$request['parent_phone']['__isNew__']){
             $p = Parents::find($request->parent_id);
             if($p){
-                $p->relationship_id = $request->selected_relationship['value'];
+                // $p->relationship_id = $request->selected_relationship['value'];
                 $p->fullname = $request->parent_name;
                 $p->phone = $request->parent_phone['label'];
                 $p->email = $request->parent_email;

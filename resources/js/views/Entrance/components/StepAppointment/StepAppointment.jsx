@@ -15,7 +15,7 @@ import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { TestDialog, MessageDialog, StatusDialog } from '../../components';
+import { AppointmentDialog, TestDialog, MessageDialog, StatusDialog } from '../../components';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
 import CheckIcon from '@material-ui/icons/Check';
@@ -180,6 +180,8 @@ const StepAppointment = (props) => {
     const [refresh, setRefresh] = useState(true)
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
+    const [openTest, setOpenTest] = useState(false)
+    
     const [openMessage, setOpenMessage] = useState(false)
     const [selectedEntrance, setSelectedEntrance] = useState({})
     const [statusOptions, setStatusOptions] = useState([])
@@ -264,12 +266,12 @@ const StepAppointment = (props) => {
                 console.log(err)
             })
     }
-    function handleOpenDialogAppointment(rowData){
-        setOpenAppointment(true)
+    function handleOpenDialogTest(rowData){
+        setOpenTest(true)
         setSelectedEntrance(rowData)
     }
-    function handleCloseAppointment(){
-        setOpenAppointment(false)
+    function handleCloseTest(){
+        setOpenTest(false)
     }
     function handleCloseMessage(){
         setOpenMessage(false)
@@ -293,6 +295,13 @@ const StepAppointment = (props) => {
         setOpenStatus(true)
         setTypeStatus(type)
         setSelectedEntrance(rowData)
+    }
+    function handleOpenDialogAppointment(rowData){
+        setOpenAppointment(true)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseAppointment(){
+        setOpenAppointment(false)
     }
     function handleCloseStatus(){
         setOpenStatus(false)
@@ -347,11 +356,18 @@ const StepAppointment = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
                                     },
                                     {
+                                        icon: () => <AddAlarmIcon />,
+                                        tooltip: 'Hẹn lại lịch',
+                                        isFreeAction: false,
+                                        text: 'Hẹn lại lịch',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                    },
+                                    {
                                         icon: () => <CheckIcon />,
                                         tooltip: 'Đã đến kiểm tra',
                                         isFreeAction: false,
                                         text: 'Đã đến kiểm tra',
-                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                        onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
@@ -402,11 +418,18 @@ const StepAppointment = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
                                     },
                                     {
+                                        icon: () => <AddAlarmIcon />,
+                                        tooltip: 'Hẹn lại lịch',
+                                        isFreeAction: false,
+                                        text: 'Hẹn lại lịch',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                    },
+                                    {
                                         icon: () => <CheckIcon />,
                                         tooltip: 'Đã đến kiểm tra',
                                         isFreeAction: false,
                                         text: 'Đã đến kiểm tra',
-                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                        onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
@@ -456,13 +479,20 @@ const StepAppointment = (props) => {
                                         isFreeAction: false,
                                         text: 'Ghi chú',
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
+                                    },                                    
+                                    {
+                                        icon: () => <AddAlarmIcon />,
+                                        tooltip: 'Hẹn lại lịch',
+                                        isFreeAction: false,
+                                        text: 'Hẹn lại lịch',
+                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
                                     },
                                     {
                                         icon: () => <CheckIcon />,
                                         tooltip: 'Đã đến kiểm tra',
                                         isFreeAction: false,
                                         text: 'Đã đến kiểm tra',
-                                        onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
+                                        onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
                                         icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
@@ -481,8 +511,8 @@ const StepAppointment = (props) => {
                                 
                             />
                             <TestDialog
-                                open = {openAppointment}
-                                handleCloseDialog = {handleCloseAppointment}
+                                open = {openTest}
+                                handleCloseDialog = {handleCloseTest}
                                 selectedEntrance = {selectedEntrance}
                                 statusOptions = {statusOptions}
                                 courseOptions = {courseOptions}
@@ -500,6 +530,14 @@ const StepAppointment = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {(typeStatus == 'type1') ? handleFailClick : handleRemove}
                             />   
+                            <AppointmentDialog
+                                open = {openAppointment}
+                                handleCloseDialog = {handleCloseAppointment}
+                                selectedEntrance = {selectedEntrance}
+                                statusOptions = {statusOptions}
+                                courseOptions = {courseOptions}
+                                fetchData = {fetchData}
+                            /> 
                         </div>
                     
                     </React.Fragment>
