@@ -72,14 +72,14 @@ const colourStyles = {
 const RelationshipOptions = React.memo(props => {
     const [relationships, setRelationships] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/relationship/get')
             setRelationships(r.data.map(relationship => {
                     return {label: relationship.name, value: relationship.id, color: (relationship.color)?relationship.color:"#000000"}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 

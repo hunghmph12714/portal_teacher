@@ -8,7 +8,7 @@ const StudentClassSelect = React.memo(props => {
     // Session date
     // 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.post(baseUrl + '/class/active-student', 
             {class_id: props.class_id, type: props.dialogType, session_date: props.session_date, session_id: props.session_id})
             setStudent(r.data.map(d => {
@@ -16,7 +16,7 @@ const StudentClassSelect = React.memo(props => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [props.fetch_student])
     
     return (

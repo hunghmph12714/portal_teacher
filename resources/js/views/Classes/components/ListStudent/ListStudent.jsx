@@ -34,7 +34,7 @@ const ListStudent = (props) => {
     const [type, setType] = useState('create');
     const [selected_data, setSelectedData] = useState([]);
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
             console.log(response.data)
             setData(response.data.map(r => {
@@ -49,7 +49,7 @@ const ListStudent = (props) => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [reload])
     function openCreateDialog(){
         setType('create')

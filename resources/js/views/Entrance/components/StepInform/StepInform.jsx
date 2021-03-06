@@ -10,20 +10,14 @@ import {
     Typography ,LinearProgress
   } from "@material-ui/core";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
-import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
+import ImageSearchIcon from '@material-ui/icons/ImageSearch';
+import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { TestDialog, MessageDialog, AnswersDialog  } from '../../components';
-import AddBoxIcon from '@material-ui/icons/AddBox';
-import ImageSearchIcon from '@material-ui/icons/ImageSearch';
+import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } from '../../components';
 import { useSnackbar } from 'notistack';
-import CheckIcon from '@material-ui/icons/Check';
-import orange from '@material-ui/core/colors/orange';
-import yellow from '@material-ui/core/colors/yellow';
-
 const lang = {
     body: {
         emptyDataSourceMessage: 'Không tìm thấy ghi danh'
@@ -211,7 +205,8 @@ const StepInform = (props) => {
         
         ]
     )
-    
+    const [results, setResults] = useState([])
+
     const [refresh, setRefresh] = useState(true)
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
@@ -221,8 +216,12 @@ const StepInform = (props) => {
     const [courseOptions, setCourseOptions] = useState([])
     const [open_answers, setOpenAnswer] = useState(false)
     const [answers, setAnswer] = useState([])
+    const [openStatus, setOpenStatus] = useState(false)
+    const [typeStatus, setTypeStatus] = useState('')
+    const [classes, setClasses] = useState([])
+    const [open_class, setOpenClass] = useState(false)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    function fetchData(){
+    function fetchdata(){
         setLoading(true)
         axios.post( "/entrance/get/inform", {centers: centers})
             .then(response => {
@@ -285,14 +284,22 @@ const StepInform = (props) => {
                 })
             )
         }
-        fetchData()
+        const fetchClass = async() => {
+            const c = await axios.get('/class/get/-1/-1')
+            setClasses(c.data.map(cl => {
+                    return {label: cl.code, value: cl.id}
+                })
+            )
+        }
+        fetchdata()
         fetchStatus()
-        fetchCourse()        
+        fetchCourse()  
+        fetchClass()      
     }, [centers])    
-    function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail4'})
+    function handleFailClick(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment})
             .then(response => { 
-                fetchData()
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -302,12 +309,18 @@ const StepInform = (props) => {
     }
     function handleOpenAnswerDialog(rowData) {
         if(typeof rowData.test_answers == 'string'){
-          rowData.test_answers = rowData.test_answers.split(',')
+            rowData.test_answers = rowData.test_answers.split(',')
+        }
+        if(typeof rowData.test_results == 'string'){
+            rowData.test_results = rowData.test_results.split(',')
         }
         if(rowData.test_answers){
             setAnswer(rowData.test_answers)
         }
-        
+        if(rowData.test_results){
+            setResults(rowData.test_results)
+        }
+          
         setOpenAnswer(true)
     }
     function handleCloseAnswerDialog(){
@@ -328,8 +341,23 @@ const StepInform = (props) => {
         setOpenMessage(true)
         setSelectedEntrance(rowData)
     }
-    function handleRemove(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT'})
+    function handleOpenDialogStatus(rowData, type){
+        setOpenStatus(true)
+        setTypeStatus(type)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseStatus(){
+        setOpenStatus(false)
+    }
+    function handleOpenClassDialog(rowData){
+        setOpenClass(true)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseClass(){
+        setOpenClass(false)
+    }
+    function handleRemove(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -342,7 +370,7 @@ const StepInform = (props) => {
     function handleIncreaseContact(rowData){
         axios.post('/entrance/inform/increase', {id: rowData.eid})
             .then(response => { 
-                fetchData()
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
             })
             .catch(err => {
@@ -352,7 +380,7 @@ const StepInform = (props) => {
     function handleLostEntrance(rowData){
         axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost4'})
             .then(response => { 
-                fetchData()
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -396,7 +424,14 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Ghi chú',
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                                    },                                   
+                                    },         
+                                    {
+                                        icon: () => <ImageSearchIcon />,
+                                        tooltip: 'Kiểm tra bài làm',
+                                        isFreeAction: false,
+                                        text: 'Kiểm tra bài làm',
+                                        onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
+                                    },                          
                                     {
                                         icon: () => <PlusOneIcon />,
                                         tooltip: 'Tăng liên lạc',
@@ -404,15 +439,20 @@ const StepInform = (props) => {
                                         text: 'Tăng liên lạc',
                                         onClick: (event, rowData) => {handleIncreaseContact(rowData)},
                                     },
+                                             
+                                    {
+                                        icon: () => <EditLocationOutlinedIcon />,
+                                        tooltip: 'Xếp lớp',
+                                        isFreeAction: false,
+                                        text: 'Xếp lớp',
+                                        onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
+                                    },   
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',
                                         isFreeAction: false,
                                         text: 'Thất bại ',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái thất bại ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                 ]}
                                 localization={lang}
@@ -446,7 +486,16 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Ghi chú',
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                                    },                                   
+                                    },        
+                                         
+                                    {
+                                        icon: () => <ImageSearchIcon />,
+                                        tooltip: 'Kiểm tra bài làm',
+                                        isFreeAction: false,
+                                        text: 'Kiểm tra bài làm',
+                                        onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
+                                    }, 
+                                                                   
                                     {
                                         icon: () => <PlusOneIcon />,
                                         tooltip: 'Tăng liên lạc',
@@ -455,14 +504,18 @@ const StepInform = (props) => {
                                         onClick: (event, rowData) => {handleIncreaseContact(rowData)},
                                     },
                                     {
+                                        icon: () => <EditLocationOutlinedIcon />,
+                                        tooltip: 'Xếp lớp',
+                                        isFreeAction: false,
+                                        text: 'Xếp lớp',
+                                        onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
+                                    },   
+                                    {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',
                                         isFreeAction: false,
                                         text: 'Thất bại ',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái thất bại ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                 ]}
                                 localization={lang}
@@ -497,7 +550,15 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Ghi chú',
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                                    },                                   
+                                    },        
+                                         
+                                    {
+                                        icon: () => <ImageSearchIcon />,
+                                        tooltip: 'Kiểm tra bài làm',
+                                        isFreeAction: false,
+                                        text: 'Kiểm tra bài làm',
+                                        onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
+                                    },                                
                                     {
                                         icon: () => <PlusOneIcon />,
                                         tooltip: 'Tăng liên lạc',
@@ -505,6 +566,13 @@ const StepInform = (props) => {
                                         text: 'Tăng liên lạc',
                                         onClick: (event, rowData) => {handleIncreaseContact(rowData)},
                                     },
+                                    {
+                                        icon: () => <EditLocationOutlinedIcon />,
+                                        tooltip: 'Xếp lớp',
+                                        isFreeAction: false,
+                                        text: 'Xếp lớp',
+                                        onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
+                                    },   
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',
@@ -545,16 +613,27 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Ghi chú',
                                         onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
-                                    },     
+                                    },
+                                    {
+                                        icon: () => <ImageSearchIcon />,
+                                        tooltip: 'Kiểm tra bài làm',
+                                        isFreeAction: false,
+                                        text: 'Kiểm tra bài làm',
+                                        onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
+                                    },  
+                                    {
+                                        icon: () => <EditLocationOutlinedIcon />,
+                                        tooltip: 'Xếp lớp',
+                                        isFreeAction: false,
+                                        text: 'Xếp lớp',
+                                        onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
+                                    },        
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',
                                         isFreeAction: false,
                                         text: 'Thất bại ',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Thất bại liên lạc?')) 
-                                                handleLostEntrance(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
                                 ]}
                                 localization={lang}
@@ -565,7 +644,29 @@ const StepInform = (props) => {
                                 open = {openMessage}
                                 handleCloseDialog = {handleCloseMessage}
                                 selectedEntrance = {selectedEntrance}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
+                            /> 
+                            
+                            <AnswersDialog 
+                                open_answers={open_answers}
+                                handleCloseDialog={handleCloseAnswerDialog}
+                                answers = {answers}
+                                results = {results}
+                            />  
+                            <StatusDialog
+                                open = {openStatus}
+                                handleClose = {handleCloseStatus}
+                                selectedEntrance = {selectedEntrance}
+                                handleStatusChange = {(typeStatus == 'type4') ? handleFailClick : handleRemove}
+                            /> 
+                            <ClassDialog
+                                open = {open_class}
+                                classes = {classes}
+                                handleClose = {handleCloseClass}
+                                selectedEntrance = {selectedEntrance}
+                                fetchdata= {fetchdata}
+                                confirm = {false}
+                                // handleClassChange = {(typeStatus == 'type4') ? handleFailClick : handleRemove}
                             /> 
                         </div>
                     

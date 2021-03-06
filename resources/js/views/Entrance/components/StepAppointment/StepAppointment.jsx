@@ -187,7 +187,7 @@ const StepAppointment = (props) => {
     const [statusOptions, setStatusOptions] = useState([])
     const [courseOptions, setCourseOptions] = useState([])
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    function fetchData(){
+    function fetchdata(){
         axios.post( "/entrance/get/appointment", {centers: centers})
             .then(response => {
                 // let d1, d2, d3 = []
@@ -237,28 +237,14 @@ const StepAppointment = (props) => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
         fetchStatus()
         fetchCourse()        
     }, [centers])    
     function handleFailClick(rowData, reason, comment){
         axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail2', reason: reason, comment: comment})
             .then(response => { 
-                var d = new Date();
-                let yesterday = d.setDate(d.getDate() - 1);
-                const date = new Date(rowData.created_at);
-                let element = {}
-                if(date > yesterday){
-                    element = data1.filter(d => d.eid == rowData.eid)
-                    const d1 = data1.filter(d => d.eid !== rowData.eid)
-                    setData1(d1)
-                }else{
-                    element = data2.filter(d => d.eid == rowData.eid)
-                    const d2 = data2.filter(d => d.eid !== rowData.eid)
-                    setData2(d2)
-                }
-                console.log(element)
-                setData3([...data3, element[0]])
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -326,10 +312,10 @@ const StepAppointment = (props) => {
                                     rowStyle: rowData => {
                                         let today = new Date()
                                         if(rowData.test_time_formated){
-                                        let test_time = (rowData.test_time_formated) ? rowData.test_time_formated.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
-                                        if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
-                                            return {backgroundColor: yellow[200]}
-                                        }
+                                            let test_time = (rowData.test_time_formated) ? rowData.test_time_formated.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
+                                            if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
+                                                return {backgroundColor: yellow[200]}
+                                            }
                                         }
                                         
                                         if(rowData.priority >= 8){
@@ -374,10 +360,7 @@ const StepAppointment = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                 ]}
                                 localization={lang}
@@ -436,10 +419,7 @@ const StepAppointment = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                 ]}
                                 localization={lang}
@@ -499,11 +479,7 @@ const StepAppointment = (props) => {
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Thất bại tư vấn ?')) 
-                                                handleRemove(rowData)
-                                    
-                                        },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
                                 ]}
                                 localization={lang}
@@ -516,13 +492,13 @@ const StepAppointment = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 statusOptions = {statusOptions}
                                 courseOptions = {courseOptions}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             />   
                             <MessageDialog
                                 open = {openMessage}
                                 handleCloseDialog = {handleCloseMessage}
                                 selectedEntrance = {selectedEntrance}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             />   
                             <StatusDialog
                                 open = {openStatus}
@@ -536,7 +512,7 @@ const StepAppointment = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 statusOptions = {statusOptions}
                                 courseOptions = {courseOptions}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             /> 
                         </div>
                     

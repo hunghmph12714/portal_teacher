@@ -27,11 +27,11 @@ const PermissionDialog = props => {
     const {selected_permission, onPermissionChange, permissions, ...rest} = props
     // const [ permissions, setPermissions ] = React.useState([])
     // useEffect(() => {
-    //     const fetchData = async() => {
+    //     const fetchdata = async() => {
     //         const r = await axios.get('/permission/get')            
     //         setPermissions(r.data)
     //     }
-    //     fetchData()
+    //     fetchdata()
     // }, [])
     return (
         <Dialog

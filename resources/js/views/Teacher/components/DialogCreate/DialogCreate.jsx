@@ -47,7 +47,7 @@ function NumberFormatCustom(props) {
   
 const MinSalarySelect = React.memo(props => {
     const [data, setData] = useState([])
-    const fetchData = async() => {
+    const fetchdata = async() => {
         const r = await axios.get(window.Laravel.baseUrl + "/get-base-salary")
         let data = r.data.map(c => {
             var formatter = new Intl.NumberFormat('vi-VN', {
@@ -62,7 +62,7 @@ const MinSalarySelect = React.memo(props => {
         setData(data)
     }
     useEffect(() => {        
-        fetchData()
+        fetchdata()
     }, [])    
     return(        
         <div className = "select-input">

@@ -81,7 +81,7 @@ const AppointmentDialog = props => {
         })
             .then(response => {
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
-                props.fetchData();
+                props.fetchdata();
                 props.handleCloseDialog();
             })
             .catch(err => {

@@ -37,14 +37,14 @@ const baseUrl = window.Laravel.baseUrl
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-center')
             setCenters(r.data.map(center => {
                     return {label: center.name, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return(
@@ -87,14 +87,14 @@ function NumberFormatCustom(props) {
 const AccountSelect = React.memo(props => {
     const [accounts, setAccounts] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-equity')
             setAccounts(r.data.map(a => {
                     return {label: a.name, value: a.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 

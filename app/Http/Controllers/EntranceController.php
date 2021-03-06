@@ -187,17 +187,17 @@ class EntranceController extends Controller
             'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
-            'classes.id as class_id', 'classes.name as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
+            'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
             ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
         )->where('entrances.step_id', $step)
         ->whereIn('entrances.center_id', $centers)
         ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
         ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
         ->leftJoin('relationships','parents.relationship_id','relationships.id')
-         ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
-         ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
-         ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
-         ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
+        ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
+        ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
+        ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
+        ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
         return $entrances;
     }
     protected function getEntranceInit(Request $request){
@@ -233,6 +233,14 @@ class EntranceController extends Controller
             $e['deadline'] = date('d-m-Y',strtotime($e['step_updated_at'] . "+1 days"));
             $e['deadline_formated'] = date('Y-m-d',strtotime($e['step_updated_at'] . "+1 days"));
         }
+        return response()->json($entrances);
+    }
+    protected function getEntranceFinal(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        $entrances = $this->getEntranceByStep(5, $centers);
         return response()->json($entrances);
     }
     protected function editEntrance(Request $request){
@@ -329,8 +337,7 @@ class EntranceController extends Controller
         $enroll['entrance_date'] = $entrance_date;
         $sc = StudentClass::create($enroll);
         
-    }
-    
+    }    
     protected function uploadTest(Request $request){
         $rules = ['entrance_id' => 'required'];
         $this->validate($request, $rules);
@@ -379,7 +386,6 @@ class EntranceController extends Controller
         }
         
     }
-
     protected function setFail1(Request $request){
         $rules = ['id' => 'required', 'type'=> 'required'];
         $this->validate($request, $rules);
@@ -479,7 +485,6 @@ class EntranceController extends Controller
             return response()->json($comments->toArray());
         }
     }
-
     protected function deleteMessage(Request $request){
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
@@ -489,7 +494,6 @@ class EntranceController extends Controller
             $m->forceDelete();
         }
     }
-
     protected function appointmentEdit(Request $request){
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
@@ -497,7 +501,7 @@ class EntranceController extends Controller
         $entrance = Entrance::find($request->id);
         if($entrance){
             $answers = null;
-            for($i = 0 ; $i < $request->count; $i++ ){
+            for($i = 0 ; $i < $request->count_answers; $i++ ){
                 if($request->has('image'.$i)){
                     $ans = $request->file('image'.$i);
                     $name = $entrance->id."_answer".$i."_".time();
@@ -513,10 +517,27 @@ class EntranceController extends Controller
             if($answers){
                 $entrance->test_answers = $answers;            
             }
+            $results = null;
+            for($i = 0 ; $i < $request->count_results; $i++ ){
+                if($request->has('results'.$i)){
+                    $ans = $request->file('results'.$i);
+                    $name = $entrance->id."_answer".$i."_".time();
+                    $ans->move(public_path(). "/images/answers/results/",$name.".".$ans->getClientOriginalExtension());
+                    $path = "/public/images/answers/results/".$name.".".$ans->getClientOriginalExtension();
+                    if($i == 0){
+                        $results = $path;
+                    }else{
+                        $results = $results.",".$path;
+                    } 
+                }
+            }
+            if($results){
+                $entrance->test_results = $results;            
+            }
             
             if($request->score){
                 $entrance->test_score = $request->score;
-                $entrance->test_note = $request->notevalue;
+                $entrance->test_note = $request->note;
 
                 $entrance->step_id = 4;
                 $entrance->step_updated_at = date('Y-m-d H:i:s');
@@ -553,6 +574,32 @@ class EntranceController extends Controller
                     break;
             }
             $entrance->save();
+        }
+    }
+    protected function enrollClass(Request $request){
+        $rules = ['id' => 'required', 'enroll_date' => 'required', 'class' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $entrance->class_id = $request->class['value'];
+            $entrance->enroll_date = date('Y-m-d', strtotime($request->enroll_date));
+            $entrance->step_id = 5;
+            $entrance->save();
+        }
+    }
+    protected function confirmClass(Request $request){
+        $rules = ['id' => 'required', 'class' => 'required', 'enroll_date' => 'required'];
+        $this->validate($request, $rules);
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+
+            $entrance->class_id = $request->class['value'];
+            $entrance->enroll_date = date('Y-m-d', strtotime($request->enroll_date));
+            $entrance->status_id = 11;
+            $entrance->save();
+            $this->enrollStudent($entrance->class_id, $entrance->student_id, $entrance->enroll_date);
+
         }
     }
     

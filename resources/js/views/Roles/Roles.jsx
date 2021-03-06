@@ -46,7 +46,7 @@ class Role extends React.Component{
             permissions: [],
         }
     }
-    fetchData = async(rowData) => {
+    fetchdata = async(rowData) => {
         const response = await axios.get('/permission/get')
         let data = response.data
         let sp = rowData.permissions
@@ -79,7 +79,7 @@ class Role extends React.Component{
         })
     }
     handleOpenDialogPermission = (rowData) => {
-        this.fetchData(rowData)
+        this.fetchdata(rowData)
     }
     onPermissionChange = (p) => {
         this.setState(prevState => {

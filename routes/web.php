@@ -157,6 +157,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/get/appointment', 'EntranceController@getEntranceAppointment');
             Route::post('/entrance/get/result', 'EntranceController@getEntranceResult');
             Route::post('/entrance/get/inform', 'EntranceController@getEntranceInform');
+            Route::post('/entrance/get/final', 'EntranceController@getEntranceFinal');
             Route::post('/entrance/inform/increase', 'EntranceController@increaseInform');
             Route::post('/entrance/init/edit', 'EntranceController@initEdit');
             Route::post('/entrance/appointment/edit', 'EntranceController@appointmentEdit');
@@ -170,6 +171,9 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/edit', 'EntranceController@editEntrance');
             Route::post('/entrance/delete', 'EntranceController@deleteEntrance');
             Route::post('/entrance/send-message', 'EntranceController@sendMessage');
+
+            Route::post('/entrance/enroll-class', 'EntranceController@EnrollClass');
+            Route::post('/entrance/confirm', 'EntranceController@ConfirmClass');
         //Accounts
             Route::get('/finaccount', function(){
                 return view('welcome');

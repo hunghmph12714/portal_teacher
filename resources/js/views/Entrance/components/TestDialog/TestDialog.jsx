@@ -25,26 +25,28 @@ const TestDialog = props => {
     const [status, setStatus] = useState({value: '', label: ''})
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [test_answers, setTestAnswer] = useState('');
+    const [test_results, setTestResult] = useState('');
     useEffect(() => {
         
 
     }, [selectedEntrance])    
     function handleEditEntrance(){
-
-    }
-    function handleEditEntrance(){
         let fd = new FormData()
         for(let i = 0 ; i < test_answers.length ; i++){
             fd.append('image'+i , test_answers[i], test_answers[i].name)
         }
+        for(let i = 0 ; i < test_results.length ; i++){
+            fd.append('results'+i , test_results[i], test_results[i].name)
+        }
         fd.append('id' , selectedEntrance.eid)
-        fd.append('count', test_answers.length)
+        fd.append('count_answers', test_answers.length)
+        fd.append('count_results', test_results.length)
         fd.append('note', test_note)
         fd.append('score', test_score)
         axios.post('/entrance/appointment/edit', fd)
             .then(response => {
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
-                props.fetchData();
+                props.fetchdata();
                 props.handleCloseDialog();
             })
             .catch(err => {
@@ -54,6 +56,9 @@ const TestDialog = props => {
     }
     function handleUploadFile(files){
         setTestAnswer(files)
+    }
+    function handleUploadFileResult(files){
+        setTestResult(files)
     }
     function handleNoteChange(value){
         setTestNote(value.target.value)
@@ -78,16 +83,28 @@ const TestDialog = props => {
             <DialogContent>
                 <Grid container spacing={3} className="container-grid" {...rest}>
                     <Grid item md={12} lg={6} sm={12} xs={12} className="test-answers-upload"> 
-                        <DropzoneArea 
-                            onChange={handleUploadFile}
-                            acceptedFiles = {['image/*', 'application/pdf','application/msword']}
-                            filesLimit = {5}
-                            maxFileSize = {10000000}
-                            // showPreviews={true}
-                            // showPreviewsInDropzone = {false}
-                            initialFiles = {test_answers.slice(0,5)}
-                            dropzoneText = "Kéo thả hoặc chọn bài làm của học sinh (Ảnh, PDF, Word)"
-                        />
+                        <div className="answer-upload">
+                            <DropzoneArea 
+                                onChange={handleUploadFile}
+                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                filesLimit = {5}
+                                maxFileSize = {10000000}
+                                initialFiles = {test_answers.slice(0,5)}
+                                dropzoneText = "Kéo thả hoặc chọn bài LÀM của học sinh (Ảnh, PDF, Word)"
+                                
+                            />
+                        </div>
+                        <div className="result-upload">
+                            <DropzoneArea
+                                className="results"
+                                onChange={handleUploadFileResult}
+                                acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                filesLimit = {5}
+                                maxFileSize = {10000000}
+                                initialFiles = {test_results.slice(0,5)}
+                                dropzoneText = "Kéo thả hoặc chọn bài CHỮA của học sinh (Ảnh, PDF, Word)"
+                            />    
+                         </div>
                     </Grid>
                     <Grid item md={12} lg={3} sm={12} xs={12}>
                         <TextField  label="Kết quả" 

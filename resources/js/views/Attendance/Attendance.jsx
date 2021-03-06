@@ -30,7 +30,7 @@ const ClassSelect = React.memo(props => {
     const {center, course} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
             setClasses(r.data.map(c => {
                     // console.log(c)
@@ -38,7 +38,7 @@ const ClassSelect = React.memo(props => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -58,7 +58,7 @@ const SessionDateSelect = React.memo(props => {
     const Vndate = ['','Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const [sessions, setSessions] = useState([])
     const [tmp_sessions, setTmpSession] = useState([])
-    const fetchData = async() => {
+    const fetchdata = async() => {
         const r = await axios.post(baseUrl + '/session/get', {class_id: selected_class.value, from_date: -1, to_date: -1})
         let data = r.data.map(c => {
             let date = new Date(c.date)
@@ -74,7 +74,7 @@ const SessionDateSelect = React.memo(props => {
     }
     useEffect(() => {        
         if(selected_class){
-            fetchData()            
+            fetchdata()            
         }
     }, [props.selected_class])
     useEffect(() => {

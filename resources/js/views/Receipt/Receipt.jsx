@@ -235,11 +235,11 @@ const ReceiptView = React.memo(props => {
     
     ])
     // useEffect(() => {
-    //     const fetchData = async() => {
+    //     const fetchdata = async() => {
     //         var r = await axios.get(baseUrl + '/receipt/get')            
     //         setData(r.data)
     //     }
-    //     fetchData()
+    //     fetchdata()
     // },[reload])
     return(
         <MaterialTable

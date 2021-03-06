@@ -54,7 +54,7 @@ const ClassSelect = React.memo(props => {
     const {center, course, student} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             var r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
             if(student){
                 r = await axios.post(baseUrl + '/class/student', {'student_id': student.value})
@@ -64,7 +64,7 @@ const ClassSelect = React.memo(props => {
             }))        
             
         }
-        fetchData()
+        fetchdata()
     }, [student])
     
     return( 
@@ -83,7 +83,7 @@ const SessionDateSelect = React.memo(props => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
     const [sessions, setSessions] = useState([])
     const [tmp_sessions, setTmpSession] = useState([])
-    const fetchData = async() => {
+    const fetchdata = async() => {
         const r = await axios.post(baseUrl + '/session/get', {class_id: selected_class.value, from_date: -1, to_date: -1})
         let data = r.data.map(c => {
             let date = new Date(c.date)
@@ -99,7 +99,7 @@ const SessionDateSelect = React.memo(props => {
     }
     useEffect(() => {        
         if(selected_class){
-            fetchData()            
+            fetchdata()            
         }
     }, [props.selected_class])
     
@@ -118,7 +118,7 @@ const SessionDateSelect = React.memo(props => {
 })
 const TagSelect = React.memo(props => {
     const [data, setData] = useState([])
-    const fetchData = async() => {
+    const fetchdata = async() => {
         const r = await axios.get(window.Laravel.baseUrl + "/tag/get")
         let data = r.data.map(c => {
             return {label: c.name, value: c.id}
@@ -126,7 +126,7 @@ const TagSelect = React.memo(props => {
         setData(data)
     }
     useEffect(() => {        
-        fetchData()
+        fetchdata()
     }, [])    
     return(        
         <div className = "tag-input">

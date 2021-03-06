@@ -15,14 +15,14 @@ const ClassSelect = React.memo(props => {
     const {center, course} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
             setClasses(r.data.map(c => {
                     return {label: c.name, value: c.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -39,14 +39,14 @@ const ClassSelect = React.memo(props => {
 const CourseSelect = React.memo(props => {
     const [courses, setCourses] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-courses')
             setCourses(r.data.map(center => {
                     return {label: center.name + center.grade, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 

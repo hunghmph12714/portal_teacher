@@ -79,14 +79,14 @@ function NumberFormatCustom(props) {
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-center')
             setCenters(r.data.map(center => {
                     return {label: center.name, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return(
@@ -109,14 +109,14 @@ const CenterSelect = React.memo(props => {
 const AccountSelect = React.memo(props => {
     const [accounts, setAccounts] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-equity')
             setAccounts(r.data.map(a => {
                     return {label: a.name, value: a.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -192,7 +192,7 @@ const ListFee = React.memo(props => {
         },
     ])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             let sum = 0;
             const r  = await axios.post(baseUrl + '/fee/get', {students: props.students, show_all: show_all, from: props.from, to: props.to})
             let data = r.data
@@ -205,7 +205,7 @@ const ListFee = React.memo(props => {
             // console.log(data)
             setFee(data)
         }
-        fetchData()
+        fetchdata()
     }, [props.reload, show_all])
     return (
         <MaterialTable

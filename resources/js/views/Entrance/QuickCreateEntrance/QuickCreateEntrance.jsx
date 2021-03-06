@@ -23,14 +23,14 @@ const baseUrl = window.Laravel.baseUrl
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-center')
             setCenters(r.data.map(center => {
                     return {label: center.name, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -47,11 +47,11 @@ const SourceSelect = React.memo(props => {
     const [options, setOptions] = useState([])
 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get('/get-sources')
             setOptions(r.data)
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 

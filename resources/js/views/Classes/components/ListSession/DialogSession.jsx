@@ -71,14 +71,14 @@ const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
 
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-center')
             setCenters(r.data.map(center => {
                     return {label: center.name, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
 
     return(         
@@ -105,14 +105,14 @@ const RoomSelect = React.memo(props => {
     const [rooms, setRooms] = useState([])
     const center_id = props.center
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(window.Laravel.baseUrl + '/get-room/'+ center_id)            
             setRooms(r.data.map(room => {
                     return {label: room.name, value: room.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [props.center])
     
     return(         

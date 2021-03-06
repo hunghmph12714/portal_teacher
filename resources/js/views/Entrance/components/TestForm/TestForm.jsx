@@ -17,14 +17,14 @@ MuiPickersUtilsProvider
 const UserSelect = React.memo(props => {
     const [users, setUsers] = useState([])
     // useEffect(() => {
-    //     const fetchData = async() => {
+    //     const fetchdata = async() => {
     //         const r = await axios.get(baseUrl + '/get-user')
     //         setCenters(r.data.map(user => {
     //                 return {label: user.name, value: user.id}
     //             })
     //         )
     //     }
-    //     fetchData()
+    //     fetchdata()
     // }, [])
     
     return( 

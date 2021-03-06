@@ -48,11 +48,11 @@ const PaymentView = React.memo(props => {
     const {reload, handleOpenCreateDialog, handleOpenEditDialog, handleDeletePayment} = props
     const [data, setData] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             var r = await axios.get(baseUrl + '/payment/get')            
             setData(r.data)
         }
-        fetchData()
+        fetchdata()
     },[reload])
     return(
         <MaterialTable

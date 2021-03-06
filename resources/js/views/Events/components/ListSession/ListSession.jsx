@@ -29,7 +29,7 @@ const ListSession = (props) => {
     const [dialogType, setDialogType] = useState('create');
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(false);
-    const [fetchData, setFetchData] = useState(true);
+    const [fetchdata, setFetchData] = useState(true);
     const [selected_session, setSelectedSession] = useState([]);
     const [columns, setColumn] = useState()
     const [openDocument, setOpenDocument] = useState(false);
@@ -44,7 +44,7 @@ const ListSession = (props) => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const handleCloseStudent = () => {
       setOpenStudent(false)
-      setFetchData(!fetchData)
+      setFetchData(!fetchdata)
     } 
     const handleOpenStudent = (rowData) => {
       setSessionName(rowData.content)
@@ -58,12 +58,12 @@ const ListSession = (props) => {
     }
     function handleCloseDocument (){
       setOpenDocument(false)
-      setFetchData(!fetchData)
+      setFetchData(!fetchdata)
     }
     function handleCloseSessionDialog(){
       setOpen(false)
       setSelectedSession([])
-      setFetchData(!fetchData)
+      setFetchData(!fetchdata)
     }
     function handleCreateSession(){
       setOpen(true)
@@ -79,7 +79,7 @@ const ListSession = (props) => {
       axios.post('/session/delete', {session_id: session_id})
         .then(response => {
           enqueueSnackbar('Xóa sản phẩm thành công', {variant: 'success'})
-          fetchDataa()          
+          fetchdataa()          
         })
         .catch(err => {
 
@@ -97,7 +97,7 @@ const ListSession = (props) => {
 
         })
     }
-    const fetchDataa = async() => {
+    const fetchdataa = async() => {
         const response = await axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: props.from, to_date: props.to})
         setData(response.data.map(r => {
             let date = new Date(r.date)
@@ -119,8 +119,8 @@ const ListSession = (props) => {
     }
     
     useEffect(() => {
-        fetchDataa()
-    }, [fetchData, props.from, props.to])
+        fetchdataa()
+    }, [fetchdata, props.from, props.to])
     return (
         <React.Fragment>
             <MaterialTable

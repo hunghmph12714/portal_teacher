@@ -15,7 +15,7 @@ import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
-import { TestDialog, MessageDialog, AnswersDialog  } from '../../components';
+import { TestDialog, MessageDialog, AnswersDialog, StatusDialog  } from '../../components';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
 import { useSnackbar } from 'notistack';
@@ -54,6 +54,9 @@ const StepResult = (props) => {
     const [data1, setData1] = useState([]);
     const [data2, setData2] = useState([]);
     const [data3, setData3] = useState([]);
+    const [openStatus, setOpenStatus] = useState(false)
+    const [typeStatus, setTypeStatus] = useState('')
+    
     const [column1, setCol1] = useState(
         [
           //Học sinh
@@ -186,8 +189,9 @@ const StepResult = (props) => {
     const [courseOptions, setCourseOptions] = useState([])
     const [open_answers, setOpenAnswer] = useState(false)
     const [answers, setAnswer] = useState([])
+    const [results, setResults] = useState([])
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    function fetchData(){
+    function fetchdata(){
         axios.post( "/entrance/get/result", {centers: centers})
             .then(response => {
                 // let d1, d2, d3 = []
@@ -239,28 +243,14 @@ const StepResult = (props) => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail3'})
+    function handleFailClick(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment})
             .then(response => { 
-                var d = new Date();
-                let yesterday = d.setDate(d.getDate() - 1);
-                const date = new Date(rowData.created_at);
-                let element = {}
-                if(date > yesterday){
-                    element = data1.filter(d => d.eid == rowData.eid)
-                    const d1 = data1.filter(d => d.eid !== rowData.eid)
-                    setData1(d1)
-                }else{
-                    element = data2.filter(d => d.eid == rowData.eid)
-                    const d2 = data2.filter(d => d.eid !== rowData.eid)
-                    setData2(d2)
-                }
-                console.log(element)
-                setData3([...data3, element[0]])
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -272,8 +262,14 @@ const StepResult = (props) => {
         if(typeof rowData.test_answers == 'string'){
           rowData.test_answers = rowData.test_answers.split(',')
         }
+        if(typeof rowData.test_results == 'string'){
+          rowData.test_results = rowData.test_results.split(',')
+        }
         if(rowData.test_answers){
             setAnswer(rowData.test_answers)
+        }
+        if(rowData.test_results){
+            setResults(rowData.test_results)
         }
         
         setOpenAnswer(true)
@@ -296,8 +292,8 @@ const StepResult = (props) => {
         setOpenMessage(true)
         setSelectedEntrance(rowData)
     }
-    function handleRemove(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT'})
+    function handleRemove(rowData, reason, comment){
+        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -306,6 +302,14 @@ const StepResult = (props) => {
             .catch(err => {
                 console.log(err)
             })
+    }
+    function handleOpenDialogStatus(rowData, type){
+        setOpenStatus(true)
+        setTypeStatus(type)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseStatus(){
+        setOpenStatus(false)
     }
     return(
         <React.Fragment>
@@ -375,10 +379,7 @@ const StepResult = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
                                     },
                                 ]}
                                 localization={lang}
@@ -437,10 +438,7 @@ const StepResult = (props) => {
                                         tooltip: 'Cần tư vấn',
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái cần tư vấn ?')) 
-                                                handleFailClick(rowData)
-                                            },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
                                     },
                                 ]}
                                 localization={lang}
@@ -500,11 +498,7 @@ const StepResult = (props) => {
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
-                                        onClick: (event, rowData) => {
-                                            if (window.confirm('Thất bại tư vấn ?')) 
-                                                handleRemove(rowData)
-                                    
-                                        },
+                                        onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
                                 ]}
                                 localization={lang}
@@ -517,19 +511,26 @@ const StepResult = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 statusOptions = {statusOptions}
                                 courseOptions = {courseOptions}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             />   
                             <MessageDialog
                                 open = {openMessage}
                                 handleCloseDialog = {handleCloseMessage}
                                 selectedEntrance = {selectedEntrance}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             /> 
                             <AnswersDialog 
                                 open_answers={open_answers}
                                 handleCloseDialog={handleCloseAnswerDialog}
                                 answers = {answers}
+                                results = {results}
                             />  
+                            <StatusDialog
+                                open = {openStatus}
+                                handleClose = {handleCloseStatus}
+                                selectedEntrance = {selectedEntrance}
+                                handleStatusChange = {(typeStatus == 'type3') ? handleFailClick : handleRemove}
+                            /> 
                         </div>
                     
                     </React.Fragment>

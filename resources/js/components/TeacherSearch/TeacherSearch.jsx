@@ -6,14 +6,14 @@ const baseUrl = window.Laravel.baseUrl
 const TeacherSearch = React.memo(props => {
     const [teachers, setTeacher] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-teacher')
             setTeacher(r.data.map(center => {
                     return {label: center.name, value: center.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     if(props.teacher.value ){

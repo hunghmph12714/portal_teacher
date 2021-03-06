@@ -15,14 +15,14 @@ import {
 const StepSelect = React.memo(props => {
     const [steps, setSteps] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.post(baseUrl + '/step/get', {'type' : 'Quy trình đầu vào'})
             setSteps(r.data.map(step => {
                     return {label: step.order + ": " +step.name, value: step.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -40,14 +40,14 @@ const StepSelect = React.memo(props => {
 const StatusSelect = React.memo(props => {
     const [status, setStatus] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.post(baseUrl + '/status/get', {'type': 'Quy trình đầu vào'})
             setStatus(r.data.map(s => {
                     return {label: s.name , value: s.id}
                 })
             )
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 

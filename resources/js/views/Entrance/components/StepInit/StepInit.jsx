@@ -181,7 +181,7 @@ const StepInit = (props) => {
     const [statusOptions, setStatusOptions] = useState([])
     const [courseOptions, setCourseOptions] = useState([])
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    function fetchData(){
+    function fetchdata(){
         axios.post( "/entrance/get/init", {centers: centers})
             .then(response => {
                 // let d1, d2, d3 = []
@@ -230,7 +230,7 @@ const StepInit = (props) => {
                 })
             )
         }
-        fetchData()
+        fetchdata()
         fetchStatus()
         fetchCourse()        
     }, [centers])    
@@ -428,13 +428,13 @@ const StepInit = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 statusOptions = {statusOptions}
                                 courseOptions = {courseOptions}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             />   
                             <MessageDialog
                                 open = {openMessage}
                                 handleCloseDialog = {handleCloseMessage}
                                 selectedEntrance = {selectedEntrance}
-                                fetchData = {fetchData}
+                                fetchdata = {fetchdata}
                             />   
                             <StatusDialog
                                 open = {openStatus}

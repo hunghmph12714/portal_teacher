@@ -33,7 +33,7 @@ const ClassSelect = React.memo(props => {
     const {center, course} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
             const result = r.data.map(c => {
                 return {label: c.code + ' - ' +c.name, value: c.id}
@@ -42,7 +42,7 @@ const ClassSelect = React.memo(props => {
 
             setClasses(classes)
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
@@ -60,7 +60,7 @@ const ClassSelect = React.memo(props => {
 const TeacherSelect = React.memo(props => {
     const [teachers, setTeachers] = useState([])
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchdata = async() => {
             const r = await axios.get(baseUrl + '/get-teacher')
             const result = r.data.map(c => {
                 return {label: c.name + ' - ' +c.domain, value: c.id}
@@ -68,7 +68,7 @@ const TeacherSelect = React.memo(props => {
             
             setTeachers(result)
         }
-        fetchData()
+        fetchdata()
     }, [])
     
     return( 
