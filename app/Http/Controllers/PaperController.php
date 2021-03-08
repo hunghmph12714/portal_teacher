@@ -138,41 +138,74 @@ class PaperController extends Controller
             }
         }
     }
-    protected function getPayment(){
-        $result = [];
-        $payments = Paper::Select('papers.id as id', 'payment_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.status as status',
-                                    'users.name as uname','papers.address as address','center.name as ctname', 'center.id as ctid')->where('type', 'payment')
+    protected function getPayment(Request $request){
+        $rules = [
+            'page' => 'required',
+            'per_page' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $offset = $request->page * ($request->per_page);
+        $result = ['data' => []];
+        $payments = [];
+        $transactions = null;
+        $result['page'] = $request->page;
+        
+        if(empty($request->filter)){
+            $result['page'] = $request->page;
+            $result['total'] = Paper::where('type','payment')->count();
+            $payments = Paper::Select('papers.id as id', 'payment_number','type','papers.name as name','papers.method','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.created_at' ,'papers.status as status',
+                                    'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.code as code', 'center.id as ctid')->where('type', 'payment')
                                     ->leftJoin('users','papers.user_created_id','users.id')
-                                    ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')
-                                    ->get();
+                                    ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
+                                    ->get();           
+        }
+        else{
+            $result['page'] = $request->page;
+            // print_r($request->filter);
+            $payment = Paper::query();
+            $payment->paymentNumber($request->filter)
+                ->paymentName($request->filter) 
+                ->paymentDescription($request->filter)
+                ->paymentAddress($request->filter)
+                ->paymentMethod($request->filter)
+                ->paymentCenter($request->filter)
+                ->paymentDate($request->filter);
+
+            $result['total'] = ($payment->count());
+            $payments =  $payment->Select('papers.id as id','papers.method', 'payment_number','type','papers.name as name','description','amount',DB::raw("DATE_FORMAT(papers.created_at, '%d/%m/%Y') as time_formated"),'papers.created_at','papers.status as status',
+                'users.name as uname','papers.address as address' , 'center.name as ctname', 'center.id as ctid','center.code as code')->where('type', 'payment')
+                ->leftJoin('users','papers.user_created_id','users.id')
+                ->leftJoin('center', 'papers.center_id', 'center.id')->orderBy('papers.created_at', 'DESC')->offset($offset)->limit($request->per_page)
+                ->get();
+        }
+        
         foreach($payments as $key => $p){
             $transaction_result = [];       
-            $result[$key] = $p;     
+            $result['data'][$key] = $p;     
 
             $transactions = $p->transactions()->select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
-                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.level_1 as debit_level_1', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
-                'students.id as sid', 'students.fullname as sname','students.dob', 
+                'students.id as sid', 'students.fullname as sname','students.dob',
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                'users.id as uid','users.name as uname', 'paper_id'               
+                'users.id as uid','users.name as uname', 'paper_id'
             )
-            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
-            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
-            ->leftJoin('students','transactions.student_id','students.id')
-            ->leftJoin('classes','transactions.class_id','classes.id')
-            ->leftJoin('sessions', 'transactions.session_id','sessions.id')            
-            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
-            ->get();
-
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
+                ->get();
             $x = $transactions->toArray();
+            $pt = Paper::find($p->id);
             foreach($transactions as $k => $t){
                 $tags = $t->tags()->get();
                 $transaction_result[$k] = $x[$k];
                 $transaction_result[$k]['tags'] = $tags->toArray();
             }
-            
-            $result[$key]['transactions'] = $transaction_result;
+            $result['data'][$key]['transactions'] = $transaction_result;
         }
         return response()->json($result);
     }
@@ -357,19 +390,6 @@ class PaperController extends Controller
                 ->get();
             $x = $transactions->toArray();
             $pt = Paper::find($p->id);
-            // if(sizeof($x) != 0){
-            //     if($x[0]['debit_level_1'] == '111'){
-            //         $p->method = 'TM';
-            //         $p->save();
-            //     }
-            //     if($x[0]['debit_level_1'] == '112'){
-            //         $p->method = 'NH';
-            //         $p->save();
-            //     }
-            // }
-            // else{
-            //     $result['data'][$key]['debit_code'] = '';
-            // }
             foreach($transactions as $k => $t){
                 $tags = $t->tags()->get();
                 $transaction_result[$k] = $x[$k];

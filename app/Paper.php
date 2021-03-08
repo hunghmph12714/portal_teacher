@@ -95,4 +95,86 @@ class Paper extends Model
 
         return $query->where('type', 'receipt');
     }
+    public function scopePaymentNumber($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'payment_number'){
+                    $query->where('type', 'payment')->where(DB::raw('CAST(payment_number AS CHAR)'), 'LIKE' ,'%'.$f['value'].'%');
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentName($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'name'){
+                    $query->where('type', 'payment')->where('papers.name','LIKE' ,'%'.$f['value'].'%');
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentDescription($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'description'){
+                    $query->where('type', 'payment')->where('description','LIKE' ,'%'.$f['value'].'%');
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentAddress($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'address'){
+                    $query->where('type', 'payment')->where('address','LIKE' ,'%'.$f['value'].'%');
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentMethod($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'method'){
+                    $query->where('type', 'payment')->where('method', $f['value']);
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentCenter($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'code'){
+                    $center = Center::where('code', $f['value'])->first();
+                    if($center){
+                        $query->where('type', 'payment')->where('center_id', $center->id);
+                    }
+                }
+            }
+        }
+        
+        return $query->where('type', 'payment');
+    }
+    public function scopePaymentDate($query, $filter){
+        if(!empty($filter)){
+            foreach($filter as $f){
+                if($f['column']['field'] == 'time_formated'){
+                    $date = explode('T', $f['value'])[0];
+                    // echo $date;
+                    $query->where('type', 'payment')->whereDate('papers.created_at', $date);
+                }
+            }
+        }
+
+        return $query->where('type', 'payment');
+    }
 }

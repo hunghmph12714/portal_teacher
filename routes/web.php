@@ -208,7 +208,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/payment', function(){
                 return view('welcome');
             });
-            Route::get('/payment/get', 'PaperController@getPayment');
+            Route::post('/payment/get', 'PaperController@getPayment');
             Route::post('/payment/create', 'PaperController@createPayment');
             Route::post('/payment/edit', 'PaperController@editPayment');
             Route::post('/payment/add-transaction', 'PaperController@addPaymentTransaction');
