@@ -91,7 +91,7 @@ const PaymentView = React.memo(props => {
                         }}>
                         <PrintIcon fontSize='inherit' />
                         </IconButton>
-                    </Tooltip>                            
+                    </Tooltip>
                 </div>
             )
         },

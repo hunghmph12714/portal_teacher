@@ -44,10 +44,10 @@ VietElite xin gửi tới quý phụ huynh một số thông tin quan trọng đ
         </ul>
     </div>
     <div class="col-sm">
-        <h3><u>Thông tin Số báo danh</u></h3>
+        <h3><u>Thông tin tra cứu</u></h3>
         <ul>
           <li>
-            <b> Số báo danh: </b> {{$result['sbd']}} 
+            <b> ID tra cứu: </b> {{$result['sbd']}} 
           </li>
           <li>
             <b> Mã cá nhân: </b> {{$result['pass']}} 

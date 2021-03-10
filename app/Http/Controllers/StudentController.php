@@ -606,13 +606,11 @@ class StudentController extends Controller
                 $result['student_name'] = $student['fullname'];
                 $result['total_fee'] = $t['amount'];
                 $result['receipt_number'] = $p->center_id."".$p->method."".$p->receipt_number;
-                $to_email = $parent->email;        
+                $to_email = $parent->email;
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
                 $password = 'Boc24038';
                 $d = ['result' => $result];
-                
-                
                 //Send 
                     $backup = Mail::getSwiftMailer();
                     // Setup your outlook mailer

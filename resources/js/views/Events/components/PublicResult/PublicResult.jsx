@@ -141,7 +141,7 @@ class PublicResult extends React.Component{
             <Grid item md={3} sm={12}>
               <div className="form-tra-cuu">
                 <h3>Nhập Thông Tin</h3>
-                <TextField  label="Số báo danh"  
+                <TextField  label="ID tra cứu"  
                     fullWidth
                     className = "input-text"
                     variant="filled"
@@ -199,7 +199,7 @@ class PublicResult extends React.Component{
                     <li>Tra cứu kết quả, phổ điểm</li>
                     <li>Truy cập nguồn tài liệu phù hợp</li>
                   </ul>
-                  <p>(*)Lưu ý: Phụ huynh cần phải điền chính xác <b>Số báo danh</b> và <b> Mã cá nhân</b> được cung cấp qua email sau khi hoàn tất lệ phí thi.</p>
+                  <p>(*)Lưu ý: Phụ huynh cần phải điền chính xác <b>ID tra cứu</b> và <b> Mã cá nhân</b> được cung cấp qua email sau khi hoàn tất lệ phí thi.</p>
                 </div>
               ) : 
               <div>                

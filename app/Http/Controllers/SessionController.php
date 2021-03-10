@@ -1155,8 +1155,8 @@ class SessionController extends Controller
                 $from_0 = date('Y-m-d H:i:0',  strtotime($s->from));
                 $to_0 = date('Y-m-d H:i:0',  strtotime($s->to));
 
-                $from = date('h:i', strtotime($s->from));
-                $to = date('h:i', strtotime($s->to));
+                $from = date('H:i', strtotime($s->from));
+                $to = date('H:i', strtotime($s->to));
                 $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                 $duration = (strtotime($to_0) - strtotime($from_0))/60;
                 $name = $s->content. " (".$duration."')";
