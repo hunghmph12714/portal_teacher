@@ -271,7 +271,7 @@ class DiscountController extends Controller
     protected function generateDiscount(){
         $from_d = '2021-01-30';
         $to_d = '2021-03-01';
-        $transactions = Transactions::where('discount_id', '-1')->forceDelete();
+        $transactions = Transaction::where('discount_id', '-1')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
             $from = date('Y-m-d', strtotime($from_d));
