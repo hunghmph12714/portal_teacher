@@ -52,7 +52,7 @@ class TransactionSessionObserver
         if($transaction){
             $transaction->amount = $transaction->amount - $transactionSession->amount;
             $transaction->save();
-            if($transaction->amount == 0){
+            if($transaction->amount <= 1){
                 $transaction->forceDelete();
             }
         }

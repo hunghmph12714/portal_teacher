@@ -204,6 +204,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/discount/create', 'DiscountController@createDiscount');
             Route::post('/discount/edit', 'DiscountController@editDiscount');
             Route::post('/discount/delete', 'DiscountController@deleteDiscount');
+
+            Route::get('/discount/generate', 'DiscountController@generateDiscount');
         //Paper 
             Route::get('/payment', function(){
                 return view('welcome');
@@ -251,7 +253,6 @@ Route::group(['middleware' => ['auth']], function() {
             });
             Route::get('/check/duplicate', 'ClassController@duplicate');
         //Events 
-            
             Route::get('/events', function(){                
                 return view('welcome');
             });
