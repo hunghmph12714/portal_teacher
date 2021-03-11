@@ -269,8 +269,9 @@ class DiscountController extends Controller
     }
 
     protected function generateDiscount(){
-        $from_d = '2021-01-31';
+        $from_d = '2021-01-30';
         $to_d = '2021-03-01';
+        $transactions = Transactions::where('discount_id', '-1')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
             $from = date('Y-m-d', strtotime($from_d));
@@ -327,7 +328,6 @@ class DiscountController extends Controller
                         $trans['student_id'] = $student->id;
                         $trans['amount'] = $session->fee/10;
                         $trans['discount_id'] = -1;
-                        print_r($session->fee);
                         $tr = Transaction::create($trans);
                         $tr->tags()->syncWithoutDetaching([9]);
                     }
