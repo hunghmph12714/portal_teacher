@@ -244,7 +244,7 @@ class SessionController extends Controller
                             $dt['student_id'] = $s->id;
                             $dt['class_id'] = $class_id;
                             $dt['user'] = auth()->user()->id;   
-                            $dt['discount_id'] = $d['percentage'];                                        
+                            $dt['discount_id'] = $d['id'];                                        
                             if($d['percentage']){
                                 $dt['amount'] = ($fee['amount'] + $total_adjust) / 100 * intval($d['percentage']);
                                 $dt['content'] = 'Miễn giảm học phí '.$d['percentage'].'%'  . ' '.$key;

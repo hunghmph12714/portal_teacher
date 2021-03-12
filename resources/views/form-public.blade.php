@@ -64,7 +64,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
         padding: 15px;
     }
     h5{
-        background: #6ebe45;
+        background: #6EBE45;
         padding: 5px;
         color: white;
     }
@@ -216,6 +216,7 @@ src="https://www.facebook.com/tr?id=566336567649816&ev=PageView&noscript=1"
         }
         $( document ).ready(function() {
             $('#url').val(document.referrer)
+            console.log(document.referrer)
             let grade = $('#grade').find(':selected')[0].value;
             if(grade !== ""){
                 getCourses(grade)

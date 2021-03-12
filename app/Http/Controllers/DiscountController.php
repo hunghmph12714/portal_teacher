@@ -12,6 +12,7 @@ use App\Account;
 use App\Transaction;
 use App\Student;
 use App\TransactionSession;
+use App\Tag;
 class DiscountController extends Controller
 {
     //
@@ -274,32 +275,42 @@ class DiscountController extends Controller
         $transactions = Transaction::where('discount_id', '-1')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
+            if($class->id == 6 || $class->id == 23){
+                $from_d = '2021-01-31';
+                $to_d = '2021-03-01';
+            }
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->get();
             foreach($sessions as $session){
                 $students = $session->students;
                 foreach($students as $student){
-                    if($student->id != 4998) continue;
                     //Check current discount
                     $student_class = StudentClass::Where('student_id', $student->id)->where('class_id', $class->id)->first()->id;
                     $d = Discount::Where('student_class_id', $student_class)->first();
+                    
                     if($d){
                         if($d->expired_at < $from_d || $d->active_at > $to_d){ 
                             continue;
                         }
                         else{
+                            
                             //Bo qua nhung uu dai > 10%
                             if($d->percentage > 10) {
                                 continue;
                             }else{
+                                
                                 //Bo ưu đãi của thời gian này
                                 $transaction = $session->transactions()->where('discount_id', $d->id)->first();
+                                
                                 if($transaction){
                                     $ts = TransactionSession::find($transaction->pivot['id']);
                                     $ts->forceDelete();
-
-                                    $trans['debit'] = Account::Where('level_2', '511')->first()->id;
+                                    
+                                    // echo "<pre>";
+                                    // print_r($ts->toArray());
+                                }
+                                $trans['debit'] = Account::Where('level_2', '511')->first()->id;
                                     $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                                     $trans['class_id'] = $class->id;
                                     $trans['user'] = auth()->user()->id;
@@ -310,9 +321,6 @@ class DiscountController extends Controller
                                     $trans['amount'] = $session->fee/10;
                                     $tr = Transaction::create($trans);
                                     $tr->tags()->syncWithoutDetaching([9]);
-                                    // echo "<pre>";
-                                    // print_r($ts->toArray());
-                                }
                             }
                         }
                         // echo "<pre>";
@@ -337,5 +345,19 @@ class DiscountController extends Controller
             }
             
         }
+    }
+    protected function id(){
+        $tags = Tag::find(9);
+        $transactions = $tags->transactions()->where('discount_id', NULL)->orWhere('discount_id', 5)->get();
+        foreach($transactions as $t){
+            $sc = StudentClass::where('student_id', $t->student_id)->where('class_id', $t->class_id)->first();
+            $discount = Discount::where('student_class_id', $sc->id)->first();
+            if($discount){
+                $t->discount_id = $discount->id;
+                $t->save();
+            }
+            
+        }
+        
     }
 }
