@@ -280,11 +280,12 @@ class DiscountController extends Controller
             foreach($sessions as $session){
                 $students = $session->students;
                 foreach($students as $student){
+                    if($student->id != 4998) continue;
                     //Check current discount
                     $student_class = StudentClass::Where('student_id', $student->id)->where('class_id', $class->id)->first()->id;
                     $d = Discount::Where('student_class_id', $student_class)->first();
                     if($d){
-                        if($d->expired_at < $from_d || $d->active_at > $to_d){
+                        if($d->expired_at < $from_d || $d->active_at > $to_d){ 
                             continue;
                         }
                         else{
@@ -312,7 +313,6 @@ class DiscountController extends Controller
                                     // echo "<pre>";
                                     // print_r($ts->toArray());
                                 }
-                                
                             }
                         }
                         // echo "<pre>";
