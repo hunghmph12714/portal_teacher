@@ -63,7 +63,10 @@ const initState = {
     new_active_date: null,
     transfer_class : null,
     transfer_reason: '',
-    disable: false
+    disable: false,
+
+    retain_end : null,
+    retain_start: null,
 }
 var disable = false
 class DialogCreate extends React.Component {    
@@ -264,7 +267,12 @@ class DialogCreate extends React.Component {
                 
             })
     }
-    
+    handleRetainStart = (date) => {
+        this.setState({ retain_start: date })
+    }
+    handleRetainEnd = (date) => {
+        this.setState({ retain_end: date })
+    }
     render(){        
         return(
             
@@ -319,22 +327,61 @@ class DialogCreate extends React.Component {
                                 </FormControl>    
                             </Grid>
                             <Grid item md={4} sm={12}> 
-                                <div className="date-time">
+                                {
+                                    this.state.status != 'retain' ? (
+                                        <div className="date-time">
                                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
 
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            className="input-date input-text"
-                                            variant="inline"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                            placeholder="Ngày nhập học"
-                                            views={["year", "month", "date"]}
-                                            value={this.state.active_date}
-                                            onChange={this.handleActiveDateChange}
-                                        />                     
-                                    </MuiPickersUtilsProvider>     
-                                </div>
+                                                <KeyboardDatePicker
+                                                    autoOk
+                                                    className="input-date input-text"
+                                                    variant="inline"
+                                                    inputVariant="outlined"
+                                                    format="dd/MM/yyyy"
+                                                    placeholder="Ngày nhập học"
+                                                    views={["year", "month", "date"]}
+                                                    value={this.state.active_date}
+                                                    onChange={this.handleActiveDateChange}
+                                                />                     
+                                            </MuiPickersUtilsProvider>     
+                                        </div>
+                                    ):(
+                                        <div>
+                                            <div className="date-time">
+                                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
+                                                    <KeyboardDatePicker
+                                                        autoOk
+                                                        className="input-date input-text"
+                                                        variant="inline"
+                                                        inputVariant="outlined"
+                                                        format="dd/MM/yyyy"
+                                                        placeholder="Ngày bắt đầu bảo lưu"
+                                                        views={["year", "month", "date"]}
+                                                        value={this.state.retain_start}
+                                                        onChange={this.handleRetainStart}
+                                                    />                     
+                                                </MuiPickersUtilsProvider>     
+                                            </div>
+                                            <div className="date-time">
+                                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+
+                                                    <KeyboardDatePicker
+                                                        autoOk
+                                                        className="input-date input-text"
+                                                        variant="inline"
+                                                        inputVariant="outlined"
+                                                        format="dd/MM/yyyy"
+                                                        placeholder="Ngày kết thúc bảo lưu"
+                                                        views={["year", "month", "date"]}
+                                                        value={this.state.retain_end}
+                                                        onChange={this.handleRetainEnd}
+                                                    />                     
+                                                </MuiPickersUtilsProvider>     
+                                            </div>
+                                        </div>
+                                    )
+                                }
                                 {
                                     this.state.status == 'droped'? (
                                         <div className="date-time">

@@ -267,6 +267,25 @@ class StudentClassObserver
                     }
                 }
             }
+            if($studentClass->retain_time && $studentClass->retain_end){
+                $sessions = Session::where('class_id', $studentClass->class_id)
+                                        ->whereBetween('date', [$studentClass->retain_time, $studentClass->retain_end])->get();
+                $sessions_id = array_column($sessions->toArray(), 'id');
+                // Xóa điểm danh
+                $student->sessions()->detach($sessions_id);
+                
+                // Hoàn tiền theo session
+                $total_fee = 0;
+                foreach($sessions as $s){
+                    $fee = $s->fee;
+                    //Get transactions of that session
+                    $transactions = $s->transactions()->where('student_id', $studentClass->student_id)->get();
+                    foreach($transactions as $t){
+                        $ts = TransactionSession::where('transaction_id', $t->id)->where('session_id', $s->id)->first();
+                        $ts->forceDelete();
+                    }
+                }
+            }
         }
         if($class->type == 'event'){
             if($studentClass->getOriginal('status') == 'waiting'){

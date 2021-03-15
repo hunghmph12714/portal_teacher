@@ -67,12 +67,14 @@
         </ul> -->
         <h4>1. Phổ điểm của lớp</h4>
         <ul>
-        
             <li>
                 Điểm cao nhất lớp: <b>{{$data['max_score']}}</b>
             </li>
             <li>
                 Điểm thấp nhất lớp: <b>{{$data['min_score']}}</b>
+            </li>
+            <li>
+                Điểm trung bình của lớp: <b>{{$data['avg']}}</b>
             </li>
             <li>
                 Điểm trung bình của lớp: <b>{{$data['avg']}}</b>
