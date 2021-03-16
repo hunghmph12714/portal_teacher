@@ -275,13 +275,13 @@ class DiscountController extends Controller
         $transactions = Transaction::where('discount_id', '-1')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
-            if($class->id == 6 || $class->id == 23){
+            if($class->id == 6 || $class->id == 23 || $class->id == 7){
                 $from_d = '2021-01-31';
                 $to_d = '2021-03-01';
             }
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
-            $sessions = $class->sessions()->whereBetween('date', [$from, $to])->get();
+            $sessions = $class->sessions()->whereBetween('date', [$from, $to])->get();            
             foreach($sessions as $session){
                 $students = $session->students;
                 foreach($students as $student){
@@ -338,10 +338,9 @@ class DiscountController extends Controller
                         $tr->tags()->syncWithoutDetaching([9]);
                     }
                     
-                    
                 }
             }
-            
+            $from_d = '2021-01-30';
         }
     }
     protected function id(){

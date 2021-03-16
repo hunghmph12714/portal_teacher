@@ -204,7 +204,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/discount/create', 'DiscountController@createDiscount');
             Route::post('/discount/edit', 'DiscountController@editDiscount');
             Route::post('/discount/delete', 'DiscountController@deleteDiscount');
-
+            
             Route::get('/discount/generate', 'DiscountController@generateDiscount');
             Route::get('/discount/id', 'DiscountController@id');
         //Paper 
