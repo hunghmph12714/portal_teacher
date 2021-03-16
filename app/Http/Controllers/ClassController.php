@@ -292,9 +292,13 @@ class ClassController extends Controller
                 if($request->status == 'droped'){
                     $sc->status = $request->status;
                     $sc->drop_time = ($request->drop_date)?date('Y-m-d', strtotime($request->drop_date)):date('Y-m-d');
+                    print_r($sc->drop_time);
                     $stats = ($sc->stats) ? $sc->stats : [];                    
                     $stats['drop_reason'] = $request->drop_reason;                  
                     $sc->stats = $stats;
+                }
+                else{
+                    $sc->drop_time = null;                
                 }
                 if($request->status == 'retain'){
                     // $sc->status = $request->status;
@@ -303,9 +307,6 @@ class ClassController extends Controller
                     }
                     $sc->retain_time = date('Y-m-d', strtotime($request->retain_start));
                     $sc->retain_end = date('Y-m-d', strtotime($request->retain_end));
-                }
-                else{
-                    $sc->drop_time = null;                
                 }
                 $sc->save();
             }
