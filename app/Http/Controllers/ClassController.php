@@ -287,12 +287,11 @@ class ClassController extends Controller
                         $new_sc['entrance_date'] = date('Y-m-d', strtotime($request->new_active_date));                    
                         $new_sc = StudentClass::create($new_sc);
                     }
-                    
                 }
                 if($request->status == 'droped'){
                     $sc->status = $request->status;
                     $sc->drop_time = ($request->drop_date)?date('Y-m-d', strtotime($request->drop_date)):date('Y-m-d');
-                    print_r($sc->drop_time);
+                    // print_r($sc->drop_time);
                     $stats = ($sc->stats) ? $sc->stats : [];                    
                     $stats['drop_reason'] = $request->drop_reason;                  
                     $sc->stats = $stats;

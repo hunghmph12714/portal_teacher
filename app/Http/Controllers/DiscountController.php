@@ -294,12 +294,10 @@ class DiscountController extends Controller
                             continue;
                         }
                         else{
-                            
                             //Bo qua nhung uu dai > 10%
                             if($d->percentage > 10) {
                                 continue;
                             }else{
-                                
                                 //Bo ưu đãi của thời gian này
                                 $transaction = $session->transactions()->where('discount_id', $d->id)->first();
                                 
@@ -311,16 +309,16 @@ class DiscountController extends Controller
                                     // print_r($ts->toArray());
                                 }
                                 $trans['debit'] = Account::Where('level_2', '511')->first()->id;
-                                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
-                                    $trans['class_id'] = $class->id;
-                                    $trans['user'] = auth()->user()->id;
-                                    $trans['content'] = 'Miễn giảm học phí ONLINE -10%';
-                                    $trans['time'] = date('Y-m-t', strtotime($session->date));
-                                    $trans['student_id'] = $student->id;
-                                    $trans['discount_id'] = -1;
-                                    $trans['amount'] = $session->fee/10;
-                                    $tr = Transaction::create($trans);
-                                    $tr->tags()->syncWithoutDetaching([9]);
+                                $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                                $trans['class_id'] = $class->id;
+                                $trans['user'] = auth()->user()->id;
+                                $trans['content'] = 'Miễn giảm học phí ONLINE -10%';
+                                $trans['time'] = date('Y-m-t', strtotime($session->date));
+                                $trans['student_id'] = $student->id;
+                                $trans['discount_id'] = -1;
+                                $trans['amount'] = $session->fee/10;
+                                $tr = Transaction::create($trans);
+                                $tr->tags()->syncWithoutDetaching([9]);
                             }
                         }
                         // echo "<pre>";
