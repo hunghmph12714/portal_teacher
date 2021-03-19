@@ -145,7 +145,7 @@ class AttendanceController extends Controller
         $d = array('datas'=>$datas);
 
         $mail = 'info@vietelite.edu.vn';
-        $password = "Tuw68489";
+        $password = "Hul24265";
         if($center_id == 3){
             $mail = 'cs.phamtuantai@vietelite.edu.vn';
             $password = 'Map51152';
