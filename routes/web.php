@@ -174,6 +174,20 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::post('/entrance/enroll-class', 'EntranceController@EnrollClass');
             Route::post('/entrance/confirm', 'EntranceController@ConfirmClass');
+        //Budgets
+            Route::get('/budget', function(){
+                return view('welcome');
+            });
+            
+            Route::post('/budget/get', 'BudgetController@getBudget');
+            Route::post('/budget/create', 'BudgetController@createBudget');
+            Route::post('/budget/edit', 'BudgetController@editBudget');
+            Route::post('/budget/delete', 'BudgetController@deleteBudget');
+            Route::post('/budget/get-detail', 'BudgetController@getDetail');
+            Route::post('/budget/add-account', 'BudgetController@addAccount');
+            Route::post('/budget/stats', 'BudgetController@getStats');
+            Route::get('/budget/{id}', 'BudgetController@statBudget');
+            // Route::post('')
         //Accounts
             Route::get('/finaccount', function(){
                 return view('welcome');
@@ -185,6 +199,7 @@ Route::group(['middleware' => ['auth']], function() {
             // Route::get('/account/importDb', 'AccountController@importDb');
             Route::post('/account/find', 'AccountController@findAccount');
             Route::get('/get-equity', 'AccountController@getEquity');
+
         //Transaction
             Route::get('/transaction', function(){
                 return view('welcome');

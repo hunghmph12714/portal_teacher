@@ -8,7 +8,8 @@ class Transaction extends Model
     //
     public $table = 'transactions';
     protected $fillable = ['id','debit','credit','amount','time','content',
-    'student_id','class_id','session_id','paper_id','status','user','center_id','refer_transaction','discount_id'];
+    'student_id','class_id','session_id','paper_id','status','user','center_id','refer_transaction','discount_id'
+    ,'budget_id'];
 
     public function tags(){
         return $this->morphToMany('App\Tag', 'taggable');

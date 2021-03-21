@@ -86,7 +86,7 @@ class PaperController extends Controller
             $payment->name = $request->name;
             $payment->amount = $request->amount;
             $payment->address = $request->address;
-            $payement->description = $request->description;
+            $payment->description = $request->description;
             $payment->created_at = date('Y-m-d', strtotime($request->payment_time));
             if($payment->center_id != $request->center['value']){
                 $max_payment_number = Paper::where('center_id', $request->center['value'])->max('payment_number')!="" ? Paper::where('center_id', $request->center['value'])->max('payment_number') : 0;
@@ -110,6 +110,7 @@ class PaperController extends Controller
                         $td->student_id = $t['student']['value'];
                         $td->class_id = $t['selected_class']['value'];
                         $td->session_id = $t['selected_session']['value'];
+                        $td->budget_id = ($t['budget']) ? $t['budget']['value']: null;
                         // $td->
                         $tags = array_column($t['tags'], 'value');
                         $td->tags()->sync($tags);
@@ -189,13 +190,14 @@ class PaperController extends Controller
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
                 'students.id as sid', 'students.fullname as sname','students.dob',
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                'users.id as uid','users.name as uname', 'paper_id'
+                'users.id as uid','users.name as uname', 'paper_id','budgets.id as bid','budgets.name as bname'
             )
                 ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
                 ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
                 ->leftJoin('students','transactions.student_id','students.id')
                 ->leftJoin('classes','transactions.class_id','classes.id')
                 ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('budgets', 'transactions.budget_id', 'budgets.id')
                 ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
                 ->get();
             $x = $transactions->toArray();

@@ -9,7 +9,7 @@ class Paper extends Model
 {
     //
     public $table = "papers";
-    protected $fillable = ['payment_number', 'receipt_number','type','name','description','amount','status','user_created_id','user_lock_id','note','address','center_id','method'];
+    protected $fillable = ['payment_number', 'receipt_number','type','name','description','amount','status','user_created_id','user_lock_id','note','address','center_id','method', 'budget_id'];
     public function transactions(){
         return $this->hasMany('App\Transaction', 'paper_id', 'id');
     }

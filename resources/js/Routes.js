@@ -31,7 +31,7 @@ import {
   Financial, Revenue, 
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
-  Users
+  Users,Budget, BudgetStats
 
 } from './views';
 
@@ -72,6 +72,18 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/rooms"
+      />
+      <ProtectedRouteWithLayout
+        component={Budget}
+        exact
+        layout={MainLayout}
+        path="/budget"
+      />
+      <ProtectedRouteWithLayout
+        component={BudgetStats}
+        exact
+        layout={MainLayout}
+        path="/budget/:id"
       />
       <ProtectedRouteWithLayout 
         component = { Classes }

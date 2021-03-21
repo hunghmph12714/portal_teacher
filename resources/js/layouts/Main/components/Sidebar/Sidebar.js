@@ -129,7 +129,11 @@ const Sidebar = props => {
         {
           title: 'Báo cáo tài chính',
           href : '/report/financial'
-        }
+        },
+        {
+          title: 'Ngân sách',
+          href: '/budget',
+        },
       ]
     },
     {

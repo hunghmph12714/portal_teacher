@@ -142,10 +142,37 @@ const TagSelect = React.memo(props => {
         </div>
     )
 })
+const BudgetSelect = React.memo(props => {
+    const [data, setData] = useState([])
+    const fetchdata = async() => {
+        const r = await axios.post("/budget/get")
+        let data = r.data.map(c => {
+            if(c.status == "Đang hoạt động"){
+                return {label: c.code + " - "+c.name, value: c.id}
+            }
+        })
+        setData(data)
+    }
+    useEffect(() => {        
+        fetchdata()
+    }, [])    
+    return(        
+        <div className = "budget-input">
+            <Select                
+                key = "budget-select"
+                value = {props.budget}
+                name = "budget"
+                placeholder="Chọn ngân sách"
+                options={data}
+                onChange={props.handleChange}
+            />                 
+        </div>
+    )
+})
 const TransactionForm = props => {
     const {debit, credit, time, student, amount, content, selected_class, selected_session, submitButton, tags,
     onChange, handleDateChange , handleDebitChange, handleCreditChange, handleStudentChange, handleClassChange, handleSessionChange, onSubmitTransaction, handleTagChange,
-    handleAmountChange, handleContentChange} = props
+    handleAmountChange, handleContentChange, handleBudgetChange, budget} = props
     return(
         <React.Fragment>
             <Grid container spacing={2} className="account-select">
@@ -196,70 +223,119 @@ const TransactionForm = props => {
                         />
                     </Grid>                    
             </Grid>
-            <Grid container spacing={2}>
+            {props.payment ? 
+            (
+                <Grid container spacing={2}>
+                    <Grid item lg={4} xs={12}>
+                        <FormLabel color="primary">Tag</FormLabel>
+                        <TagSelect 
+                            tags = {tags}
+                            handleChange = {handleTagChange}
+                        />
+                        {submitButton ? (
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className="submit-btn"
+                                onClick = {(e) => onSubmitTransaction(e)}
+                                endIcon={<SendIcon/>}
+                            >
+                                Thực hiện
+                            </Button>
+                        ) : ""}
+                    </Grid>
+                    <Grid item lg={4} xs={12}>
+                        <FormLabel color="primary">Ngân sách</FormLabel>
+                        <BudgetSelect 
+                            budget = {budget}
+                            handleChange = {handleBudgetChange}
+                        />
+                    </Grid>
+                    <Grid item lg={4} xs={12}>
+                        <FormLabel color="primary">Miêu tả</FormLabel>
+                        <TextField
+                            id="outlined-multiline-static"
+                            fullWidth
+                            placeholder="Miêu tả của giao dịch"
+                            multiline
+                            rows={2}
+                            variant="outlined"
+                            name="content"
+                            value={content}
+                            onChange = {handleContentChange}
+                        />
+                    </Grid>
+            
+                </Grid>
+            )
+            : (
+                <React.Fragment>
+                    <Grid container spacing={2}>
+                        <Grid item lg={4} xs={12}>
+                            <FormLabel color="primary">Học sinh</FormLabel>
+                            <StudentSearch
+                                student_name={student}
+                                handleStudentChange={handleStudentChange}
+                            />
+                        </Grid>
+                        <Grid  item lg={4} xs={12}>
+                            <FormLabel color="primary">Lớp học</FormLabel>
+                            <ClassSelect 
+                                selected_class = {selected_class}
+                                handleChange={handleClassChange}
+                                course = {-1}
+                                center = {-1}
+                                student = {student}
+                            />
+                        </Grid>
+                        <Grid item  lg={4} xs={12}>
+                            <FormLabel color="primary">Buổi học</FormLabel>
+                            <SessionDateSelect 
+                                selected_class = {selected_class}
+                                selected_session = {selected_session}
+                                handleChange={handleSessionChange}                        
+                            />
+                        </Grid>
+                        
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item lg={6} xs={12}>
+                            <FormLabel color="primary">Tag</FormLabel>
+                            <TagSelect 
+                                tags = {tags}
+                                handleChange = {handleTagChange}
+                            />
+                            {submitButton ? (
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    className="submit-btn"
+                                    onClick = {(e) => onSubmitTransaction(e)}
+                                    endIcon={<SendIcon/>}
+                                >
+                                    Thực hiện
+                                </Button>
+                            ) : ""}
+                        </Grid>
+                        <Grid item lg={6} xs={12}>
+                            <FormLabel color="primary">Miêu tả</FormLabel>
+                            <TextField
+                                id="outlined-multiline-static"
+                                fullWidth
+                                placeholder="Miêu tả của giao dịch"
+                                multiline
+                                rows={2}
+                                variant="outlined"
+                                name="content"
+                                value={content}
+                                onChange = {handleContentChange}
+                            />
+                        </Grid>
                 
-                <Grid item lg={4} xs={12}>
-                    <FormLabel color="primary">Học sinh</FormLabel>
-                    <StudentSearch
-                        student_name={student}
-                        handleStudentChange={handleStudentChange}
-                    />
-                </Grid>
-                <Grid  item lg={4} xs={12}>
-                    <FormLabel color="primary">Lớp học</FormLabel>
-                    <ClassSelect 
-                        selected_class = {selected_class}
-                        handleChange={handleClassChange}
-                        course = {-1}
-                        center = {-1}
-                        student = {student}
-                    />
-                </Grid>
-                <Grid item  lg={4} xs={12}>
-                    <FormLabel color="primary">Buổi học</FormLabel>
-                    <SessionDateSelect 
-                        selected_class = {selected_class}
-                        selected_session = {selected_session}
-                        handleChange={handleSessionChange}                        
-                    />
-                </Grid>
-                
-            </Grid>
-            <Grid container spacing={2}>
-                <Grid item lg={6} xs={12}>
-                    <FormLabel color="primary">Tag</FormLabel>
-                    <TagSelect 
-                        tags = {tags}
-                        handleChange = {handleTagChange}
-                    />
-                    {submitButton ? (
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            className="submit-btn"
-                            onClick = {(e) => onSubmitTransaction(e)}
-                            endIcon={<SendIcon/>}
-                        >
-                            Thực hiện
-                        </Button>
-                    ) : ""}
-                </Grid>
-                <Grid item lg={6} xs={12}>
-                    <FormLabel color="primary">Miêu tả</FormLabel>
-                    <TextField
-                        id="outlined-multiline-static"
-                        fullWidth
-                        placeholder="Miêu tả của giao dịch"
-                        multiline
-                        rows={2}
-                        variant="outlined"
-                        name="content"
-                        value={content}
-                        onChange = {handleContentChange}
-                    />
-                </Grid>
-        
-            </Grid>
+                    </Grid>
+                </React.Fragment> 
+            )}
+            
         </React.Fragment>
         
     )

@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Transaction;
 use App\Account;
 use App\TransactionSession;
+use App\Budget;
+use App\BudgetAccount;
 class TransactionObserver
 {
     /**
@@ -23,6 +25,20 @@ class TransactionObserver
         $credit->balance += $amount;
         $credit->save();
         $debit->save();
+
+        if($transaction->budget_id){
+            $ba = BudgetAccount::where('budget_id', $transaction->budget_id)->where('account_id', $transaction->debit)->first();
+            if($ba){
+                $ba->actual += $transaction->amount;
+                $ba->save();
+            }else{
+                $input['budget_id'] = $transaction->budget_id;
+                $input['account_id'] = $transaction->debit;
+                $input['limit'] = 0;
+                $input['actual'] = $transaction->amount;
+                BudgetAccount::create($input);
+            } 
+        }
     }
 
     /**
@@ -71,6 +87,28 @@ class TransactionObserver
             $debit->balance = $debit->balance + $old_amount - $transaction->amount;
             $credit->balance = $credit->balance - $old_amount + $transaction->amount;
             $debit->save(); $credit->save();
+        }
+        if($transaction->budget_id){
+            $old_budget = $transaction->getOriginal('budget_id');
+            if($old_budget){
+                $old_ba = BudgetAccount::where('budget_id', $old_budget)->where('account_id', $transaction->getOriginal('debit'))->first();
+                if($old_ba){
+                    $old_ba->actual -= $transaction->getOriginal('amount');
+                    $old_ba->save();
+                }
+            }
+            //update new budget 
+            $ba = BudgetAccount::where('budget_id', $transaction->budget_id)->where('account_id', $transaction->debit)->first();
+            if($ba){
+                $ba->actual += $transaction->amount;
+                $ba->save();
+            }else{
+                $input['budget_id'] = $transaction->budget_id;
+                $input['account_id'] = $transaction->debit;
+                $input['limit'] = 0;
+                $input['actual'] = $transaction->amount;
+                BudgetAccount::create($input);
+            } 
         }
     }
 

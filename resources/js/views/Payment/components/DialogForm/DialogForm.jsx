@@ -97,6 +97,7 @@ class DialogForm extends React.Component {
                 t.student = {value: t.sid, label: t.sname}
                 t.selected_class = {value: t.cid , label: t.cname}
                 t.selected_session = {value: t.ssid, label: t.ssid}
+                t.budget = (t.bid)?{value: t.bid, label: t.bname}: null
                 t.tags = t.tags.map(tag => {
                     return {value: tag.id, label: tag.name}
                 })
@@ -253,6 +254,13 @@ class DialogForm extends React.Component {
         this.setState(prevState => {
             let transactions = prevState.transactions;
             transactions[key]['tags'] = newValue
+            return {...prevState, transactions}
+        })
+    }
+    handleBudgetChange = (key, newValue) => {
+        this.setState(prevState => {
+            let transactions = prevState.transactions;
+            transactions[key]['budget'] = newValue
             return {...prevState, transactions}
         })
     }
@@ -417,7 +425,7 @@ class DialogForm extends React.Component {
                                             selected_class = {transaction.selected_class}
                                             selected_session = {transaction.selected_session}
                                             tags = {transaction.tags}
-
+                                            budget = {transaction.budget}
                                             onChange = { this.onChange }
                                             handleDateChange = { (date) => this.handleDateChange(key, date ) }
                                             handleDebitChange = { (newValue) => this.handleDebitChange(key, newValue) }
@@ -428,8 +436,10 @@ class DialogForm extends React.Component {
                                             handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
                                             handleContentChange = { newValue => this.handleContentChange(key, newValue) }
                                             handleTagChange = { newValue => this.handleTagChange(key, newValue) }
+                                            handleBudgetChange = { newValue => this.handleBudgetChange(key, newValue) }
                                             submitButton = {false}
-                                            onSubmitTransaction = {{}}                   
+                                            onSubmitTransaction = {{}}    
+                                            payment = {true}               
                                         />
                                     )
                                 })}

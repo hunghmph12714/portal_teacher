@@ -234,7 +234,6 @@ class Classes extends React.Component{
     }
     handleClassDetail = (event, rowData) => {
       this.props.history.push('/class/'+rowData.id)
-      console.log(rowData.tableData.id)
     }
     componentDidMount(){ 
       this.getClass()
@@ -249,7 +248,7 @@ class Classes extends React.Component{
                       title="Danh sách lớp học"
                       data={this.state.data}
                       options={{
-                          pageSize: 10,
+                          pageSize: 20,
                           grouping: true,
                           filtering: true,
                           exportButton: true,
