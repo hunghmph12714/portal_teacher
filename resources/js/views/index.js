@@ -30,7 +30,7 @@ export { default as Payment } from './Payment';
 export { default as Receipt } from './Receipt';
 export { default as Fee } from './Fee';
 export { default as AdjustFee } from './AdjustFee';
-export { Financial, CashFlow } from './Report';
+export { Financial, CashFlow, CashBook } from './Report';
 export { default as Revenue } from './Revenue';
 export { default as Documents } from './Documents';
 export { Events, EventDetail, PublicForm, PublicResult } from './Events';

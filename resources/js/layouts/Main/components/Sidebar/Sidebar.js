@@ -135,6 +135,10 @@ const Sidebar = props => {
               href: '/report/cf'
             },
             {
+              title: 'Sổ quỹ tiền mặt',
+              href: '/report/book'
+            },
+            {
               title: 'Báo cáo doanh thu',
               href: '/report/revenue'
             },

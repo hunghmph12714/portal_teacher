@@ -264,12 +264,17 @@ Route::group(['middleware' => ['auth']], function() {
             });
             // Route::get('/report/get-revenue', 'ReportController@getRevenue');
             Route::post('/report/get-revenue', 'ReportController@getRevenue');
-
+        //Bao cao dong tien
             Route::get('/report/cf', function(){
                 return view('welcome');
             });
             Route::post('/report/cash-flow', 'ReportController@cashFlow');
-
+        //so quy tien mat
+            Route::get('/report/book', function(){
+                return view('welcome');
+            });
+            Route::post('/report/cash-book', 'ReportController@cashBook');
+            
             Route::get('/admin/dt', function(){
                 return redirect('/report/revenue');
             });

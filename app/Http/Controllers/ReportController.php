@@ -14,6 +14,7 @@ use App\Paper;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use DB;
 class ReportController extends Controller
 {
     //
@@ -243,29 +244,96 @@ class ReportController extends Controller
         return response()->json(['col' =>
         array_keys($pattern), 'data' => array_values($result)]);
     }
-    public function fillCenter(){
-        $transactions = Transaction::whereNotNull('paper_id')->get();
-        foreach($transactions as $transaction){
-            if($transaction->paper_id){
-                $paper = Paper::find($transaction->paper_id);
-                if($paper){
-                    $transaction->center_id = $paper->center_id;
-                    $transaction->save();
-                }
-                continue;
+    public function cashBook(Request $request){
+        $rules = ['centers' => 'required', 'from' => 'required', 'to'=> 'required'];
+        $this->validate($request, $rules);
+  
+        
+        $from = date('Y-m-d 00:00:00', strtotime($request->from));
+        $to = date('Y-m-d 23:59:59', strtotime($request->to));
+        $center_id = array_column($request->centers, 'value');
+
+        $equity = array_column(Account::select('id')->where('level_1', '111')->get()->toArray(), 'id') ; 
+        $debit = Transaction::WhereIn('center_id', $center_id)->where('time', '<', $from)->whereIn('debit', $equity)->sum('amount');
+        $credit = Transaction::WhereIn('center_id', $center_id)->where('time', '<', $from)->whereIn('credit', $equity)->sum('amount');
+
+        $previous = $debit - $credit;
+        $transactions = Transaction::whereIn('credit', $equity)->orwhereIn('debit', $equity)->Select(
+            'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+            'debit_account.id as debit_id','debit_account.level_1 as debit_level_1', 'debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+            'credit_account.id as credit_id','credit_account.level_1 as credit_level_1','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+            'students.id as sid', 'students.fullname as sname','students.dob', 
+            'classes.id as cid', 'classes.code as cname',
+            'users.id as uid','users.name as uname','transactions.center_id',
+            'papers.payment_number', 'papers.receipt_number','papers.type as ptype', 'papers.name as pname'
+        )
+            ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+            ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+            ->leftJoin('students','transactions.student_id','students.id')
+            ->leftJoin('classes','transactions.class_id','classes.id')
+            ->leftJoin('papers', 'transactions.paper_id', 'papers.id')
+            ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')->get();
+        $transactions = $transactions->WhereIn('center_id', $center_id)->whereBetween('time', [$from, $to]);
+        
+        $result[] = [
+            'time' => '',
+            'pt' => '', 'pc' => '', 'description' => '', 'op' => '', 'debit' => '', 'credit' => '', 'sum' => $previous, 'user' => ''
+        ];
+        foreach($transactions as $t){
+            $input['time'] = $t->time_formated;
+            if($t->credit_level_1 == '111'){
+                $input['pt'] = '';
+                $input['pc'] = $t->payment_number;
+                $input['description'] = $t->content;
+                $input['op'] = $t->debit_level_2;
+                $input['debit'] = '';
+                $input['credit'] =  $t->amount;
+                $input['sum'] = $previous - $t->amount;
+                $input['user'] = $t->pname;
             }
-        }
-        $transactions = Transaction::whereNotNull('class_id')->get();
-        foreach($transactions as $transaction){
-            if($transaction->class_id){
-                $class = Classes::find($transaction->class_id);
-                if($class){
-                    $transaction->center_id = $class->center_id;
-                    $transaction->save();
-                }
-                continue;
+            if($t->debit_level_1 == '111'){
+                $input['pc'] = '';
+                $input['pt'] = $t->receipt_number;
+                $input['description'] = $t->content;
+                $input['op'] = $t->credit_level_2;
+                $input['debit'] = $t->amount;
+                $input['credit'] = '';
+                $input['sum'] = $previous + $t->amount;
+                $input['user'] = $t->pname;
             }
+            
+            $result[] = $input;
+            // $result = array_merge($result, $input);
+            $previous = $input['sum'];
         }
-       
+        // print_r($credit - $debit);
+        return response()->json($result);
+        
+        
     }
+    // public function fillCenter(){
+    //     $transactions = Transaction::whereNotNull('paper_id')->get();
+    //     foreach($transactions as $transaction){
+    //         if($transaction->paper_id){
+    //             $paper = Paper::find($transaction->paper_id);
+    //             if($paper){
+    //                 $transaction->center_id = $paper->center_id;
+    //                 $transaction->save();
+    //             }
+    //             continue;
+    //         }
+    //     }
+    //     $transactions = Transaction::whereNotNull('class_id')->get();
+    //     foreach($transactions as $transaction){
+    //         if($transaction->class_id){
+    //             $class = Classes::find($transaction->class_id);
+    //             if($class){
+    //                 $transaction->center_id = $class->center_id;
+    //                 $transaction->save();
+    //             }
+    //             continue;
+    //         }
+    //     }
+       
+    // }
 }

@@ -31,7 +31,7 @@ import {
   Financial, Revenue, CashFlow,
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
-  Users,Budget, BudgetStats
+  Users,Budget, BudgetStats, CashBook
 
 } from './views';
 
@@ -276,6 +276,11 @@ const Routes = (props) => {
         component = {CashFlow}
         layout = {MainLayout}
         path = "/report/cf"
+      />
+      <ProtectedRouteWithLayout 
+        component = {CashBook}
+        layout = {MainLayout}
+        path = "/report/book"
       />
       <ProtectedRouteWithLayout 
         component = {Revenue}
