@@ -28,7 +28,7 @@ import {
   CreateEntrance, ViewEntrance, ClassDetail, Attendance, QuickCreateEntrance,
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
-  Financial, Revenue, 
+  Financial, Revenue, CashFlow,
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats
@@ -271,6 +271,11 @@ const Routes = (props) => {
         component = {Financial}
         layout = {MainLayout}
         path = "/report/financial"
+      />
+      <ProtectedRouteWithLayout 
+        component = {CashFlow}
+        layout = {MainLayout}
+        path = "/report/cf"
       />
       <ProtectedRouteWithLayout 
         component = {Revenue}

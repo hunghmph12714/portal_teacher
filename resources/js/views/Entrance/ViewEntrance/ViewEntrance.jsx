@@ -151,7 +151,6 @@ class ViewEntrance extends React.Component{
     onCenterChange = (value) => {
       let selected_center_ids = value.map(v => v.value)
       let selected_center_params = selected_center_ids.join('_')
-      console.log(selected_center_params)
       this.setState({ selected_centers: value, selected_centers_param:  selected_center_params})
       this.props.history.push('/entrance/list/' +selected_center_params + '/' +this.state.activeStep)
     }

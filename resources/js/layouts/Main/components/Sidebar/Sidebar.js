@@ -127,8 +127,23 @@ const Sidebar = props => {
           href: '/fee-adjust'
         },
         {
-          title: 'Báo cáo tài chính',
-          href : '/report/financial'
+          title: 'Báo cáo',
+          href: '#',
+          children: [
+            {
+              title: 'Báo cáo dòng tiền',
+              href: '/report/cf'
+            },
+            {
+              title: 'Báo cáo doanh thu',
+              href: '/report/revenue'
+            },
+            {
+              title: 'Báo cáo tài chính',
+              href: '/report/financial'
+            },
+            
+          ]
         },
         {
           title: 'Ngân sách',

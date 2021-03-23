@@ -11,6 +11,9 @@ use App\Course;
 use App\Session;
 use App\Teacher;
 use App\Paper;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 class ReportController extends Controller
 {
     //
@@ -171,47 +174,77 @@ class ReportController extends Controller
         return response()->json($result);     
     }
     public function cashFlow(Request $request){
-        $month = 12;
-        $year = 2020;
-        $from = date('Y-m-d 00:00:00', strtotime('2021-03-01'));
-        $to = date('Y-m-d 23:59:59', strtotime('2021-03-31'));
-        $center_id = 3;
-        $result = [['name'=> 'sum', $month.".1" => 0, $month.".2" => 0, $month.".3" => 0, $month.".4" => 0, $month.".5" => 0, 'sum' => 0]];
-        for ($i = 0; $i < 5; $i++) { 
-            $f = ($i == 0)? $from :date('Y-m-d  00:00:00', strtotime($from. "+1 day"));
-            $t = (date('Y-m-d 23:59:59', strtotime($f. "+6 day")) > $to) ? $to :date('Y-m-d 23:59:59', strtotime($f. "+6 day"));
-            $from = $t;
+        
+        $rules = ['centers' => 'required', 'from' => 'required', 'to'=> 'required'];
+        $this->validate($request, $rules);
 
-            $equity = array_column(Account::select('id')->where('type', 'equity')->get()->toArray(), 'id') ;
-            //
-            $transactions = Transaction::WhereNotNull('paper_id')->whereIn('credit', $equity)
-                                        ->whereBetween('time', [$f, $t])
-                                        ->where('center_id', $center_id)
-                                        ->select('accounts.name', 'transactions.amount','transactions.debit', 'transactions.center_id')
-                                        ->leftJoin('accounts', 'transactions.debit', 'accounts.id')
-                                        ->get();
+        
+        $from = date('Y-m-d 00:00:00', strtotime($request->from));
+        $to = date('Y-m-d 23:59:59', strtotime($request->to));
+        $center_id = array_column($request->centers, 'value');
 
+        $start    = (new DateTime($from))->modify('first day of this month');
+        $end      = (new DateTime($to))->modify('last day of this month');
+        $interval = DateInterval::createFromDateString('1 month');
+        $period   = new DatePeriod($start, $interval, $end);
 
-            foreach($transactions as $t){
-                if(!array_key_exists($t->debit, $result)){
-                    $result[$t->debit] = ['name' => $t->name, $month.".1" => 0, $month.".2" => 0, $month.".3" => 0, $month.".4" => 0, $month.".5" => 0, 'sum' => 0];
-                    $result[$t->debit][$month.".".($i+1)] += $t->amount;
+        $pattern = [];
+        foreach ($period as $dt){
+            $month = $dt->format("m");
+            for ($i = 0; $i < 5; $i++) {
+                $pattern[$month.".".($i + 1)] = 0;
+            }
+            $pattern['sum-'.$month] = 0;
+        }
+        $pattern['Tổng']  = 0;
+        $result[] = array_merge(['name' => 'Tổng'], $pattern);
+        foreach ($period as $dt) {
+            $month = $dt->format("m");
+            $from = $dt->format('Y-m-01');
+            $to = $dt->format('Y-m-t');
+            // $from = date('Y-m-d 00:00:00', strtotime('2021-03-01'));
+            for ($i = 0; $i < 5; $i++) { 
+                $f = ($i == 0)? $from :date('Y-m-d  00:00:00', strtotime($from. "+1 day"));
+                $t = (date('Y-m-d 23:59:59', strtotime($f. "+6 day")) > $to) ? $to :date('Y-m-d 23:59:59', strtotime($f. "+6 day"));
+                $from = $t;
+    
+                $equity = array_column(Account::select('id')->where('type', 'equity')->get()->toArray(), 'id') ;
+                //
+                $transactions = Transaction::WhereNotNull('paper_id')->whereIn('credit', $equity)
+                                            ->whereBetween('time', [$f, $t])
+                                            ->whereIn('center_id', $center_id)
+                                            ->select('accounts.name', 'transactions.amount','transactions.debit', 'transactions.center_id')
+                                            ->leftJoin('accounts', 'transactions.debit', 'accounts.id')
+                                            ->get();
+    
+    
+                foreach($transactions as $t){
+                    if(!array_key_exists($t->debit, $result)){
+                        $result[$t->debit] = array_merge(['name' => $t->name], $pattern);
+                        $result[$t->debit][$month.".".($i+1)] += $t->amount;                        
+                        $result[$t->debit]['sum-'.$month] += $t->amount;
+                        $result[$t->debit]['Tổng'] += $t->amount;
+                    }else{
+                        $result[$t->debit][$month.".".($i+1)] += $t->amount;                                       
+                        $result[$t->debit]['sum-'.$month] += $t->amount;
+                        $result[$t->debit]['Tổng'] += $t->amount;
+                    }
                     $result[0][$month.".".($i+1)] += $t->amount;
-                    $result[0]['sum'] += $t->amount;
-                    $result[$t->debit]['sum'] += $t->amount;
-                }else{
-                    $result[$t->debit][$month.".".($i+1)] += $t->amount;
-                    $result[0][$month.".".($i+1)] += $t->amount;
-                    $result[0]['sum'] += $t->amount;
-                    $result[$t->debit]['sum'] += $t->amount;
+                    $result[0]['sum-'.$month] += $t->amount;
+                    $result[0]['Tổng'] += $t->amount;
                 }
             }
         }
-        echo "<pre>";
-        print_r($result);
+
+        
+        // echo "<pre>";
+        // print_r($result);
+        
+        return response()->json(['col' =>
+        array_keys($pattern), 'data' => array_values($result)]);
     }
     public function fillCenter(){
-        $transactions = Transaction::all();
+        $transactions = Transaction::whereNotNull('paper_id')->get();
         foreach($transactions as $transaction){
             if($transaction->paper_id){
                 $paper = Paper::find($transaction->paper_id);
@@ -221,6 +254,9 @@ class ReportController extends Controller
                 }
                 continue;
             }
+        }
+        $transactions = Transaction::whereNotNull('class_id')->get();
+        foreach($transactions as $transaction){
             if($transaction->class_id){
                 $class = Classes::find($transaction->class_id);
                 if($class){
@@ -229,7 +265,7 @@ class ReportController extends Controller
                 }
                 continue;
             }
-
         }
+       
     }
 }
