@@ -70,10 +70,9 @@ class TransactionObserver
         $old_debit = $transaction->getOriginal('debit');
         $old_credit = $transaction->getOriginal('credit');
         $old_amount = $transaction->getOriginal('amount');
-        
-        if(!$old_debit && !$old_credit){
-            $debit = Account::find($old_debit);
-            $credit = Account::find($old_credit);
+        $debit = Account::find($old_debit);
+        $credit = Account::find($old_credit);
+        if($debit && $credit){
             if($old_debit != $transaction->debit){            
                 $debit->balance += $old_amount;
                 $debit->save();
@@ -106,31 +105,31 @@ class TransactionObserver
                 $debit->balance = $debit->balance + $old_amount - $transaction->amount;
                 $credit->balance = $credit->balance - $old_amount + $transaction->amount;
                 $debit->save(); $credit->save();
-            }
-            if($transaction->budget_id){
-                $old_budget = $transaction->getOriginal('budget_id');
-                if($old_budget){
-                    $old_ba = BudgetAccount::where('budget_id', $old_budget)->where('account_id', $transaction->getOriginal('debit'))->first();
-                    if($old_ba){
-                        $old_ba->actual -= $transaction->getOriginal('amount');
-                        $old_ba->save();
-                    }
-                }
-                //update new budget 
-                $ba = BudgetAccount::where('budget_id', $transaction->budget_id)->where('account_id', $transaction->debit)->first();
-                if($ba){
-                    $ba->actual += $transaction->amount;
-                    $ba->save();
-                }else{
-                    $input['budget_id'] = $transaction->budget_id;
-                    $input['account_id'] = $transaction->debit;
-                    $input['limit'] = 0;
-                    $input['actual'] = $transaction->amount;
-                    BudgetAccount::create($input);
-                } 
-            }
+            } 
         }
         
+        if($transaction->budget_id){
+            $old_budget = $transaction->getOriginal('budget_id');
+            if($old_budget){
+                $old_ba = BudgetAccount::where('budget_id', $old_budget)->where('account_id', $transaction->getOriginal('debit'))->first();
+                if($old_ba){
+                    $old_ba->actual -= $transaction->getOriginal('amount');
+                    $old_ba->save();
+                }
+            }
+            //update new budget 
+            $ba = BudgetAccount::where('budget_id', $transaction->budget_id)->where('account_id', $transaction->debit)->first();
+            if($ba){
+                $ba->actual += $transaction->amount;
+                $ba->save();
+            }else{
+                $input['budget_id'] = $transaction->budget_id;
+                $input['account_id'] = $transaction->debit;
+                $input['limit'] = 0;
+                $input['actual'] = $transaction->amount;
+                BudgetAccount::create($input);
+            } 
+        }
     }
 
     /**
