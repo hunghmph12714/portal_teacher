@@ -194,7 +194,7 @@ class ReportController extends Controller
             for ($i = 0; $i < 5; $i++) {
                 $pattern[$month.".".($i + 1)] = 0;
             }
-            $pattern['Tổng T'.$month] = 0;
+            $pattern['sum-'.$month] = 0;
         }
         $pattern['Tổng']  = 0;
         $result[] = array_merge(['name' => 'Tổng'], $pattern);
