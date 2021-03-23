@@ -7,6 +7,8 @@ use App\Account;
 use App\TransactionSession;
 use App\Budget;
 use App\BudgetAccount;
+use App\Paper;
+use App\Classes;
 class TransactionObserver
 {
     /**
@@ -38,6 +40,21 @@ class TransactionObserver
                 $input['actual'] = $transaction->amount;
                 BudgetAccount::create($input);
             } 
+        }
+
+        if($transaction->paper_id){
+            $paper = Paper::find($transaction->paper_id);
+            $transaction->center_id = $paper->center_id;
+            $transaction->save();
+        }
+        if($transaction->class_id){
+            $class = Classes::find($transaction->class_id);
+            $transaction->center_id = $class->center_id;
+            $transaction->save();
+        }
+        $credit = Account::where('level_2', '131')->first();
+        if($transaction->paper_id && $transaction->credit == $credit->id && $transaction->class_id){
+            
         }
     }
 

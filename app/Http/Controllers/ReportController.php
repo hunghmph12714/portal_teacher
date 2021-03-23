@@ -10,6 +10,7 @@ use App\Classes;
 use App\Course;
 use App\Session;
 use App\Teacher;
+use App\Paper;
 class ReportController extends Controller
 {
     //
@@ -168,5 +169,67 @@ class ReportController extends Controller
         // $session_id = 2703;
         // $session = Session::find($session_id);
         return response()->json($result);     
+    }
+    public function cashFlow(Request $request){
+        $month = 12;
+        $year = 2020;
+        $from = date('Y-m-d 00:00:00', strtotime('2021-03-01'));
+        $to = date('Y-m-d 23:59:59', strtotime('2021-03-31'));
+        $center_id = 3;
+        $result = [['name'=> 'sum', $month.".1" => 0, $month.".2" => 0, $month.".3" => 0, $month.".4" => 0, $month.".5" => 0, 'sum' => 0]];
+        for ($i = 0; $i < 5; $i++) { 
+            $f = ($i == 0)? $from :date('Y-m-d  00:00:00', strtotime($from. "+1 day"));
+            $t = (date('Y-m-d 23:59:59', strtotime($f. "+6 day")) > $to) ? $to :date('Y-m-d 23:59:59', strtotime($f. "+6 day"));
+            $from = $t;
+
+            $equity = array_column(Account::select('id')->where('type', 'equity')->get()->toArray(), 'id') ;
+            //
+            $transactions = Transaction::WhereNotNull('paper_id')->whereIn('credit', $equity)
+                                        ->whereBetween('time', [$f, $t])
+                                        ->where('center_id', $center_id)
+                                        ->select('accounts.name', 'transactions.amount','transactions.debit', 'transactions.center_id')
+                                        ->leftJoin('accounts', 'transactions.debit', 'accounts.id')
+                                        ->get();
+
+
+            foreach($transactions as $t){
+                if(!array_key_exists($t->debit, $result)){
+                    $result[$t->debit] = ['name' => $t->name, $month.".1" => 0, $month.".2" => 0, $month.".3" => 0, $month.".4" => 0, $month.".5" => 0, 'sum' => 0];
+                    $result[$t->debit][$month.".".($i+1)] += $t->amount;
+                    $result[0][$month.".".($i+1)] += $t->amount;
+                    $result[0]['sum'] += $t->amount;
+                    $result[$t->debit]['sum'] += $t->amount;
+                }else{
+                    $result[$t->debit][$month.".".($i+1)] += $t->amount;
+                    $result[0][$month.".".($i+1)] += $t->amount;
+                    $result[0]['sum'] += $t->amount;
+                    $result[$t->debit]['sum'] += $t->amount;
+                }
+            }
+        }
+        echo "<pre>";
+        print_r($result);
+    }
+    public function fillCenter(){
+        $transactions = Transaction::all();
+        foreach($transactions as $transaction){
+            if($transaction->paper_id){
+                $paper = Paper::find($transaction->paper_id);
+                if($paper){
+                    $transaction->center_id = $paper->center_id;
+                    $transaction->save();
+                }
+                continue;
+            }
+            if($transaction->class_id){
+                $class = Classes::find($transaction->class_id);
+                if($class){
+                    $transaction->center_id = $class->center_id;
+                    $transaction->save();
+                }
+                continue;
+            }
+
+        }
     }
 }
