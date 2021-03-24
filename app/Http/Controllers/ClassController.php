@@ -894,6 +894,7 @@ class ClassController extends Controller
                 $r['school'] = $s->school;
                 $r['room'] = [];
                 $r['score'] = [];
+                $r['sbd'] = [];
                 $r['id'] = $class->code.''.$s['sc_id'];
                 //Check center
                 $active_class = $s->activeClasses;
@@ -925,6 +926,7 @@ class ClassController extends Controller
                     $pivot = StudentSession::where('session_id', $ss->id)->where('student_id', $s->id)->first();                    
                     $r['score'][]  = ($pivot)?($pivot->score?$pivot->score: '-'):'';
                     $r['room'][] = ($pivot)?($pivot->btvn_comment?$pivot->btvn_comment: '-'):'';
+                    $r['sbd'][] = ($pivot)?($pivot->btvn_score?$pivot->btvn_score: '-'):'';
                 }
                 $result[] = $r;
             }

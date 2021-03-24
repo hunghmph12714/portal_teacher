@@ -1303,8 +1303,9 @@ class StudentController extends Controller
                     $date = $week[date('w', strtotime($s->from))] .", " . date('d/m/Y', strtotime($s->from));
                     $from = date('h:i', strtotime($s->from));
                     $to = date('h:i', strtotime($s->to));
-                    $result['sessions'][] = ['sbd' => $request->sbd,
+                    $result['sessions'][] = ['code' => $request->sbd,
                         'content' => $s['content'], 'location' => $s['location'], 
+                        'sbd' => $s['pivot']['btvn_score'],
                         'room' => $s['pivot']['btvn_comment'], 'score' => $s['pivot']['score'], 
                         'comment' => $s['pivot']['comment'], 'time'=> $from." - ".$to, 'date'=>$date , 
                         'chart' => $getChart['chart'], 'document' => $s->document,
@@ -1333,7 +1334,7 @@ class StudentController extends Controller
             $result['student_name'] = $student->fullname;
             $result['pass'] = $parent->password;
             $mail_to = $parent->email;
-            $result['sbd'] = $class->code.''.$student->pivot['id'];  
+            $result['code'] = $class->code.''.$student['sc_id'];  
             foreach($sessions as $session){
                 if(in_array($session->id, $request->sessions)){
                     $ss = $session->pivot;
@@ -1377,6 +1378,7 @@ class StudentController extends Controller
                         $time = str_replace(':', 'h', $from.'-'.$to);
                         $result['product'][] = [
                             'content' => $session->content,
+                            'sbd' => $ss['btvn_score'],
                             'room' => $room,
                             'address' => $loc, 
                             'date' => $date,
@@ -1387,9 +1389,12 @@ class StudentController extends Controller
                     else continue;
                 }
             }
-            // return view('emails.events.reminder', compact('result'));
+            // echo "<pre>";
+            // print_r($result);
             if(array_key_exists('product', $result)){
-                SendEventReminder::dispatch($result, $mail_to, '');
+                // SendEventReminder::dispatch($result, $mail_to, '');
+                return view('emails.events.reminder', compact('result'));
+
             }
         }
         return response()->json('queued');

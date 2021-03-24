@@ -80,8 +80,8 @@ const DialogStudent = props => {
             )
         },
         {
-            title: "SBD",
-            field: "sbd",
+            title: "ID",
+            field: "code",
             headerStyle: {
                 width: '20px',
                 fontWeight: '600',
@@ -129,6 +129,18 @@ const DialogStudent = props => {
         {
             title: "Cơ sở",
             field: "center",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '3px 0px',
+            },
+
+        },    
+        {
+            title: "SBD",
+            field: "sbd",
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
@@ -192,7 +204,7 @@ const DialogStudent = props => {
     const fetchdata = async() => {
         const response = await axios.post('/session-students', {session_id: props.session_id})
         setStudents(response.data.map(s => {
-            return ({'fullname': s.label, 'dob': s.dob, 'school': s.school, 'sbd': s.sbd, 'score': s.pivot.score,'max_score': s.pivot.max_score, 'comment': s.pivot.comment, 'room': s.pivot.btvn_comment, 'center': s.center})
+            return ({'fullname': s.label, 'dob': s.dob, 'school': s.school, 'code': s.code,'sbd': s.pivot.btvn_score ,'score': s.pivot.score,'max_score': s.pivot.max_score, 'comment': s.pivot.comment, 'room': s.pivot.btvn_comment, 'center': s.center})
         }))
         setLoading(false)
     }

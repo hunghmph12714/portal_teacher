@@ -70,7 +70,7 @@ const ListStudent = (props) => {
             )
         },
         {
-            title: "SBD",
+            title: "ID",
             field: "sbd",
             filtering: false,
             headerStyle: {

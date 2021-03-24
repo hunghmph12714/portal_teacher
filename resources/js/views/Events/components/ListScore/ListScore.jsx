@@ -47,7 +47,7 @@ const ListScore = (props) => {
                 1: {
 
                     1: {text: 'Tên học sinh',bold: true, locked: true, stroke:'black'},
-                    2: {text: 'SBD',bold: true, locked: true, stroke:'black' },
+                    2: {text: 'ID',bold: true, locked: true, stroke:'black' },
                     3: {text: 'Ngày sinh', bold:true, locked: true, stroke:'black'},
                     4: {text: 'Trường', bold:true, locked: true, stroke:'black'},                           
                     5: {text: 'Điện thoại', bold:true, locked: true,stroke:'black'},            
@@ -55,7 +55,7 @@ const ListScore = (props) => {
                 },
                 2: {
                     1: {text: 'Tên học sinh',bold: true},
-                    2: {text: 'SBD',bold: true},
+                    2: {text: 'ID',bold: true},
                     3: {text: 'Ngày sinh', bold:true},
                     4: {text: 'Trường', bold:true},                           
                     5: {text: 'Điện thoại', bold:true},            
@@ -71,6 +71,16 @@ const ListScore = (props) => {
                 {top: 1, bottom: 2, left: 4, right: 4,},
                 {top: 1, bottom: 2, left: 5, right: 5,},
                 {top: 1, bottom: 2, left: 6, right: 6,},
+            ],
+            filterViews: [
+                {
+                    bounds: {
+                        top: 1,
+                        bottom: students.length,
+                        left: 1,
+                        right: 6
+                    }
+                },
             ]
         }
         let t = 0
@@ -79,10 +89,11 @@ const ListScore = (props) => {
             const d = format(new Date(sessions[j].date), 'd/M')
             sheet.cells[1][7+t] = {text:  d + ": " + sessions[j].content, bold:true, locked: true, stroke:'black', horizontalAlign: 'center', verticalAlign: 'middle'}
             
-            sheet.cells[2][7+t] = {text: 'Phòng thi', bold:true, stroke:'black',fill: '#fff2cc'}
-            sheet.cells[2][8+t] = {text: 'Điểm', bold:true, stroke:'black',fill: '#fff2cc'}
-            sheet.mergedCells.push({top: 1, left: 7+t, right: 8+t, bottom: 1})
-            t+=2
+            sheet.cells[2][7+t] = {text: 'SBD', bold:true, stroke:'black',fill: '#fff2cc'}
+            sheet.cells[2][8+t] = {text: 'Phòng thi', bold:true, stroke:'black',fill: '#fff2cc'}
+            sheet.cells[2][9+t] = {text: 'Điểm', bold:true, stroke:'black',fill: '#fff2cc'}
+            sheet.mergedCells.push({top: 1, left: 7+t, right: 9+t, bottom: 1})
+            t+=3
         }
         for (let i = 0 ; i < students.length ; i++){
             let t = 0
@@ -97,9 +108,10 @@ const ListScore = (props) => {
             sheet.cells[rowIndex][5] = {text: student.phone, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
             sheet.cells[rowIndex][6] = {text: student.center, strike: student.status == 'droped', fill: (student.status == 'droped')?'#cccccc':'' , strokeBottomColor: (i == students.length-1) ? 'black': '' }
             for (let k = 0 ; k < sessions.length; k++){
-                sheet.cells[rowIndex][7+t] = {text: student.room[k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' ,fill: '#fff2cc'}
-                sheet.cells[rowIndex][8+t] = {text: student.score[k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' ,fill: '#fff2cc'}
-                t+=2;
+                sheet.cells[rowIndex][7+t] = {text: student.sbd[k], student_id: student.id, session_id: sessions[k].id, col: 'sbd', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' ,fill: '#fff2cc'}
+                sheet.cells[rowIndex][8+t] = {text: student.room[k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_max', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' ,fill: '#fff2cc'}
+                sheet.cells[rowIndex][9+t] = {text: student.score[k], student_id: student.id, session_id: sessions[k].id, col: 'btvn_complete', strokeLeftColor:'black', strokeBottomColor: (i == students.length-1) ? 'black': '' ,fill: '#fff2cc'}
+                t+=3;
             }    
         }
         setSheets([sheet])  

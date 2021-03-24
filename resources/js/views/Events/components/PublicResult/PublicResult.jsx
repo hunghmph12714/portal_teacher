@@ -254,6 +254,13 @@ class PublicResult extends React.Component{
                       
                       //Thứ
                         {
+                          title: "SBD",
+                          field: "sbd",
+                          headerStyle: {
+                              fontWeight: '600',
+                          },                      
+                        },
+                        {
                           title: "Môn thi",
                           field: "content",
                           headerStyle: {
@@ -276,6 +283,7 @@ class PublicResult extends React.Component{
                               fontWeight: '600',
                           },                      
                         },
+                        
                         {
                           title: "Địa điểm",
                           field: "room",

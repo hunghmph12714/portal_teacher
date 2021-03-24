@@ -34,7 +34,7 @@ class Student extends Model
     }
     public function sessionsOfClass($class_id){
         return $this->belongsToMany('App\Session','student_session','student_id','session_id')
-                    ->withPivot('score','comment','btvn_comment')
+                    ->withPivot('score','comment','btvn_comment','btvn_score')
                     ->where('class_id', $class_id);
                     // ->withTimestamps();
     }

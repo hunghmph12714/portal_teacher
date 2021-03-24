@@ -37,6 +37,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
         <thead>
         <tr>
             <th class="tg-1wig">Môn thi</th>
+            <th class="tg-1wig">SBD</th>
             <th class="tg-1wig">Ngày thi</th>
             <th class="tg-1wig">Thời gian</th>
             <th class="tg-1wig">Địa điểm</th>
@@ -48,6 +49,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
             @foreach($result['product'] as $product)
             <tr>
               <td>{{$product['content']}}  </td>
+              <td>{{$product['sbd']}}  </td>
               <td>{{$product['date']}}  </td>
               <td>{{$product['time']}}  </td>
               <td>{{$product['address']}}  <a href="{{'https://www.google.com/maps?q='.$product['address']}}">BẢN ĐỒ</a></td>
@@ -59,10 +61,10 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
       </table>
     </div>
     <div class="col-sm">
-        <h3><u>Thông tin Số báo danh</u></h3>
+        <h3><u>Thông tin tra cứu điểm </u></h3>
         <ul>
           <li>
-            <b> Số báo danh: </b> {{$result['sbd']}} 
+            <b> ID: </b> {{$result['code']}} 
           </li>
           <li>
             <b> Mã cá nhân: </b> {{$result['pass']}} 
@@ -74,7 +76,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
     </div>    
   </div> 
 
-  <div class="">
+  <!-- <div class="">
       <h3><u>LỊCH CHỮA BÀI</u></h3>
       <b>Thí sinh có nhu cầu chữa bài thi, vui lòng liên hệ trước với trung tâm qua hotline: 02473065565 để trung tâm có thể sắp xếp thí sinh tham dự vào một trong các buổi sau:</b>
       <table class="tg" style="" width="100%">
@@ -171,7 +173,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
             
         </tbody>
       </table>
-  </div>
+  </div> -->
   <div class="">
       <h3><u>Quý Phụ huynh lưu ý một số thông tin quan trọng:</u></h3>
       <ul>

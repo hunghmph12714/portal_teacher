@@ -385,7 +385,7 @@ class SessionController extends Controller
             $event = Classes::find($session->class_id);
             $students = $session->students()->where('attendance', 'present')->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get();
             foreach($students as $key => $s){
-                $students[$key]['sbd'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s->value)->first()->id;
+                $students[$key]['code'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s->value)->first()->id;
                 $student = Student::find($s->value);
                 $active_class = $student->activeClasses;
                 if(!count($active_class) == 0){
@@ -1199,31 +1199,35 @@ class SessionController extends Controller
                             continue;
                         }
                     }
-                    if(count($val) == 7){                    
-                        $ss->btvn_comment = $val[6];
+                    if(count($val) == 8){                    
+                        $ss->btvn_comment = $val[7];
+                        $ss->btvn_score = $val[6];
                         $ss->save();
-                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6]];
-                    }
-                    if(count($val) == 8){
-                        $ss->btvn_comment = $val[6];
-                        $ss->score = $val[7];
-                        $ss->save();
-                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7]];
+                        $result[] = ['code' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'sbd' => $val[6],'room' => $val[7]];
                     }
                     if(count($val) == 9){
-                        $ss->btvn_comment = $val[6];
-                        $ss->score = $val[7];
-                        $ss->max_score = $val[8];
+                        $ss->btvn_score = $val[6];
+                        $ss->btvn_comment = $val[7];
+                        $ss->score = $val[8];
                         $ss->save();
-                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8]];
-                    }                
+                        $result[] = ['code' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'sbd' => $val[6], 'room' => $val[7], 'score' => $val[8]];
+                    }
                     if(count($val) == 10){
-                        $ss->btvn_comment = $val[6];
-                        $ss->score = $val[7];
-                        $ss->max_score = $val[8];
-                        $ss->comment = $val[9];
+                        $ss->btvn_score = $val[6];
+                        $ss->btvn_comment = $val[7];
+                        $ss->score = $val[8];
+                        $ss->max_score = $val[9];
                         $ss->save();
-                        $result[] = ['sbd' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'room' => $val[6], 'score' => $val[7], 'max_score' => $val[8], 'comment' => $val[9]];
+                        $result[] = ['code' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'sbd' => $val[6], 'room' => $val[7], 'score' => $val[8], 'max_score' => $val[9]];
+                    }                
+                    if(count($val) == 11){
+                        $ss->btvn_score = $val[6];
+                        $ss->btvn_comment = $val[7];
+                        $ss->score = $val[8];
+                        $ss->max_score = $val[9];
+                        $ss->comment = $val[10];
+                        $ss->save();
+                        $result[] = ['code' => $val[1], 'fullname' => $val[2], 'dob' => $val[4], 'school' => $val[3], 'sbd' => $val[6], 'room' => $val[7], 'score' => $val[8], 'max_score' => $val[9], 'comment' => $val[10]];
                     }  
                 }
             }
