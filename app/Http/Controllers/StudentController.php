@@ -1392,8 +1392,8 @@ class StudentController extends Controller
             // echo "<pre>";
             // print_r($result);
             if(array_key_exists('product', $result)){
-                // SendEventReminder::dispatch($result, $mail_to, '');
-                return view('emails.events.reminder', compact('result'));
+                SendEventReminder::dispatch($result, $mail_to, '');
+                // return view('emails.events.reminder', compact('result'));
 
             }
         }
