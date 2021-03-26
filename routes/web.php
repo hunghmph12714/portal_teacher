@@ -358,6 +358,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/student/get-id', 'StudentController@getStudentById');
     Route::post('/student/save', 'StudentController@saveStudent');
     Route::post('/student/get-class', 'StudentController@getClass');
+    Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     // Route::get('/student/import', 'StudentController@importStudent');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');

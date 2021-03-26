@@ -26,6 +26,45 @@ use App\Jobs\SendEventReminder;
 class StudentController extends Controller
 {
     //
+    protected function uploadAvatar(Request $request){
+        $rules = [
+            "id" => "required",
+            "croppedImage" => ['required', 'image','mimes:jpeg,png,jpg,gif', 'max:4096']
+        ];
+        $messages = [
+            "required" => "Vui lòng tải ảnh",
+            "image" => "Chỉ chấp nhận ảnh",
+            "mimes" => "Chỉ chấp nhận định dạng jpeg, png, jpg, gif",
+            "max:4096" => "Tối đa 4Mb"
+        ];
+        $this->validate($request, $rules, $messages);
+
+        $student = Student::find($request->id);
+        if(!$student){
+            return 0;
+        }
+        if(strpos($student->avatar, "/public/images/students/") !== false){
+            $old_avatar_file = ($student->avatar)?explode('/', $student->avatar)[4]:"";
+            // print_r($old_avatar_file);
+            if(\File::exists(public_path()."/images/avatars/".$old_avatar_file)){
+                \File::delete(public_path()."/images/avatars/".$old_avatar_file);
+            }
+        }
+
+        if($request->has('croppedImage')){
+            $avatar = $request->file('croppedImage');
+            $name = $student->id;
+            $avatar->move(public_path()."/images/students/", $name.".jpeg");
+            
+            if($student){
+                $student->avatar = "/public/images/students/".$name.".jpeg";
+                $student->save();
+            }
+            // $user->avatar = "/public/images/images/students/".$name.".jpeg";
+            // $user->save();
+        }
+        return response()->json($student);
+    }
     protected function getStudent($id){
         return view('welcome');
     }
@@ -35,7 +74,7 @@ class StudentController extends Controller
 
         $student = Student::where('students.id', $request->id)->select('students.id as sid','students.fullname as sname', 'dob', 'school','grade','students.email as semail',
             'students.phone as sphone','gender','parents.id as pid', 'parents.fullname as pname', 'parents.email as pemail', 'parents.alt_fullname as pname2', 'parents.alt_email as pemail2', 'parents.phone as pphone', 'parents.alt_phone as pphone2','parents.note',
-            'relationships.id as r_id','relationships.name as r_name','relationships.color'
+            'relationships.id as r_id','relationships.name as r_name','relationships.color', 'students.avatar'
             )
             ->leftjoin('parents', 'students.parent_id', 'parents.id')
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
@@ -1394,7 +1433,6 @@ class StudentController extends Controller
             if(array_key_exists('product', $result)){
                 SendEventReminder::dispatch($result, $mail_to, '');
                 // return view('emails.events.reminder', compact('result'));
-
             }
         }
         return response()->json('queued');

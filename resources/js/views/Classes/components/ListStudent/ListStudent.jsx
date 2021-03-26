@@ -4,6 +4,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
+import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import DialogCreate from './DialogCreate'
 import {
     Menu,
@@ -15,6 +16,7 @@ import {
 import MaterialTable from "material-table";
 import Chip from '@material-ui/core/Chip';
 import { CsvBuilder } from 'filefy';
+import DialogUploadAvatar from './DialogUploadAvatar';
 
 const baseUrl = window.Laravel.baseUrl
 const customChip = (color = '#ccc') => ({
@@ -33,6 +35,9 @@ const ListStudent = (props) => {
     const [reload, setReload] = useState(false);
     const [type, setType] = useState('create');
     const [selected_data, setSelectedData] = useState([]);
+
+    const[ openUpload, setOpenUpload ] = useState(false);
+
     useEffect(() => {
         const fetchdata = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -51,6 +56,12 @@ const ListStudent = (props) => {
         }
         fetchdata()
     }, [reload])
+    function handleOpenUpload(){
+        setOpenUpload(true)
+    }
+    function handleCloseUpload(){
+        setOpenUpload(false)
+    }
     function openCreateDialog(){
         setType('create')
         setOpen(true)        
@@ -145,10 +156,10 @@ const ListStudent = (props) => {
                         sorting: false,
                         headerStyle: {
                             padding: '0px',
-                            width: '80px',
+                            width: '120px',
                         },
                         cellStyle: {
-                            width: '80px',
+                            width: '120px',
                             padding: '0px 5px 0px 0px',
                         },
                         render: rowData => (
@@ -166,7 +177,20 @@ const ListStudent = (props) => {
                                     }>
                                     <DeleteForeverIcon fontSize='inherit' />
                                     </IconButton>
-                                </Tooltip>                                
+                                </Tooltip>     
+                                {
+                                    rowData.avatar ? "" : (
+                                        <Tooltip title="Up ảnh" arrow>
+                                            <IconButton
+                                                onClick={() => {
+                                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                            }>
+                                            <CropOriginalIcon fontSize='inherit' />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )
+                                }                                 
                             </div>
                         )
                     },
@@ -336,6 +360,12 @@ const ListStudent = (props) => {
                 class_id = {class_id}
                 type = {type}
                 student = {selected_data}
+            />
+            <DialogUploadAvatar
+                open = {openUpload}
+                handleClose = {handleCloseUpload}
+                id = {selected_data.id}
+                avatar = {selected_data.avatar}
             />
         </React.Fragment>
     )

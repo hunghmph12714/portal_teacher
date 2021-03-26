@@ -360,7 +360,7 @@ class PublicForm extends React.Component{
 
           let now = new Date();
           let deadline = new Date(d.from)
-          deadline.setDate(deadline.getDate() - 2)
+          deadline.setDate(deadline.getDate() - 0)
           if(now < deadline){
             return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
           }else{

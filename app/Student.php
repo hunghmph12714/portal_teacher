@@ -8,7 +8,7 @@ class Student extends Model
 {
     //s
     public $table = "students";
-    protected $fillable = ['parent_id','relationship_id','fullname','school','grade','email','phone','dob','address','note','gender','fee_email_log'];
+    protected $fillable = ['parent_id','relationship_id','fullname','school','grade','email','phone','dob','address','note','gender','fee_email_log','avatar'];
     protected $casts = ['fee_email_log' => 'array'];
 
     public function parents(){

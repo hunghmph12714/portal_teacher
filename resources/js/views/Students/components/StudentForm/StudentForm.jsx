@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import './StudentForm.scss'
 import { StudentSearch, ParentSearch } from '../../../../components'
+import { StudentProfile } from '../../components'
 import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import AsyncCreatableSelect from 'react-select/async-creatable';
@@ -121,13 +122,13 @@ const StudentForm = props => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [isBusy, setBusy] = useState(true)
     const [ student, setStudent ] = useState({sname: '', grade: '', school: '', semail: '', sphone: '', gender: 'Nữ',
-    pname: '', pname2:'', pphone:'', pphone2:'', pemail:'', pemail2:''})
-    useEffect(() => {
-        async function fetchStudent() {
-            const response = await axios.post(baseUrl + '/student/get-id', {id: student_id})
-            response.data.relationship = {label: response.data.r_name, value: response.data.r_id, color: response.data.color}
-            setStudent(response.data)
-        }
+    pname: '', pname2:'', pphone:'', pphone2:'', pemail:'', pemail2:'', avatar: null})
+    async function fetchStudent() {
+        const response = await axios.post('/student/get-id', {id: student_id})
+        response.data.relationship = {label: response.data.r_name, value: response.data.r_id, color: response.data.color}
+        setStudent(response.data)
+    }
+    useEffect(() => {        
         fetchStudent()
         setBusy(false)
     }, [])
@@ -164,203 +165,230 @@ const StudentForm = props => {
     if(!isBusy){
         return (
             <div className = 'root-student-cv'>
-                <h3>Thông tin học sinh</h3>
-                <Grid container spacing={3} className="student-form" {...rest}> 
-                    <Grid item md={12} lg={4} sm={12} xs={12}>
-                        <TextField  label="Họ tên học sinh"  
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'sname'
-                            value = {student.sname}
-                            onChange = {onChange}
-                        />    
-                        <Grid container spacing={2} className="gender-dob">
-                            <Grid item md={6} sm={12}>
-                                <div className="date-time">
-                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-                                        <KeyboardDatePicker
-                                            autoOk
-                                            className="input-date"
-                                            variant="inline"
-                                            inputVariant="outlined"
-                                            format="dd/MM/yyyy"
-                                            placeholder="Ngày sinh"
-                                            views={["year", "month", "date"]}
-                                            value={student.dob}
-                                            name= "dob"
-                                            onChange={handleDobChange}
-                                        />                     
-                                    </MuiPickersUtilsProvider>     
-                                </div>
-                        
-                            </Grid>    
-                            <Grid item md={12} md={6} sm={12}>
-                                <FormControl component="fieldset">
-                                    <RadioGroup row aria-label="gender" name="gender" value={student.gender} onChange={onChange}>
-                                        <FormControlLabel value="Nam" control={<Radio />} label="Nam" />
-                                        <FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>    
-                        </Grid>       
-                    </Grid>
-                    <Grid item md={12} lg={4} sm={12} xs={12}>
-                        <AsyncCreatableSelect 
-                            cacheOptions
-                            autosize={true}
-                            loadOptions={inputValue => debouncedLoadOptions('school',inputValue)}
-                            placeholder={'Trường học'}
-                            onChange={handleSchoolChange}
-                            name="school"
-                            value={{label: student.school, value : student.school}}
-                            formatCreateLabel={promptTextCreator} 
-                            className="school-select"    
+                <Grid
+                    container
+                    spacing={2}
+                >
+                    <Grid
+                        item
+                        lg={2}
+                        md={2}
+                        xl={2}
+                        xs={12}
+                    >
+                        <StudentProfile
+                            avatar={student.avatar}
+                            id={student_id}
+                            fetchStudent={fetchStudent}
                         />
-        
-                        <TextField  label="Lớp học"  
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'grade'
-                            value = {student.grade}
-                            onChange = {onChange}
-                        />    
+                        {/* <AccountProfile successNotification={this.successNotification} errorNotification={this.errorNotification}/>
+                        <Password/> */}
                     </Grid>
-                    <Grid item md={12} lg={4} sm={12}  xs={12}>
-                        <TextField  label="Email của học sinh" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'semail'
-                            value = {student.semail}
-                            onChange = {onChange}
-                        />    
-                        <TextField  label="Số điện thoại học sinh" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'sphone'
-                            value = {student.sphone}
-                            onChange = {onChange}
-                        />    
-                    </Grid>
-                </Grid>
-                <h3>Thông tin phụ huynh</h3>
-                <Grid container spacing={3} className="student-form" {...rest}>                
-                    <Grid item md={12} lg={4} sm={12} xs={12}>
-                        <TextField  label="Họ tên phụ huynh" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="text"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pname'
-                            value = {student.pname}
-                            onChange = {onChange}
-                        /> 
-                        
-                        <TextField  label="Họ tên phụ huynh 2" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="text"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pname2'
-                            value = {student.pname2}
-                            onChange = {onChange}
-                        /> 
-                        <RelationshipOptions 
-                            className = 'relationship-select'
-                            selected_relationship={student.relationship}
-                            handleChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item md={12} lg={4} sm={12} xs={12}>
-                        <TextField  label="Số điện thoại" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="text"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pphone'
-                            value = {student.pphone}
-                            onChange = {onChange}
-                        /> 
-                        <TextField  label="Số điện thoại 2" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="text"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pphone2'
-                            value = {student.pphone2}
-                            onChange = {onChange}
-                        /> 
-                        <TextField  label="Ghi chú" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="text"
-                            fullWidth
-                            margin = "dense"
-                            name = 'note'
-                            value = {student.note}
-                            onChange = {onChange}
-                        />     
-                    </Grid>
-                    <Grid item md={12} lg={4} sm={12}  xs={12}>
-                        <TextField  label="Email(*)" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pemail'
-                            value = {student.pemail}
-                            onChange = {onChange}
-                        />    
-                        <TextField  label="Email 2" 
-                            className = "input-text"
-                            variant="outlined"
-                            size="small"
-                            type="email"
-                            fullWidth
-                            margin = "dense"
-                            name = 'pemail2'
-                            value = {student.pemail2}
-                            onChange = {onChange}
-                        />    
-                        
-                    </Grid>
+                    <Grid
+                        item
+                        lg={10}
+                        md={10}
+                        xl={10}
+                        xs={12}
+                    >
+                        <h3>Thông tin học sinh</h3>
+                            <Grid container spacing={3} className="student-form" {...rest}> 
+                                <Grid item md={12} lg={4} sm={12} xs={12}>
+                                    <TextField  label="Họ tên học sinh"  
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'sname'
+                                        value = {student.sname}
+                                        onChange = {onChange}
+                                    />    
+                                    <Grid container spacing={2} className="gender-dob">
+                                        <Grid item md={6} sm={12}>
+                                            <div className="date-time">
+                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
+                                                    <KeyboardDatePicker
+                                                        autoOk
+                                                        className="input-date"
+                                                        variant="inline"
+                                                        inputVariant="outlined"
+                                                        format="dd/MM/yyyy"
+                                                        placeholder="Ngày sinh"
+                                                        views={["year", "month", "date"]}
+                                                        value={student.dob}
+                                                        name= "dob"
+                                                        onChange={handleDobChange}
+                                                    />                     
+                                                </MuiPickersUtilsProvider>     
+                                            </div>
+                                    
+                                        </Grid>    
+                                        <Grid item md={12} md={6} sm={12}>
+                                            <FormControl component="fieldset">
+                                                <RadioGroup row aria-label="gender" name="gender" value={student.gender} onChange={onChange}>
+                                                    <FormControlLabel value="Nam" control={<Radio />} label="Nam" />
+                                                    <FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
+                                                </RadioGroup>
+                                            </FormControl>
+                                        </Grid>    
+                                    </Grid>       
+                                </Grid>
+                                <Grid item md={12} lg={4} sm={12} xs={12}>
+                                    <AsyncCreatableSelect 
+                                        cacheOptions
+                                        autosize={true}
+                                        loadOptions={inputValue => debouncedLoadOptions('school',inputValue)}
+                                        placeholder={'Trường học'}
+                                        onChange={handleSchoolChange}
+                                        name="school"
+                                        value={{label: student.school, value : student.school}}
+                                        formatCreateLabel={promptTextCreator} 
+                                        className="school-select"    
+                                    />
                     
-                </Grid>
-                <Box flexDirection="row-reverse" display="flex">
-                    <Button onClick={handleSubmit} color="secondary" id="btn-save" variant="contained"
-                        type="submit"
-                        color="secondary"
-                        size="large"
-                        startIcon={<SaveIcon />}>
-                        Lưu hồ sơ
-                    </Button>
-                </Box>
+                                    <TextField  label="Lớp học"  
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'grade'
+                                        value = {student.grade}
+                                        onChange = {onChange}
+                                    />    
+                                </Grid>
+                                <Grid item md={12} lg={4} sm={12}  xs={12}>
+                                    <TextField  label="Email của học sinh" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'semail'
+                                        value = {student.semail}
+                                        onChange = {onChange}
+                                    />    
+                                    <TextField  label="Số điện thoại học sinh" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'sphone'
+                                        value = {student.sphone}
+                                        onChange = {onChange}
+                                    />    
+                                </Grid>
+                            </Grid>
+                            <h3>Thông tin phụ huynh</h3>
+                            <Grid container spacing={3} className="student-form" {...rest}>                
+                                <Grid item md={12} lg={4} sm={12} xs={12}>
+                                    <TextField  label="Họ tên phụ huynh" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pname'
+                                        value = {student.pname}
+                                        onChange = {onChange}
+                                    /> 
+                                    
+                                    <TextField  label="Họ tên phụ huynh 2" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pname2'
+                                        value = {student.pname2}
+                                        onChange = {onChange}
+                                    /> 
+                                    <RelationshipOptions 
+                                        className = 'relationship-select'
+                                        selected_relationship={student.relationship}
+                                        handleChange={handleChange}
+                                    />
+                                </Grid>
+                                <Grid item md={12} lg={4} sm={12} xs={12}>
+                                    <TextField  label="Số điện thoại" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pphone'
+                                        value = {student.pphone}
+                                        onChange = {onChange}
+                                    /> 
+                                    <TextField  label="Số điện thoại 2" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pphone2'
+                                        value = {student.pphone2}
+                                        onChange = {onChange}
+                                    /> 
+                                    <TextField  label="Ghi chú" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="text"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'note'
+                                        value = {student.note}
+                                        onChange = {onChange}
+                                    />     
+                                </Grid>
+                                <Grid item md={12} lg={4} sm={12}  xs={12}>
+                                    <TextField  label="Email(*)" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pemail'
+                                        value = {student.pemail}
+                                        onChange = {onChange}
+                                    />    
+                                    <TextField  label="Email 2" 
+                                        className = "input-text"
+                                        variant="outlined"
+                                        size="small"
+                                        type="email"
+                                        fullWidth
+                                        margin = "dense"
+                                        name = 'pemail2'
+                                        value = {student.pemail2}
+                                        onChange = {onChange}
+                                    />    
+                                    
+                                </Grid>
+                            </Grid>
+                            <Box flexDirection="row-reverse" display="flex">
+                                <Button onClick={handleSubmit} color="secondary" id="btn-save" variant="contained"
+                                    type="submit"
+                                    color="secondary"
+                                    size="large"
+                                    startIcon={<SaveIcon />}>
+                                    Lưu hồ sơ
+                                </Button>
+                            </Box>
+                    </Grid>
+                    </Grid>
             </div>
         )
     }
