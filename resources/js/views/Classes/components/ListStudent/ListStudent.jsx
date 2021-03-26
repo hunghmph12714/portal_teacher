@@ -56,11 +56,14 @@ const ListStudent = (props) => {
         }
         fetchdata()
     }, [reload])
-    function handleOpenUpload(){
+    function handleOpenUpload(rowData){
         setOpenUpload(true)
+        setSelectedData(rowData)
     }
     function handleCloseUpload(){
         setOpenUpload(false)
+        setSelectedData([])
+        setReload(!reload)
     }
     function openCreateDialog(){
         setType('create')
@@ -182,10 +185,7 @@ const ListStudent = (props) => {
                                     rowData.avatar ? "" : (
                                         <Tooltip title="Up ảnh" arrow>
                                             <IconButton
-                                                onClick={() => {
-                                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
-                                            }>
+                                                onClick={() => {handleOpenUpload(rowData)}}>
                                             <CropOriginalIcon fontSize='inherit' />
                                             </IconButton>
                                         </Tooltip>

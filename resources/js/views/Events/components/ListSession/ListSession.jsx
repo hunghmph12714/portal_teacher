@@ -128,18 +128,18 @@ const ListSession = (props) => {
               data={data}
               isLoading={!isLoading}
               options={{
-                      pageSize: 10,
-                      grouping: true,
-                      filtering: true,
-                      exportButton: true,
-                      selection: true,
-                      rowStyle: rowData => {
-                          return {padding: '0px',}                         
-                        
-                      },
-                      filterCellStyle: {
-                        paddingLeft: '0px'
-                      }
+                pageSize: 10,
+                grouping: true,
+                filtering: true,
+                exportButton: true,
+                selection: true,
+                rowStyle: rowData => {
+                    return {padding: '0px',}                         
+                  
+                },
+                filterCellStyle: {
+                  paddingLeft: '0px'
+                }
               }}
               onRowClick={(event, rowData) => { handleOpenStudent(rowData) }}
               actions={[
