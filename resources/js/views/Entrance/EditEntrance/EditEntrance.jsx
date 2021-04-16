@@ -61,7 +61,7 @@ class EditEntrance extends React.Component {
             test_user: '',
             test_score: '',
             test_note: '',
-            entrance_changed: true,            
+            entrance_changed: true,          
             enroll_disabled: false
         }
     }

@@ -16,11 +16,35 @@ import {
     KeyboardDateTimePicker,
     MuiPickersUtilsProvider
   } from "@material-ui/pickers";
+const CenterSelect = React.memo(props => {
+    const [centers, setCenters] = useState([])
+    useEffect(() => {
+        const fetchdata = async() => {
+            const r = await axios.get('/get-center')
+            setCenters(r.data.map(center => {
+                    return {label: center.name, value: center.id}
+                })
+            )
+        }
+        fetchdata()
+    }, [])
+    
+    return( 
+        <Select className = "select-box"
+            key = "center-select"
+            value = {props.entrance_center}
+            name = "entrance_center"
+            placeholder="Cơ sở"
+            options={centers}
+            onChange={props.handleChange}
+        />)
+})
 const AppointmentDialog = props => {
     const {open, handleCloseDialog, selectedEntrance, statusOptions, courseOptions, ...rest} = props
     const [note, setNote] = useState('')
     const [appointments, setAppointments] = useState([{course: null, date: new Date(), id: 0}]);
     const [status, setStatus] = useState({value: '', label: ''})
+    const [ entrance_center, setEntranceCenter ] = useState(null)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     useEffect(() => {
@@ -28,9 +52,11 @@ const AppointmentDialog = props => {
         if(selectedEntrance.course_id){
             let c = courseOptions.filter( course => course.value == selectedEntrance.course_id)[0]
             setAppointments([{course: c, date: new Date(), id: 0}])
+            
         }
         setNote(selectedEntrance.note)
         setStatus({label: selectedEntrance.status, value: selectedEntrance.status_id})
+        setEntranceCenter({value: selectedEntrance.center_id, label: selectedEntrance.center})
 
     }, [selectedEntrance])    
     function handleEditEntrance(){
@@ -41,6 +67,9 @@ const AppointmentDialog = props => {
     }
     function onStatusChange(value){
         setStatus(value)
+    }
+    function onCenterChange(value){
+        setEntranceCenter(value)
     }
     function onCourseChange(id, value){
         let apps = [...appointments]
@@ -77,7 +106,8 @@ const AppointmentDialog = props => {
             id: selectedEntrance.eid, 
             note: note,
             status: status,
-            appointments: appointments
+            appointments: appointments,
+            entrance_center: entrance_center,
         })
             .then(response => {
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -164,6 +194,11 @@ const AppointmentDialog = props => {
                             placeholder="Trạng thái"
                             options={props.statusOptions}
                             onChange={onStatusChange}
+                        />
+                        <CenterSelect 
+
+                            entrance_center={entrance_center}
+                            handleChange={onCenterChange}
                         />
                     </Grid>
                 </Grid>

@@ -441,6 +441,7 @@ class EntranceController extends Controller
         if($entrance){
             $entrance->note = $request->note;
             $entrance->status_id = $request->status['value'];
+            $entrance->center_id = $request->entrance_center['value'];
             $entrance->save();
             foreach($request->appointments as $key => $appointment){
                 if($appointment['course']){

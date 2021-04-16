@@ -224,7 +224,9 @@ class ClassController extends Controller
                 $student->phone = $request->student_phone;
                 $student->dob = ($request->student_dob) ? date('Y-m-d', strtotime($request->student_dob)) : null;
                 $student->gender = $request->student_gender;
-                $student->parent_id = $request->parent_id;                
+                $student->parent_id = $request->parent_id; 
+                $student->aspiration = $request->aspiration;
+                $student->aspiration_result = $request->aspiration_result;               
                 $student->save();
                 // print_r($student->toArray());
             }

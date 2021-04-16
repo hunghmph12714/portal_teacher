@@ -81,52 +81,89 @@ const StudentForm = props => {
                 </Grid>       
             </Grid>
             <Grid item md={12} lg={4} sm={12} xs={12}>
-                <AsyncCreatableSelect 
-                    cacheOptions
-                    autosize={true}
-                    loadOptions={inputValue => debouncedLoadOptions('school',inputValue)}
-                    placeholder={'Trường học'}
-                    onChange={handleChange}
-                    name="student_school"
-                    value={state.student_school}
-                    formatCreateLabel={promptTextCreator} 
-                    className="select-box"    
-                />
-
-                <TextField  label="Khối"  
+                <Grid container spacing={2}>
+                    <Grid item md={12} md={8} sm={12}>
+                        <AsyncCreatableSelect 
+                            cacheOptions
+                            autosize={true}
+                            loadOptions={inputValue => debouncedLoadOptions('school',inputValue)}
+                            placeholder={'Trường học'}
+                            onChange={handleChange}
+                            name="student_school"
+                            value={state.student_school}
+                            formatCreateLabel={promptTextCreator} 
+                            className="select-box"    
+                        />
+                    </Grid>
+                    <Grid item md={12} md={4} sm={12}>
+                        <TextField  label="Khối"  
+                            className = "input-text"
+                            variant="outlined"
+                            size="small"
+                            type="email"
+                            fullWidth
+                            margin = "dense"
+                            name = 'student_grade'
+                            value = {state.student_grade}
+                            onChange = {onChange}
+                        />    
+                    </Grid>
+                </Grid>
+                <TextField  label="Nguyện vọng (Ngăn cách bằng dấu | )"  
                     className = "input-text"
                     variant="outlined"
                     size="small"
                     type="email"
                     fullWidth
                     margin = "dense"
-                    name = 'student_grade'
-                    value = {state.student_grade}
+                    name = 'aspiration'
+                    value = {state.aspiration}
                     onChange = {onChange}
                 />    
+                
+
+                
             </Grid>
             <Grid item md={12} lg={4} sm={12}  xs={12}>
-                <TextField  label="Email của học sinh" 
+                <Grid container spacing={2}>
+                    <Grid item md={12} md={6} sm={12}>
+                        <TextField  label="Email của học sinh" 
+                            className = "input-text"
+                            variant="outlined"
+                            size="small"
+                            type="email"
+                            fullWidth
+                            margin = "dense"
+                            name = 'student_email'
+                            value = {state.student_email}
+                            onChange = {onChange}
+                        />    
+                    </Grid>
+                    <Grid item md={12} md={6} sm={12}>
+                        <TextField  label="Số điện thoại học sinh" 
+                            className = "input-text"
+                            variant="outlined"
+                            size="small"
+                            type="email"
+                            fullWidth
+                            margin = "dense"
+                            name = 'student_phone'
+                            value = {state.student_phone}
+                            onChange = {onChangePhone}
+                        />      
+                    </Grid>
+                </Grid>
+                
+                <TextField  label="Kết quả (Ngăn cách bằng dấu | )" 
                     className = "input-text"
                     variant="outlined"
                     size="small"
                     type="email"
                     fullWidth
                     margin = "dense"
-                    name = 'student_email'
-                    value = {state.student_email}
+                    name = 'aspiration_result'
+                    value = {state.aspiration_result}
                     onChange = {onChange}
-                />    
-                <TextField  label="Số điện thoại học sinh" 
-                    className = "input-text"
-                    variant="outlined"
-                    size="small"
-                    type="email"
-                    fullWidth
-                    margin = "dense"
-                    name = 'student_phone'
-                    value = {state.student_phone}
-                    onChange = {onChangePhone}
                 />    
             </Grid>
         </Grid>

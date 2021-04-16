@@ -43,6 +43,8 @@ const initState = {
     student_gender: 'Khác',
     student_email: '',
     student_phone: '',
+    aspiration:'',
+    aspiration_result: '',
 
     parent_name: '',
     parent_alt_name: '',
@@ -86,7 +88,8 @@ class DialogCreate extends React.Component {
                 student_gender: nextProps.student.gender,
                 student_email: nextProps.student.semail,
                 student_phone: nextProps.student.sphone,
-    
+                aspiration: nextProps.student.aspiration,
+                aspiration_result: nextProps.student.aspiration_result,
                 parent_id: nextProps.student.parent_id,
                 parent_name: nextProps.student.pname,
                 parent_alt_name: nextProps.student.alt_pname,
@@ -124,7 +127,8 @@ class DialogCreate extends React.Component {
                 student_phone: newValue.s_phone,
                 student_gender: newValue.gender,
                 student_grade: newValue.grade,
-    
+                aspiration: newValue.aspiration,
+                aspiration_result: newValue.aspiration_result,
                 parent_phone: {__isNew__: false, value: newValue.pid, label: newValue.p_phone},
                 parent_name: newValue.p_name,
                 parent_email: newValue.p_email,
@@ -217,7 +221,6 @@ class DialogCreate extends React.Component {
         
         axios.post(baseUrl + '/class/edit-student', data)
             .then(response => {  
-                
                 this.props.handleClose()
                 this.props.enqueueSnackbar('Sửa học sinh thành công', { 
                     variant: 'success',

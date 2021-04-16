@@ -161,7 +161,7 @@ const ParentForm = props => {
                     name = 'parent_alt_email'
                     value = {state.parent_alt_email}
                     onChange = {onChange}
-                />    
+                /> 
             </Grid>
         </Grid>
                         
