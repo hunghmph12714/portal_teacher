@@ -16,6 +16,12 @@ use App\Tag;
 class DiscountController extends Controller
 {
     //
+    public function allDiscount(){
+        $tag = Tag::Where('name', 'Miễn giảm')->first();
+        $discounts = $tag->transactions()->count();
+        $d = Transaction::where('discount_id','>',0)->get()->count();
+        return response()->json([$discounts, $d]);
+    }
     protected $fillable = ['id','student_class_id','active_at','expired_at','percentage','amount','max_use','status'];
 
     protected function getDiscount(Request $request){
