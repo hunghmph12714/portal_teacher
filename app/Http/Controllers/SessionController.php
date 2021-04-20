@@ -239,7 +239,7 @@ class SessionController extends Controller
                         foreach($discounts as $d){
                             //Check discount available
                             $dt['credit'] = Account::Where('level_2', '131')->first()->id;
-                            $dt['debit'] = Account::Where('level_2', '511')->first()->id;
+                            $dt['debit'] = Account::Where('level_2', '3387')->first()->id;
                             $dt['time'] = Date('Y-m-t', strtotime('1-'.$key));
                             $dt['student_id'] = $s->id;
                             $dt['class_id'] = $class_id;
@@ -695,7 +695,7 @@ class SessionController extends Controller
             ->where('status', 'active')->first();
         
         if($discount){
-            $acc_511 = Account::where('level_2', '511')->first();
+            $acc_511 = Account::where('level_2', '3387')->first();
             $transaction['debit'] = $acc_511->id;
             $transaction['credit'] = $debit->id;
             if($discount->percentage){               

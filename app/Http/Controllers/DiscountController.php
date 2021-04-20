@@ -18,9 +18,14 @@ class DiscountController extends Controller
     //
     public function allDiscount(){
         $tag = Tag::Where('name', 'Miễn giảm')->first();
-        $discounts = $tag->transactions()->count();
-        $d = Transaction::where('discount_id','>',0)->get()->count();
-        return response()->json([$discounts, $d]);
+        $account = Account::Where('level_2','3387')->first();
+        // $discounts = $tag->transactions()->count();
+        $discounts = Transaction::where('discount_id','>',0)->get();
+        foreach($discounts as $d){
+            $d->debit = $account->id;
+            $d->save();
+        }
+        return response()->json($discounts);
     }
     protected $fillable = ['id','student_class_id','active_at','expired_at','percentage','amount','max_use','status'];
 
@@ -133,7 +138,7 @@ class DiscountController extends Controller
             $discount = Discount::where('class_id', $session->class_id)->whereNull('student_class_id')
                 ->where('active_at','<=',$session->date)->where('expired_at', '>=', $session->date)->get();
             foreach($discount as $d){
-                $t['debit'] = Account::Where('level_2', '511')->first()->id;
+                $t['debit'] = Account::Where('level_2', '3387')->first()->id;
                 $t['credit'] = Account::Where('level_2', '131')->first()->id;
                 $t['amount'] = abs($d->amount);
                 $t['time'] = Date('Y-m-d', strtotime($session->date));
@@ -187,7 +192,7 @@ class DiscountController extends Controller
                     }
                 } 
                 foreach($result as $month => $r){
-                    $trans['debit'] = Account::Where('level_2', '511')->first()->id;
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                     $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                     $trans['class_id'] = $student_class->class_id;
                     $trans['user'] = auth()->user()->id;
@@ -317,7 +322,7 @@ class DiscountController extends Controller
                                     // echo "<pre>";
                                     // print_r($ts->toArray());
                                 }
-                                $trans['debit'] = Account::Where('level_2', '511')->first()->id;
+                                $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                                 $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                                 $trans['class_id'] = $class->id;
                                 $trans['user'] = auth()->user()->id;
@@ -334,7 +339,7 @@ class DiscountController extends Controller
                         // print_r($d->toArray());
                     }else{
                         //Tao uu dai 10%
-                        $trans['debit'] = Account::Where('level_2', '511')->first()->id;
+                        $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                         $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                         $trans['class_id'] = $class->id;
                         $trans['user'] = auth()->user()->id;
