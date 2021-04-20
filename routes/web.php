@@ -266,6 +266,8 @@ Route::group(['middleware' => ['auth']], function() {
             });
             // Route::get('/report/get-revenue', 'ReportController@getRevenue');
             Route::post('/report/get-revenue', 'ReportController@getRevenue');
+
+            Route::get('/report/generate-revenue', 'ReportController@generateRevenue');
         //Bao cao dong tien
             Route::get('/report/cf', function(){
                 return view('welcome');

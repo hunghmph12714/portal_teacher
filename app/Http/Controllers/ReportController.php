@@ -18,6 +18,47 @@ use DB;
 class ReportController extends Controller
 {
     //
+    public function generateRevenue(){
+        $classes = Classes::all();
+        foreach($classes as $class){
+            $sessions = $class->sessions()->whereBetween('date', ['2021-01-01', '2021-04-19'])->get();
+            foreach($sessions as $session){
+                $students = $session->students;
+                foreach($students as $student){
+                    $revenue = 0;
+                    $acc_131 = Account::where('level_2', '131')->first()->id;                
+                    $fee = $session->transactions()->where('student_id', $student->id)->get();
+                    foreach($fee as $f){
+                        if($f->debit == $acc_131){
+                            $revenue += $f->pivot['amount'];
+                        }
+                        if($f->credit == $acc_131){
+                            $revenue -= $f->pivot['amount'];
+                        }
+                    }
+                    if($revenue > 0){
+                        $input['debit'] = Account::where('level_2', '3387')->first()->id;
+                        $input['credit'] = Account::where('level_2', '511')->first()->id;
+                        $input['amount'] = $revenue;
+                        $input['time'] = $session->date;
+                        $input['content'] = 'Doanh thu lớp học';
+                        $input['class_id'] = $class->id;
+                        $input['student_id'] = $student->id;
+                        $input['session_id'] = $session->id;
+                        $input['created_at'] = $session->date;
+                        $input['updated_at'] = $session->date;
+                        $input['center_id'] = $session->center_id;
+                        $input['refer_transaction'] = -1;
+                        Transaction::create($input);
+                        // echo "<pre>";
+                        // print_r($input);
+                    }
+                }
+            }
+        }
+        
+        // return response()->json($sessions);
+    }
     protected function getFinancial(){
         // $class_id = 45;
         // $month = '09';

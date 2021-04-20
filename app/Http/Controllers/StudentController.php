@@ -297,6 +297,7 @@ class StudentController extends Controller
         //                     echo "<pre>";
         // print_r($transactions->toArray());
         foreach($transactions as $key => $t){
+            if($t->debit != $acc->id && $t->credit != $acc->id) continue;
             $month = Date('m-Y', strtotime($t->time));     
             $detail_amount = TransactionSession::where('transaction_id', $t->id)->get();
             $detail = '';
