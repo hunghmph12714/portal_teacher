@@ -184,7 +184,9 @@ export default class Courses extends React.Component{
                     columns={this.state.columns}
                     data={this.state.data}
                     options= {{
-                        grouping: true
+                        grouping: true,
+                        filtering: true,
+                        pageSize: 50,
                     }}
                     editable={{
                         onRowAdd: newData => this.addNewCourse(newData) ,
