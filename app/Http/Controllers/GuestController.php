@@ -167,7 +167,11 @@ class GuestController extends Controller
         if(array_key_exists('query',$url)){
             parse_str($url['query'], $query);
         }
-        $source = ($query['utm_campaign'] == "") ? '' : $query['utm_campaign'] . " | ". $query['utm_source'] . " | " . $query['utm_medium'];
+        if(array_key_exists('utm_campaign', $query)){
+            $source = ($query['utm_campaign'] == "") ? '' : $query['utm_campaign'] . " | ". $query['utm_source'] . " | " . $query['utm_medium'];
+        }else{
+            $source = '';
+        }
         //chuẩn hóa dữ liệu
         $pphone = str_replace('(','', str_replace(')','', str_replace('-','',$request->pphone)));
         $dob = date('Y-m-d', strtotime(str_replace('/','-', $request->dob)));

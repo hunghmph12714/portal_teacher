@@ -9,7 +9,7 @@ class Session extends Model
     //
     public $table = 'sessions';
     protected $fillable = ['id','class_id','teacher_id','center_id','room_id','document','exercice','from','to','date','ss_number','stats','exercice','status',
-        'note', 'fee','content','btvn_content','type','present_number','absent_number','percentage','classes'];
+        'note', 'fee','content','btvn_content','type','present_number','absent_number','percentage','classes','checked'];
     protected $casts = ['classes'=> 'array'];
     
     public function students(){

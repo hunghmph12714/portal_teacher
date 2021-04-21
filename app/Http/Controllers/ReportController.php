@@ -15,15 +15,16 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 use DB;
+use App\StudentSession;
 class ReportController extends Controller
 {
     //
     public function generateRevenue(){
-        $classes = Classes::all();
+        $classes = Classes::where('type', 'class')->offset(0)->limit(20)->get();
         foreach($classes as $class){
-            $sessions = $class->sessions()->whereBetween('date', ['2021-01-01', '2021-04-19'])->get();
+            $sessions = $class->sessions()->whereBetween('date', ['2021-01-01', '2021-04-22'])->get();
             foreach($sessions as $session){
-                $students = $session->students;
+                $students = $session->students()->wherePivot('checked', '0')->get();
                 foreach($students as $student){
                     $revenue = 0;
                     $acc_131 = Account::where('level_2', '131')->first()->id;                
@@ -52,6 +53,11 @@ class ReportController extends Controller
                         Transaction::create($input);
                         // echo "<pre>";
                         // print_r($input);
+                    }
+                    $ss = StudentSession::find($student->pivot['id']);
+                    if($ss){
+                        $ss->checked = 1; 
+                        $ss->save();
                     }
                 }
             }
