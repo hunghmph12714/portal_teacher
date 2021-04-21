@@ -103,7 +103,7 @@ class GuestController extends Controller
     }
     
     public function getCourses(Request $request){
-        $courses = Course::select('name','id','grade','domain')->where('grade', $request->grade)->get()->toArray();
+        $courses = Course::select('name','id','grade','domain')->where('grade', $request->grade)->where('showable',1)->get()->toArray();
         $result = [];
         foreach($courses as $key => $c){
             if(!array_key_exists($c['domain'], $result)){
