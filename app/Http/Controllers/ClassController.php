@@ -89,6 +89,7 @@ class ClassController extends Controller
             $course->fee = $newCourse['fee'];
             $course->class_per_week = $newCourse['class_per_week'];
             $course->session_per_class = $newCourse['session_per_class'];
+            $course->showable = $newCourse['showable'];
             $course->save();
             return response()->json(200);
         }

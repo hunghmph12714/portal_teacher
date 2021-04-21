@@ -71,7 +71,8 @@ export default class Courses extends React.Component{
                         />
                 )},
                 { title: 'Số buổi/tuần', field: 'class_per_week' },
-                { title: 'Số ca/buổi', field: 'session_per_class' }
+                { title: 'Số ca/buổi', field: 'session_per_class' },
+                { title: 'Hiển thị', field: 'showable' },
             ],
             data: [],
             c: 10000,
