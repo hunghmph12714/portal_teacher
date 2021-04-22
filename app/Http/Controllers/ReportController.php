@@ -19,12 +19,19 @@ use App\StudentSession;
 class ReportController extends Controller
 {
     //
+    public function deleteTransaction(){
+        Transaction::where('refer_transaction', '-1')->forceDelete();
+        StudentSession::where('checked', 1)->update(array('checked' => 0));
+        
+    }
     public function generateRevenue(){
-        $classes = Classes::where('type', 'class')->offset(0)->limit(20)->get();
+        $classes = Classes::where('type', 'class')->offset(40)->limit(40)->get();
         foreach($classes as $class){
-            $sessions = $class->sessions()->whereBetween('date', ['2021-01-01', '2021-04-22'])->get();
+            $sessions = $class->sessions()->whereBetween('date', ['2021-03-01', '2021-04-22'])->get();
             foreach($sessions as $session){
                 $students = $session->students()->wherePivot('checked', '0')->get();
+                // echo "<pre>";
+                // print_r($students->toArray());
                 foreach($students as $student){
                     $revenue = 0;
                     $acc_131 = Account::where('level_2', '131')->first()->id;                
@@ -54,6 +61,7 @@ class ReportController extends Controller
                         // echo "<pre>";
                         // print_r($input);
                     }
+                    // print_r($student->pivot['id']);
                     $ss = StudentSession::find($student->pivot['id']);
                     if($ss){
                         $ss->checked = 1; 
@@ -63,7 +71,7 @@ class ReportController extends Controller
             }
         }
         
-        // return response()->json($sessions);
+        return response()->json($classes->toArray());
     }
     protected function getFinancial(){
         // $class_id = 45;

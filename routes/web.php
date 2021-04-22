@@ -268,6 +268,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/report/get-revenue', 'ReportController@getRevenue');
 
             Route::get('/report/generate-revenue', 'ReportController@generateRevenue');
+            Route::get('/report/delete-transaction','ReportController@deleteTransaction');
         //Bao cao dong tien
             Route::get('/report/cf', function(){
                 return view('welcome');

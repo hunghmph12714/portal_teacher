@@ -14,7 +14,7 @@ class Session extends Model
     
     public function students(){
         return $this->belongsToMany('App\Student', 'student_session', 'session_id', 'student_id')
-            ->withPivot('attendance','type','score','attendance_note','max_score','btvn_max','btvn_score','btvn_complete','comment','logs','btvn_comment');
+            ->withPivot('id','attendance','type','score','attendance_note','max_score','btvn_max','btvn_score','btvn_complete','comment','logs','btvn_comment');
     }
     public function transactions(){
         return $this->belongsToMany('App\Transaction', 'transaction_session', 'session_id', 'transaction_id')

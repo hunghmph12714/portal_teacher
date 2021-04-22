@@ -4,6 +4,7 @@
 /public/document/
 /public/images/documents/
 /public/images/answers/
+/public/images/students/
 /public/docs
 /storage/*.key
 /vendor
