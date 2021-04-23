@@ -269,7 +269,7 @@ const StepInit = (props) => {
     function handleCloseMessage(){
         setOpenMessage(false)
     }
-    function handleOpenDialogMessage(event, rowData){
+    function handleOpenDialogMessage(rowData){
         setOpenMessage(true)
         setSelectedEntrance(rowData)
     }
@@ -320,7 +320,7 @@ const StepInit = (props) => {
                                         tooltip: 'Ghi chú',
                                         isFreeAction: false,
                                         text: 'Ghi chú',
-                                        onClick: (event, rowData) => {handleOpenDialogMessage(event, rowData)},
+                                        onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
                                     },
                                     {
                                         icon: () => <AddAlarmIcon />,
@@ -360,7 +360,7 @@ const StepInit = (props) => {
                                         tooltip: 'Ghi chú',
                                         isFreeAction: false,
                                         text: 'Ghi chú',
-                                        onClick: (event, rowData) => {handleOpenDialogMessage(event, rowData)},
+                                        onClick: (event, rowData) => {handleOpenDialogMessage(rowData)},
                                     },
                                     {
                                         icon: () => <AddAlarmIcon />,

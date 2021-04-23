@@ -83,10 +83,10 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 <ul>
 
     <li><i>Học phí bắt buộc phải hoàn thành trước ngày: {{$result['max_date']}}</i> <strong>
-    
     </strong> </li>
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
     <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
+    
 </ul>
 @if($result['center_id'] == 5)
     <strong>THÔNG TIN THANH TOÁN:</strong> <br/>

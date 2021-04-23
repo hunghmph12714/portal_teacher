@@ -50,6 +50,7 @@ const AppointmentDialog = props => {
     useEffect(() => {
 
         if(selectedEntrance.course_id){
+            
             let c = courseOptions.filter( course => course.value == selectedEntrance.course_id)[0]
             setAppointments([{course: c, date: new Date(), id: 0}])
             
