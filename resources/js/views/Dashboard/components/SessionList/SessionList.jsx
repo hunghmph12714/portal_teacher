@@ -6,7 +6,14 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
+import DoneIcon from '@material-ui/icons/Done';
 import DialogSession from './DialogSession';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import DialogDocument from './DialogDocument'
 import {
     Menu,
@@ -33,6 +40,7 @@ const SessionList = (props) => {
     const [openDocument, setOpenDocument] = useState(false);
     const [document, setDocument] = useState('');
     const [exercice, setExercice] = useState('');
+    const [open_check, setOpenCheck] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 
@@ -58,6 +66,37 @@ const SessionList = (props) => {
       setDialogType('edit')
       setSelectedSession(rowData)
       //ss
+    }
+    function handleCheckSession(rowData){
+      setOpenCheck(true)
+      setSelectedSession(rowData)
+    }
+    function handleCheckClose(){
+      setOpenCheck(false)
+      setSelectedSession([])
+
+    }
+    function handleSubmitChecked(){
+      axios.post('/session/lock', {'session_id': selected_session.id})
+        .then(response => {
+          enqueueSnackbar('Chốt buổi học thành công', {variant: 'success'})
+          setFetchData(!fetchdata)
+          setOpenCheck(false)
+        })
+        .catch(err => {
+          enqueueSnackbar('Có lỗi xảy ra vui lòng thử lại', {variant: 'error'})
+          
+        })
+    }
+    function handleUnlockSession(rowData){
+      axios.post('/session/unlock', {session_id: rowData.id})
+        .then(response => {
+          enqueueSnackbar('Huỷ chốt buổi học thành công', {variant: 'success'})
+          setFetchData(!fetchdata)
+        })
+        .catch(err => {
+
+        })
     }
     function handleDeactivateSession(session_id, table_id){
       axios.post('/session/delete', {session_id: session_id})
@@ -173,14 +212,25 @@ const SessionList = (props) => {
                                   <DeleteForeverIcon fontSize='inherit' />
                                   </IconButton>
                                 </Tooltip>
-                                <Tooltip title="" arrow>
-                                  <IconButton onClick={() => {
-                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                      handleDeactivateSession(rowData.id, rowData.tableData.id)}
-                                    }>
-                                  <DeleteForeverIcon fontSize='inherit' />
-                                  </IconButton>
-                                </Tooltip>
+                                {
+                                  (rowData.status == 0) ? (
+                                    <Tooltip title="" arrow>
+                                      <IconButton onClick={() => handleCheckSession(rowData)}>
+                                        <DoneIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </Tooltip>
+                                  ): (
+                                    <Tooltip title="" arrow>
+                                      <IconButton onClick={() => {
+                                      if (window.confirm('Mở khoá ca học sẽ ảnh hưởng đến hạch toán, xác nhận thao tác')) 
+                                        handleUnlockSession(rowData)}
+                                      }>
+                                        <LockOpenOutlinedIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </Tooltip>
+                                  )
+                                }
+                                
                                 
                             </div>
                         )
@@ -231,6 +281,18 @@ const SessionList = (props) => {
                           <Chip variant="outlined" label={rname} size="small" />
                         )                
                       }, 
+
+                      {
+                        title: "Thời gian",
+                        field: "time",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '3px 0px',
+                        }                        
+                      },
                       {
                         title: "Giáo viên",
                         field: "tname",
@@ -287,19 +349,19 @@ const SessionList = (props) => {
                             padding: '0px',
                         },
                       } ,
-                      {
-                        title: "Loại",
-                        field: "type",
-                        lookup: {'main': 'Chính khóa', 'tutor': 'Phụ đạo', 'tutor_online': 'Phụ đạo ONLINE','exam': 'KTĐK'},
-                        grouping: false,
-                        headerStyle: {
-                          padding: '4px',
-                          fontWeight: '600',                      
-                        },
-                        cellStyle: {
-                            padding: '4px',
-                        },
-                      },
+                      // {
+                      //   title: "Loại",
+                      //   field: "type",
+                      //   lookup: {'main': 'Chính khóa', 'tutor': 'Phụ đạo', 'tutor_online': 'Phụ đạo ONLINE','exam': 'KTĐK'},
+                      //   grouping: false,
+                      //   headerStyle: {
+                      //     padding: '4px',
+                      //     fontWeight: '600',                      
+                      //   },
+                      //   cellStyle: {
+                      //       padding: '4px',
+                      //   },
+                      // },
                       {
                         title: "Sĩ số",
                         field: "ss_number",
@@ -307,11 +369,11 @@ const SessionList = (props) => {
                         headerStyle: {
                           padding: '0px',
                           fontWeight: '600',
-                          width: '60px',
+                          width: '80px',
                         },
                         cellStyle: {
                             padding: '0px',
-                            width: '60px',
+                            width: '80px',
                         },
                       },
                       {
@@ -335,11 +397,11 @@ const SessionList = (props) => {
                         headerStyle: {
                           padding: '0px',
                           fontWeight: '600',      
-                          width: '60px',                
+                          width: '80px',                
                         },
                         cellStyle: {
                             padding: '0px',
-                            width: '60px',
+                            width: '80px',
                         },
                       },
                   ]
@@ -359,6 +421,29 @@ const SessionList = (props) => {
               document = {document}
               exercice = {exercice}
             />
+            {selected_session ? (
+              <Dialog
+                open={open_check}
+                onClose={handleCheckClose}
+              >
+                <DialogTitle id="alert-dialog-title">{"Khoá ca học và khởi tạo doanh thu"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    Bạn có muốn khoá ca học của lớp <b>{selected_session.code} </b> ngày <b>{selected_session.date} </b> của thầy/cô <b>{selected_session.tname}</b>.
+                    Buổi học có: <b>{selected_session.present_number} </b>HS có mặt, <b>{selected_session.absent_number} </b>HS vắng mặt, <b>{selected_session.ss_number - selected_session.present_number - selected_session.absent_number} HS chưa được điểm danh !</b>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCheckClose} color="primary">
+                    Huỷ
+                  </Button>
+                  <Button onClick={handleSubmitChecked} color="primary" autoFocus>
+                    Đồng ý
+                  </Button>
+                </DialogActions>
+              </Dialog>) : ""
+            }
+            
         </React.Fragment>
     )
 }

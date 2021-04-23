@@ -27,8 +27,9 @@ class ReportController extends Controller
     public function generateRevenue(){
         $classes = Classes::where('type', 'class')->offset(40)->limit(40)->get();
         foreach($classes as $class){
-            $sessions = $class->sessions()->whereBetween('date', ['2021-03-01', '2021-04-22'])->get();
+            $sessions = $class->sessions()->where('status', '0')->whereBetween('date', ['2021-03-01', '2021-04-24'])->get();
             foreach($sessions as $session){
+            
                 $students = $session->students()->wherePivot('checked', '0')->get();
                 // echo "<pre>";
                 // print_r($students->toArray());
@@ -67,6 +68,8 @@ class ReportController extends Controller
                         $ss->checked = 1; 
                         $ss->save();
                     }
+                    $session->status = 1;
+                    $session->save();
                 }
             }
         }

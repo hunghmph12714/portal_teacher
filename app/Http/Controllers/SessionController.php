@@ -335,6 +335,80 @@ class SessionController extends Controller
         $t5 = Transaction::where('content', 'like', '%Học phí tháng 07%')->forceDelete();
         $t5 = Transaction::where('content', 'like', '%Học phí tháng 08%')->forceDelete();
     }
+    protected function lockSession(Request $request){
+        $rules = [
+            'session_id' => 'required'
+        ];
+        $this->validate($request, $rules);
+
+        $session = Session::find($request->session_id);
+        print_r($session->status);
+        if($session->status == "1") {
+            return response()->json('already');
+        }
+        $session->status = "1";
+        $session->save();
+        $class = Classes::find($session->class_id);
+        $students = $session->students()->wherePivot('checked', '0')->get();
+        // echo "<pre>";
+        // print_r($students->toArray());
+        foreach($students as $student){
+            $revenue = 0;
+            $acc_131 = Account::where('level_2', '131')->first()->id;                
+            $fee = $session->transactions()->where('student_id', $student->id)->get();
+            foreach($fee as $f){
+                if($f->debit == $acc_131){
+                    $revenue += $f->pivot['amount'];
+                }
+                if($f->credit == $acc_131){
+                    $revenue -= $f->pivot['amount'];
+                }
+            }
+            if($revenue > 0){
+                $input['debit'] = Account::where('level_2', '3387')->first()->id;
+                $input['credit'] = Account::where('level_2', '511')->first()->id;
+                $input['amount'] = $revenue;
+                $input['time'] = $session->date;
+                $input['content'] = 'Doanh thu lớp học';
+                $input['class_id'] = $class->id;
+                $input['student_id'] = $student->id;
+                $input['session_id'] = $session->id;
+                $input['created_at'] = $session->date;
+                $input['updated_at'] = $session->date;
+                $input['center_id'] = $session->center_id;
+                $input['refer_transaction'] = -1;
+                Transaction::create($input);
+                // echo "<pre>";
+                // print_r($input);
+            }
+            // print_r($student->pivot['id']);
+            $ss = StudentSession::find($student->pivot['id']);
+            if($ss){
+                $ss->checked = 1; 
+                $ss->save();
+            }
+        }
+        return response()->json('ok');
+
+    }
+    protected function unlockSession(Request $request){
+        $rules = [
+            'session_id' => 'required'
+        ];
+        $this->validate($request, $rules);
+
+        $session = Session::find($request->session_id);
+        $session->status = 0;
+        $session->save();
+        $class = Classes::find($session->class_id);
+
+        $debit = Account::where('level_2', '3387')->first()->id;
+        $credit = Account::where('level_2', '511')->first()->id;
+        StudentSession::where('session_id', $session->id)->update(array('checked' => 0));
+        Transaction::where('debit', $debit)->where('credit', $credit)->where('session_id', $session->id)->forceDelete();
+        return response()->json('ok');
+
+    }
     protected function getSession(Request $request){
         $rules = [
             'class_id' => 'required',
@@ -347,7 +421,7 @@ class SessionController extends Controller
         if($request->from_date == '-1' && $request->to_date == '-1'){
             $sessions = Session::where('class_id', $request->class_id)->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
-                    'sessions.ss_number','sessions.present_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
@@ -359,7 +433,7 @@ class SessionController extends Controller
             $to = date('Y-m-d', strtotime($request->to_date));
             $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
-                    'sessions.ss_number','sessions.present_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                    'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->

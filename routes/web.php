@@ -379,6 +379,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/session/add', 'SessionController@addSession');
     Route::post('/session/check-date', 'SessionController@checkDate');
 
+    Route::post('/session/lock', 'SessionController@lockSession');
+    Route::post('/session/unlock', 'SessionController@unlockSession');
     
 //Attendance
     Route::get('/attendance', function(){
