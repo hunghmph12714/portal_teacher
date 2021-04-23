@@ -37,7 +37,7 @@ class StudentSessionObserver
         if($s){
             $s->ss_number = $s->students()->count();
             $s->present_number = $s->students()->where('attendance', 'present')->count();
-            $s->absent_number = $s->students()->where('attendance', 'n_absence' )->count();
+            $s->absent_number = $s->students()->whereIn('attendance', ['absence','n_absence'])->count();
             $s->save();
         }    
     }

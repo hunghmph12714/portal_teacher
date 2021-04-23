@@ -376,6 +376,29 @@ class SessionController extends Controller
         }
         return response()->json($result);
     }
+    protected function getTodaySession(Request $request){
+        $rules = [
+            'center_id' => 'required',
+        ];
+        $this->validate($request, $rules);
+        $result = [];
+        $today = date('Y-m-d');
+        $sessions = Session::Where('sessions.date', $today)->
+            select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
+                'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
+                'classes.code as code')->
+            leftJoin('teacher','sessions.teacher_id','teacher.id')->
+            leftJoin('center','sessions.center_id','center.id')->
+            leftJoin('classes','sessions.class_id', 'classes.id')->
+            leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
+            get();
+        foreach($sessions as $key => $value){
+            $result[$key] = $value->toArray();
+            $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+        }
+        return response()->json($result);
+    }
     protected function getStudentOfProduct(Request $request){
         $rules = ['session_id' => 'required'];
         $this->validate($request, $rules);
