@@ -88,8 +88,24 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     <li><i>Trong trường hợp nếu con chưa hoàn thành học phí trung tâm không thể cho con vào lớp. </i></li>
     <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu)</i></li>
 </ul>
+@if($result['center_id'] == 5)
+    <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
+
+    *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+    Chủ TK: Phan Việt Anh<br/>
+    Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
+    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
+    <br/><br>
+
+    <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
+    Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
+    Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 hoặc <a href='tel: 0962136604'>096.213.6604</a>để được giải đáp kịp thời. <br/>
+
+@else
 <h3></b>Hiện tại hệ thống tài khoản ngân hàng của trung tâm đang gặp sự cố, quý Phụ Huynh vui lòng nộp tiền mặt tại quầy lễ tân.</b></h3><br/>
 Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
+@endif
+
 <!-- <strong>THÔNG TIN THANH TOÁN:</strong> <br/> -->
 
 @switch($result['center_id'])
@@ -129,16 +145,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
         Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2 hoặc <a href='tel: 0949845665'>0949.845.665</a>  để được giải đáp kịp thời. <br/> -->
         @break
     @default
-    *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
-        Chủ TK: Phan Việt Anh<br/>
-        Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
-        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
-        <br/><br>
-
-        <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
-        Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
-        Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 hoặc <a href='tel: 0962136604'>096.213.6604</a>để được giải đáp kịp thời. <br/>
-        @break
+    
 @endswitch
 
 
