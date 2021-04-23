@@ -135,7 +135,6 @@ Route::group(['middleware' => ['auth']], function() {
         });
         
         //Schools
-            
         //Entrance
             Route::get('/entrance/create', function(){
                 return view('welcome');
@@ -256,8 +255,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/fee/normalize', 'StudentController@normalizeFee');
             Route::post('/fee/send-email', 'StudentController@sendEmail');
             Route::post('/fee/print', 'StudentController@printFee');
+            
         //Bao cao tai chinh 
             Route::get('/report/financial', function(){
+
                 return view('welcome');
             });
             Route::get('/report/get-financial', 'ReportController@getFinancial');
