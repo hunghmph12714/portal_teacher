@@ -1123,5 +1123,19 @@ class ClassController extends Controller
         print_r($sessions->toArray());
         echo "</pre>";
     }
+    protected function misaUpload(){
+        $arr = [];
+        $classes = Classes::all();
+        $file = fopen(public_path()."/misa_class.csv","w");
+        foreach($classes as $c){
+            $arr = [];
+            
+            array_push($arr, $c->id);
+            array_push($arr, $c->code);
+            array_push($arr, 2);
+            fputcsv($file, $arr);
+
+        }
+    }
     
 }

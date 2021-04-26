@@ -325,4 +325,30 @@ class TransactionController extends Controller
             $t->save();
         }
     }
+    public function misaUploadOrder(){
+        $arr = [];
+        $classes = Classes::all();
+        $acc_131 = Account::where('level_2', '131')->first()->id;
+        echo $acc_131;
+        foreach($classes as $c){
+            $students = $c->students;
+            
+            foreach($students as $s){
+                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s){
+                    $query->where('debit', $acc_131)
+                        ->WhereBetween('time',['2021-01-01','2021-06-16'])
+                        ->where('class_id', $c->id)
+                        ->where('student_id', $s->id);
+                })->orWhere(function($query)  use ($acc_131, $c, $s){
+                    $query->where('credit', $acc_131)
+                        ->WhereBetween('time',['2021-01-01','2021-06-16'])
+                        ->where('class_id', $c->id)
+                        ->where('student_id', $s->id);
+                })->get();
+
+                echo "<pre>";
+                print_r($transactions->toArray());
+            }
+        }
+    }
 }
