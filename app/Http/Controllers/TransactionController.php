@@ -329,25 +329,87 @@ class TransactionController extends Controller
         $arr = [];
         $classes = Classes::all();
         $acc_131 = Account::where('level_2', '131')->first()->id;
-        echo $acc_131;
+        $acc_3387 = Account::where('level_2', '3387')->first()->id;
+        $acc_511 = Account::where('level_2', '511')->first()->id;
+        $file = fopen(public_path()."/misa_order.csv","w");
+        $ct = 1;
         foreach($classes as $c){
             $students = $c->students;
             
             foreach($students as $s){
-                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s){
+                $from = date('Y-m-1', strtotime('2021-01-01'));
+                $to = date('Y-m-t', strtotime('2021-06-01'));
+                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s, $from, $to){
                     $query->where('debit', $acc_131)
-                        ->WhereBetween('time',['2021-01-01','2021-06-16'])
+                        ->WhereBetween('time',[$from, $to])
                         ->where('class_id', $c->id)
                         ->where('student_id', $s->id);
-                })->orWhere(function($query)  use ($acc_131, $c, $s){
+                })->orWhere(function($query)  use ($acc_131, $c, $s, $from, $to){
                     $query->where('credit', $acc_131)
-                        ->WhereBetween('time',['2021-01-01','2021-06-16'])
+                        ->WhereBetween('time',[$from, $to])
                         ->where('class_id', $c->id)
                         ->where('student_id', $s->id);
-                })->get();
-
-                echo "<pre>";
-                print_r($transactions->toArray());
+                })->get()->toArray();
+                if(count($transactions) == 0 ) continue;
+                // echo "<pre>";
+                // print_r($transactions);
+                for ($i=1; $i < 7 ; $i++) { 
+                    # code...
+                    $from = date('Y-m-1 00:00:00', strtotime('2021-'.$i.'-01'));
+                    $to = date('Y-m-t 00:00:00', strtotime('2021-'.$i.'-01'));
+                    
+                    $arr = [0,0,0,0,0,0];
+                    $hach_toan = date('m/d/Y');
+                    $chung_tu = date('m/d/Y');
+                    $so_chung_tu = 'BH';
+                    $ma_kh = 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT);
+                    $ten_kh = $s->fullname;
+                    $ma_hang = $c->id;
+                    $ten_hang = $c->code;
+                    $debit = '131';
+                    $credit = '3387';
+                    $des = "Học phí tháng 0".$i;
+                    $amount = 0;
+                    $discount = 0;
+                    foreach($transactions as $t){
+                        if($t['time'] >= $from && $t['time'] <= $to){
+                            $hach_toan = date('m/d/Y', strtotime($t['time']));
+                            $chung_tu = date('m/d/Y', strtotime($t['time']));
+                            $so_chung_tu = 'BH'.str_pad($ct, 5, '0', STR_PAD_LEFT);
+                            if($t['debit'] == $acc_131 && $t['credit'] == $acc_3387){
+                                $amount += $t['amount'];
+                            }
+                            if($t['debit'] == $acc_3387 || $t['debit'] == $acc_511){
+                                $discount += $t['amount'];
+                            }
+                        }
+                    }
+                    if($amount > 0){
+                        $ct++;
+                        array_push($arr, $hach_toan);
+                        array_push($arr, $chung_tu);
+                        array_push($arr, $so_chung_tu);
+                        array_push($arr, $ma_kh);
+                        array_push($arr, $ten_kh);
+                        array_push($arr, $ma_hang);
+                        array_push($arr, $ten_hang);
+                        array_push($arr, $des);
+                        array_push($arr, 0);
+                        array_push($arr, $debit);
+                        array_push($arr, $credit);
+                        array_push($arr, '');
+                        array_push($arr, '1');
+                        array_push($arr, '');
+                        array_push($arr, $amount);
+                        array_push($arr, $amount);
+                        array_push($arr, ceil($discount/$amount*100));
+                        array_push($arr, $discount);
+                        array_push($arr, $credit);
+                        
+                        fputcsv($file, $arr);
+                    }
+                    
+                }
             }
         }
     }
