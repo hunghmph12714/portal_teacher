@@ -327,7 +327,7 @@ class TransactionController extends Controller
     }
     public function misaUploadOrder(){
         $arr = [];
-        $classes = Classes::all();
+        $classes = Classes::where('type','class')->get();
         $acc_131 = Account::where('level_2', '131')->first()->id;
         $acc_3387 = Account::where('level_2', '3387')->first()->id;
         $acc_511 = Account::where('level_2', '511')->first()->id;
