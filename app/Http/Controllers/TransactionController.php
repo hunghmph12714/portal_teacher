@@ -355,9 +355,10 @@ class TransactionController extends Controller
                 // print_r($transactions);
                 for ($i=1; $i < 7 ; $i++) { 
                     # code...
-                    $from = date('Y-m-1 00:00:00', strtotime('2021-'.$i.'-01'));
-                    $to = date('Y-m-t 00:00:00', strtotime('2021-'.$i.'-01'));
-                    
+                    $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
+                    $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
+                    // echo $from."<br/>";
+                    // echo $to;
                     $arr = [0,0,0,0,0,0];
                     $hach_toan = date('m/d/Y');
                     $chung_tu = date('m/d/Y');
@@ -383,6 +384,9 @@ class TransactionController extends Controller
                                 $discount += $t['amount'];
                             }
                         }
+                        else{
+                            // echo $t['time']. "<br/>";
+                        }
                     }
                     if($amount > 0){
                         $ct++;
@@ -406,6 +410,8 @@ class TransactionController extends Controller
                         array_push($arr, $discount);
                         array_push($arr, $credit);
                         
+                        // echo "<pre>";
+                        // print_r($arr);
                         fputcsv($file, $arr);
                     }
                     
