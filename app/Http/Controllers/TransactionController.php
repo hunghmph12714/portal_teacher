@@ -395,9 +395,10 @@ class TransactionController extends Controller
                         array_push($arr, $so_chung_tu);
                         array_push($arr, $ma_kh);
                         array_push($arr, $ten_kh);
+                        array_push($arr, $des);
                         array_push($arr, $ma_hang);
                         array_push($arr, $ten_hang);
-                        array_push($arr, $des);
+                        
                         array_push($arr, 0);
                         array_push($arr, $debit);
                         array_push($arr, $credit);
