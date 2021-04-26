@@ -1057,11 +1057,11 @@ class StudentController extends Controller
         fclose($file);
     }
     protected function misaUpload(){
-        $arr = ['',''];
+        $arr = ['1','0'];
         $students = Student::all();
         $file = fopen(public_path()."/misa_student.csv","w");
         foreach($students as $s){
-            $arr = ['',''];
+            $arr = ['1','0'];
             array_push($arr, 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT));
             $classes = $s->activeClasses()->select('code')->get();
             $classes = implode(',', array_column($classes->toArray(), 'code'));

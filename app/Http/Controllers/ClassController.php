@@ -1133,6 +1133,9 @@ class ClassController extends Controller
             array_push($arr, $c->id);
             array_push($arr, $c->code);
             array_push($arr, 2);
+            array_push($arr, 'Ca');
+            array_push($arr, '3387');
+            array_push($arr, '632');
             fputcsv($file, $arr);
 
         }
