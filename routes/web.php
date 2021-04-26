@@ -366,6 +366,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/student/get-class', 'StudentController@getClass');
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     // Route::get('/student/import', 'StudentController@importStudent');
+
+    Route::get('/misa/student', 'StudentController@misaUpload');
+
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');

@@ -1056,6 +1056,33 @@ class StudentController extends Controller
         }        
         fclose($file);
     }
+    protected function misaUpload(){
+        $arr = ['',''];
+        $students = Student::all();
+        $file = fopen(public_path()."/misa_student.csv","w");
+        foreach($students as $s){
+            $arr = ['',''];
+            array_push($arr, 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT));
+            $classes = $s->activeClasses()->select('code')->get();
+            $classes = implode(',', array_column($classes->toArray(), 'code'));
+            array_push($arr, $s->fullname);
+            array_push($arr, $classes);
+            array_push($arr, '');
+            array_push($arr, '');
+            
+
+            $parent = Parents::find($s->parent_id);
+            if($parent){
+                array_push($arr, $parent->phone);
+                array_push($arr, '');
+                array_push($arr, $parent->email);
+            }
+            fputcsv($file, $arr);
+            echo "<pre>";
+            print_r($arr);
+
+        }
+    }
     protected function chuanHoa(){
         $students = Student::all();
         foreach($students as $s){
