@@ -420,4 +420,38 @@ class TransactionController extends Controller
             }
         }
     }
+    public function misaUploadRevenue(){
+        $arr = [];
+        $acc_511 = Account::where('level_2', '511')->first()->id;
+        $acc_3387 = Account::where('level_2', '3387')->first()->id;
+        $file = fopen(public_path()."/misa-revenue.csv","w");
+
+        $transactions = Transaction::Where('credit',$acc_511)->where('debit', $acc_3387)->get();
+        foreach($transactions as $t){
+            $arr = [''];
+            array_push($arr, date('m-d-Y', strtotime($t->time)));
+            array_push($arr, date('m-d-Y', strtotime($t->time)));
+            array_push($arr, 'DT'.$t->id);
+            array_push($arr, $t->content);
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '3387');
+            array_push($arr, '5111');
+            array_push($arr, $t->amount);
+            array_push($arr, 'KH'.str_pad($t->student_id, 5, '0', STR_PAD_LEFT));
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, '');
+            array_push($arr, $t->class_id);
+
+            fputcsv($file, $arr);
+        }
+
+
+    }
 }
