@@ -613,7 +613,7 @@ class PaperController extends Controller
         }
 
     }
-    protected function uploadMisaPayment(){
+    protected function misaUploadPayment(){
         $arr = [];
         $file = fopen(public_path()."/misa_payment.csv","w");
         $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
@@ -638,9 +638,9 @@ class PaperController extends Controller
                 $arr = [0];
                 array_push($arr, $t['time_formated']);
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
-                array_push($arr, 'PT'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
-                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['sname']);
+                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
+                array_push($arr, '');
+                array_push($arr, '');
                 array_push($arr, '');
                 array_push($arr, '13');
                 array_push($arr, $r->description);
