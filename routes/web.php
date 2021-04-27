@@ -370,6 +370,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/misa/student', 'StudentController@misaUpload');
     Route::get('/misa/classes', 'ClassController@misaUpload');
     Route::get('/misa/order', 'TransactionController@misaUploadOrder');
+    Route::get('/misa/receipt', 'PaperController@misaUploadReceipt');
+    Route::get('/misa/payment', 'PaperController@misaUploadPayment');
+    Route::get('/misa/revenue', 'TransactionController@misaUploadRevenue');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');
