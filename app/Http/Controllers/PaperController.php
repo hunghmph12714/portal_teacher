@@ -567,7 +567,7 @@ class PaperController extends Controller
         return view('paper.print', compact('paper'));
         // return response()->json($paper);
     }
-    protected function misaUploadReceipt(){
+    protected function misaUploadReceiptTM(){
         $arr = [];
         $file = fopen(public_path()."/misa_receipt.csv","w");
         $receipts = Paper::where('created_at','>','2021-01-01')->where('type','receipt')->get();
@@ -613,7 +613,74 @@ class PaperController extends Controller
         }
 
     }
-    protected function misaUploadPayment(){
+    protected function misaUploadReceipt(){
+        $arr = [];
+        $file = fopen(public_path()."/misa_receipt_NH.csv","w");
+        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','receipt')->get();
+        foreach($receipts as $r){
+            
+            $transactions = $r->transactions()->select(
+                'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%m-%d-%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.level_1 as debit_level_1', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                'students.id as sid', 'students.fullname as sname','students.dob',
+                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                'users.id as uid','users.name as uname', 'paper_id'
+            )
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
+                ->get()->toArray();
+            foreach($transactions as $t){
+                $arr = [0];
+                array_push($arr, $t['time_formated']);
+                array_push($arr, date('m-d-Y', strtotime($r->created_at)));
+                array_push($arr, 'PT'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
+                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
+                array_push($arr, $t['sname']);
+                array_push($arr, '');
+                switch ($t['debit_level_2']) {
+                    case '111':
+                        continue;
+                        break;
+                    case '1123':
+                        array_push($arr, '26856688');
+                        array_push($arr, 'ACB');
+                        break;
+                    case '1124':
+                        array_push($arr, '015704060030799');
+                        array_push($arr, 'VIB');
+                        break;
+                    case '1122':
+                        array_push($arr, '19031311633868');
+                        array_push($arr, 'TCB');
+                        break;
+                    case '1121':
+                        array_push($arr, '152171277 ');
+                        array_push($arr, 'VP');
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                array_push($arr, '34');
+                array_push($arr, $r->description);
+                array_push($arr, '');
+                array_push($arr, $t['content']);
+                array_push($arr, $t['debit_level_2']);
+                array_push($arr, $t['credit_level_2']);
+                array_push($arr, $t['amount']);
+                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
+                array_push($arr, $t['class_id']);
+                fputcsv($file, $arr);
+            }
+        }
+
+    }
+    protected function misaUploadPaymentTM(){
         $arr = [];
         $file = fopen(public_path()."/misa_payment.csv","w");
         $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
@@ -654,6 +721,72 @@ class PaperController extends Controller
                 array_push($arr, $t['debit_level_2']);
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
+                fputcsv($file, $arr);
+            }
+        }
+    }
+    protected function misaUploadPayment(){
+        $arr = [];
+        $file = fopen(public_path()."/misa_payment_NH.csv","w");
+        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
+        foreach($receipts as $r){
+            
+            $transactions = $r->transactions()->select(
+                'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%m-%d-%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.level_1 as debit_level_1', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                'students.id as sid', 'students.fullname as sname','students.dob',
+                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                'users.id as uid','users.name as uname', 'paper_id'
+            )
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
+                ->get()->toArray();
+            foreach($transactions as $t){
+                $arr = [0];
+                array_push($arr, $t['time_formated']);
+                array_push($arr, date('m-d-Y', strtotime($r->created_at)));
+                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
+                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
+                array_push($arr, $t['sname']);
+                array_push($arr, '');
+                switch ($t['debit_level_2']) {
+                    case '111':
+                        continue;
+                        break;
+                    case '1123':
+                        array_push($arr, '26856688');
+                        array_push($arr, 'ACB');
+                        break;
+                    case '1124':
+                        array_push($arr, '015704060030799');
+                        array_push($arr, 'VIB');
+                        break;
+                    case '1122':
+                        array_push($arr, '19031311633868');
+                        array_push($arr, 'TCB');
+                        break;
+                    case '1121':
+                        array_push($arr, '152171277 ');
+                        array_push($arr, 'VP');
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                array_push($arr, '34');
+                array_push($arr, $r->description);
+                array_push($arr, '');
+                array_push($arr, $t['content']);
+                array_push($arr, $t['debit_level_2']);
+                array_push($arr, $t['credit_level_2']);
+                array_push($arr, $t['amount']);
+                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
+                array_push($arr, $t['class_id']);
                 fputcsv($file, $arr);
             }
         }
