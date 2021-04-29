@@ -674,7 +674,7 @@ class PaperController extends Controller
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['class_id']);
+                array_push($arr, $t['cid']);
                 fputcsv($file, $arr);
             }
         }
@@ -786,7 +786,7 @@ class PaperController extends Controller
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['class_id']);
+                array_push($arr, $t['cid']);
                 fputcsv($file, $arr);
             }
         }
