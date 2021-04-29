@@ -14,10 +14,7 @@
 .divider {
     margin: 5px 0px !important;
 }
-.select-input {
-    z-index: 1000 ;
-    position: static !important;
-  }
+
 // .date-time{
 //     margin-top: 7px;
 // }
@@ -38,6 +35,14 @@
     float : right;
 }
 .root-edit-entrance{
+    .select-box {
+        z-index: 1000 !important;
+        margin-bottom: 15px;
+    }
+    .select-box-parent{
+        z-index: 1000 !important;
+        margin-bottom: 15px;
+    }
     margin: 15px;
     .root-header{
       text-transform: capitalize;

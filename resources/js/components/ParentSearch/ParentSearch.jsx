@@ -105,6 +105,7 @@ const ParentSearch = props => {
     const {parent_phone, handleParentChange} = props
     return (
         <AsyncCreatableSelect
+            
             components={{ Option: CustomOption }}
             cacheOptions
             loadOptions={inputValue => throttleOptions(inputValue.replace(/\s|[(]|[)]|[-]|[.]/g, ''))}

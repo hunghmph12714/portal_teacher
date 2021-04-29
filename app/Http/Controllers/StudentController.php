@@ -1528,7 +1528,6 @@ class StudentController extends Controller
             $parent->forceDelete();
             $student->forceDelete();
         }
-        
     }
     // public function normalizeDb(){
     //     $parents = Parents::all();
