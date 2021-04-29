@@ -49,7 +49,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
             @foreach($result['product'] as $product)
             <tr>
               <td>{{$product['content']}}  </td>
-              <td>{{$product['sbd']}}  </td>
+              <td>Tại địa điểm thi</td>
               <td>{{$product['date']}}  </td>
               <td>{{$product['time']}}  </td>
               <td>{{$product['address']}}  <a href="{{'https://www.google.com/maps?q='.$product['address']}}">BẢN ĐỒ</a></td>
@@ -61,7 +61,7 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
       </table>
     </div>
     <div class="col-sm">
-        <h3><u>Thông tin tra cứu điểm </u></h3>
+        <h3><u>Thông tin tra cứu điểm và địa điểm thi</u></h3>
         <ul>
           <li>
             <b> ID: </b> {{$result['code']}} 
