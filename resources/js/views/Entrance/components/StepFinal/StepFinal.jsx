@@ -11,6 +11,8 @@ import {
   } from "@material-ui/core";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import PlusOneIcon from '@material-ui/icons/PlusOne';
+import { EditEntrance } from '../../EditEntrance';
+
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
 import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
@@ -199,6 +201,14 @@ const StepFinal = (props) => {
     const [classes, setClasses] = useState([])
     const [open_class, setOpenClass] = useState(false)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [open_edit, setOpenEdit] = useState(false);
+    function handleOpenEditDialog(rowData){
+        setOpenEdit(true)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseDialogCreate(){
+        setOpenEdit(false)
+    }
     function fetchdata(){
         setLoading(true)
         axios.post( "/entrance/get/final", {centers: centers})
@@ -373,7 +383,9 @@ const StepFinal = (props) => {
                                         paddingLeft: '0px'
                                     }             
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[  
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -420,7 +432,9 @@ const StepFinal = (props) => {
                                     //     }
                                     // },   
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[                       
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -468,7 +482,9 @@ const StepFinal = (props) => {
                                     //     }
                                     // },         
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[                       
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -524,6 +540,12 @@ const StepFinal = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 fetchdata= {fetchdata}
                             /> 
+                            <EditEntrance 
+                                open={open_edit} 
+                                handleCloseDialog={handleCloseDialogCreate}
+                                entrance={selectedEntrance}
+                                fetchdata = {fetchdata}
+                            />
                         </div>
                     
                     </React.Fragment>

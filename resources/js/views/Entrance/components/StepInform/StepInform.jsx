@@ -17,6 +17,8 @@ import EditLocationOutlinedIcon from '@material-ui/icons/EditLocationOutlined';
 import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
 import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } from '../../components';
+import { EditEntrance } from '../../EditEntrance';
+
 import { useSnackbar } from 'notistack';
 const lang = {
     body: {
@@ -221,6 +223,14 @@ const StepInform = (props) => {
     const [classes, setClasses] = useState([])
     const [open_class, setOpenClass] = useState(false)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [open_edit, setOpenEdit] = useState(false);
+    function handleOpenEditDialog(rowData){
+        setOpenEdit(true)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseDialogCreate(){
+        setOpenEdit(false)
+    }
     function fetchdata(){
         setLoading(true)
         axios.post( "/entrance/get/inform", {centers: centers})
@@ -416,7 +426,9 @@ const StepInform = (props) => {
                                         paddingLeft: '0px'
                                     }             
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[  
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -478,7 +490,9 @@ const StepInform = (props) => {
                                         }
                                     },   
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[                       
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -542,7 +556,9 @@ const StepInform = (props) => {
                                         }
                                     },         
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[                       
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -605,7 +621,9 @@ const StepInform = (props) => {
                                         }
                                     },         
                                 }}
-                                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                                onRowClick={(event, rowData) => { 
+                                    handleOpenEditDialog(rowData)
+                                }}
                                 actions={[                       
                                     {
                                         icon: () => <AddCommentOutlinedIcon />,
@@ -668,6 +686,13 @@ const StepInform = (props) => {
                                 confirm = {false}
                                 // handleClassChange = {(typeStatus == 'type4') ? handleFailClick : handleRemove}
                             /> 
+                            
+                            <EditEntrance 
+                                open={open_edit} 
+                                handleCloseDialog={handleCloseDialogCreate}
+                                entrance={selectedEntrance}
+                                fetchdata = {fetchdata}
+                            />
                         </div>
                     
                     </React.Fragment>

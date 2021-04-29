@@ -183,6 +183,13 @@ const StepInit = (props) => {
     const [courseOptions, setCourseOptions] = useState([])
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [open_edit, setOpenEdit] = useState(false);
+    function handleOpenEditDialog(rowData){
+        setOpenEdit(true)
+        setSelectedEntrance(rowData)
+    }
+    function handleCloseDialogCreate(){
+        setOpenEdit(false)
+    }
     function fetchdata(){
         axios.post( "/entrance/get/init", {centers: centers})
             .then(response => {
@@ -294,13 +301,7 @@ const StepInit = (props) => {
     function handleCloseStatus(){
         setOpenStatus(false)
     }
-    function handleOpenEditDialog(rowData){
-        setOpenEdit(true)
-        setSelectedEntrance(rowData)
-    }
-    function handleCloseDialogCreate(){
-        setOpenEdit(false)
-    }
+    
     return(
         <React.Fragment>
             {
