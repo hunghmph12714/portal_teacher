@@ -211,8 +211,6 @@ class PaperController extends Controller
         }
         return response()->json($result);
     }
-
-    
     protected function createReceipt(Request $request){
         $rules  = [
             'name' => 'required',
@@ -590,7 +588,7 @@ class PaperController extends Controller
                 ->get()->toArray();
             foreach($transactions as $t){
                 $arr = [0];
-                array_push($arr, $t['time_formated']);
+                array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, 'PT'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
@@ -636,7 +634,7 @@ class PaperController extends Controller
                 ->get()->toArray();
             foreach($transactions as $t){
                 $arr = [0];
-                array_push($arr, $t['time_formated']);
+                array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, 'PT'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
@@ -647,19 +645,19 @@ class PaperController extends Controller
                         continue;
                         break;
                     case '1123':
-                        array_push($arr, '26856688');
+                        array_push($arr, "'26856688");
                         array_push($arr, 'ACB');
                         break;
                     case '1124':
-                        array_push($arr, '015704060030799');
+                        array_push($arr, "'015704060030799");
                         array_push($arr, 'VIB');
                         break;
                     case '1122':
-                        array_push($arr, '19031311633868');
+                        array_push($arr, "'19031311633868");
                         array_push($arr, 'TCB');
                         break;
                     case '1121':
-                        array_push($arr, '152171277 ');
+                        array_push($arr, "'152171277");
                         array_push($arr, 'VP');
                         break;
                     default:
@@ -703,7 +701,7 @@ class PaperController extends Controller
                 ->get()->toArray();
             foreach($transactions as $t){
                 $arr = [0];
-                array_push($arr, $t['time_formated']);
+                array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
                 array_push($arr, '');
@@ -748,7 +746,7 @@ class PaperController extends Controller
                 ->get()->toArray();
             foreach($transactions as $t){
                 $arr = [0];
-                array_push($arr, $t['time_formated']);
+                array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
@@ -759,19 +757,19 @@ class PaperController extends Controller
                         continue;
                         break;
                     case '1123':
-                        array_push($arr, '26856688');
+                        array_push($arr, "'26856688");
                         array_push($arr, 'ACB');
                         break;
                     case '1124':
-                        array_push($arr, '015704060030799');
+                        array_push($arr, "'015704060030799");
                         array_push($arr, 'VIB');
                         break;
                     case '1122':
-                        array_push($arr, '19031311633868');
+                        array_push($arr, "'19031311633868");
                         array_push($arr, 'TCB');
                         break;
                     case '1121':
-                        array_push($arr, '152171277 ');
+                        array_push($arr, "'152171277");
                         array_push($arr, 'VP');
                         break;
                     default:
