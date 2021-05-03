@@ -18,6 +18,7 @@ import MaterialTable from "material-table";
 import { Can } from '../../../../Can';
 import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } from '../../components';
 import { EditEntrance } from '../../EditEntrance';
+import CreateIcon from '@material-ui/icons/Create';
 
 import { useSnackbar } from 'notistack';
 const lang = {
@@ -67,10 +68,14 @@ const StepInform = (props) => {
               },
               render: rowData => {
                 return (                                
-                  <Typography variant="body2" component="p">                                    
-                      <b>{rowData.sname}</b>
-                      <br /> {rowData.dob}
-                  </Typography>
+                    <Typography variant="body2" component="p">                                    
+                        <b>{rowData.sname}</b>
+                        <br /> {rowData.dob}
+                        <CreateIcon fontSize="small" onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEditDialog(rowData)
+                        }}/>
+                    </Typography>
                   
                 )
               },
@@ -427,7 +432,6 @@ const StepInform = (props) => {
                                     }             
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[  
                                     {
@@ -491,7 +495,6 @@ const StepInform = (props) => {
                                     },   
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {
@@ -622,7 +625,6 @@ const StepInform = (props) => {
                                     },         
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {

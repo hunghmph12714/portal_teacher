@@ -12,6 +12,7 @@ import {
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 import { EditEntrance } from '../../EditEntrance';
+import CreateIcon from '@material-ui/icons/Create';
 
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
@@ -67,10 +68,14 @@ const StepFinal = (props) => {
               },
               render: rowData => {
                 return (                                
-                  <Typography variant="body2" component="p">                                    
-                      <b>{rowData.sname}</b>
-                      <br /> {rowData.dob}
-                  </Typography>
+                    <Typography variant="body2" component="p">                                    
+                        <b>{rowData.sname}</b>
+                        <br /> {rowData.dob}
+                        <CreateIcon fontSize="small" onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEditDialog(rowData)
+                        }}/>
+                    </Typography>
                   
                 )
               },
@@ -384,7 +389,6 @@ const StepFinal = (props) => {
                                     }             
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[  
                                     {
@@ -433,7 +437,6 @@ const StepFinal = (props) => {
                                     // },   
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {
@@ -483,7 +486,6 @@ const StepFinal = (props) => {
                                     // },         
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {

@@ -23,6 +23,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import orange from '@material-ui/core/colors/orange';
 import yellow from '@material-ui/core/colors/yellow';
 import { EditEntrance } from '../../EditEntrance';
+import CreateIcon from '@material-ui/icons/Create';
 
 const lang = {
     body: {
@@ -73,10 +74,14 @@ const StepResult = (props) => {
               },
               render: rowData => {
                 return (                                
-                  <Typography variant="body2" component="p">                                    
-                      <b>{rowData.sname}</b>
-                      <br /> {rowData.dob}
-                  </Typography>
+                    <Typography variant="body2" component="p">                                    
+                        <b>{rowData.sname}</b>
+                        <br /> {rowData.dob}
+                        <CreateIcon fontSize="small" onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenEditDialog(rowData)
+                        }}/>
+                    </Typography>
                   
                 )
               },
@@ -361,7 +366,6 @@ const StepResult = (props) => {
                                     }             
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[  
                                     {
@@ -422,7 +426,6 @@ const StepResult = (props) => {
                                     },          
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {
@@ -484,7 +487,6 @@ const StepResult = (props) => {
                                     },            
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {

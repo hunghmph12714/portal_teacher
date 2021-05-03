@@ -19,7 +19,7 @@ import { AppointmentDialog, MessageDialog, StatusDialog } from '../../components
 import { EditEntrance } from '../../EditEntrance';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
-
+import CreateIcon from '@material-ui/icons/Create';
 
 const lang = {
     body: {
@@ -67,11 +67,14 @@ const StepInit = (props) => {
               },
               render: rowData => {
                 return (                                
-                  <Typography variant="body2" component="p">                                    
-                      <b>{rowData.sname}</b>
-                      <br /> {rowData.dob}
-                  </Typography>
-                  
+                    <Typography variant="body2" component="p">                                    
+                            <b>{rowData.sname}</b>
+                            <br /> {rowData.dob}
+                            <CreateIcon fontSize="small" onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenEditDialog(rowData)
+                            }}/>
+                    </Typography>
                 )
               },
               
@@ -324,7 +327,6 @@ const StepInit = (props) => {
                                     }             
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[  
                                     {
@@ -366,7 +368,7 @@ const StepInit = (props) => {
                                     exportButton: true,                
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
+                                    
                                 }}
                                 actions={[                       
                                     {
@@ -409,7 +411,6 @@ const StepInit = (props) => {
                                     exportButton: true,                
                                 }}
                                 onRowClick={(event, rowData) => { 
-                                    handleOpenEditDialog(rowData)
                                 }}
                                 actions={[                       
                                     {
