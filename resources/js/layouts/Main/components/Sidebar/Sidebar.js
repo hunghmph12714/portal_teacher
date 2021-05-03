@@ -86,7 +86,7 @@ const Sidebar = props => {
         },
         {
           title: 'Danh sách ghi danh',
-          href: '/entrance/list/1_2_3/0',
+          href: '/entrance/list/2_3_4_5/0',
         },
         {
           title: 'Ưu đãi',

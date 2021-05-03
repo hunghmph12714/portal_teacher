@@ -12,6 +12,7 @@ use App\Transaction;
 use App\Center;
 use App\Session;
 use App\Teacher;
+use App\Entrance;
 use App\StudentSession;
 use App\Tag;
 use App\Paper;
@@ -155,6 +156,11 @@ class StudentController extends Controller
         }
         foreach($s as $key=>$student){
             $s[$key]['classes'] = Student::find($student['sid'])->classes;
+            $s[$key]['entrance'] = '';
+            $entrance = Entrance::where('student_id', $student['sid'])->select('steps.name')->leftJoin('steps','entrances.step_id', 'steps.id')->first();
+            if($entrance){
+                $s[$key]['entrance']= $entrance->name;
+            }
         }
         return response()->json($s);
     }

@@ -82,7 +82,7 @@ const CustomOption = props => {
                     </Grid>                    
                 </Grid>
                 <Grid container spacing={2} className="search-grid">
-                    <Grid item md={12} sm={12}>
+                    <Grid item md={6} sm={6}>
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
                                 let cl = (c.pivot.status == 'active')? '' : ((c.pivot.status == 'droped') ? '#adadc9' : (c.pivot.status == 'waiting') ? '#b22222' : '#000000')
@@ -91,7 +91,18 @@ const CustomOption = props => {
                                     window.location.href = "/class/" + c.pivot.class_id} }/>)
                             })}
                         </Typography>                        
-                    </Grid>          
+                    </Grid>  
+                    {
+                        (data.entrance == "") ? "" : (
+                            <Grid item md={6} sm={6}>
+                                <Typography variant="body2" component="p">
+                                    <b>Ghi danh: </b>
+                                    <Chip variant="outlined" color="secondary" label={data.entrance} size="small" />
+                                </Typography>                        
+                            </Grid> 
+                        )
+                    }
+                             
                 </Grid>       
             </CardContent>
         </Card>      
@@ -121,6 +132,7 @@ const checkValidCreate = (inputValue, selectValue, selectOptions) => {
         return false
     }else return true
 }
+
 const StudentSearch = props => {
     const {student_name, handleStudentChange, isMulti} = props
     return (

@@ -231,7 +231,7 @@ class ViewEntrance extends React.Component{
               <React.Fragment> 
                 <div  className="root-entrance">
                   <Grid container spacing={2}>
-                    <Grid item md={4} sm={12}>
+                    <Grid item md={6} sm={12}>
                       <h4>CƠ SỞ GHI DANH</h4>
                       <Select
                         isMulti
@@ -242,7 +242,7 @@ class ViewEntrance extends React.Component{
                         onChange = {this.onCenterChange}
                       />
                     </Grid>
-                    <Grid item md={8} sm={12}>
+                    <Grid item md={6} sm={12}>
                       <div>
                         <h4>QUY TRÌNH</h4>
                         <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
