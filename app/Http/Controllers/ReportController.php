@@ -311,7 +311,7 @@ class ReportController extends Controller
         $to = date('Y-m-d 23:59:59', strtotime($request->to));
         $center_id = array_column($request->centers, 'value');
 
-        $equity = array_column(Account::select('id')->where('level_1', '111')->get()->toArray(), 'id') ; 
+        $equity = array_column(Account::select('id')->where('level_1', '1111')->get()->toArray(), 'id') ; 
         $debit = Transaction::WhereIn('center_id', $center_id)->where('time', '<', $from)->whereIn('debit', $equity)->sum('amount');
         $credit = Transaction::WhereIn('center_id', $center_id)->where('time', '<', $from)->whereIn('credit', $equity)->sum('amount');
 
@@ -339,7 +339,7 @@ class ReportController extends Controller
         ];
         foreach($transactions as $t){
             $input['time'] = $t->time_formated;
-            if($t->credit_level_1 == '111'){
+            if($t->credit_level_1 == '1111'){
                 $input['pt'] = '';
                 $input['pc'] = $t->payment_number;
                 $input['description'] = $t->content;
@@ -349,7 +349,7 @@ class ReportController extends Controller
                 $input['sum'] = $previous - $t->amount;
                 $input['user'] = $t->pname;
             }
-            if($t->debit_level_1 == '111'){
+            if($t->debit_level_1 == '1111'){
                 $input['pc'] = '';
                 $input['pt'] = $t->receipt_number;
                 $input['description'] = $t->content;

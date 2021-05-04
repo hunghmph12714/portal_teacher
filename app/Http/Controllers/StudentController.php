@@ -429,7 +429,7 @@ class StudentController extends Controller
                 if($r['amount'] < 0 && $r['count_transaction'] > 1) {
                     //Tao giao dich can doi 
                     $t['debit'] = Account::where('level_2','131')->first()->id;
-                    $t['credit'] = Account::where('level_2', '111')->first()->id;
+                    $t['credit'] = Account::where('level_2', '1111')->first()->id;
                     $t['amount'] = -$r['amount'];
                     $t['time'] = date('Y-m-t', strtotime('01-'.$r['month']));
                     $t['student_id'] = $student_id;
@@ -438,7 +438,7 @@ class StudentController extends Controller
                     $transfer = Transaction::create($t);
                     
                     $transfer->tags()->attach([$tag->id]);
-                    $dt['debit'] = Account::where('level_2','111')->first()->id;
+                    $dt['debit'] = Account::where('level_2','1111')->first()->id;
                     $dt['credit'] = Account::where('level_2', '131')->first()->id;
                     $dt['amount'] = -$r['amount'];
                     if($key == sizeof($result)-1){
@@ -472,7 +472,7 @@ class StudentController extends Controller
         $this->validate($request, $rules);
               
         $account = Account::find($request->account);
-        if($account->level_1 == '111'){
+        if($account->level_1 == '1111'){
             $p['method'] = 'TM';
             $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
             $p['receipt_number'] = $max_receipt_number + 1;
@@ -569,7 +569,7 @@ class StudentController extends Controller
 
         if($request->total_amount > 0){
             $account = Account::find($request->account);
-            if($account->level_1 == '111'){
+            if($account->level_1 == '1111'){
                 $p['method'] = 'TM';
                 $max_receipt_number = Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center)->where('method', 'TM')->max('receipt_number') : 0;
                 $p['receipt_number'] = $max_receipt_number + 1;

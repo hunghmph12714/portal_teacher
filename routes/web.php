@@ -372,6 +372,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/misa/order', 'TransactionController@misaUploadOrder');
     Route::get('/misa/receipt', 'PaperController@misaUploadReceipt');
     Route::get('/misa/payment', 'PaperController@misaUploadPayment');
+    Route::get('/misa/payment/tm', 'PaperController@misaUploadPaymentTM');
+    Route::get('/misa/payment/nh', 'PaperController@misaUploadPaymentNH');
     Route::get('/misa/revenue', 'TransactionController@misaUploadRevenue');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');

@@ -220,7 +220,7 @@ class PaperController extends Controller
         foreach($request->transactions as $key => $transaction){
             if($key == 0){
                 $acc = Account::find($transaction['debit']['id']);
-                if($acc->level_1 == '111'){
+                if($acc->level_1 == '1111'){
                     $p['method'] = 'TM';
                     $max_receipt_number = Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number') : 0;
                     $p['receipt_number'] = $max_receipt_number + 1;
@@ -278,7 +278,7 @@ class PaperController extends Controller
                     $td = Transaction::find($t['id']);
                     if($td){    
                         $account = Account::find($t['debit']['value']);
-                        if($account->level_1 == '111'){
+                        if($account->level_1 == '1111'){
                             $method = 'TM';
                             
                         }
@@ -641,7 +641,7 @@ class PaperController extends Controller
                 array_push($arr, $t['sname']);
                 array_push($arr, '');
                 switch ($t['debit_level_2']) {
-                    case '111':
+                    case '1111':
                         continue;
                         break;
                     case '1123':
@@ -680,7 +680,7 @@ class PaperController extends Controller
     }
     protected function misaUploadPaymentTM(){
         $arr = [];
-        $file = fopen(public_path()."/misa_payment.csv","w");
+        $file = fopen(public_path()."/misa_payment_TM.csv","w");
         $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
         foreach($receipts as $r){
             
@@ -703,14 +703,14 @@ class PaperController extends Controller
                 $arr = [0];
                 array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
-                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
+                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->payment_number, 5, '0', STR_PAD_LEFT));
                 array_push($arr, '');
                 array_push($arr, '');
                 array_push($arr, '');
-                array_push($arr, '13');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '23');
                 array_push($arr, $r->description);
-                array_push($arr, '');
-                array_push($arr, '');
                 array_push($arr, '');
                 array_push($arr, $t['content']);
                 if($t['debit_level_2'] == '111'){
@@ -723,7 +723,7 @@ class PaperController extends Controller
             }
         }
     }
-    protected function misaUploadPayment(){
+    protected function misaUploadPaymentNH(){
         $arr = [];
         $file = fopen(public_path()."/misa_payment_NH.csv","w");
         $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
@@ -745,15 +745,13 @@ class PaperController extends Controller
                 ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.id', 'DESC')
                 ->get()->toArray();
             foreach($transactions as $t){
-                $arr = [0];
+                $arr = [0,0];
                 array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
-                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->receipt_number, 5, '0', STR_PAD_LEFT));
-                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['sname']);
-                array_push($arr, '');
-                switch ($t['debit_level_2']) {
-                    case '111':
+                array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->payment_number, 5, '0', STR_PAD_LEFT));
+                if($t['credit_level_2'] == '1111') continue;
+                switch ($t['credit_level_2']) {
+                    case '1111':
                         continue;
                         break;
                     case '1123':
@@ -776,18 +774,25 @@ class PaperController extends Controller
                         # code...
                         break;
                 }
-                array_push($arr, '34');
+                array_push($arr, '43');
                 array_push($arr, $r->description);
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
                 array_push($arr, '');
                 array_push($arr, $t['content']);
                 array_push($arr, $t['debit_level_2']);
                 array_push($arr, $t['credit_level_2']);
+                
                 array_push($arr, $t['amount']);
-                array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['cid']);
                 fputcsv($file, $arr);
             }
         }
     }
-    
 }

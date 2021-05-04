@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Entrance;
 use App\Student;
 use App\Relationship;
+use Auth;
 class EntranceObserver
 {
     /**
@@ -22,7 +23,7 @@ class EntranceObserver
         $entrance->save();
 
         $entrance->status()->attach([
-            $entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id]
+            $entrance->status_id => ['active' => '1', 'user_id' => (Auth::user() ? auth()->user()->id : '')]
         ]);
 
     }
