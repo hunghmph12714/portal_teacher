@@ -13,6 +13,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 import { EditEntrance } from '../../EditEntrance';
 import CreateIcon from '@material-ui/icons/Create';
+import { CsvBuilder } from 'filefy';
 
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
@@ -386,7 +387,17 @@ const StepFinal = (props) => {
                                     // },
                                     filterCellStyle: {
                                         paddingLeft: '0px'
-                                    }             
+                                    }     ,
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }           
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}

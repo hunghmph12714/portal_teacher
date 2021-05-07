@@ -23,6 +23,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import orange from '@material-ui/core/colors/orange';
 import yellow from '@material-ui/core/colors/yellow';
 import CreateIcon from '@material-ui/icons/Create';
+import { CsvBuilder } from 'filefy';
 
 const lang = {
     body: {
@@ -64,6 +65,7 @@ const StepAppointment = (props) => {
               headerStyle: {
                   padding: '0px',
                   fontWeight: '600',
+                  fontWeight: '600'
               },
               cellStyle: {
                   padding: '0px',
@@ -110,7 +112,7 @@ const StepAppointment = (props) => {
               )
         
             },
-          //Quan hệ
+        //Quan hệ
             {
               title: "Quan hệ",
               field: "rname",
@@ -187,7 +189,6 @@ const StepAppointment = (props) => {
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
     const [openTest, setOpenTest] = useState(false)
-    
     const [openMessage, setOpenMessage] = useState(false)
     const [selectedEntrance, setSelectedEntrance] = useState({})
     const [statusOptions, setStatusOptions] = useState([])
@@ -344,7 +345,17 @@ const StepAppointment = (props) => {
                                     },
                                     filterCellStyle: {
                                         paddingLeft: '0px'
-                                    }             
+                                    },
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }           
                                 }}
                                 
                                 onRowClick={(event, rowData) => { 
@@ -405,7 +416,18 @@ const StepAppointment = (props) => {
                                         if(rowData.priority >= 4){
                                         return {backgroundColor: colors.orange[100],}
                                         }
-                                    },          
+                                    },  
+                                    
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }                 
                                 }}
                                 
                                 onRowClick={(event, rowData) => { 
@@ -467,7 +489,17 @@ const StepAppointment = (props) => {
                                         if(rowData.priority >= 4){
                                         return {backgroundColor: colors.orange[100],}
                                         }
-                                    },            
+                                    }, 
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }              
                                 }}
                                 
                                 onRowClick={(event, rowData) => { 

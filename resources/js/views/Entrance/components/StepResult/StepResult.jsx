@@ -24,6 +24,7 @@ import orange from '@material-ui/core/colors/orange';
 import yellow from '@material-ui/core/colors/yellow';
 import { EditEntrance } from '../../EditEntrance';
 import CreateIcon from '@material-ui/icons/Create';
+import { CsvBuilder } from 'filefy';
 
 const lang = {
     body: {
@@ -363,7 +364,17 @@ const StepResult = (props) => {
                                     },
                                     filterCellStyle: {
                                         paddingLeft: '0px'
-                                    }             
+                                    }  ,
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }            
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}
@@ -423,7 +434,17 @@ const StepResult = (props) => {
                                         if(rowData.priority >= 4){
                                         return {backgroundColor: colors.orange[100],}
                                         }
-                                    },          
+                                    },   
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }          
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}
@@ -484,7 +505,17 @@ const StepResult = (props) => {
                                         if(rowData.priority >= 4){
                                         return {backgroundColor: colors.orange[100],}
                                         }
-                                    },            
+                                    },    
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }           
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}

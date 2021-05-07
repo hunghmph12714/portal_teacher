@@ -20,6 +20,7 @@ import { EditEntrance } from '../../EditEntrance';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { useSnackbar } from 'notistack';
 import CreateIcon from '@material-ui/icons/Create';
+import { CsvBuilder } from 'filefy';
 
 const lang = {
     body: {
@@ -324,7 +325,17 @@ const StepInit = (props) => {
                                     exportButton: true,   
                                     filterCellStyle: {
                                         paddingLeft: '0px'
-                                    }             
+                                    },
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }   
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}
@@ -365,7 +376,17 @@ const StepInit = (props) => {
                                     pageSizeOptions: [5 ,10 ,20 ,50 ,200],
                                     grouping: true,
                                     filtering: true,
-                                    exportButton: true,                
+                                    exportButton: true,        
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }           
                                 }}
                                 onRowClick={(event, rowData) => { 
                                     
@@ -408,7 +429,17 @@ const StepInit = (props) => {
                                     pageSizeOptions: [5, 20, 50, 200],
                                     grouping: true,
                                     filtering: true,
-                                    exportButton: true,                
+                                    exportButton: true,     
+                                    exportCsv: (c, d) => {
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
+                                        builder
+                                        .setDelimeter(',')
+                                        .setColumns(cols)
+                                        .addRows(data)
+                                        .exportFile();
+                                    }              
                                 }}
                                 onRowClick={(event, rowData) => { 
                                 }}
