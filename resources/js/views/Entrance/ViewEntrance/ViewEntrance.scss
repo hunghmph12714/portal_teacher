@@ -24,6 +24,21 @@
     .entrance_comment{
         margin-left: 15px;
     }
+    .stats{
+        margin-top: 15px;
+        .stats_number{
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 0;
+        }
+        span{
+            vertical-align: middle;
+        }
+        .MuiCardContent-root{
+            padding-bottom: 16px;
+        }
+    }
+
 }
 .entrance_table{
     margin: 10px;

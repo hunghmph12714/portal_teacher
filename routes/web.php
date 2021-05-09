@@ -149,6 +149,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/entrance/list/{center_id}/{step_id}',  function(){
                 return view('welcome');
             });
+            Route::get('/entrance/stats/{center_id}/{step_id}', 'EntranceController@getStats');
+
             Route::post('/entrance/create', 'EntranceController@createEntrance');
             Route::post('/entrance', 'EntranceController@getEntrance');
 

@@ -53,9 +53,9 @@ class EntranceController extends Controller
     }
     protected function handleCreateStudent($parent_id, $request){
         $s['parent_id'] = $parent_id;
-        $s['relationship_id'] = $request['selected_relationship']['value'];
+        $s['relationship_id'] = ($request['selected_relationship'] == "") ? "" :$request['selected_relationship']['value'];
         $s['fullname'] = $request['student_name']['value'];
-        $s['school'] = $request['student_school']['label'];
+        $s['school'] = ($request['student_school'] == '') ? '' : $request['student_school']['label'];
         $s['grade'] = $request['student_grade'];
         $s['email'] = $request['student_email'];
         $s['phone'] = $request['student_phone'];
@@ -99,7 +99,7 @@ class EntranceController extends Controller
         $request['student_dob'] = ($request['student_dob']) ? date('Y-m-d', $request['student_dob']) : null;
         $p = [];
         $p['fullname'] = $request['parent_name'];
-        $p['relationship_id'] = $request['selected_relationship']['value'];
+        $p['relationship_id'] = ($request['selected_relationship'] == "") ? "" :$request['selected_relationship']['value'];
         $p['phone'] = $request['parent_phone']['label'];
         $p['email'] = $request['parent_email'];
         $p['note'] = $request['parent_note'];
@@ -602,6 +602,44 @@ class EntranceController extends Controller
             $this->enrollStudent($entrance->class_id, $entrance->student_id, $entrance->enroll_date);
 
         }
+    }
+    protected function getStats($center_id, $step_id){
+        // echo $center_id;
+        // echo $step_id;
+        $step_id = $step_id + 1;
+        $centers = explode('_', $center_id);
+        $result = [
+            'total' => 0,
+            'total_remain' => 0,
+            'total_today' => 0,
+            'total_completed' => 0,
+        ];
+
+        $step = Step::find($step_id);
+        if($step){
+            $next_step = Step::where('type', 'Quy trình đầu vào')->where('order', $step->order+1)->first();
+            $status = Status::where('name','Đang xử lý')->first();
+            foreach($centers as $center){
+                if($next_step && $status){
+                    $today = date('Y-m-d 00:00:00');
+                    $result['total'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)
+                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_remain'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)->where('step_updated_at','<', $today)
+                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_today'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)->where('entrances.created_at', '>' ,$today)
+                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $total_completed = Entrance::Where('center_id', $center_id)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)
+                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_completed'] += $total_completed;
+                    $result['total_today'] += Entrance::Where('center_id', $center_id)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)
+                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                }
+            }
+        }
+        
+        
+        
+        return response()->json($result);
     }
     
 }

@@ -198,6 +198,7 @@ const StepInit = (props) => {
         axios.post( "/entrance/get/init", {centers: centers})
             .then(response => {
                 // let d1, d2, d3 = []
+                console.log(response.data.length)
                 let d1 = []
                 let d2 = []
                 let d3 = []
@@ -263,7 +264,6 @@ const StepInit = (props) => {
                     const d2 = data2.filter(d => d.eid !== rowData.eid)
                     setData2(d2)
                 }
-                console.log(element)
                 setData3([...data3, element[0]])
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 

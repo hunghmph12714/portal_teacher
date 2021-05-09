@@ -8,6 +8,8 @@ import {
     IconButton,
     Tooltip,
     Button,
+    CardContent,
+    Card
   } from "@material-ui/core";
 import Select from 'react-select';
 import { Grid, TextField } from '@material-ui/core';
@@ -99,11 +101,16 @@ class ViewEntrance extends React.Component{
             selectedEntrance: '',
             loaded: false,
             message: '',
+            total: 0,
+            total_remain: 0,
+            total_today: 0,
+            total_completed: 0,
         }
     }
 
     componentDidMount() {      
       this.init();
+      this.getStats(this.props.match.params.center_id, this.props.match.params.step_id)
     }
     
     init = () =>{
@@ -121,7 +128,6 @@ class ViewEntrance extends React.Component{
       axios.get('/get-center')
         .then(response => {
           let selected_center_ids = this.props.match.params.center_id.split('_')
-          console.log(selected_center_ids)
           
           this.setState({ 
             centers: response.data.map(d => {
@@ -147,12 +153,30 @@ class ViewEntrance extends React.Component{
       let step_id = this.state.steps[step].id
       this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +step)
       this.setState({activeStep : step})
-    };
+      this.getStats(this.props.match.params.center_id, step)
+    }
     onCenterChange = (value) => {
       let selected_center_ids = value.map(v => v.value)
       let selected_center_params = selected_center_ids.join('_')
       this.setState({ selected_centers: value, selected_centers_param:  selected_center_params})
       this.props.history.push('/entrance/list/' +selected_center_params + '/' +this.state.activeStep)
+      this.getStats(selected_center_params, this.props.match.params.step_id)
+    }
+    getStats = (center_id, step_id) => {
+      console.log(center_id)
+      console.log(step_id)
+      axios.get('/entrance/stats/'+ center_id + '/' + step_id)
+        .then(response => {
+          this.setState({
+            total: response.data.total,
+            total_remain: response.data.total_remain,
+            total_completed: response.data.total_completed,
+            total_today: response.data.total_today,
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
     handleOpenEditDialog = (rowData) => {
       Object.keys(rowData).map(function(key, index) {        
@@ -262,6 +286,51 @@ class ViewEntrance extends React.Component{
                       </div>
                     </Grid>
                   </Grid>
+                  <div className="stats"> 
+                    <Grid container spacing={2}>
+                      <Grid item md={3} sm={12}>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="span" color="textSecondary" gutterBottom>
+                              Tồn đầu ngày: 
+                            </Typography>
+                            <span className="stats_number"> {this.state.total_remain} </span>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid item md={3} sm={12}>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="span" color="textSecondary" gutterBottom>
+                              Mới trong ngày:
+                            </Typography>
+                            <span className="stats_number"> {this.state.total_today} </span>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid item md={3} sm={12}>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="span"  color="textSecondary" gutterBottom>
+                              Đã xử lý: 
+                            </Typography>
+                            <span className="stats_number"> {this.state.total_completed} </span>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                      <Grid item md={3} sm={12}>
+                        <Card>
+                          <CardContent>
+                            <Typography variant="span"  color="textSecondary" gutterBottom>
+                              Tổng: 
+                            </Typography>
+                            <span className="stats_number"> {this.state.total} </span>
+                          </CardContent>
+                        </Card>
+                      </Grid>
+                    </Grid>
+                  
+                  </div>
                 </div>
                 {
                   {
