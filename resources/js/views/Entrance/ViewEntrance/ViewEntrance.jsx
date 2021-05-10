@@ -322,7 +322,7 @@ class ViewEntrance extends React.Component{
                         <Card>
                           <CardContent>
                             <Typography variant="span"  color="textSecondary" gutterBottom>
-                              Tổng: 
+                              Tồn cuối ngày: 
                             </Typography>
                             <span className="stats_number"> {this.state.total} </span>
                           </CardContent>
