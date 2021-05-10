@@ -284,6 +284,7 @@ class DiscountController extends Controller
         $from_d = '2021-05-02';
         $to_d = '2021-07-30';
         $transactions = Transaction::where('discount_id', '-2')->forceDelete();
+        $transactions = Transaction::where('discount_id', '-3')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
             $from = date('Y-m-d', strtotime($from_d));
@@ -326,7 +327,7 @@ class DiscountController extends Controller
                                 $trans['time'] = date('Y-m-t', strtotime($session->date));
                                 $trans['student_id'] = $student->id;
                                 $trans['discount_id'] = -2;
-                                $trans['amount'] = $session->fee/15;
+                                $trans['amount'] = $session->fee/100*15;
                                 $tr = Transaction::create($trans);
                                 $tr->tags()->syncWithoutDetaching([9]);
                             }
@@ -344,7 +345,7 @@ class DiscountController extends Controller
                         $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                         $trans['time'] = date('Y-m-t', strtotime($session->date));
                         $trans['student_id'] = $student->id;
-                        $trans['amount'] = $session->fee/15;
+                        $trans['amount'] = $session->fee/100*15;
                         $trans['discount_id'] = -2;
                         $tr = Transaction::create($trans);
                         $tr->tags()->syncWithoutDetaching([9]);
@@ -390,7 +391,7 @@ class DiscountController extends Controller
                     $trans['time'] = date('Y-m-t', strtotime('2021-05-31'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount;
-                    $trans['discount_id'] = -3;
+                    $trans['discount_id'] = '-3';
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions);
                     $tr->tags()->syncWithoutDetaching([9]);
@@ -405,7 +406,7 @@ class DiscountController extends Controller
                     $trans['time'] = date('Y-m-t', strtotime('2021-06-30'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_6;
-                    $trans['discount_id'] = -3;
+                    $trans['discount_id'] = '-3';
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions_6);
                     $tr->tags()->syncWithoutDetaching([9]);
