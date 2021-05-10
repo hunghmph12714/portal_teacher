@@ -320,6 +320,7 @@ class DiscountController extends Controller
                                 $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                                 $trans['class_id'] = $class->id;
                                 $trans['center_id'] = $class->center_id;
+                                $trans['session_id'] = $session->id;
                                 $trans['user'] = auth()->user()->id;
                                 $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                                 $trans['time'] = date('Y-m-t', strtotime($session->date));
@@ -338,6 +339,7 @@ class DiscountController extends Controller
                         $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                         $trans['class_id'] = $class->id;
                         $trans['center_id'] = $class->center_id;
+                        $trans['session_id'] = $session->id;
                         $trans['user'] = auth()->user()->id;
                         $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                         $trans['time'] = date('Y-m-t', strtotime($session->date));
@@ -348,6 +350,63 @@ class DiscountController extends Controller
                         $tr->tags()->syncWithoutDetaching([9]);
                     }
                     
+                }
+            }
+        }
+    }
+    protected function briefDiscount(){
+        $classes = Classes::where('type', 'class')->where('active', 1)->get();
+        foreach($classes as $class){
+            // print_r($sessions->toArray());       
+            $students = $class->students;
+            foreach($students as $student){
+                $transactions = Transaction::where('student_id', $student->id)->where('class_id', $class->id)
+                    ->where('discount_id', '-2')->get()->toArray();
+                $sessions = [];
+                $total_amount = 0;
+                $month = '05';
+                $sessions_6 = [];
+                $total_amount_6 = 0;
+            
+                foreach($transactions as $transaction){
+                    
+                    if(date('m', $transaction['time']) != $month){
+                        $total_amount_6 += $transaction['amount'];
+                        $sessions_6[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                    }else{
+                        $total_amount += $transaction['amount'];
+                        $sessions[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                    }
+                }
+                if($total_amount > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2021-05-31'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount;
+                    $trans['discount_id'] = -2;
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_6 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2021-06-30'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_6;
+                    $trans['discount_id'] = -2;
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_6);
+                    $tr->tags()->syncWithoutDetaching([9]);
                 }
             }
         }

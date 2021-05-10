@@ -222,6 +222,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/discount/delete', 'DiscountController@deleteDiscount');
             
             Route::get('/discount/generate', 'DiscountController@generateDiscount');
+            Route::get('/discount/brief', 'DiscountController@briefDiscount');
             Route::get('/discount/id', 'DiscountController@id');
 
             Route::get('/discount/all', 'DiscountController@allDiscount');
