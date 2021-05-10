@@ -377,6 +377,8 @@ class DiscountController extends Controller
                         $total_amount += $transaction['amount'];
                         $sessions[$transaction['session_id']] = ['amount' => $transaction['amount']];
                     }
+
+                    Transaction::find($transaction['id'])->forceDelete();
                 }
                 if($total_amount > 0){
                     $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
@@ -388,7 +390,7 @@ class DiscountController extends Controller
                     $trans['time'] = date('Y-m-t', strtotime('2021-05-31'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount;
-                    $trans['discount_id'] = -2;
+                    $trans['discount_id'] = -3;
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions);
                     $tr->tags()->syncWithoutDetaching([9]);
@@ -403,7 +405,7 @@ class DiscountController extends Controller
                     $trans['time'] = date('Y-m-t', strtotime('2021-06-30'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_6;
-                    $trans['discount_id'] = -2;
+                    $trans['discount_id'] = -3;
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions_6);
                     $tr->tags()->syncWithoutDetaching([9]);
