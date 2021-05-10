@@ -623,16 +623,16 @@ class EntranceController extends Controller
                 if($next_step && $status){
                     $today = date('Y-m-d 00:00:00');
                     $result['total'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)
-                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_remain'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)->where('step_updated_at','<', $today)
-                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_today'] += Entrance::Where('center_id', $center_id)->where('step_id', $step_id)->where('entrances.created_at', '>' ,$today)
-                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $total_completed = Entrance::Where('center_id', $center_id)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)
-                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
                     $result['total_today'] += Entrance::Where('center_id', $center_id)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)
-                        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                 }
             }
         }

@@ -281,21 +281,15 @@ class DiscountController extends Controller
     }
 
     protected function generateDiscount(){
-        $from_d = '2021-01-30';
-        $to_d = '2021-03-01';
-        $transactions = Transaction::where('discount_id', '-1')->forceDelete();
+        $from_d = '2021-05-02';
+        $to_d = '2021-07-30';
+        $transactions = Transaction::where('discount_id', '-2')->forceDelete();
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){
-            if($class->id == 6 || $class->id == 23){
-                $from_d = '2021-01-31';
-                $to_d = '2021-03-01';
-            }
-            if($class->id == 7){
-                $from_d = '2021-02-01';
-            }
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
-            $sessions = $class->sessions()->whereBetween('date', [$from, $to])->get();            
+            $sessions = $class->sessions()->whereBetween('date', [$from, $to])->get(); 
+            // print_r($sessions->toArray());        
             foreach($sessions as $session){
                 $students = $session->students;
                 foreach($students as $student){
@@ -309,7 +303,7 @@ class DiscountController extends Controller
                         }
                         else{
                             //Bo qua nhung uu dai > 10%
-                            if($d->percentage > 10) {
+                            if($d->percentage > 15) {
                                 continue;
                             }else{
                                 //Bo ưu đãi của thời gian này
@@ -325,12 +319,13 @@ class DiscountController extends Controller
                                 $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                                 $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                                 $trans['class_id'] = $class->id;
+                                $trans['center_id'] = $class->center_id;
                                 $trans['user'] = auth()->user()->id;
-                                $trans['content'] = 'Miễn giảm học phí ONLINE -10%';
+                                $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                                 $trans['time'] = date('Y-m-t', strtotime($session->date));
                                 $trans['student_id'] = $student->id;
-                                $trans['discount_id'] = -1;
-                                $trans['amount'] = $session->fee/10;
+                                $trans['discount_id'] = -2;
+                                $trans['amount'] = $session->fee/15;
                                 $tr = Transaction::create($trans);
                                 $tr->tags()->syncWithoutDetaching([9]);
                             }
@@ -342,19 +337,19 @@ class DiscountController extends Controller
                         $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
                         $trans['credit'] = Account::Where('level_2', '131')->first()->id;
                         $trans['class_id'] = $class->id;
+                        $trans['center_id'] = $class->center_id;
                         $trans['user'] = auth()->user()->id;
-                        $trans['content'] = 'Miễn giảm học phí ONLINE -10%';
+                        $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                         $trans['time'] = date('Y-m-t', strtotime($session->date));
                         $trans['student_id'] = $student->id;
-                        $trans['amount'] = $session->fee/10;
-                        $trans['discount_id'] = -1;
+                        $trans['amount'] = $session->fee/15;
+                        $trans['discount_id'] = -2;
                         $tr = Transaction::create($trans);
                         $tr->tags()->syncWithoutDetaching([9]);
                     }
                     
                 }
             }
-            $from_d = '2021-01-30';
         }
     }
     protected function id(){
