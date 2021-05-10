@@ -370,7 +370,7 @@ class DiscountController extends Controller
             
                 foreach($transactions as $transaction){
                     
-                    if(date('m', $transaction['time']) != $month){
+                    if(date('m', strtotime($transaction['time'])) != $month){
                         $total_amount_6 += $transaction['amount'];
                         $sessions_6[$transaction['session_id']] = ['amount' => $transaction['amount']];
                     }else{
