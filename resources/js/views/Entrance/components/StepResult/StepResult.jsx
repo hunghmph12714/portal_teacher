@@ -286,7 +286,7 @@ const StepResult = (props) => {
         if(rowData.test_results){
             setResults(rowData.test_results)
         }
-        
+        setSelectedEntrance(rowData)
         setOpenAnswer(true)
     }
     function handleCloseAnswerDialog(){
@@ -572,7 +572,7 @@ const StepResult = (props) => {
                                 handleCloseDialog={handleCloseAnswerDialog}
                                 answers = {answers}
                                 results = {results}
-                            />  
+                            />
                             <StatusDialog
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
