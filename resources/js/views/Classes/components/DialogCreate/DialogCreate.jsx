@@ -371,7 +371,7 @@ class DialogCreate extends React.Component {
             code : this.state.code,
             name : this.state.name,
             config : JSON.stringify(this.state.config.map(c => {
-                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: c.date.value}
+                return {from: c.from/1000, to: c.to/1000, teacher: c.teacher, room: c.room, date: this.state.days[c.date.value]}
             })),
             open_date : this.state.open_date.getTime()/1000,
             note : (this.state.note)?this.state.note:'',
@@ -477,7 +477,6 @@ class DialogCreate extends React.Component {
         })
     }
     onChangeDay = (i, value) => {
-        console.log(i)
         let current_class = i * this.state.session_per_class
         for(let a = 0; a < this.state.session_per_class ; a++){
             let current_node = current_class + a            

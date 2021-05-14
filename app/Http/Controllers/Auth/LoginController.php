@@ -45,6 +45,12 @@ class LoginController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password,  'isVerified' => 1])) {
             // Authentication passed...
+            $user = auth()->user();
+            if($request->year){
+                $user->wp_year = $request->year;
+                $user->save();
+            }
+            
             return redirect()->intended('/');
         }else{
             return response()->json('Mật khẩu không đúng hoặc tài khoản chưa được kích hoạt', 401);

@@ -130,7 +130,8 @@ class Classes extends React.Component{
           selectedClass: [],
           selectedRow: '',
           dialogType: '',
-          openCreateSession: false,          
+          openCreateSession: false,
+          isLoading: true,      
         }
     }
     
@@ -139,7 +140,8 @@ class Classes extends React.Component{
           .then(response => {    
                          
               this.setState({
-                  data: response.data
+                  data: response.data,
+                  isLoading: false,
               })
           })
           .catch(err => {
@@ -245,6 +247,7 @@ class Classes extends React.Component{
             <div className="root-class">
                 <ReactNotification />
                 <MaterialTable
+                      isLoading ={this.state.isLoading}
                       title="Danh sách lớp học"
                       data={this.state.data}
                       options={{
@@ -319,7 +322,7 @@ class Classes extends React.Component{
                         let conf = {date: '', from: '', to: '', teacher: '',room: ''}
                         conf.date = config.date.label
                         conf.teacher = config.teacher.label
-                        conf.room = config.room.label
+                        conf.room = (config.room) ? config.room.label : ''
                         conf.time = format(new Date(config.from*1000), 'H:mm') + " - " + format(new Date(config.to * 1000), 'H:mm')
                         return conf
                       })

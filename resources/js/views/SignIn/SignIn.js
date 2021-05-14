@@ -5,7 +5,11 @@ import validate from 'validate.js';
 import { withSnackbar } from 'notistack';
 import { makeStyles } from '@material-ui/styles';
 import ability from '../../config/ability'
-
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import {
   Grid,
   Button,
@@ -32,7 +36,7 @@ const schema = {
     length: {
       maximum: 128
     }
-  }
+  },
 };
 const quotes = [
   ['"Anyone who has never made a mistake has never tried anything new."', 'Albert Einstein'],
@@ -139,6 +143,9 @@ const useStyles = makeStyles(theme => ({
   },
   signInButton: {
     margin: theme.spacing(2, 0)
+  },
+  year: {
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -147,7 +154,9 @@ const SignIn = props => {
   
   const { history } = props;
 
-  const classes = useStyles();
+  const classes = useStyles(
+    
+  );
 
   const [formState, setFormState] = useState({
     isValid: false,
@@ -191,11 +200,11 @@ const SignIn = props => {
     let url = window.Laravel.baseUrl + "/login"
     const data = {
       email: formState.values.email,
-      password: formState.values.password
+      password: formState.values.password,
+      year: formState.values.year
     }
     axios.post(url, data)
       .then(response => {
-          // console.log(response.data)
           axios.get(window.Laravel.baseUrl + "/check-auth")
             .then(response => {
               auth.login()
@@ -302,13 +311,25 @@ const SignIn = props => {
                   helperText={
                     hasError('password') ? formState.errors.password : null
                   }
-                  label="Password"
+                  label="Mật khẩu"
                   name="password"
                   onChange={handleChange}
                   type="password"
                   value={formState.values.password || ''}
                   variant="outlined"
                 />
+                <FormControl variant="outlined" fullWidth className={classes.year}>
+                  <InputLabel id="demo-simple-select-outlined-label">Năm học</InputLabel>
+                  <Select
+                    value={formState.values.year  || '2020'}
+                    onChange={handleChange}
+                    name="year"
+                    label="Năm học"
+                  >
+                    <MenuItem value={2020}>Năm học 2020-2021</MenuItem>
+                    <MenuItem value={2021}>Năm học 2021-2022</MenuItem>
+                  </Select>
+                </FormControl>
                 <Button
                   className={classes.signInButton}
                   color="primary"
@@ -320,19 +341,7 @@ const SignIn = props => {
                 >
                   Đăng nhập ngay
                 </Button>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don't have an account?{' '}
-                  <Link
-                    component={RouterLink}
-                    to="/sign-up"
-                    variant="h6"
-                  >
-                    Sign up
-                  </Link>
-                </Typography>
+                
               </form>
             </div>
           </div>

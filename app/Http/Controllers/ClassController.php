@@ -333,14 +333,15 @@ class ClassController extends Controller
         $center_value = ($center_id == '-1')? NULL: $center_id;
         $course_operator = ($course_id == '-1')? '!=': '=';
         $course_value = ($course_id == '-1')? NULL: $course_id;
-
+        $wp_year = auth()->user()->wp_year;
         $result = Classes::where('center_id', $center_operator, $center_value)->
                         where('course_id', $course_operator, $course_value)->
+                        where('classes.year', $wp_year)->
                         where('classes.type', 'class')->
                         select('classes.id as id','classes.name as name','classes.code as code',
-                        'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                        'student_number','open_date','classes.active as status',
-                        'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
+                            'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                            'student_number','open_date','classes.active as status',
+                            'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
         $classes = $result->toArray();
@@ -376,6 +377,12 @@ class ClassController extends Controller
         $this->validate($request, $rules);
         $request = $request->toArray();
         $request['open_date'] = date('Y-m-d', $request['open_date']);
+        $year = date('Y', strtotime($request['open_date']));
+        $p_year = $year - 1;
+        $this_year = date('Y-m-d', strtotime('15-05-'.$year));
+        $previous_year = date('Y-m-d', strtotime('15-05-'.$p_year));
+        $request['year'] = $year;
+        if($request['open_date'] < $this_year && $request['open_date'] > $previous_year) $request['year'] = $p_year;
         $class = Classes::create($request);
 
         $result = Classes::where('classes.id', $class->id)->
@@ -408,6 +415,13 @@ class ClassController extends Controller
             $class->center_id = $request->center_id;
             $class->course_id = $request->course_id;
             $class->open_date = date('Y-m-d', strtotime($request->open_date));
+            $year = date('Y', strtotime($class->open_date));
+            $p_year = $year - 1;
+            $this_year = date('Y-m-d', strtotime('15-05-'.$year));
+            $previous_year = date('Y-m-d', strtotime('15-05-'.$p_year));
+            $class->year = $year;
+            if($class->open_date < $this_year && $class->open_date > $previous_year) $class->year  = $p_year;
+
             $class->online_id = $request->online_id;
             $class->password = $request->password;
             $class->save();
