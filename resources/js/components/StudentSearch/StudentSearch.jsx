@@ -82,7 +82,7 @@ const CustomOption = props => {
                     </Grid>                    
                 </Grid>
                 <Grid container spacing={2} className="search-grid">
-                    <Grid item md={6} sm={6}>
+                    <Grid item md={12} sm={12}>
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
                                 let cl = (c.pivot.status == 'active')? '' : ((c.pivot.status == 'droped') ? '#adadc9' : (c.pivot.status == 'waiting') ? '#b22222' : '#000000')
@@ -94,7 +94,7 @@ const CustomOption = props => {
                     </Grid>  
                     {
                         (data.entrance == "") ? "" : (
-                            <Grid item md={6} sm={6}>
+                            <Grid item md={12} sm={12}>
                                 <Typography variant="body2" component="p">
                                     <b>Ghi danh: </b>
                                     <Chip variant="outlined" color="secondary" label={data.entrance} size="small" />
@@ -142,7 +142,7 @@ const StudentSearch = props => {
             loadOptions={inputValue => throttleOptions((/\d/.test(inputValue))?inputValue.replace(/\s|[(]|[)]|[-]/g, '') : inputValue)}
             autosize={true}
             isClearable
-            placeholder={'Học sinh (tìm theo tên HS hoặc SĐT PH)'}
+            placeholder={'Tìm kiếm tên HS, SĐT hoặc EMAIL PH'}
             name="student_name"
             value = {student_name}
             onChange = {handleStudentChange}

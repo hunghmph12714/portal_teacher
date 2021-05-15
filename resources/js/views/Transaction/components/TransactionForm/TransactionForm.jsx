@@ -55,7 +55,7 @@ const ClassSelect = React.memo(props => {
     const [classes, setClasses] = useState([])
     useEffect(() => {
         const fetchdata = async() => {
-            var r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            var r = await axios.get(baseUrl + '/class/get-all/'+center+'/'+course)
             if(student){
                 r = await axios.post(baseUrl + '/class/student', {'student_id': student.value})
             }

@@ -17,7 +17,7 @@ const ClassSearch = React.memo(props => {
     const [classes, setClasses] = useState([])
     useEffect(() => {
         const fetchdata = async() => {
-            const r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
+            const r = await axios.get(baseUrl + '/class/get-all/'+center+'/'+course)
             setClasses(r.data.map(c => {
                     // console.log(c)
                     return {label: c.code + ' - ' +c.name, value: c.id}

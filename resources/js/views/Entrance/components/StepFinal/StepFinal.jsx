@@ -264,7 +264,7 @@ const StepFinal = (props) => {
             )
         }
         const fetchClass = async() => {
-            const c = await axios.get('/class/get/-1/-1')
+            const c = await axios.get('/class/get-all/-1/-1')
             setClasses(c.data.map(cl => {
                     return {label: cl.code, value: cl.id}
                 })

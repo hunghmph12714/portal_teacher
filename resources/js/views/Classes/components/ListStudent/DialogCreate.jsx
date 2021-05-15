@@ -103,7 +103,8 @@ class DialogCreate extends React.Component {
                 status: nextProps.student.status,
                 active_date: new Date(nextProps.student.entrance_date),
                 drop_date : (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
-                transfer_date: (nextProps.student.transfer_date) ? new Date(nextProps.student.transfer_date) : null,
+                transfer_date: (nextProps.student.drop_time) ? new Date(nextProps.student.drop_time) : null,
+                new_active_date: (nextProps.student.transfer_date) ? new Date(nextProps.student.transfer_date) : null,
                 drop_reason : (nextProps.student.stats)?nextProps.student.stats.drop_reason : null,
             })
         }

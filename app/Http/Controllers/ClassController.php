@@ -274,8 +274,9 @@ class ClassController extends Controller
                     if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
                         return response()->json('Vui lòng điền đầy đủ *', 442);
                     }
-                    $sc->transfer_date = date('Y-m-d', strtotime($request->transfer_date));
-                    $sc->drop_time = date('Y-m-d', strtotime($request->transfer_date));
+                    $sc->transfer_date = date('Y-m-d', strtotime($request->new_active_date));
+                    // print_r(date('Y-m-d', strtotime($request->transfer_date)) );
+                    $sc->drop_time = ($request->transfer_date) ?  date('Y-m-d', strtotime($request->transfer_date)) : date('Y-m-d');
                     $stats = ($sc->stats) ? $sc->stats : [];
                     $stats['transfer_reason'] = $request->transfer_reason;
                     $sc->stats = $stats; 
@@ -298,9 +299,6 @@ class ClassController extends Controller
                     $stats = ($sc->stats) ? $sc->stats : [];                    
                     $stats['drop_reason'] = $request->drop_reason;                  
                     $sc->stats = $stats;
-                }
-                else{
-                    $sc->drop_time = null;                
                 }
                 if($request->status == 'retain'){
                     // $sc->status = $request->status;
@@ -339,6 +337,33 @@ class ClassController extends Controller
                         where('classes.year', $wp_year)->
                         where('classes.type', 'class')->
                         select('classes.id as id','classes.name as name','classes.code as code',
+                            'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                            'student_number','open_date','classes.active as status',
+                            'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->get();
+        $classes = $result->toArray();
+        foreach($result as $key => $class){
+            $last_session = $class->sessions->last();            
+            if($last_session){
+                $classes[$key]['last_session'] = $last_session->date;
+            }
+            else{
+                $classes[$key]['last_session'] = '';
+            }
+        }
+        return response()->json($classes);
+    }
+    protected function getAllClass($center_id, $course_id){
+        $center_operator = ($center_id == '-1')? '!=': '=';
+        $center_value = ($center_id == '-1')? NULL: $center_id;
+        $course_operator = ($course_id == '-1')? '!=': '=';
+        $course_value = ($course_id == '-1')? NULL: $course_id;
+
+        $result = Classes::where('center_id', $center_operator, $center_value)->
+                        where('course_id', $course_operator, $course_value)->
+                        where('classes.type', 'class')->
+                        select('classes.id as id',DB::raw('CONCAT(classes.year,": ",classes.code)  AS code'),'classes.name as name',
                             'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
                             'student_number','open_date','classes.active as status',
                             'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->

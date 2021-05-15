@@ -214,7 +214,7 @@ class StudentClassObserver
             if($studentClass->getOriginal('status') == 'active'){
                 if($studentClass->status == 'droped' || $studentClass->status == 'transfer'){
                     $sessions = Session::where('class_id', $studentClass->class_id)
-                                        ->whereDate('date','>=', $studentClass->drop_time)->get();
+                                        ->where('date','>=', date('Y-m-d', strtotime($studentClass->drop_time)))->get();
                     $sessions_id = array_column($sessions->toArray(), 'id');
                     // Xóa điểm danh
                     $student->sessions()->detach($sessions_id);

@@ -201,7 +201,7 @@ const SignIn = props => {
     const data = {
       email: formState.values.email,
       password: formState.values.password,
-      year: formState.values.year
+      year: (!formState.values.year) ? '2020' : formState.values.year
     }
     axios.post(url, data)
       .then(response => {
@@ -297,7 +297,7 @@ const SignIn = props => {
                   helperText={
                     hasError('email') ? formState.errors.email[0] : null
                   }
-                  label="Email address"
+                  label="Địa chỉ email"
                   name="email"
                   onChange={handleChange}
                   type="text"

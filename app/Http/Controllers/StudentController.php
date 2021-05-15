@@ -133,7 +133,16 @@ class StudentController extends Controller
     }
     public function findStudents($key){
         $s = [];
-        if(ctype_digit($key)){
+        if(strpos($key, '@') !== false){
+            $s = Parents::where('parents.email', 'LIKE', '%'.$key.'%')->select(
+                'students.id as sid','students.fullname as s_name','students.fee_email_note','school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
+                'parents.id as pid', 'parents.fullname as p_name', 'parents.phone as p_phone','parents.email as p_email','parents.note','parents.alt_fullname','parents.alt_email','parents.alt_phone',
+                'relationships.id as r_id','relationships.name as r_name','relationships.color'
+            )->leftJoin('students','parents.id','students.parent_id')
+            ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
+            ->limit(20)->get()->toArray();
+        }
+        else if(ctype_digit($key)){
             //check parent phone
             $s = Parents::where('parents.phone', 'LIKE', '%'.$key.'%')->select(
                 'students.id as sid','students.fullname as s_name','students.fee_email_note','school', 'students.dob as dob','students.grade as grade','students.email as s_email','students.phone as s_phone','students.gender',
@@ -142,7 +151,6 @@ class StudentController extends Controller
             )->leftJoin('students','parents.id','students.parent_id')
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
             ->limit(20)->get()->toArray();
-            
         }
         else{
             //check student full name
