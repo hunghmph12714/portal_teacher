@@ -3,9 +3,11 @@ import { format } from 'date-fns'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import Typography from '@material-ui/core/Typography';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import DialogCreate from './DialogCreate'
+import DialogTransfer from './DialogTransfer'
 import {
     Menu,
     MenuItem,
@@ -37,7 +39,8 @@ const ListStudent = (props) => {
     const [selected_data, setSelectedData] = useState([]);
 
     const[ openUpload, setOpenUpload ] = useState(false);
-
+    const[ openStatus, setOpenStatus] = useState(false);
+    // const[ ]
     useEffect(() => {
         const fetchdata = async() => {
             const response = await axios.post(baseUrl + '/student/get', {class_id: class_id})
@@ -56,6 +59,15 @@ const ListStudent = (props) => {
         }
         fetchdata()
     }, [reload])
+    function openStatusDialog(rows){
+        setOpenStatus(true)
+        setSelectedData(rows)
+    }
+    function handleCloseStatus(){
+        setOpenStatus(false)
+        setSelectedData([])
+        setReload(!reload)
+    }
     function handleOpenUpload(rowData){
         setOpenUpload(true)
         setSelectedData(rowData)
@@ -88,6 +100,7 @@ const ListStudent = (props) => {
                     grouping: false,
                     filtering: true,
                     exportButton: true,
+                    selection: true,
                     paging: false,
                     rowStyle: rowData => {
                         return {padding: '0px',}                         
@@ -110,10 +123,10 @@ const ListStudent = (props) => {
                         console.log(data)
                         const builder = new CsvBuilder('DSHS lớp '+ class_name + '.csv');
                         builder
-                        .setDelimeter(',')
-                        .setColumns(cols)
-                        .addRows(data)
-                        .exportFile();
+                            .setDelimeter(',')
+                            .setColumns(cols)
+                            .addRows(data)
+                            .exportFile();
                     }
                 }}
                 onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
@@ -125,6 +138,15 @@ const ListStudent = (props) => {
                             text: 'Thêm học sinh',
                             onClick: (event) => {
                                 openCreateDialog()
+                            },
+                        },
+                        {
+                            icon: () => <DoubleArrowIcon />,
+                            tooltip: 'Chuyển lớp',
+                            isFreeAction: false,
+                            text: 'Chuyển lớp',
+                            onClick: (event, rows) => {
+                                openStatusDialog(rows)
                             },
                         },
                     ]}
@@ -360,6 +382,12 @@ const ListStudent = (props) => {
                 class_id = {class_id}
                 type = {type}
                 student = {selected_data}
+            />
+            <DialogTransfer
+                open = {openStatus}
+                handleClose = {handleCloseStatus}
+                class_id = {class_id}
+                students = {selected_data}
             />
             <DialogUploadAvatar
                 open = {openUpload}

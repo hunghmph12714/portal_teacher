@@ -232,7 +232,6 @@ const ListStudent = (props) => {
     const [sessions, setSessions] = useState([])
     const [openDialogNew, setOpenNew] = useState(false)
 
-
     useEffect(() => {
         axios.post(baseUrl + '/session/get', {class_id: class_id, from_date: -1, to_date: -1})
             .then(response => {
@@ -266,7 +265,7 @@ const ListStudent = (props) => {
     }
     function openCreateDialog(){
         setType('create')
-        setOpen(true)        
+        setOpen(true)
     }
     function closeCreateDialog(){
         setOpen(false)

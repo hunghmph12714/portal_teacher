@@ -158,4 +158,17 @@ class UserController extends Controller
         User::create($input);
         return response()->json('ok');
     }
+    protected function getYear(){
+        $user = auth()->user()->wp_year;
+        return response()->json($user);
+    }
+    protected function changeYear(Request $request){
+        $rules = ['year' => 'required'];
+        $this->validate($request, $rules);
+        
+        $user = auth()->user();
+        $user->wp_year = $request->year;
+        $user->save();
+        return response()->json('ok');
+    }
 }

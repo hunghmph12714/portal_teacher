@@ -201,10 +201,6 @@ class Users extends React.Component{
                     title = "Quản lý người dùng"
                     columns = {
                         [
-                            { title: 'Avatar', field: 'avatar',
-                                render: rowData => <img src = {rowData.avatar} style={{width: 35, borderRadius: '50%'}}/> ,
-                                editable: false,
-                            },
                             { title: 'Họ tên', field: 'name' },
                             { title: 'Email', field: 'email' },
                             { title: 'Số điện thoại', field: 'phone' },

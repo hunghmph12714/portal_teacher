@@ -327,6 +327,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/user/uploadAvatar', 'UserController@updateAvatar');
     Route::post('/user/update-profile', 'UserController@updateProfile');
     Route::post('/user/password', 'UserController@updatePassword');
+    Route::get('/user/get-year', 'UserController@getYear');
+    Route::post('/user/change-year', 'UserController@changeYear');
     Route::get('/settings', function(){
         return view('welcome');
     });
@@ -354,6 +356,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/class/getbyid/{class_id}', 'ClassController@getClassById');
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
+    Route::post('/class/transfer-students', 'ClassController@transferStudents');
 
     Route::post('/class/active-student', 'ClassController@getActiveStudent');
     

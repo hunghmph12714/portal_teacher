@@ -326,6 +326,34 @@ class ClassController extends Controller
             }
         }
     }
+    protected function transferStudents(Request $request){
+        foreach($request->students as $student){
+            $student_id = $student['student_id'];
+            $sc = StudentClass::where('student_id', $student_id)->where('class_id', $request->class_id)->first();
+            $sc->status = $request->status;
+            if(!$request->transfer_date || !$request->new_active_date || !$request->transfer_class || !array_key_exists('value', $request->transfer_class)){
+                return response()->json('Vui lòng điền đầy đủ *', 442);
+            }
+            $sc->transfer_date = date('Y-m-d', strtotime($request->new_active_date));
+            $sc->drop_time = ($request->transfer_date) ?  date('Y-m-d', strtotime($request->transfer_date)) : date('Y-m-d');
+            $stats = ($sc->stats) ? $sc->stats : [];
+            $stats['transfer_reason'] = $request->transfer_reason;
+            $sc->stats = $stats; 
+            //Check exsisting studnet in class 
+            $check_sc = StudentClass::where('student_id', $student_id)->where('class_id', $request->transfer_class['value'])->first();
+            if($check_sc){
+                return response()->json('Học sinh đã tồn tại trong lớp mới', 442);
+            }else{
+                
+                $new_sc['student_id'] = $student_id;
+                $new_sc['class_id'] = $request->transfer_class['value'];
+                $new_sc['status'] = 'active';
+                $new_sc['entrance_date'] = date('Y-m-d', strtotime($request->new_active_date));   
+                StudentClass::create($new_sc);
+            }
+            $sc->save();
+        }
+    }
     protected function getClass($center_id, $course_id){
         $center_operator = ($center_id == '-1')? '!=': '=';
         $center_value = ($center_id == '-1')? NULL: $center_id;
