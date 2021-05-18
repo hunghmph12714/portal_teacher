@@ -285,6 +285,12 @@ class DiscountController extends Controller
         $to_d = '2021-07-30';
         $transactions = Transaction::where('discount_id', '-4')->forceDelete();
         $transactions = Transaction::where('discount_id', '-5')->forceDelete();
+
+        $sessions = Session::where('percentage','-1')->get();
+        foreach($sessions as $session){
+            $session->percentage = NULL;
+            $session->save();
+        }
         $classes = Classes::where('type', 'class')->where('year', '2021')->where('active', 1)->get();
         foreach($classes as $class){
             $from = date('Y-m-d', strtotime($from_d));
