@@ -290,8 +290,10 @@ class DiscountController extends Controller
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->where('percentage', '!=', '-1')->get(); 
-            // print_r($sessions->toArray());        
+            print_r($sessions->toArray());        
             foreach($sessions as $session){
+                $session->percentage = -1;
+                $session->save();
                 $students = $session->students;
                 foreach($students as $student){
                     //Check current discount
