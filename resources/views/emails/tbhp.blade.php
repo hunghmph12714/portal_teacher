@@ -95,16 +95,16 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
     *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
 <br/><br>
-@if($result['center_id'] == 5)
+<!-- @if($result['center_id'] == 5)
    
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
     Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0962136604'>0366.765.565</a>để được giải đáp kịp thời. <br/>
 
-<!-- @else
+@else
 <h3></b>Hiện tại hệ thống tài khoản ngân hàng của trung tâm đang gặp sự cố, quý Phụ Huynh vui lòng nộp tiền mặt tại quầy lễ tân.</b></h3><br/>
-Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>0366.765.565</a>để được giải đáp kịp thời. <br/> -->
-@endif
+Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>0366.765.565</a>để được giải đáp kịp thời. <br/>
+@endif -->
 
 <!-- <strong>THÔNG TIN THANH TOÁN:</strong> <br/> -->
 
