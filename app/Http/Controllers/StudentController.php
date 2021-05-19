@@ -799,7 +799,7 @@ class StudentController extends Controller
         $classes = implode(', ', $classes);
         $months = implode(', ', $months);
         $months = date('m', strtotime($request->from)). ' - '. date('m', strtotime($request->to));
-        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months.' năm học 2020-2021';
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months.' năm học 2021-2022';
         $content = $classes.'_'.$this->vn_to_str($student_name);        
         // print_r($data);d
         $max_date = date('d/m/Y', strtotime(date('Y-m-01', strtotime($request->from)) . ' + 9 days'));
@@ -901,7 +901,7 @@ class StudentController extends Controller
         }
         $classes = implode(',', $classes);
         $months = date('m', strtotime($request->from)). ' - '. date('m', strtotime($request->to));
-        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months.' năm học 2020-2021';
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months.' năm học 2021-2022';
         $content = $classes.'_'.$this->vn_to_str($student_name);
         
         

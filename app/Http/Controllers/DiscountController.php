@@ -383,7 +383,7 @@ class DiscountController extends Controller
                         $total_amount += $transaction['amount'];
                         $sessions[$transaction['session_id']] = ['amount' => $transaction['amount']];
                     }
-
+                    
                     Transaction::find($transaction['id'])->forceDelete();
                 }
                 if($total_amount > 0){
