@@ -220,7 +220,7 @@ class PaperController extends Controller
         foreach($request->transactions as $key => $transaction){
             if($key == 0){
                 $acc = Account::find($transaction['debit']['id']);
-                if($acc->level_1 == '1111'){
+                if($acc->level_1 == '111'){
                     $p['method'] = 'TM';
                     $max_receipt_number = Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number')!="" ? Paper::where('center_id', $request->center['value'])->where('method', 'TM')->max('receipt_number') : 0;
                     $p['receipt_number'] = $max_receipt_number + 1;
@@ -278,7 +278,7 @@ class PaperController extends Controller
                     $td = Transaction::find($t['id']);
                     if($td){    
                         $account = Account::find($t['debit']['value']);
-                        if($account->level_1 == '1111'){
+                        if($account->level_1 == '111'){
                             $method = 'TM';
                             
                         }
