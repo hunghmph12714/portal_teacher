@@ -360,6 +360,7 @@ class DiscountController extends Controller
             }
         }
     }
+    
     protected function briefDiscount(){
         $classes = Classes::where('type', 'class')->where('active', 1)->get();
         foreach($classes as $class){

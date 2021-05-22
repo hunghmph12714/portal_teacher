@@ -91,6 +91,15 @@ const ListStudent = (props) => {
         setType('edit')
         setSelectedData(rowData)
     }
+    function handleDeleteStudent(rowData){
+        axios.post('/class/delete-student', rowData)
+            .then(response => {
+                setReload(!reload)
+            })
+            .catch( err => {
+
+            })
+    }
     return (
         <React.Fragment>
             <MaterialTable
@@ -196,9 +205,9 @@ const ListStudent = (props) => {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Xóa học sinh" arrow>
-                                    <IconButton disabled onClick={() => {
+                                    <IconButton onClick={() => {
                                     if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                        this.handleDeactivateClass(rowData.id, rowData.tableData.id)}
+                                        handleDeleteStudent(rowData)}
                                     }>
                                     <DeleteForeverIcon fontSize='inherit' />
                                     </IconButton>

@@ -1207,5 +1207,8 @@ class ClassController extends Controller
 
         }
     }
-    
+    protected function deleteStudent(Request $request){
+        // $sc = StudentClass::Where('class_id', $request->class_id)->where('student_id', $request->id)->
+        StudentClass::find($request->sc_id)->forceDelete();
+    }
 }

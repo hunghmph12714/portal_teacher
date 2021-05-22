@@ -360,6 +360,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('/class/active-student', 'ClassController@getActiveStudent');
     
+    Route::post('/class/delete-student','ClassController@deleteStudent');
     Route::get('/center/report/{id}', 'ClassController@getCenterReport');
 
     
