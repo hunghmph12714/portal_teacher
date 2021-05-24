@@ -2725,3 +2725,6 @@
 [2021-01-21 13:51:29][2119] Processed:  App\Jobs\SendEventReminder
 [2021-01-21 13:51:29][2120] Processing: App\Jobs\SendEventReminder
 [2021-01-21 13:51:30][2120] Processed:  App\Jobs\SendEventReminder
+Composer detected issues in your platform:
+
+Your Composer dependencies require the following PHP extensions to be installed: fileinfo

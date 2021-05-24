@@ -283,20 +283,22 @@ class DiscountController extends Controller
     protected function generateDiscount(){
         $from_d = '2021-05-17';
         $to_d = '2021-06-30';
-        $transactions = Transaction::where('discount_id', '-4')->forceDelete();
-        $transactions = Transaction::where('discount_id', '-5')->forceDelete();
+        // $transactions = Transaction::where('discount_id', '-4')->forceDelete();
+        // $transactions = Transaction::where('discount_id', '-5')->forceDelete();
 
-        $sessions = Session::where('percentage','-1')->get();
-        foreach($sessions as $session){
-            $session->percentage = NULL;
-            $session->save();
-        }
-        $classes = Classes::where('type', 'class')->where('year', '2021')->where('active', 1)->get();
+        // $sessions = Session::where('percentage','-1')->get();
+        // foreach($sessions as $session){
+        //     $session->percentage = NULL;
+        //     $session->save();
+        // }
+        $classes = Classes::where('type', 'class')->where('year', '2021')->where('active', 1)->whereNULL('online_id')->get();
         foreach($classes as $class){
+
+            print_r($class->code);
+            echo "</br>";
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
-            print_r($sessions->toArray());
             foreach($sessions as $session){
                 $session->percentage = -1;
                 $session->save();
@@ -305,7 +307,6 @@ class DiscountController extends Controller
                     //Check current discount
                     $student_class = StudentClass::Where('student_id', $student->id)->where('class_id', $class->id)->first()->id;
                     $d = Discount::Where('student_class_id', $student_class)->first();
-                    
                     if($d){
                         if($d->expired_at < $from_d || $d->active_at > $to_d){ 
                             continue;
@@ -337,8 +338,6 @@ class DiscountController extends Controller
                                 $tr->tags()->syncWithoutDetaching([9]);
                             }
                         }
-                        // echo "<pre>";
-                        // print_r($d->toArray());
                     }else{
                         //Tao uu dai 10%
                         $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
@@ -358,6 +357,8 @@ class DiscountController extends Controller
                     
                 }
             }
+            $class->online_id = -1;
+            $class->save();
         }
     }
     
