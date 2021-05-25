@@ -281,19 +281,24 @@ class DiscountController extends Controller
     }
 
     protected function generateDiscount(){
-        $from_d = '2021-05-17';
+        $from_d = '2021-05-04';
         $to_d = '2021-06-30';
+        
+        // $transactions = Transaction::where('discount_id', '-3')->forceDelete();
+        // $transactions = Transaction::where('discount_id', '-2')->forceDelete();
         // $transactions = Transaction::where('discount_id', '-4')->forceDelete();
         // $transactions = Transaction::where('discount_id', '-5')->forceDelete();
 
-        // $sessions = Session::where('percentage','-1')->get();
-        // foreach($sessions as $session){
-        //     $session->percentage = NULL;
-        //     $session->save();
-        // }
-        $classes = Classes::where('type', 'class')->where('year', '2021')->where('active', 1)->whereNULL('online_id')->get();
-        foreach($classes as $class){
+        // $sessions = Session::whereNotNull('id')->update(['percentage' => NULL]);
 
+        // $classes = Classes::where('online_id', '-1')->update(['online_id' => NULL]);
+
+        $classes = Classes::where('type', 'class')->where('active', 1)->where('online_id','')->get();
+        // $class = Classes::find(115);
+        // echo "<pre>";
+        // print_r($classes->toArray());
+        // echo "</pre>";
+        foreach($classes as $class){
             print_r($class->code);
             echo "</br>";
             $from = date('Y-m-d', strtotime($from_d));
@@ -363,8 +368,10 @@ class DiscountController extends Controller
     }
     
     protected function briefDiscount(){
-        $classes = Classes::where('type', 'class')->where('active', 1)->get();
+        $classes = Classes::where('type', 'class')->where('active', 1)->offset(250)->limit(50)->get();
         foreach($classes as $class){
+            echo $class->code;
+            echo "<br>";
             // print_r($sessions->toArray());       
             $students = $class->students;
             foreach($students as $student){
@@ -385,8 +392,11 @@ class DiscountController extends Controller
                         $total_amount += $transaction['amount'];
                         $sessions[$transaction['session_id']] = ['amount' => $transaction['amount']];
                     }
-                    
-                    Transaction::find($transaction['id'])->forceDelete();
+                    $t = Transaction::find($transaction['id']);
+                    if($t){
+                        $t->forceDelete();
+                    }
+                    // Transaction::find($transaction['id'])->forceDelete();
                 }
                 if($total_amount > 0){
                     $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
