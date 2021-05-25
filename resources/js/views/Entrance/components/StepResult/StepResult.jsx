@@ -25,6 +25,7 @@ import yellow from '@material-ui/core/colors/yellow';
 import { EditEntrance } from '../../EditEntrance';
 import CreateIcon from '@material-ui/icons/Create';
 import { CsvBuilder } from 'filefy';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const lang = {
     body: {
@@ -199,6 +200,17 @@ const StepResult = (props) => {
     const [results, setResults] = useState([])
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [open_edit, setOpenEdit] = useState(false);
+    
+    function handleDeleteEntrance(rowData){
+        axios.post('/entrance/delete', {id: rowData.eid})
+            .then(resposne => {
+                enqueueSnackbar('Đã xoá', {variant: 'success'});
+                fetchdata()
+            })
+            .catch( err => {
+
+            })
+    }
     function handleOpenEditDialog(rowData){
         setOpenEdit(true)
         setSelectedEntrance(rowData)
@@ -407,6 +419,14 @@ const StepResult = (props) => {
                                         text: 'Cần tư vấn',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
                                     },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}
@@ -476,6 +496,14 @@ const StepResult = (props) => {
                                         isFreeAction: false,
                                         text: 'Cần tư vấn',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
+                                    },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
                                     },
                                 ]}
                                 localization={lang}
@@ -547,6 +575,14 @@ const StepResult = (props) => {
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
+                                    },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
                                     },
                                 ]}
                                 localization={lang}

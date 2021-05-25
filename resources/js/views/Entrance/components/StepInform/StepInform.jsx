@@ -19,6 +19,7 @@ import { Can } from '../../../../Can';
 import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } from '../../components';
 import { EditEntrance } from '../../EditEntrance';
 import CreateIcon from '@material-ui/icons/Create';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import { useSnackbar } from 'notistack';
 const lang = {
@@ -229,6 +230,18 @@ const StepInform = (props) => {
     const [open_class, setOpenClass] = useState(false)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [open_edit, setOpenEdit] = useState(false);
+
+    
+    function handleDeleteEntrance(rowData){
+        axios.post('/entrance/delete', {id: rowData.eid})
+            .then(resposne => {
+                enqueueSnackbar('Đã xoá', {variant: 'success'});
+                fetchdata()
+            })
+            .catch( err => {
+
+            })
+    }
     function handleOpenEditDialog(rowData){
         setOpenEdit(true)
         setSelectedEntrance(rowData)
@@ -480,6 +493,14 @@ const StepInform = (props) => {
                                         text: 'Thất bại ',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}
@@ -553,6 +574,14 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Thất bại ',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
+                                    },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
                                     },
                                 ]}
                                 localization={lang}
@@ -632,6 +661,14 @@ const StepInform = (props) => {
                                                 handleFailClick(rowData)
                                             },
                                     },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}
@@ -684,6 +721,14 @@ const StepInform = (props) => {
                                         isFreeAction: false,
                                         text: 'Thất bại ',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
+                                    },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
                                     },
                                 ]}
                                 localization={lang}
