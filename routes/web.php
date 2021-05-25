@@ -226,6 +226,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/discount/id', 'DiscountController@id');
 
             Route::get('/discount/all', 'DiscountController@allDiscount');
+            Route::get('/discount/gen/{class_id}', 'DiscountController@generateDiscountClass');
         //Paper 
             Route::get('/payment', function(){
                 return view('welcome');

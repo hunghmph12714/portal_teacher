@@ -177,8 +177,7 @@ class DialogTransfer extends React.Component {
                         </Grid>
                         <Grid item md={6} sm={12}>
                             <div className="date-time">
-                                                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
                                     <KeyboardDatePicker
                                         autoOk
                                         minDate = {this.state.active_date}
