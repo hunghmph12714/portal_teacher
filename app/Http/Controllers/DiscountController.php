@@ -441,6 +441,8 @@ class DiscountController extends Controller
             
             $transactions = Transaction::where('discount_id', '-4')->where('class_id', $class_id)->forceDelete();
             $transactions = Transaction::where('discount_id', '-5')->where('class_id', $class_id)->forceDelete();
+            $transactions = Transaction::where('discount_id', '-3')->where('class_id', $class_id)->forceDelete();
+            $transactions = Transaction::where('discount_id', '-2')->where('class_id', $class_id)->forceDelete();
 
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
