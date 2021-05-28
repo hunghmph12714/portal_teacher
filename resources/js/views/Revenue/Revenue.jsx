@@ -141,12 +141,18 @@ class Revenue extends React.Component{
                             1: {text: 'Lớp',bold: true, locked: true, stroke:'black'},
                             2: {text: 'Ngày',bold: true, locked: true, stroke:'black' },
                             3: {text: 'Giáo viên', bold:true, locked: true, stroke:'black'},
-                            4: {text: 'Có mặt', bold:true, locked: true, stroke:'black'},                           
-                            5: {text: 'Chưa điểm danh', bold:true, locked: true,stroke:'black'},            
-                            6: {text: 'Có phép', bold:true, locked: true,stroke:'black'},               
-                            7: {text: 'Không phép', bold:true, locked: true,stroke:'black'},               
-                            8: {text: 'Doanh thu', bold:true, locked: true,stroke:'black'},               
-                            9: {text: 'Miễn giảm', bold:true, locked: true,stroke:'black'},               
+                            4: {text: 'Thời lượng', bold:true, locked: true, stroke:'black'},
+                            5: {text: 'Có mặt', bold:true, locked: true, stroke:'black'},                           
+                            6: {text: 'Chưa điểm danh', bold:true, locked: true,stroke:'black'},            
+                            7: {text: 'Có phép', bold:true, locked: true,stroke:'black'},               
+                            8: {text: 'Không phép', bold:true, locked: true,stroke:'black'},               
+                            9: {text: 'Tổng thu', bold:true, locked: true,stroke:'black'},               
+                            10: {text: 'Miễn giảm', bold:true, locked: true,stroke:'black'},               
+                            11: {text: 'Tỷ lệ', bold:true, locked: true,stroke:'black'},               
+                            12: {text: 'Tiền giờ', bold:true, locked: true,stroke:'black'},               
+                            13: {text: 'Lương tối thiểu', bold:true, locked: true,stroke:'black'},               
+                            14: {text: 'Bước nhảy', bold:true, locked: true,stroke:'black'},               
+                            15: {text: 'Tạm tính', bold:true, locked: true,stroke:'black'},               
                         }
                     },
                     id: 1,
@@ -156,7 +162,7 @@ class Revenue extends React.Component{
                             top: 1,
                             bottom: data.length + 1,
                             left: 1,
-                            right: 9,
+                            right: 14,
                             }
                         }
                     ],
@@ -170,16 +176,23 @@ class Revenue extends React.Component{
                     sheet.cells[rowIndex][1] = {text: d.class }
                     sheet.cells[rowIndex][2] = {text: d.date }
                     sheet.cells[rowIndex][3] = {text: d.teacher }
-                    sheet.cells[rowIndex][4] = {text: d.present }
-                    sheet.cells[rowIndex][5] = {text: d.holding }
-                    sheet.cells[rowIndex][6] = {text: d.absence }
-                    sheet.cells[rowIndex][7] = {text: d.n_absence }
-                    sheet.cells[rowIndex][8] = {text: d.revenue,  horizontalAlign: 'right' ,datatype: 'number', format: '#,##0'}
-                    sheet.cells[rowIndex][9] = {text: d.discount,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][4] = {text: d.diff }
+                    sheet.cells[rowIndex][5] = {text: d.present }
+                    sheet.cells[rowIndex][6] = {text: d.holding }
+                    sheet.cells[rowIndex][7] = {text: d.absence }
+                    sheet.cells[rowIndex][8] = {text: d.n_absence }
+                    sheet.cells[rowIndex][9] = {text: d.revenue,  horizontalAlign: 'right' ,datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][10] = {text: d.discount,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][11] = {text: d.percentage,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][12] = {text: d.perhour,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][13] = {text: d.basic,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][14] = {text: d.jump,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][15] = {text: d.pretax,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
                 }
                 sheet.cells[2 + data.length] =  sheet.cells[2 + data.length] ?? {}
-                sheet.cells[2 + data.length][8] = { text: '=SUM(H2:H'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
                 sheet.cells[2 + data.length][9] = { text: '=SUM(I2:I'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
+                sheet.cells[2 + data.length][10] = { text: '=SUM(J2:J'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
+                sheet.cells[2 + data.length][15] = { text: '=SUM(O2:O'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
                 // console.log(sheet)
                 this.setState({sheet: [sheet]})
             })

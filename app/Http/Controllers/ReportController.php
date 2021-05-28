@@ -135,10 +135,26 @@ class ReportController extends Controller
     public function getRevenueSession(Session $session){
         $teacher = Teacher::find($session->teacher_id);
         $class = Classes::find($session->class_id);
-        $result = ['present' => 0, 'holding' => 0, 'absence' => 0, 'n_absence' => 0, 'revenue' => 0, 'discount'=>0 , 'date' => date('d-m-Y', strtotime($session->date)), 'teacher' => ($teacher)?$teacher->name:'', 'class'=>($class)?$class->code:''];
+        $result = ['present' => 0, 'holding' => 0, 'absence' => 0, 'n_absence' => 0, 'revenue' => 0, 'discount'=>0 , 
+            'date' => date('d-m-Y', strtotime($session->date)), 
+            'teacher' => ($teacher)?$teacher->name:'', 
+            'class'=>($class)?$class->code:'', 
+            'percentage' => ($teacher->percent_salary) ? $teacher->percent_salary: 0, 
+            'perhour' => ($teacher->salary_per_hour) ? $teacher->salary_per_hour: 0,
+            'basic' => 0,
+            'jump' => 0,
+            'personal_tax' => 0,
+            'pretax' => 0];
         if($session){
-            
+            //Thoi luong ca hoc
+
+            $from = strtotime($session->from);
+            $to = strtotime($session->to);
+            $diff = ($to - $from)/3600;
             $students = $session->students;
+            $result['diff'] = round($diff, 2);
+
+
             // echo "<pre>";
             // print_r($students->toArray());
             foreach($students as $s){
@@ -177,8 +193,8 @@ class ReportController extends Controller
                 if($s->pivot['attendance'] == 'n_absence'){
                     $result['n_absence']++;
                 }
-
             }
+            $result['pretax'] = $result['revenue']/100*$result['percentage'] + $result['diff']*$result['perhour'];
         }
         return $result;
     }
