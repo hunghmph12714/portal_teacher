@@ -641,7 +641,7 @@ class SessionController extends Controller
                 $session->fee = $request->fee;
             }
             //CHeck student
-            $new_students = ($request->students) ? array_column(json_decode($request->students), 'value') : [];
+            $new_students = (! $request->students) ? array_column(json_decode($request->students), 'value') : [];
             $old_students = array_column($session->students->toArray(), 'id');
             // Các học sinh được thêm mới
             $arr_1 = array_diff($new_students, $old_students);
