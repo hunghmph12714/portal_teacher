@@ -752,7 +752,7 @@ class PaperController extends Controller
                 if($t['credit_level_2'] == '1111') continue;
                 switch ($t['credit_level_2']) {
                     case '1111':
-                        continue;
+                        continue 2;
                         break;
                     case '1123':
                         array_push($arr, "'26856688");
