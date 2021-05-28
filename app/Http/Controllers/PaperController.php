@@ -642,7 +642,7 @@ class PaperController extends Controller
                 array_push($arr, '');
                 switch ($t['debit_level_2']) {
                     case '1111':
-                        continue;
+                        continue 2;
                         break;
                     case '1123':
                         array_push($arr, "'26856688");
