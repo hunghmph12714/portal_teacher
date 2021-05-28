@@ -43,6 +43,7 @@ class Classes extends Model
     }
     public function activeStudentsDate($date){
         return $this->belongsToMany('App\Student','student_class','class_id','student_id')
+            ->wherePivot('status', 'active')
             ->withPivot('id','status', 'entrance_date','stats');
     }
     public function dropedStudents(){
