@@ -308,8 +308,7 @@ class StudentController extends Controller
                             ->leftJoin('sessions', 'transactions.session_id','sessions.id')
                             ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.time', 'ASC')->orderBy('classes.id','DESC')
                             ->get();
-                            echo "<pre>";
-        print_r($transactions->toArray());
+                        
         foreach($transactions as $key => $t){
             if($t->debit != $acc->id && $t->credit != $acc->id) continue;
             $month = Date('m-Y', strtotime($t->time));     
