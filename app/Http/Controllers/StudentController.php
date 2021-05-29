@@ -934,38 +934,38 @@ class StudentController extends Controller
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
                 $password = 'Map51152';
             }
-            try{
+            // try{
                 $backup = Mail::getSwiftMailer();
 
-                // Setup your outlook mailer
-                $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-                $transport->setUsername($mail);
-                $transport->setPassword($password);
-                // Any other mailer configuration stuff needed...
+                // // Setup your outlook mailer
+                // $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+                // $transport->setUsername('info@vietelite.edu.vn');
+                // $transport->setPassword('V33du2020');
+                // // Any other mailer configuration stuff needed...
                 
-                $outlook = new \Swift_Mailer($transport);
+                // $outlook = new \Swift_Mailer($transport);
 
-                // Set the mailer as gmail
-                Mail::setSwiftMailer($outlook);
-            
+                // // Set the mailer as gmail
+                // Mail::setSwiftMailer($outlook);
+                // print_r($backup);
                 // Send your message
                 Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
                     $message->to($to_email, $to_name)
-                            ->to('webmaster@vietelite.edu.vn')
+                            ->to($mail)
                             ->subject($result['title'])
                             ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
                     $message->from($mail,'VIETELITE EDUCATION CENTER');
                 });
 
                 // Restore your original mailer
-                Mail::setSwiftMailer($backup);
+                // Mail::setSwiftMailer($backup);
                 return response()->json(200);
             
-            }
-            catch(\Exception $e){
-                // Get error here
-                return response()->json(418);
-            }
+            // }
+            // catch(\Exception $e){
+            //     // Get error here
+            //     return response()->json(418);
+            // }
         }
         
         // echo "<pre>";
