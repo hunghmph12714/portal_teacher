@@ -366,7 +366,7 @@ class ClassController extends Controller
                         where('classes.type', 'class')->
                         select('classes.id as id','classes.name as name','classes.code as code',
                             'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                            'student_number','open_date','classes.active as status',
+                            'student_number','open_date','classes.active as status', 'classes.cost',
                             'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
@@ -393,7 +393,7 @@ class ClassController extends Controller
                         where('classes.type', 'class')->
                         select('classes.id as id',DB::raw('CONCAT(classes.year,": ",classes.code)  AS code'),'classes.name as name',
                             'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                            'student_number','open_date','classes.active as status',
+                            'student_number','open_date','classes.active as status', 'classes.cost as cost',
                             'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->get();
@@ -413,7 +413,7 @@ class ClassController extends Controller
         $result = Classes::where('classes.id',$class_id)->
                         select('classes.id as id','classes.name as name','classes.code as code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                        'student_number','open_date','classes.active as status',
+                        'student_number','open_date','classes.active as status', 'classes.cost',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->first();
@@ -467,6 +467,7 @@ class ClassController extends Controller
             $class->fee = $request->fee;
             $class->center_id = $request->center_id;
             $class->course_id = $request->course_id;
+            $class->cost = $request->cost;
             $class->open_date = date('Y-m-d', strtotime($request->open_date));
             $year = date('Y', strtotime($class->open_date));
             $p_year = $year - 1;
@@ -481,7 +482,7 @@ class ClassController extends Controller
             $result = Classes::where('classes.id', $class->id)->
                         select('classes.id as id','classes.name as name','classes.code',
                         'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                        'student_number','open_date','classes.active as status','online_id','password',
+                        'student_number','open_date','classes.active as status','online_id','password', 'cost',
                         'config','classes.fee as fee')->
                         leftJoin('center','classes.center_id','center.id')->
                         leftJoin('courses','classes.course_id','courses.id')->first()->toArray();

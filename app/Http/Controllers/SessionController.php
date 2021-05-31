@@ -59,6 +59,7 @@ class SessionController extends Controller
                             $input['class_id'] = $class_id;
                             $input['ss_number'] = $index;
                             $input['fee'] = $class->fee;
+                            $input['cost'] = $class->cost;
                             $x = Session::create($input);
                             array_push($sessions, $x->toArray());
                         } 
@@ -389,7 +390,6 @@ class SessionController extends Controller
             }
         }
         return response()->json('ok');
-
     }
     protected function unlockSession(Request $request){
         $rules = [
@@ -422,7 +422,8 @@ class SessionController extends Controller
             $sessions = Session::where('class_id', $request->class_id)->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
+                    'sessions.cost', 'sessions.duration')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -434,7 +435,8 @@ class SessionController extends Controller
             $sessions = Session::where('class_id', $request->class_id)->whereBetween('sessions.date',[$from, $to])->
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
-                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content')->
+                    'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
+                    'sessions.cost', 'sessions.duration')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -1415,6 +1417,22 @@ class SessionController extends Controller
                 $session->exercice = implode(',', $new_exercices_dir);
                 $session->save();
             }
+            
+        }
+    }
+    public function setDuration(){
+        $sessions = Session::where('date', '>', '2021-04-01')->get();
+        foreach($sessions as $session){
+            
+            $from = strtotime($session->from);
+            $to = strtotime($session->to);
+            $diff = ($to - $from)/3600;
+            $diff= round($diff, 2);
+            if($diff < 0 || $diff == '-0'){
+                continue;
+            }
+            $session->duration = ($diff>0)?floatval($diff):0;
+            $session->save();
             
         }
     }

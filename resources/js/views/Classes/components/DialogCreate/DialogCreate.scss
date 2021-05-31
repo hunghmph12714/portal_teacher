@@ -18,7 +18,7 @@
     
     .date-time{
         margin-top: 8px;
-        margin-bottom: 9px;
+        margin-bottom: 18px;
     }
     .teacher-select{
         margin-top: 8px;
@@ -44,4 +44,21 @@
     #session{
         float : right;
     }
+    
 }
+.date-time {
+    display: inline-flex;
+    width: 100%;
+        .input-date {
+        width: 100%;
+        .MuiInputBase-root {
+            height: 38px !important;
+        }
+        .MuiOutlinedInput-adornedEnd {
+            padding-right: 0;
+        }
+        .MuiInputAdornment-positionEnd {
+            margin-left: 0;
+        }
+        }
+    }

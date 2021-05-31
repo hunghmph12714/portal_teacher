@@ -157,6 +157,7 @@ const initState = {
     content: '',
     status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
     fetch_student: false,
+    cost: 0,
 }
 class DialogSession extends React.Component {
     constructor(props){
@@ -186,6 +187,7 @@ class DialogSession extends React.Component {
                 old_document: (s.document) ? s.document.split(',') : [],
                 old_exercice: (s.exercice) ? s.exercice.split(',') : [],
                 students: s.students,
+                cost: s.cost
             })
        
         }
@@ -311,6 +313,7 @@ class DialogSession extends React.Component {
         fd.append('content', this.state.content)
         fd.append('type', this.state.type)
         fd.append('students', JSON.stringify(this.state.students))
+        fd.append('cost', this.state.cost)
         if(this.props.dialogType == 'create'){
             axios.post(baseUrl+'/session/add', fd)
             .then(response => {
@@ -432,18 +435,37 @@ class DialogSession extends React.Component {
                                         handleChange={this.handleChangeTeacher}                                       
                                     />
                                 </FormControl>
-                                <FormControl fullWidth variant="outlined" margin="dense">
-                                    <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
-                                    <OutlinedInput
-                                        value={this.state.fee}
-                                        name = "fee"
-                                        onChange={this.onChange}
-                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
-                                        labelWidth={70}
-                                        inputComponent = {NumberFormatCustom}
-                                    >
-                                    </OutlinedInput>
-                                </FormControl>
+                                
+                                <Grid container spacing={4}>
+                                        <Grid item md={12} lg={6}>
+                                            <FormControl fullWidth variant="outlined" margin="dense">
+                                                <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
+                                                <OutlinedInput
+                                                    value={this.state.fee}
+                                                    name = "fee"
+                                                    onChange={this.onChange}
+                                                    startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                    labelWidth={70}
+                                                    inputComponent = {NumberFormatCustom}
+                                                >
+                                                </OutlinedInput>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item md={12} lg={6}> 
+                                            <FormControl fullWidth variant="outlined" margin="dense">
+                                                <InputLabel htmlFor="outlined-adornment-amount">Chi phí/ca</InputLabel>
+                                                <OutlinedInput
+                                                    value={this.state.cost}
+                                                    name = "cost"
+                                                    onChange={this.onChange}
+                                                    startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                    labelWidth={70}
+                                                    inputComponent = {NumberFormatCustom}
+                                                >
+                                                </OutlinedInput>
+                                            </FormControl>
+                                        </Grid>
+                                </Grid>
                                 {
                                     this.props.dialogType == 'create' ? '': ''
                                 }

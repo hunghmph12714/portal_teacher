@@ -1,5 +1,5 @@
 
-account-root{
+.account-root{
   .date-time {
     display: inline-flex;
     width: 100%;
@@ -29,22 +29,6 @@ account-root{
     }
     .middle {
       padding: 0 5%;
-    }
-  }
-}
-.date-time {
-  display: inline-flex;
-  width: 100%;
-  .input-date {
-    width: 100%;
-    .MuiInputBase-root {
-      height: 40px;
-    }
-    .MuiOutlinedInput-adornedEnd {
-      padding-right: 0;
-    }
-    .MuiInputAdornment-positionEnd {
-      margin-left: 0;
     }
   }
 }

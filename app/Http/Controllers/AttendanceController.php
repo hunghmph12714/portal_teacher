@@ -164,7 +164,7 @@ class AttendanceController extends Controller
         }
         catch(\Exception $e){
             // Get error here
-            return response()->json(418);
+            return response()->json(500);
         }
     }
     public function delete(){

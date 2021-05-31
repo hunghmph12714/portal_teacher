@@ -348,6 +348,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/class/:id', function(){
         return view('welcome');
     });
+//a
 
     Route::post('/class/report', 'ClassController@getReport');
     Route::post('/score/report', 'ClassController@getScoreReport');
@@ -471,3 +472,4 @@ Route::get('/delete-student/{id}', 'StudentController@deleteId');
 // Route::get('/move-file', 'SessionController@moveFiles');
 // Route::get('/normalize-db','StudentController@normalizeDb');
 Route::get('test-email', 'JobController@processQueue');
+Route::get('/duration', 'SessionController@setDuration');

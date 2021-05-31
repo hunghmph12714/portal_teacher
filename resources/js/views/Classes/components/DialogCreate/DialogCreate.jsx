@@ -202,6 +202,7 @@ const initState = {
     config: [],
     online_id: '',
     password: '',
+    cost: 0,
     days : [{value: 0, label:'Thứ 2'},{value: 1, label:'Thứ 3'},{value: 2, label:'Thứ 4'},{value: 3, label:'Thứ 5'},{value: 4, label:'Thứ 6'},{value: 5, label:'Thứ 7'},{value: 6, label:'Chủ nhật'},]
 } 
 class DialogCreate extends React.Component {
@@ -246,7 +247,8 @@ class DialogCreate extends React.Component {
                 class_per_week: class_per_week,
                 config: conf,
                 online_id: nextProps.class.online_id,
-                password: nextProps.class.password,                
+                password: nextProps.class.password,  
+                cost: nextProps.class.cost,              
             })
         }
         if(nextProps.dialogType=='create'){
@@ -378,6 +380,7 @@ class DialogCreate extends React.Component {
             fee : this.state.fee,
             online_id: this.state.online_id,
             password: this.state.password,
+            cost: this.state.cost,
         }
         axios.post(url, data)
             .then(response => {
@@ -416,6 +419,7 @@ class DialogCreate extends React.Component {
             fee : this.state.fee,
             online_id: this.state.online_id,
             password: this.state.password,
+            cost: this.state.cost,
         }
         axios.post(url, data)
             .then(response => {
@@ -516,7 +520,6 @@ class DialogCreate extends React.Component {
                                 container
                                 spacing={4}
                             >
-                                
                                 <Grid
                                     item
                                     md={12}
@@ -553,19 +556,37 @@ class DialogCreate extends React.Component {
                                         name = 'name'
                                         onChange = {this.onChange}
                                     />           
+                                    <Grid container spacing={4}>
+                                            <Grid item md={12} lg={6}>
+                                                <FormControl fullWidth variant="outlined" margin="dense">
+                                                    <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
+                                                    <OutlinedInput
+                                                        value={this.state.fee}
+                                                        name = "fee"
+                                                        onChange={this.onChange}
+                                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                        labelWidth={70}
+                                                        inputComponent = {NumberFormatCustom}
+                                                    >
+                                                    </OutlinedInput>
+                                                </FormControl>
+                                            </Grid>
+                                            <Grid item md={12} lg={6}> 
+                                            <   FormControl fullWidth variant="outlined" margin="dense">
+                                                    <InputLabel htmlFor="outlined-adornment-amount">Chi phí/ca</InputLabel>
+                                                    <OutlinedInput
+                                                        value={this.state.cost}
+                                                        name = "cost"
+                                                        onChange={this.onChange}
+                                                        startAdornment={<InputAdornment position="start">VND</InputAdornment>}
+                                                        labelWidth={70}
+                                                        inputComponent = {NumberFormatCustom}
+                                                    >
+                                                    </OutlinedInput>
+                                                </FormControl>
+                                            </Grid>
+                                    </Grid>
                                     
-                                    <FormControl fullWidth variant="outlined" margin="dense">
-                                        <InputLabel htmlFor="outlined-adornment-amount">Học phí/ca</InputLabel>
-                                        <OutlinedInput
-                                            value={this.state.fee}
-                                            name = "fee"
-                                            onChange={this.onChange}
-                                            startAdornment={<InputAdornment position="start">VND</InputAdornment>}
-                                            labelWidth={70}
-                                            inputComponent = {NumberFormatCustom}
-                                        >
-                                        </OutlinedInput>
-                                    </FormControl>
                                     <Grid
                                         container
                                         spacing={4}
@@ -635,7 +656,7 @@ class DialogCreate extends React.Component {
                                                 />
                                             }
                                         />
-                                        <FormHelperText >Cơ sở học tập</FormHelperText>
+                                        <FormHelperText >Khóa học</FormHelperText>
                                     </FormControl>     
                                     
                                     <TextField  label="Mã lớp" 
