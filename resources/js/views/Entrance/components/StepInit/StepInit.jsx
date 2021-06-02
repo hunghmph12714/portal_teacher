@@ -250,7 +250,7 @@ const StepInit = (props) => {
         fetchCourse()        
     }, [centers])    
     function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment})
             .then(response => { 
                 var d = new Date();
                 let yesterday = d.setDate(d.getDate() - 1);
@@ -288,7 +288,7 @@ const StepInit = (props) => {
         setSelectedEntrance(rowData)
     }
     function handleRemove(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'lost', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -316,6 +316,7 @@ const StepInit = (props) => {
 
             })
     }
+    
     return(
         <React.Fragment>
             {

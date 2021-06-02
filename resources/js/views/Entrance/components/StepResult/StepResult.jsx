@@ -275,7 +275,7 @@ const StepResult = (props) => {
         fetchCourse()        
     }, [centers])    
     function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -320,7 +320,7 @@ const StepResult = (props) => {
         setSelectedEntrance(rowData)
     }
     function handleRemove(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)

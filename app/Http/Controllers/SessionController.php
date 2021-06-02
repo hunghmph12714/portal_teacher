@@ -67,9 +67,8 @@ class SessionController extends Controller
                 }
             }
             // $sessions = Session::insert($sessions);
-            return $sessions;
         }
-        else return $sessions;
+        return $sessions;
     }
     public function generateAttendances($sessions, $students){
         $student_attendance = [];
@@ -849,7 +848,6 @@ class SessionController extends Controller
         $from_date = date('Y-m-d', $request->from_date);
         $to_date = date('Y-m-d', $request->to_date);
         $sessions = $this->generateSessionFromConfig($from_date, $to_date, $request->class_id);
-        
 
         $students = Classes::find($request->class_id)->students;
         $sa = $this->generateAttendances($sessions, $students);

@@ -23,7 +23,7 @@ import { Can } from '../../../../Can';
 import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } from '../../components';
 import { useSnackbar } from 'notistack';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 const lang = {
     body: {
         emptyDataSourceMessage: 'Không tìm thấy ghi danh'
@@ -290,7 +290,7 @@ const StepFinal = (props) => {
         fetchClass()      
     }, [centers])    
     function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -344,7 +344,7 @@ const StepFinal = (props) => {
         setOpenClass(false)
     }
     function handleRemove(rowData, reason, comment){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'lostKT', reason: reason, comment: comment})
             .then(response => { 
                 const d3 = data3.filter(d => d.eid !== rowData.eid)
                 setData3(d3)
@@ -365,11 +365,21 @@ const StepFinal = (props) => {
             })
     }
     function handleLostEntrance(rowData){
-        axios.post('/entrance/step-init/fail-1', {id: rowData.eid, type: 'lost4'})
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'lost4'})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    function handleCompleteEntrance(rowData){
+        axios.post('/entrance/complete', rowData)
+            .then(response => {
+                fetchdata()
+                enqueueSnackbar('Đã cập nhật', {variant: 'success'});
             })
             .catch(err => {
                 console.log(err)
@@ -429,7 +439,15 @@ const StepFinal = (props) => {
                                         isFreeAction: false,
                                         text: 'Xếp lớp',
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
-                                    },   
+                                    },
+                                    {
+                                        icon: () => <DoneAllIcon />,
+                                        tooltip: 'Đã hoàn thành',
+                                        isFreeAction: false,
+                                        text: 'Đã hoàn thành',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Học sinh đã đến học buổi đầu tiên? !')) handleCompleteEntrance(rowData)}
+                                    }, 
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',
@@ -485,7 +503,15 @@ const StepFinal = (props) => {
                                         isFreeAction: false,
                                         text: 'Xếp lớp',
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
-                                    },   
+                                    },
+                                    {
+                                        icon: () => <DoneAllIcon />,
+                                        tooltip: 'Đã hoàn thành',
+                                        isFreeAction: false,
+                                        text: 'Đã hoàn thành',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Học sinh đã đến học buổi đầu tiên? Hoàn thành ghi danh.')) handleCompleteEntrance(rowData)}
+                                    }, 
                                     {
                                         icon: () => <DeleteOutlineOutlinedIcon />,
                                         tooltip: 'Thất bại ',

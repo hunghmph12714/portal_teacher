@@ -163,7 +163,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/init/edit', 'EntranceController@initEdit');
             Route::post('/entrance/appointment/edit', 'EntranceController@appointmentEdit');
             
-            Route::post('/entrance/step-init/fail-1', 'EntranceController@setFail1');
+            Route::post('/entrance/step/fail', 'EntranceController@setFail1');
             Route::post('/entrance/comment/create', 'EntranceController@createComment');
             Route::post('/entrance/get-messages', 'EntranceController@getMessage');
             Route::post('/entrance/comment/delete', 'EntranceController@deleteMessage')->middleware(['permission:delete_comment']);;
@@ -175,6 +175,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::post('/entrance/enroll-class', 'EntranceController@EnrollClass');
             Route::post('/entrance/confirm', 'EntranceController@ConfirmClass');
+            Route::post('/entrance/complete', 'EntranceController@completeEntrance');
         //Budgets
             Route::get('/budget', function(){
                 return view('welcome');
