@@ -245,6 +245,11 @@ class ViewEntrance extends React.Component{
         return {...prevState , data}
       })
     }
+    exportStats = () => {
+      var url = '/entrance/export-stat'
+      window.open(url, '_blank', 'noopener,noreferrer')
+     
+    }
     render(){      
       document.title = 'Danh sách ghi danh'
         return(          
@@ -325,6 +330,10 @@ class ViewEntrance extends React.Component{
                               Tồn cuối ngày: 
                             </Typography>
                             <span className="stats_number"> {this.state.total} </span>
+
+                            <Button variant="contained" color="primary" onClick={() => this.exportStats()} className="btn-export">
+                              Tải về báo cáo
+                            </Button>
                           </CardContent>
                         </Card>
                       </Grid>
