@@ -95,7 +95,7 @@ class everyHour extends Command
         $result['appointment_remain'] = $appointment['total_remain'];
         $result['appointment_today'] = $appointment['total_today'];
         $result['appointment_completed'] = $appointment['total_completed'];
-        $result['appointment_completed'] = $appointment['total'];
+        $result['appointment_total'] = $appointment['total'];
         $appointment = $this->getEntranceByStep(2, [$center_id])->toArray();
 
         foreach($appointment as $i){
@@ -113,7 +113,7 @@ class everyHour extends Command
         $result['result_remain'] = $r['total_remain'];
         $result['result_today'] = $r['total_today'];
         $result['result_completed'] = $r['total_completed'];
-        $result['result_completed'] = $r['total'];
+        $result['result_total'] = $r['total'];
 
         $r = $this->getEntranceByStep(3, [$center_id])->toArray();
 
@@ -132,7 +132,7 @@ class everyHour extends Command
         $result['inform_remain'] = $inform['total_remain'];
         $result['inform_today'] = $inform['total_today'];
         $result['inform_completed'] = $inform['total_completed'];
-        $result['inform_completed'] = $inform['total'];
+        $result['inform_total'] = $inform['total'];
         $r = $this->getEntranceByStep(4, [$center_id])->toArray();
 
         foreach($r as $i){
@@ -167,7 +167,7 @@ class everyHour extends Command
         $result['final_remain'] = $final['total_remain'];
         $result['final_today'] = $final['total_today'];
         $result['final_completed'] = $final['total_completed'];
-        $result['final_completed'] = $final['total'];
+        $result['final_total'] = $final['total'];
         $r = $this->getEntranceByStep(5, [$center_id])->toArray();
 
         foreach($r as $i){

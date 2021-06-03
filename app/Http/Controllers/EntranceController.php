@@ -736,7 +736,7 @@ class EntranceController extends Controller
         $result['appointment_remain'] = $appointment['total_remain'];
         $result['appointment_today'] = $appointment['total_today'];
         $result['appointment_completed'] = $appointment['total_completed'];
-        $result['appointment_completed'] = $appointment['total'];
+        $result['appointment_total'] = $appointment['total'];
         $appointment = $this->getEntranceByStep(2, [$center_id])->toArray();
 
         foreach($appointment as $i){
@@ -754,7 +754,7 @@ class EntranceController extends Controller
         $result['result_remain'] = $r['total_remain'];
         $result['result_today'] = $r['total_today'];
         $result['result_completed'] = $r['total_completed'];
-        $result['result_completed'] = $r['total'];
+        $result['result_total'] = $r['total'];
 
         $r = $this->getEntranceByStep(3, [$center_id])->toArray();
 
@@ -773,7 +773,7 @@ class EntranceController extends Controller
         $result['inform_remain'] = $inform['total_remain'];
         $result['inform_today'] = $inform['total_today'];
         $result['inform_completed'] = $inform['total_completed'];
-        $result['inform_completed'] = $inform['total'];
+        $result['inform_total'] = $inform['total'];
         $r = $this->getEntranceByStep(4, [$center_id])->toArray();
 
         foreach($r as $i){
@@ -808,7 +808,7 @@ class EntranceController extends Controller
         $result['final_remain'] = $final['total_remain'];
         $result['final_today'] = $final['total_today'];
         $result['final_completed'] = $final['total_completed'];
-        $result['final_completed'] = $final['total'];
+        $result['final_total'] = $final['total'];
         $r = $this->getEntranceByStep(5, [$center_id])->toArray();
 
         foreach($r as $i){
@@ -825,15 +825,28 @@ class EntranceController extends Controller
 
     }
     public function exportEntranceStats(){
-        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->get()->toArray();
-        $fp = fopen('/entrance.csv', 'w');
+        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->get();
+        
+        $fp = fopen(public_path().'/entrance.csv', 'w');
         $first_line = ['', '', 'Bước 1','','','','','','','', 'Bước 2','','','','','','','', 'Bước 3','','','','','','','', 'Bước 4','','','','','','','','', 'Bước 5','','','','','',''];
         $second_line = ['Ngày', 'Cơ sở', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', '24H', 'Quá 24H', 'OUT', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', 'Sắp KT', 'Quá hạn', 'Out','', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày',
             'Ktra 48H', 'Quá 48H', 'Không chấm', '','Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Chưa liên lạc', 'Lần 1', 'Lần 2' ,'Lần 3', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Sắp N.Học', 'Quá hạn N.Học', 'Thất bại'];
-        echo sizeof($first_line); 
-        echo sizeof($second_line); 
+        fprintf($fp, chr(0xEF).chr(0xBB).chr(0xBF));
+        fputcsv ($fp, $first_line);
+        fputcsv ($fp, $second_line);
+        foreach($e as $i){
+            $result = [$i->date, $i->code, 
+                $i->init_remain, $i->init_today, $i->init_completed, $i->init_total, $i->init_1, $i->init_2, $i->init_3,'',
+                $i->appointment_remain, $i->appointment_today, $i->appointment_completed, $i->appointment_total, $i->appointment_1, $i->appointment_2, $i->appointment_3,'',
+                $i->result_remain, $i->result_today, $i->result_completed, $i->result_total, $i->result_1, $i->result_2, $i->result_3,'',
+                $i->inform_remain, $i->inform_today, $i->inform_completed, $i->inform_total, $i->inform_1, $i->inform_2, $i->inform_3, $i->inform_4,'',
+                $i->final_remain, $i->final_today, $i->final_completed, $i->final_total, $i->final_1, $i->final_2, $i->final_3,'',
+            ];
+            fputcsv ($fp, $result);
+        }
+        return redirect('/public/entrance.csv');
         // foreach()
-        return $e;
+        // return $e;
         // $fp = fopen('entrance.csv', 'w');
         // foreach($classes as $c){
         //     $students = $c->students;
