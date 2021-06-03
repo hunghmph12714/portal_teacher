@@ -177,6 +177,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/enroll-class', 'EntranceController@EnrollClass');
             Route::post('/entrance/confirm', 'EntranceController@ConfirmClass');
             Route::post('/entrance/complete', 'EntranceController@completeEntrance');
+            Route::get('/entrance/export-stat','EntranceController@exportEntranceStats');
         //Budgets
             Route::get('/budget', function(){
                 return view('welcome');

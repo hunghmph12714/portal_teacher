@@ -824,5 +824,26 @@ class EntranceController extends Controller
         return $result;
 
     }
-    
+    public function exportEntranceStats(){
+        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->get()->toArray();
+        $fp = fopen('/entrance.csv', 'w');
+        $first_line = ['', '', 'Bước 1','','','','','','','', 'Bước 2','','','','','','','', 'Bước 3','','','','','','','', 'Bước 4','','','','','','','','', 'Bước 5','','','','','',''];
+        $second_line = ['Ngày', 'Cơ sở', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', '24H', 'Quá 24H', 'OUT', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', 'Sắp KT', 'Quá hạn', 'Out','', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày',
+            'Ktra 48H', 'Quá 48H', 'Không chấm', '','Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Chưa liên lạc', 'Lần 1', 'Lần 2' ,'Lần 3', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Sắp N.Học', 'Quá hạn N.Học', 'Thất bại'];
+        echo sizeof($first_line); 
+        echo sizeof($second_line); 
+        // foreach()
+        return $e;
+        // $fp = fopen('entrance.csv', 'w');
+        // foreach($classes as $c){
+        //     $students = $c->students;
+        //     foreach($students as $s){
+        //         $parent = Parents::find($s->parent_id);
+        //         if($parent){
+        //             $result = [$c->code, $s->fullname, $s->dob, $parent->email, $parent->phone, $parent->fullname, $s->detail['status']];
+        //             fputcsv($fp, $result);
+        //         }                
+        //     }
+        // }
+    }   
 }

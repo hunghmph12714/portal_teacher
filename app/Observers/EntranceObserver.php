@@ -53,7 +53,6 @@ class EntranceObserver
         //         ]);
         //     }
         // }
-        
     }
 
     /**
@@ -88,4 +87,5 @@ class EntranceObserver
     {
         //
     }
+    
 }

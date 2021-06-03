@@ -447,8 +447,7 @@ class DiscountController extends Controller
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
-            echo "<pre>";
-            print_r($sessions->toArray());
+            
             foreach($sessions as $session){
                 $session->percentage = -1;
                 $session->save();
@@ -593,6 +592,7 @@ class DiscountController extends Controller
             $class->online_id = -1;
             $class->save();
         }
+        return 'Đã miễn giảm, vui lòng kiểm tra lại!';
     }
     protected function id(){
         $tags = Tag::find(9);
