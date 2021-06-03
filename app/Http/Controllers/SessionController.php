@@ -57,7 +57,7 @@ class SessionController extends Controller
                             $input['center_id'] = $class->center_id;
                             $input['room_id'] = (is_object($c->room))?$c->room->value:NULL;
                             $input['class_id'] = $class_id;
-                            $input['ss_number'] = $index;
+                            $input['ss_number'] = 0;
                             $input['fee'] = $class->fee;
                             $input['cost'] = $class->cost;
                             $x = Session::create($input);
@@ -91,6 +91,9 @@ class SessionController extends Controller
                             $ss['student_id'] = $st->id;
                             $ss['type'] = 'official';                        
                             StudentSession::create($ss);
+                            $selected_session = Session::find($s['id']);
+                            $selected_session->ss_number++;
+                            $selected_session->save();
                             array_push($s_a['sessions'], $s);
                         }
                     }

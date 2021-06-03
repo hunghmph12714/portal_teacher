@@ -19,9 +19,9 @@ class SessionObserver
         $to = strtotime($session->to);
         $diff = ($to - $from)/3600;
         $diff= round($diff, 2);
-
-        $session->duration = $diff;
-        $session->save();
+        $s = Session::find($session->id);
+        $s->duration = $diff;
+        $s->save();
     }
 
     /**
@@ -33,13 +33,7 @@ class SessionObserver
     public function updated(Session $session)
     {
         //
-        $from = strtotime($session->from);
-        $to = strtotime($session->to);
-        $diff = ($to - $from)/3600;
-        $diff= round($diff, 2);
-
-        $session->duration = $diff;
-        $session->save();
+        
     }
 
     /**
