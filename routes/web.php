@@ -150,6 +150,7 @@ Route::group(['middleware' => ['auth']], function() {
                 return view('welcome');
             });
             Route::get('/entrance/stats/{center_id}/{step_id}', 'EntranceController@getStats');
+            Route::get('/entrance/stats/{center_id}', 'EntranceController@getDetailStats');
 
             Route::post('/entrance/create', 'EntranceController@createEntrance');
             Route::post('/entrance', 'EntranceController@getEntrance');
