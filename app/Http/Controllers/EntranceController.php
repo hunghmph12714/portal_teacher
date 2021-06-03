@@ -661,18 +661,20 @@ class EntranceController extends Controller
                 // echo $center;
                 if($next_step && $status){
                     $today = date('Y-m-d 00:00:00');
-                    
+                    $result['test'] = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->get();
                     $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_remain'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
-                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    // $result['total_remain'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    //     ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $total_completed = Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
+
                     $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                         ->where('entrances.created_at', '>' ,$today)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
                 }
                 if(!$next_step){
                     $today = date('Y-m-d 00:00:00');
@@ -680,15 +682,15 @@ class EntranceController extends Controller
                     
                     $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_remain'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status)
-                        ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)
+                    
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $total_completed = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('status_id', '==', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
                     $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
+                    $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
                 }
             }
         }
