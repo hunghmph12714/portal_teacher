@@ -521,18 +521,19 @@ const StepResult = (props) => {
                                     pageSizeOptions: [5, 20, 50, 200],
                                     grouping: true,
                                     filtering: true,
-                                    exportButton: true,         
+                                    exportButton: true,
                                     rowStyle: rowData => {
                                         
                                         if(rowData.priority >= 8){
-                                        return {backgroundColor: colors.orange[300],}
+                                            return {backgroundColor: colors.orange[300],}
                                         }
                                         if(rowData.priority >= 6){
-                                        return {backgroundColor: colors.orange[200],}
+                                            return {backgroundColor: colors.orange[200],}
                                         }
                                         if(rowData.priority >= 4){
-                                        return {backgroundColor: colors.orange[100],}
+                                            return {backgroundColor: colors.orange[100],}
                                         }
+
                                     },    
                                     exportCsv: (c, d) => {
                                         const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
