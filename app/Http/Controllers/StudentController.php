@@ -938,27 +938,27 @@ class StudentController extends Controller
                 $backup = Mail::getSwiftMailer();
 
                 // // Setup your outlook mailer
-                // $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-                // $transport->setUsername('info@vietelite.edu.vn');
-                // $transport->setPassword('V33du2020');
+                $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+                $transport->setUsername($mail);
+                $transport->setPassword($password);
                 // // Any other mailer configuration stuff needed...
                 
-                // $outlook = new \Swift_Mailer($transport);
+                $outlook = new \Swift_Mailer($transport);
 
                 // // Set the mailer as gmail
-                // Mail::setSwiftMailer($outlook);
+                Mail::setSwiftMailer($outlook);
                 // print_r($backup);
                 // Send your message
                 Mail::send('emails.tbhp',$d, function($message) use ($to_name, $to_email, $result, $mail) {
                     $message->to($to_email, $to_name)
-                            ->to($mail)
+                            ->to('webmaster@vietelite.edu.vn')
                             ->subject($result['title'])
                             ->replyTo($mail, 'Phụ huynh hs '.$result['student']);
                     $message->from($mail,'VIETELITE EDUCATION CENTER');
                 });
 
                 // Restore your original mailer
-                // Mail::setSwiftMailer($backup);
+                Mail::setSwiftMailer($backup);
                 return response()->json(200);
             
             // }
