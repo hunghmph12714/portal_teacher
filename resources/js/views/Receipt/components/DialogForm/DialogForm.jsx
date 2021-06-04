@@ -398,7 +398,7 @@ class DialogForm extends React.Component {
                                             variant="outlined"
                                             size="small"
                                             type="number"
-                                            inputProps={{ min: "0", max: "10", step: "1" }}
+                                            inputProps={{ min: "0", max: "100", step: "1" }}
                                         />
                                     </Grid>
                                     <Grid item xs={4} xl={2} md={2}>
