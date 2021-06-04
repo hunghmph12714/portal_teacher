@@ -145,7 +145,7 @@ class DialogForm extends React.Component {
     }
     onChangeTransactionCount = (e) => {
         let t = []
-        let c = (e.target.value > 10) ? 10 : e.target.value
+        let c = (e.target.value > 100) ? 100 : e.target.value
         //Check amount of receipt and transactions
         if(this.state.amount <= this.state.transactions.map(t => t.amount).reduce((acc, am) => acc+parseInt(am) ,0)){
             this.props.enqueueSnackbar('Không thể tạo thêm giao dịch', {variant: 'warning'})
