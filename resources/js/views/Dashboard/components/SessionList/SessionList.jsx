@@ -157,6 +157,41 @@ const SessionList = (props) => {
                             text: 'Thêm ca học',
                             onClick: handleCreateSession,
                         },
+                        rowData => ({
+                          icon: () => <EditOutlinedIcon />,
+                          tooltip: 'Sửa ca học',
+                          isFreeAction: false,
+                          text: 'Sửa ca học',
+                          onClick: () => handleEditSession(rowData),
+                        }),
+                        rowData => ({
+                          icon: () => <DeleteForeverIcon />,
+                          tooltip: 'Xoá ca học',
+                          isFreeAction: false,
+                          text: 'Xoá ca học',
+                          onClick: () => {
+                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
+                              handleDeactivateSession(rowData.id, rowData.tableData.id)
+                          }                          
+                        }),
+                        rowData => ({
+                          icon: () => {
+                            if(rowData.status == 0){
+                              return <DoneIcon />
+                            }else{
+                              return <LockOpenOutlinedIcon />
+                            }
+                          },
+                          isFreeAction: false,
+                          onClick: () => {
+                            if(rowData.status == 0){
+                              handleCheckSession(rowData)
+                            }else{
+                              if (window.confirm('Mở khoá ca học sẽ ảnh hưởng đến hạch toán, xác nhận thao tác')) 
+                                handleUnlockSession(rowData)                              
+                            }
+                          }                          
+                        }),
                     ]}
                 localization={{
                         body: {
@@ -198,20 +233,6 @@ const SessionList = (props) => {
                         },
                         render: rowData => (
                             <div style = {{display: 'block'}}>
-                                {/* {rowData.tableData.id} */}
-                                <Tooltip title="Chỉnh sửa" arrow>
-                                  <IconButton onClick={() => handleEditSession(rowData)}>
-                                    <EditOutlinedIcon fontSize='inherit' />
-                                  </IconButton>
-                                </Tooltip> 
-                                <Tooltip title="" arrow>
-                                  <IconButton onClick={() => {
-                                    if (window.confirm('Bạn có chắc muốn xóa bản ghi này? Mọi dữ liệu liên quan sẽ bị xóa vĩnh viễn !')) 
-                                      handleDeactivateSession(rowData.id, rowData.tableData.id)}
-                                    }>
-                                  <DeleteForeverIcon fontSize='inherit' />
-                                  </IconButton>
-                                </Tooltip>
                                 {
                                   (rowData.status == 0) ? (
                                     <Tooltip title="" arrow>
@@ -230,8 +251,6 @@ const SessionList = (props) => {
                                     </Tooltip>
                                   )
                                 }
-                                
-                                
                             </div>
                         )
                       },

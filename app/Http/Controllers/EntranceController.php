@@ -832,8 +832,10 @@ class EntranceController extends Controller
         $second_line = ['Ngày', 'Cơ sở', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', '24H', 'Quá 24H', 'OUT', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày', 'Sắp KT', 'Quá hạn', 'Out','', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày',
             'Ktra 48H', 'Quá 48H', 'Không chấm', '','Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Chưa liên lạc', 'Lần 1', 'Lần 2' ,'Lần 3', '', 'Đầu ngày', 'Mới', 'Xử lý', 'Cuối ngày','Sắp N.Học', 'Quá hạn N.Học', 'Thất bại'];
         fprintf($fp, chr(0xEF).chr(0xBB).chr(0xBF));
-        fputcsv ($fp, $first_line);
-        fputcsv ($fp, $second_line);
+        fputcsv($fp, $first_line);
+        fputcsv($fp, $second_line);
+        $j = 0;
+        
         foreach($e as $i){
             $result = [$i->date, $i->code, 
                 $i->init_remain, $i->init_today, $i->init_completed, $i->init_total, $i->init_1, $i->init_2, $i->init_3,'',
@@ -843,6 +845,11 @@ class EntranceController extends Controller
                 $i->final_remain, $i->final_today, $i->final_completed, $i->final_total, $i->final_1, $i->final_2, $i->final_3,'',
             ];
             fputcsv ($fp, $result);
+            if($j == 3){
+                $j = 0;
+                fputcsv($fp, []);
+            }
+            $j++;
         }
         return redirect('/public/entrance.csv');
         // foreach()

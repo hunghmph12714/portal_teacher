@@ -145,7 +145,7 @@ class DialogForm extends React.Component {
     }
     onChangeTransactionCount = (e) => {
         let t = []
-        let c = (e.target.value > 100) ? 100 : e.target.value
+        let c = e.target.value
         //Check amount of receipt and transactions
         if(this.state.amount <= this.state.transactions.map(t => t.amount).reduce((acc, am) => acc+parseInt(am) ,0)){
             this.props.enqueueSnackbar('Không thể tạo thêm giao dịch', {variant: 'warning'})
@@ -306,173 +306,173 @@ class DialogForm extends React.Component {
                 
                 <DialogContent>
                         <form noValidate autoComplete="on">
-                                <h2>Lập phiếu thu</h2>
-                                <Grid container spacing={2} id="receipt-form">
-                                    <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Cơ sở</FormLabel>
-                                        <CenterSelect 
-                                            entrance_center = {this.state.center}
-                                            handleChange={this.handleCenterChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Tên người nộp</FormLabel>
-                                        <TextField
-                                            fullWidth
-                                            value={this.state.name}
-                                            onChange={e => this.onChange(e)}
-                                            name = "name"
-                                            variant="outlined"
-                                            size="small"
-                                        />
-                                    </Grid>
-                                    
-                                    <Grid item xs={12} sm={6}>
-                                        <FormLabel color="primary">Địa chỉ</FormLabel>
-                                        <TextField
-                                            fullWidth
-                                            value={this.state.address}
-                                            onChange={e => this.onChange(e)}
-                                            name = "address"
-                                            variant="outlined"
-                                            size="small"
-                                        />
-                                    </Grid>
+                            <h2>Lập phiếu thu</h2>
+                            <Grid container spacing={2} id="receipt-form">
+                                <Grid item xs={12} sm={3}>
+                                    <FormLabel color="primary">Cơ sở</FormLabel>
+                                    <CenterSelect 
+                                        entrance_center = {this.state.center}
+                                        handleChange={this.handleCenterChange}
+                                    />
                                 </Grid>
-                                <Grid container spacing={2} id="receipt-form">
-                                    <Grid item xs={12} sm={6}>
-                                        <FormLabel color="primary">Lý do</FormLabel>
-                                        <TextField
-                                            fullWidth
-                                            value={this.state.description}
-                                            onChange={e => this.handleDescriptionChange(e)}
-                                            name = "description"
-                                            variant="outlined"
-                                            size="small"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Số tiền</FormLabel>
-                                        <TextField
-                                            fullWidth
-                                            value={this.state.amount}
-                                            onChange={e => this.handleReceiptAmountChange(e)}
-                                            name = "amount"
-                                            variant="outlined"
-                                            size="small"
-                                            InputProps={{
-                                                inputComponent: NumberFormatCustom,
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <FormLabel color="primary">Ngày chứng từ</FormLabel>
-                                                           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
-
-                                            <KeyboardDatePicker
-                                                autoOk
-                                                fullWidth
-                                                value={this.state.receipt_time}                            
-                                                onChange={this.handleReceiptTimeChange}
-                                                placeholder="Ngày chứng từ"                            
-                                                className="input-date"
-                                                variant="inline"
-                                                size="small"
-                                                inputVariant="outlined"
-                                                format="dd/MM/yyyy"
-                                            />
-                                                        
-                                        </MuiPickersUtilsProvider>
-                                    </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormLabel color="primary">Tên người nộp</FormLabel>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.name}
+                                        onChange={e => this.onChange(e)}
+                                        name = "name"
+                                        variant="outlined"
+                                        size="small"
+                                    />
                                 </Grid>
-                                <Grid container justify="flex-start" alignItems="center" spacing={2}>
-                                    <Grid item xs={4} md={2} xl={1}>
-                                        <Typography variant="button"><b>Hạch toán</b></Typography>
-                                    </Grid>
-                                    <Grid item xs={4} xl={1} md={1}>
-                                        <TextField
-                                            fullWidth
-                                            value={this.state.transaction_count}
-                                            onChange={e => this.onChangeTransactionCount(e)}
-                                            name = "transaction_count"
-                                            variant="outlined"
-                                            size="small"
-                                            type="number"
-                                            inputProps={{ min: "0", max: "100", step: "1" }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={4} xl={2} md={2}>
-                                        <Typography variant="button">giao dịch</Typography>
-                                    </Grid>
-                                </Grid>                      
-                                {this.state.transactions.map((transaction, key) => {
-                                    return (
-                                        <TransactionForm
-                                            debit = {transaction.debit}
-                                            credit = {transaction.credit}
-                                            time = {transaction.time}
-                                            student = {transaction.student}
-                                            amount = {transaction.amount}
-                                            content = {transaction.content}
-                                            selected_class = {transaction.selected_class}
-                                            selected_session = {transaction.selected_session}
-                                            tags = {transaction.tags}
+                                
+                                <Grid item xs={12} sm={6}>
+                                    <FormLabel color="primary">Địa chỉ</FormLabel>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.address}
+                                        onChange={e => this.onChange(e)}
+                                        name = "address"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={2} id="receipt-form">
+                                <Grid item xs={12} sm={6}>
+                                    <FormLabel color="primary">Lý do</FormLabel>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.description}
+                                        onChange={e => this.handleDescriptionChange(e)}
+                                        name = "description"
+                                        variant="outlined"
+                                        size="small"
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormLabel color="primary">Số tiền</FormLabel>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.amount}
+                                        onChange={e => this.handleReceiptAmountChange(e)}
+                                        name = "amount"
+                                        variant="outlined"
+                                        size="small"
+                                        InputProps={{
+                                            inputComponent: NumberFormatCustom,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormLabel color="primary">Ngày chứng từ</FormLabel>
+                                                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
 
-                                            onChange = { this.onChange }
-                                            handleDateChange = { (date) => this.handleDateChange(key, date ) }
-                                            handleDebitChange = { (newValue) => this.handleDebitChange(key, newValue) }
-                                            handleCreditChange = { (newValue) => this.handleCreditChange(key, newValue) }
-                                            handleStudentChange = {(newValue) => this.handleStudentChange(key, newValue)}
-                                            handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
-                                            handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
-                                            handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
-                                            handleContentChange = { newValue => this.handleContentChange(key, newValue) }
-                                            handleTagChange = { newValue => this.handleTagChange(key, newValue) }
-                                            submitButton = {false}
-                                            onSubmitTransaction = {{}}                   
+                                        <KeyboardDatePicker
+                                            autoOk
+                                            fullWidth
+                                            value={this.state.receipt_time}                            
+                                            onChange={this.handleReceiptTimeChange}
+                                            placeholder="Ngày chứng từ"                            
+                                            className="input-date"
+                                            variant="inline"
+                                            size="small"
+                                            inputVariant="outlined"
+                                            format="dd/MM/yyyy"
                                         />
-                                    )
-                                })}
-                                {
-                                    (this.props.type == "create")?
-                                        (<Button
-                                            variant="contained"
-                                            color="secondary"
-                                            className="submit-btn"
-                                            onClick = {(e) => {
-                                                if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
-                                                    if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
-                                                        this.onSubmitTransaction(e)
-                                                    }
-                                                }else{
+                                                    
+                                    </MuiPickersUtilsProvider>
+                                </Grid>
+                            </Grid>
+                            <Grid container justify="flex-start" alignItems="center" spacing={2}>
+                                <Grid item xs={4} md={2} xl={1}>
+                                    <Typography variant="button"><b>Hạch toán</b></Typography>
+                                </Grid>
+                                <Grid item xs={4} xl={1} md={1}>
+                                    <TextField
+                                        fullWidth
+                                        value={this.state.transaction_count}
+                                        onChange={e => this.onChangeTransactionCount(e)}
+                                        name = "transaction_count"
+                                        variant="outlined"
+                                        size="small"
+                                        type="number"
+                                        inputProps={{ min: "0", max: "100", step: "1" }}
+                                    />
+                                </Grid>
+                                <Grid item xs={4} xl={2} md={2}>
+                                    <Typography variant="button">giao dịch</Typography>
+                                </Grid>
+                            </Grid>                      
+                            {this.state.transactions.map((transaction, key) => {
+                                return (
+                                    <TransactionForm
+                                        debit = {transaction.debit}
+                                        credit = {transaction.credit}
+                                        time = {transaction.time}
+                                        student = {transaction.student}
+                                        amount = {transaction.amount}
+                                        content = {transaction.content}
+                                        selected_class = {transaction.selected_class}
+                                        selected_session = {transaction.selected_session}
+                                        tags = {transaction.tags}
+
+                                        onChange = { this.onChange }
+                                        handleDateChange = { (date) => this.handleDateChange(key, date ) }
+                                        handleDebitChange = { (newValue) => this.handleDebitChange(key, newValue) }
+                                        handleCreditChange = { (newValue) => this.handleCreditChange(key, newValue) }
+                                        handleStudentChange = {(newValue) => this.handleStudentChange(key, newValue)}
+                                        handleClassChange = {(newValue) => this.handleClassChange(key, newValue)}
+                                        handleSessionChange = {(newValue) => this.handleSessionChange(key, newValue) }
+                                        handleAmountChange = { (newValue) => this.handleAmountChange(key, newValue)}
+                                        handleContentChange = { newValue => this.handleContentChange(key, newValue) }
+                                        handleTagChange = { newValue => this.handleTagChange(key, newValue) }
+                                        submitButton = {false}
+                                        onSubmitTransaction = {{}}                   
+                                    />
+                                )
+                            })}
+                            {
+                                (this.props.type == "create")?
+                                    (<Button
+                                        variant="contained"
+                                        color="secondary"
+                                        className="submit-btn"
+                                        onClick = {(e) => {
+                                            if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
+                                                if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
                                                     this.onSubmitTransaction(e)
                                                 }
-                                            }}  
-                                            endIcon={<SendIcon/>}
-                                        >
-                                            Tạo mới
-                                        </Button>):
-                                    (
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            className="submit-btn"
-                                            onClick = {(e) => {
-                                                if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
-                                                    if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
-                                                        this.onSubmitEdit(e)
-                                                    }
-                                                    
-                                                }else{
+                                            }else{
+                                                this.onSubmitTransaction(e)
+                                            }
+                                        }}  
+                                        endIcon={<SendIcon/>}
+                                    >
+                                        Tạo mới
+                                    </Button>):
+                                (
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        className="submit-btn"
+                                        onClick = {(e) => {
+                                            if(this.state.amount != this.state.transactions.map(t => t.amount).reduce((acc, tr) => acc + parseInt(tr),0)){
+                                                if(window.confirm('Số tiền hạch toán không khớp, bạn có muốn tiếp tục ?')){
                                                     this.onSubmitEdit(e)
                                                 }
-                                            }}
-                                            endIcon={<SendIcon/>}
-                                        >
-                                            Lưu thay đổi
-                                        </Button>
-                                    )
-                                }
+                                                
+                                            }else{
+                                                this.onSubmitEdit(e)
+                                            }
+                                        }}
+                                        endIcon={<SendIcon/>}
+                                    >
+                                        Lưu thay đổi
+                                    </Button>
+                                )
+                            }
                         </form>                
                 </DialogContent>
                 
