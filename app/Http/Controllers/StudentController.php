@@ -165,9 +165,12 @@ class StudentController extends Controller
         foreach($s as $key=>$student){
             $s[$key]['classes'] = Student::find($student['sid'])->classes;
             $s[$key]['entrance'] = '';
-            $entrance = Entrance::where('student_id', $student['sid'])->select('steps.name')->leftJoin('steps','entrances.step_id', 'steps.id')->first();
+            $entrance = Entrance::where('student_id', $student['sid'])->select('steps.name', 'status.name as entrance_status')
+                ->leftJoin('status', 'entrances.status_id', 'status.id')->leftJoin('steps','entrances.step_id', 'steps.id')->first();
             if($entrance){
                 $s[$key]['entrance']= $entrance->name;
+                $s[$key]['entrance_status']= $entrance->entrance_status;
+
             }
         }
         return response()->json($s);

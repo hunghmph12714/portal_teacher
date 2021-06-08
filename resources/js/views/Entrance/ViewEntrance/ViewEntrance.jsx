@@ -24,6 +24,7 @@ import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import axios from 'axios';
 import Chip from '@material-ui/core/Chip';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import { colors } from '@material-ui/core';
 import { format } from 'date-fns'
@@ -330,15 +331,14 @@ class ViewEntrance extends React.Component{
                               Tồn cuối ngày: 
                             </Typography>
                             <span className="stats_number"> {this.state.total} </span>
-
-                            <Button variant="contained" color="primary" onClick={() => this.exportStats()} className="btn-export">
-                              Tải về báo cáo
-                            </Button>
+                            <a>
+                              <GetAppIcon onClick={() => this.exportStats()} className="btn-export" />
+                            </a>
+                            
                           </CardContent>
                         </Card>
                       </Grid>
                     </Grid>
-                  
                   </div>
                 </div>
                 {

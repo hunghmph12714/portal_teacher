@@ -81,7 +81,7 @@ const CustomOption = props => {
                         </Typography>
                     </Grid>                    
                 </Grid>
-                <Grid container spacing={2} className="search-grid">
+                <Grid container spacing={1} className="search-grid">
                     <Grid item md={12} sm={12}>
                         <Typography variant="body2" component="p">
                             <b>Lớp: </b>{data.classes.map(c => {
@@ -92,18 +92,29 @@ const CustomOption = props => {
                             })}
                         </Typography>                        
                     </Grid>  
+                    </Grid> 
                     {
                         (data.entrance == "") ? "" : (
-                            <Grid item md={12} sm={12}>
-                                <Typography variant="body2" component="p">
-                                    <b>Ghi danh: </b>
-                                    <Chip variant="outlined" color="secondary" label={data.entrance} size="small" />
-                                </Typography>                        
+                            <Grid container spacing={1}>
+                                <Grid item md={6} sm={6}>
+                                    <Typography variant="body2" component="p">
+                                        <b>Ghi danh: </b>
+                                        <Chip variant="outlined" color="secondary" label={data.entrance} size="small" />
+                                    </Typography>      
+                                </Grid>
+                                <Grid item md={6} sm={6}>
+                                    <Typography variant="body2" component="p">
+                                        <b>Trạng thái: </b>
+                                        <Chip variant="outlined" color="secondary" label={data.entrance_status} size="small" />
+                                    </Typography>       
+                                </Grid>
+                                                  
+                                                
                             </Grid> 
                         )
                     }
                              
-                </Grid>       
+                      
             </CardContent>
         </Card>      
     ) : <components.Option {...props} />

@@ -25,7 +25,7 @@ import {
   Step,
   Roles,
   Status, 
-  CreateEntrance, ViewEntrance, ClassDetail, Attendance, QuickCreateEntrance,
+  CreateEntrance, ViewEntrance, ClassDetail, Attendance, QuickCreateEntrance, CompletedEntrance,
   FinAccount, Transaction, Discount,
   Payment, Receipt, Fee, AdjustFee, 
   Financial, Revenue, CashFlow,
@@ -198,6 +198,12 @@ const Routes = (props) => {
         exact
         layout={MainLayout}
         path="/entrance/create"
+      />
+      <ProtectedRouteWithLayout 
+        component = {CompletedEntrance}
+        exact
+        layout={MainLayout}
+        path="/entrance/completed"
       />
       <ProtectedRouteWithLayout 
         component = {QuickCreateEntrance}

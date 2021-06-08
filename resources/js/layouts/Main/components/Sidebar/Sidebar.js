@@ -85,8 +85,14 @@ const Sidebar = props => {
           href: '/entrance/quick-create',
         },
         {
-          title: 'Danh sách ghi danh',
+          title: 'DS ghi danh',
           href: '/entrance/list/2_3_4_5/0',
+          children: [
+            {
+              title: 'DS hoàn thành',
+              href: '/entrance/completed',
+            },
+          ]
         },
         {
           title: 'Ưu đãi',

@@ -178,6 +178,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/confirm', 'EntranceController@ConfirmClass');
             Route::post('/entrance/complete', 'EntranceController@completeEntrance');
             Route::get('/entrance/export-stat','EntranceController@exportEntranceStats');
+
+            Route::get('/entrance/completed', function(){
+                return view('welcome');
+            });
+            Route::post('/entrance/get/completed', 'EntranceController@getCompleted');
+            Route::post('/entrance/un-complete', 'EntranceController@unCompleted');
+
+            Route::get('/entrance/failed', function(){
+                return view('welcome');
+            });
         //Budgets
             Route::get('/budget', function(){
                 return view('welcome');

@@ -641,6 +641,37 @@ class EntranceController extends Controller
         }
 
     }
+    protected function getCompleted(){
+        $status = Status::where('name', 'Đã xử lý')->first()->id;
+        $entrances = Entrance::Select(
+            'entrances.id as eid','entrances.test_time','entrances.test_results',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
+            'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
+            'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
+            'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
+            'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
+            'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
+            ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
+        )
+        ->where('entrances.status_id', $status)
+        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
+        ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
+        ->leftJoin('relationships','parents.relationship_id','relationships.id')
+        ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
+        ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
+        ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
+        ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
+        return $entrances;
+    }
+    protected function unCompleted(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $entrance = Entrance::find($request->id);
+        if($entrance){
+            $entrance->status_id = 1;
+            $entrance->save();
+        }
+    }
     protected function getStats($center_id, $step_id){
         $step_id = $step_id + 1;
         $centers = explode('_', $center_id);

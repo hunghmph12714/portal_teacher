@@ -42,7 +42,7 @@ const CenterSelect = React.memo(props => {
 const AppointmentDialog = props => {
     const {open, handleCloseDialog, selectedEntrance, statusOptions, courseOptions, ...rest} = props
     const [note, setNote] = useState('')
-    const [appointments, setAppointments] = useState([{course: null, date: new Date(), id: 0}]);
+    const [appointments, setAppointments] = useState([{course: null, date: null, id: 0}]);
     const [status, setStatus] = useState({value: '', label: ''})
     const [ entrance_center, setEntranceCenter ] = useState(null)
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
