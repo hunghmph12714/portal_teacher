@@ -187,14 +187,14 @@ const AppointmentDialog = props => {
                             value = {note}
                             onChange = {onNoteChange}
                         /> 
-                        <Select className = "select-box"
+                        {/* <Select className = "select-box"
                             key = "status-select"
                             value = {status}
                             name = "entrance_status"
                             placeholder="Trạng thái"
                             options={props.statusOptions}
                             onChange={onStatusChange}
-                        />
+                        /> */}
                         <CenterSelect 
 
                             entrance_center={entrance_center}

@@ -894,14 +894,19 @@ class StudentController extends Controller
             $max_date = date('d/m/Y', strtotime(date('Y-m-01', strtotime($request->from)) . ' + 9 days'));
         }
         
-        
         if(date('Y-m-d',strtotime(str_replace('/','-',$max_date))) < date('Y-m-d')){
             $max_date = date('d/m/Y', strtotime(date('Y-m-d'). '+ 2 days'));
         }
         $classes = implode(',', $classes);
         $months = date('m', strtotime($request->from)). ' - '. date('m', strtotime($request->to));
         $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP '.$classes. ' tháng '.$months.' năm học 2021-2022';
-        $content = $classes.'_'.$this->vn_to_str($student_name);
+
+        $center = Center::find($center_id);
+        $center_code = "";
+        if($center){
+            $center_code = $center->code;
+        }
+        $content = $center_code.''.$student->id.' '.$this->vn_to_str($student_name);
         
         
         $result = ['data' => $data, 'title' => $title, 'classes' => $classes,

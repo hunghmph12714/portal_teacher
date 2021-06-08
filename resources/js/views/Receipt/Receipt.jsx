@@ -137,7 +137,7 @@ const ReceiptView = React.memo(props => {
                 width: '80px'
             },            
         },
-    //Thời  gian chứng từ
+    //Thời gian chứng từ
         {
             title: "Chứng từ",
             field: "time_formated",
@@ -234,13 +234,6 @@ const ReceiptView = React.memo(props => {
         },
     
     ])
-    // useEffect(() => {
-    //     const fetchdata = async() => {
-    //         var r = await axios.get(baseUrl + '/receipt/get')            
-    //         setData(r.data)
-    //     }
-    //     fetchdata()
-    // },[reload])
     return(
         <MaterialTable
             className = "receipt-table"

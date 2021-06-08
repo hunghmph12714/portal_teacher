@@ -93,7 +93,7 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
     Chủ TK: Phan Việt Anh<br/>
     Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
-    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
+    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
 <br/><br>
 <!-- @if($result['center_id'] == 5)
    
