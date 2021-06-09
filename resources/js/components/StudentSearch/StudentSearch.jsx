@@ -75,7 +75,6 @@ const CustomOption = props => {
                                         document.execCommand('copy')
                                         enqueueSnackbar('Đã sao chép', {'variant': 'success'})
                                     }}
-                                    
                                 />
                             </Tooltip>
                         </Typography>
