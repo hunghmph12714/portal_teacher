@@ -9,7 +9,7 @@ import {
     Chip, colors ,
     Typography ,LinearProgress
   } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import ImportExportOutlinedIcon from '@material-ui/icons/ImportExportOutlined';
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
@@ -324,8 +324,8 @@ const StepInform = (props) => {
         fetchCourse()  
         fetchClass()      
     }, [centers])    
-    function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment})
+    function handleFailClick(rowData, reason, comment, status){
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment, status:status})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -487,10 +487,10 @@ const StepInform = (props) => {
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
                                     },   
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                     {
@@ -569,10 +569,10 @@ const StepInform = (props) => {
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
                                     },   
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                     {
@@ -652,12 +652,12 @@ const StepInform = (props) => {
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
                                     },   
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {
-                                            if (window.confirm('Chuyển trạng thái thất bại ?')) 
+                                            if (window.confirm('Chuyển trạng thái Chuyển trạng thái?')) 
                                                 handleFailClick(rowData)
                                             },
                                     },
@@ -716,10 +716,10 @@ const StepInform = (props) => {
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
                                     },        
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
                                     {
@@ -754,7 +754,7 @@ const StepInform = (props) => {
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
-                                handleStatusChange = {(typeStatus == 'type4') ? handleFailClick : handleRemove}
+                                handleStatusChange = {handleFailClick}
                             /> 
                             <ClassDialog
                                 open = {open_class}

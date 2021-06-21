@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import './StatusDialog.scss'
 import Dialog from '@material-ui/core/Dialog';
@@ -9,7 +9,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CreatableSelect from 'react-select/creatable';
-
+import Select from 'react-select';
 const StatusDialog = (props) => {
     const {state, open, handleClose, ...rest} = props
     const reasons = [
@@ -21,23 +21,40 @@ const StatusDialog = (props) => {
         {value: 'Đã tìm được chỗ khác', label: 'Đã tìm được chỗ khác'},
         {value: 'Không tìm được giáo viên ưng ý', label: 'Không tìm được giáo viên ưng ý'},
         {value: 'Thất bại do tư vấn chậm trễ', label: 'Thất bại do tư vấn chậm trễ'},
+        {value: 'Lý do khác', label: 'Lý do khác'},
     ]
     const [selected_reason, setSelectedReason] = useState('');
     const [reason, setReason]= useState('');
     const [comment, setComment] = useState('');
+    const [statuses, setStatusOption] = useState([
+        {value: 'Đang xử lý', label: 'Đang xử lý'},
+        {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+        {value: 'Mất', label: 'Mất'},
+        {value: 'Chờ', label: 'Chờ'},
+    ])
+    const [selected_status, setSelectedStatus] = useState('');
+    const [status, setStatus] = useState('');
+    useEffect(() => {
+        setSelectedStatus(props.type);
+        setStatus({value: props.type, label: props.type})
+    }, [props.type])
     function handleChange(value){
         setReason(value)
         setSelectedReason(value.value)
+    }
+    function onStatusChange(value){
+        setStatus(value)
+        setSelectedStatus(value.value)
     }
     function onCommentChange(value){
         setComment(value.target.value)
     }
     function handleEditEntrance(){
-        props.handleStatusChange(props.selectedEntrance, selected_reason, comment)
+        console.log(selected_status)
+        props.handleStatusChange(props.selectedEntrance, selected_reason, comment, selected_status)
         props.handleClose()
     }
     return(
-
         <Dialog 
             {...rest}
             fullWidth 
@@ -48,9 +65,17 @@ const StatusDialog = (props) => {
             open={open} onClose={handleClose} aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">
-                <h4>Nguyên nhân thay đổi trạng thái</h4>
+                <h4>Thay đổi trạng thái</h4>
             </DialogTitle>
             <DialogContent>
+
+                <h5>Lựa chọn trạng thái</h5>
+                <Select
+                    value= {status}
+                    onChange={onStatusChange}
+                    options={statuses}
+                    className="select-status"
+                />
                 <h5> Nguyên nhân thay đổi </h5>
                 <CreatableSelect
                     isClearable={false}

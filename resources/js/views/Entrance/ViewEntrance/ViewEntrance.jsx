@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import './ViewEntrance.scss'
-import { DialogCreate,  StepAppointment,  StepFinal, StepInform, StepInit, StepResult} from '../components';
+import { DialogCreate,  StepAppointment,  StepFinal, StepInform, StepInit, StepResult, ViewDelay, ViewLost} from '../components';
 import { EditEntrance } from '../EditEntrance';
 import {
     Menu,
@@ -41,9 +41,13 @@ import yellow from '@material-ui/core/colors/yellow';
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepButton from "@material-ui/core/StepButton";
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+
 import { AnswersDialog } from '../components';
 import { withSnackbar } from 'notistack';
 import { Can } from '../../../Can';
+import { findLastKey } from 'lodash';
 const baseUrl = window.Laravel.baseUrl;
 const customChip = (color = '#ccc') => ({
   border: '1px solid ' + color,
@@ -106,6 +110,11 @@ class ViewEntrance extends React.Component{
             total_remain: 0,
             total_today: 0,
             total_completed: 0,
+            total_delay: 0,
+            total_lost: 1,
+
+            open_delay: false,
+            open_lost: false,
         }
     }
 
@@ -173,6 +182,8 @@ class ViewEntrance extends React.Component{
             total_remain: response.data.total_remain,
             total_completed: response.data.total_completed,
             total_today: response.data.total_today,
+            total_delay: response.data.total_delay,
+            total_lost: response.data.total_lost,
           })
         })
         .catch(err => {
@@ -251,6 +262,26 @@ class ViewEntrance extends React.Component{
       window.open(url, '_blank', 'noopener,noreferrer')
      
     }
+    openDelay = () => {
+      this.setState(
+        {open_delay: true, open_lost: false}
+      )
+    }
+    closeDelay = () => {
+      this.setState({
+        open_delay: false,
+      })
+    }
+    openLost = () => {
+      this.setState(
+        {open_delay: false, open_lost:true}
+      )
+    }
+    closeLost = () => {
+      this.setState({
+        open_lost: false,
+      })
+    }
     render(){      
       document.title = 'Danh sách ghi danh'
         return(          
@@ -293,178 +324,106 @@ class ViewEntrance extends React.Component{
                     </Grid>
                   </Grid>
                   <div className="stats"> 
-                    <Grid container spacing={2}>
-                      <Grid item md={3} sm={12}>
-                        <Card>
-                          <CardContent>
-                            <Typography variant="span" color="textSecondary" gutterBottom>
-                              Tồn đầu ngày: 
-                            </Typography>
-                            <span className="stats_number"> {this.state.total_remain} </span>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid item md={3} sm={12}>
-                        <Card>
-                          <CardContent>
-                            <Typography variant="span" color="textSecondary" gutterBottom>
-                              Mới trong ngày:
-                            </Typography>
-                            <span className="stats_number"> {this.state.total_today} </span>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid item md={3} sm={12}>
-                        <Card>
-                          <CardContent>
-                            <Typography variant="span"  color="textSecondary" gutterBottom>
-                              Đã xử lý: 
-                            </Typography>
-                            <span className="stats_number"> {this.state.total_completed} </span>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid item md={3} sm={12}>
-                        <Card>
-                          <CardContent>
-                            <Typography variant="span"  color="textSecondary" gutterBottom>
-                              Tồn cuối ngày: 
-                            </Typography>
-                            <span className="stats_number"> {this.state.total} </span>
-                            <a>
-                              <GetAppIcon onClick={() => this.exportStats()} className="btn-export" />
-                            </a>
-                            
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    </Grid>
+                          <Grid container spacing={1} className="grid-no-shadow">
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span" color="textSecondary" gutterBottom>
+                                    Tồn đầu ngày: <br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total_remain} </span>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span" color="textSecondary" gutterBottom>
+                                    Mới trong ngày:<br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total_today} </span>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span"  color="textSecondary" gutterBottom>
+                                    Đã xử lý: <br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total_completed} </span>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span"  color="textSecondary" gutterBottom>
+                                    Tồn cuối ngày: <br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total} </span>
+                                  <a>
+                                    <GetAppIcon onClick={() => this.exportStats()} className="btn-export" />
+                                  </a>
+                                  
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span"  color="textSecondary" gutterBottom>
+                                    Danh sách chờ: <br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total_delay} </span>
+                                  <a>
+                                    {this.state.open_delay ? 
+                                      <VisibilityOffIcon onClick={() => this.closeDelay()} className="btn-export" />
+                                      : 
+                                      <VisibilityIcon onClick={() => this.openDelay()} className="btn-export" />
+                                    }
+                                  </a>
+                                  
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item md={2} sm={12}>
+                              <Card>
+                                <CardContent>
+                                  <Typography variant="span"  color="textSecondary" gutterBottom>
+                                    Danh sách mất: <br/>
+                                  </Typography>
+                                  <span className="stats_number"> {this.state.total_lost} </span>
+                                  <a>
+                                    {this.state.open_lost ? 
+                                      <VisibilityOffIcon onClick={() => this.closeLost()} className="btn-export" />
+                                      : 
+                                      <VisibilityIcon onClick={() => this.openLost()} className="btn-export" />
+                                    }
+                                  </a>
+                                  
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                          </Grid>
                   </div>
                 </div>
                 {
-                  {
-                    0: <StepInit 
-                        centers = {this.state.selected_centers_param}
-                      />,
-                    1: <StepAppointment  centers = {this.state.selected_centers_param}/>,
-                    2: <StepResult centers = {this.state.selected_centers_param}/>,
-                    3: <StepInform centers = {this.state.selected_centers_param}/>,
-                    4: <StepFinal centers = {this.state.selected_centers_param}/>,
-                  }[this.state.activeStep]
+                  this.state.open_delay ? 
+                    <ViewLost centers = {this.state.selected_centers_param}/>:
+                    
+                    this.state.open_lost ? 
+                      <ViewDelay centers = {this.state.selected_centers_param}/>:
+                      {
+                        0: <StepInit 
+                            centers = {this.state.selected_centers_param}
+                          />,
+                        1: <StepAppointment  centers = {this.state.selected_centers_param}/>,
+                        2: <StepResult centers = {this.state.selected_centers_param}/>,
+                        3: <StepInform centers = {this.state.selected_centers_param}/>,
+                        4: <StepFinal centers = {this.state.selected_centers_param}/>,
+                      }[this.state.activeStep]
                 }
-                
-
-                {/* <div className="root-entrance">
-                  <MaterialTable
-                    title="Danh sách ghi danh"
-                    data={this.state.data}
-                    options={{
-                        pageSize: 10,
-                        pageSizeOptions: [20, 50, 200],
-                        grouping: true,
-                        filtering: true,
-                        exportButton: true,
-                        rowStyle: rowData => {
-                          let today = new Date()
-                          if(rowData.test_time){
-                            let test_time = (rowData.test_time) ? rowData.test_time.split(' ')[0].split('/').map(t => parseInt(t)): NULL                      
-                            if(today.getDate() == parseInt(test_time[0])  && today.getMonth()+1 == parseInt(test_time[1])  && today.getFullYear() == parseInt(test_time[2]) ){
-                              return {backgroundColor: yellow[200]}
-                            }
-                          }
-                          
-                          if(rowData.priority >= 8){
-                            return {backgroundColor: colors.orange[300],}
-                          }
-                          if(rowData.priority >= 6){
-                            return {backgroundColor: colors.orange[200],}
-                          }
-                          if(rowData.priority >= 4){
-                            return {backgroundColor: colors.orange[100],}
-                          }
-                          
-                          
-                          return {padding: '0px',}
-                        },
-                        filterCellStyle: {
-                          paddingLeft: '0px'
-                        }
-                    }}
-                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                    actions={[                       
-                        {
-                            icon: () => <AddBoxIcon />,
-                            tooltip: 'Thêm mới ghi danh',
-                            isFreeAction: true,
-                            text: 'Thêm ghi danh',
-                            onClick: (event) => {
-                                this.props.history.push('/entrance/create')
-                            },
-                        },
-                    ]}
-                    localization={{
-                        body: {
-                            emptyDataSourceMessage: 'Không tìm thấy ghi danh'
-                        },
-                        toolbar: {
-                            searchTooltip: 'Tìm kiếm',
-                            searchPlaceholder: 'Tìm kiếm',
-                            nRowsSelected: '{0} hàng được chọn'
-                        },
-                        pagination: {
-                            labelRowsSelect: 'dòng',
-                            labelDisplayedRows: ' {from}-{to} của {count}',
-                            firstTooltip: 'Trang đầu tiên',
-                            previousTooltip: 'Trang trước',
-                            nextTooltip: 'Trang tiếp theo',
-                            lastTooltip: 'Trang cuối cùng'
-                        },
-                        grouping: {
-                          placeholder: 'Kéo tên cột vào đây để nhóm'
-                        }
-                    }}
-                    columns={this.state.columns}
-                    detailPanel={rowData => {
-                      let messages = (rowData.message)?rowData.message : []
-                      let content = ''
-                      return(
-                        <Table className='' aria-label="simple table"  size="small">
-                            <TableBody>
-                                {messages.map(m => {return (
-                                  <TableRow>
-                                      <TableCell>{format(new Date(m.time*1000) , 'd/M/yyyy HH:mm')}</TableCell>
-                                      <TableCell>{m.user}</TableCell>
-                                      <TableCell>{m.content}</TableCell>
-                                  </TableRow>
-                                )})}
-                                <TableRow>
-                                  <TableCell>
-                                    {format(new Date() , 'd/M/yyyy HH:mm')}
-                                  </TableCell>
-                                  <TableCell>
-                                    
-                                  </TableCell>
-                                  <TableCell>
-                                    <MessageInput entrance_id = {rowData.eid} updateMessage={this.updateMessage}/>
-                                  </TableCell>
-                                </TableRow>
-                            </TableBody>                             
-                        </Table>
-                      )
-                    }} 
-                  />
-                  <EditEntrance 
-                    open={this.state.open_edit} 
-                    handleCloseDialog={this.handleCloseDialogCreate}
-                    updateTable = {this.updateTable}
-                    entrance={this.state.selectedEntrance}
-                  />
-                  <AnswersDialog 
-                    open_answers={this.state.open_answers}
-                    handleCloseDialog={this.handleCloseAnswerDialog}
-                    answers = {this.state.answers}
-                  />
-                </div>  */}
               </React.Fragment>
             )}
             </React.Fragment>

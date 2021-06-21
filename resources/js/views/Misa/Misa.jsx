@@ -175,7 +175,7 @@ const Misa = (props) => {
                       variant="inline"
                       inputVariant="outlined"
                       format="dd/MM/yyyy"
-                      label="Từ ngày"
+                      label="Đến ngày"
                       views={["year", "month", "date"]}
                       value={to}
                       onChange={handleToChange}

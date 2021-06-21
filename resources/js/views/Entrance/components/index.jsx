@@ -15,3 +15,5 @@ export { default as MessageDialog } from './MessageDialog';
 export { default as TestDialog } from './TestDialog';
 export { default as StatusDialog } from './StatusDialog';
 export { default as ClassDialog } from './ClassDialog';
+export { default as ViewDelay } from './ViewDelay';
+export { default as ViewLost } from './ViewLost';

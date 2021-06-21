@@ -26,20 +26,27 @@
     }
     .stats{
         margin-top: 15px;
+        a{
+            float: right;
+        }
         .stats_number{
             font-size: 30px;
             font-weight: 700;
             line-height: 0;
+            
         }
         span{
             vertical-align: middle;
+            font-size: 12px;
         }
         .MuiCardContent-root{
             padding-bottom: 16px;
         }
+        .grid-no-shadow{
+            box-shadow: none !important;
+        }
     }
     .btn-export{
-        margin-left: 25%;
         cursor: pointer;
     }
 }

@@ -9,8 +9,7 @@ import {
     Chip, 
     Typography,LinearProgress 
   } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import ImportExportOutlinedIcon from '@material-ui/icons/ImportExportOutlined';
 import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
 import MaterialTable from "material-table";
@@ -249,23 +248,10 @@ const StepInit = (props) => {
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment})
+    function handleFailClick(rowData, reason, comment, status){
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment, status: status})
             .then(response => { 
-                var d = new Date();
-                let yesterday = d.setDate(d.getDate() - 1);
-                const date = new Date(rowData.created_at);
-                let element = {}
-                if(date > yesterday){
-                    element = data1.filter(d => d.eid == rowData.eid)
-                    const d1 = data1.filter(d => d.eid !== rowData.eid)
-                    setData1(d1)
-                }else{
-                    element = data2.filter(d => d.eid == rowData.eid)
-                    const d2 = data2.filter(d => d.eid !== rowData.eid)
-                    setData2(d2)
-                }
-                setData3([...data3, element[0]])
+                fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
                 
             })
@@ -366,10 +352,10 @@ const StepInit = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                     {
@@ -426,10 +412,10 @@ const StepInit = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                     {
@@ -451,7 +437,7 @@ const StepInit = (props) => {
                     
                         <div className= "entrance_table"> 
                             <MaterialTable
-                                title="Danh sách cần tư vấn"
+                                title="Danh sách Chuyển trạng thái"
                                 data={data3}
                                 options={{
                                     pageSize: 5,
@@ -488,7 +474,7 @@ const StepInit = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogAppointment(rowData)},
                                     },
                                     {
-                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
+                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><ImportExportOutlinedIcon /></Can>,
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
@@ -525,7 +511,7 @@ const StepInit = (props) => {
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
-                                handleStatusChange = {(typeStatus == 'type1') ? handleFailClick : handleRemove}
+                                handleStatusChange = {handleFailClick}
                             />   
                             <EditEntrance 
                                 open={open_edit} 

@@ -182,7 +182,9 @@ class EntranceController extends Controller
         return response()->json($result);
     }
     protected function getEntranceByStep($step, $centers){
-        $status = Status::where('name', 'Đã xử lý')->first()->id;
+        $completed = Status::where('name', 'Đã xử lý')->first()->id;
+        $lost = Status::where('name', 'Mất')->first()->id;
+        $delay = Status::where('name', 'Chờ')->first()->id;
         $entrances = Entrance::Select(
             'entrances.id as eid','entrances.test_time','entrances.test_results',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
             'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
@@ -192,7 +194,29 @@ class EntranceController extends Controller
             'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
             ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
         )->where('entrances.step_id', $step)
-        ->where('entrances.status_id', '!=', $status)
+        ->where('entrances.status_id', '!=', $completed)
+        ->where('entrances.status_id', '!=', $lost)
+        ->where('entrances.status_id', '!=', $delay)
+        ->whereIn('entrances.center_id', $centers)
+        ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
+        ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
+        ->leftJoin('relationships','parents.relationship_id','relationships.id')
+        ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
+        ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
+        ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
+        ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
+        return $entrances;
+    }
+    protected function getEntranceByStatus($status, $centers){
+        $entrances = Entrance::Select(
+            'entrances.id as eid','entrances.test_time','entrances.test_results',DB::raw('DATE_FORMAT(test_time, "%d/%m/%Y %h:%i %p") AS test_time_formated'),'test_answers','test_score','test_note','entrances.note as note','priority','entrances.created_at as created_at',
+            'students.id as sid', 'students.fullname as sname',DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.grade','students.email as semail','students.phone as sphone','students.gender','students.school',
+            'parents.id as pid', 'parents.fullname as pname', 'parents.phone as phone', 'parents.email as pemail','relationships.name as rname', 'relationships.id as rid',
+            'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
+            'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.grade as grade','courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
+            'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
+            ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
+        )->where('entrances.status_id', $status)
         ->whereIn('entrances.center_id', $centers)
         ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
         ->leftJoin('sources', 'source_id', 'sources.id')->leftJoin('mediums', 'medium_id', 'mediums.id')
@@ -246,6 +270,25 @@ class EntranceController extends Controller
         $entrances = $this->getEntranceByStep(5, $centers);
         return response()->json($entrances);
     }
+    protected function getEntranceDelay(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        $status = Status::where('name', 'Chờ')->first();
+        $entrances = $this->getEntranceByStatus($status->id, $centers);
+        return response()->json($entrances);
+    }
+    protected function getEntranceLost(Request $request){
+        $rules = ['centers' => 'required']; 
+        $this->validate($request, $rules);
+
+        $centers = explode('_', $request->centers);
+        $status = Status::where('name', 'Mất')->first();
+        $entrances = $this->getEntranceByStatus($status->id, $centers);
+        return response()->json($entrances);
+    }
+    
     protected function editEntrance(Request $request){
         $rules = ['student_id' => 'required', 'entrance_id' => 'required'];
         $this->validate($request, $rules);
@@ -414,46 +457,53 @@ class EntranceController extends Controller
         
     }
     protected function setFail1(Request $request){
-        $rules = ['id' => 'required', 'type'=> 'required'];
+        $rules = ['id' => 'required', 'status' => 'required'];
         $this->validate($request, $rules);
 
         $entrance = Entrance::find($request->id);
         if($entrance){
-            switch ($request->type) {
-                case 'fail1':
-                    $entrance->status_id = 4;
-                    break;
-                case 'lost':
-                    $entrance->status_id = 5;
-                    break;
-                
-                case 'fail2':
-                    $entrance->status_id = 6;
-                    break;
-                
-                case 'lostKT':
-                    $entrance->status_id = 7;
-                    break;
-                
-                case 'fail3':
-                    $entrance->status_id = 8;
-                    break;
-                
-                case 'lostKQ':
-                    $entrance->status_id = 9;
-                    break;
-                case 'fail4':
-                    $entrance->status_id = 10;
-                    break;
-                
-                case 'lost4':
-                    $entrance->status_id = 3;
-                    break;
-                
-                default:
-                    # code...
-                    break;
+            if($request->status == 'Mất' || $request->status == 'Chờ' || $request->status == 'Đang xử lý'){
+                $status = Status::where('name', $request->status)->first();
+                $entrance->status_id = $status->id;
             }
+            else{
+                switch ($request->type) {
+                    case 'fail1':
+                        $entrance->status_id = 4;
+                        break;
+                    case 'lost':
+                        $entrance->status_id = 5;
+                        break;
+                    
+                    case 'fail2':
+                        $entrance->status_id = 6;
+                        break;
+                    
+                    case 'lostKT':
+                        $entrance->status_id = 7;
+                        break;
+                    
+                    case 'fail3':
+                        $entrance->status_id = 8;
+                        break;
+                    
+                    case 'lostKQ':
+                        $entrance->status_id = 9;
+                        break;
+                    case 'fail4':
+                        $entrance->status_id = 10;
+                        break;
+                    
+                    case 'lost4':
+                        $entrance->status_id = 3;
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            
             $entrance->status()->attach([$entrance->status_id => ['active' => '1', 'user_id' => auth()->user()->id, 'comment' => $request->comment, 'reason' => $request->reason]]);
             $entrance->save();
         }
@@ -680,6 +730,8 @@ class EntranceController extends Controller
             'total_remain' => 0,
             'total_today' => 0,
             'total_completed' => 0,
+            'total_delay' => 0,
+            'total_lost' => 0,
         ];
 
         $step = Step::find($step_id);
@@ -688,40 +740,46 @@ class EntranceController extends Controller
             $status = Status::where('name','Đang xử lý')->first();
             $status_lost = Status::where('name', 'Mất')->first()->id;
             $status_complete = Status::where('name', 'Đã xử lý')->first()->id;
+            $status_delay = Status::where('name', 'Chờ')->first()->id;
             foreach($centers as $center){
                 // echo $center;
                 if($next_step && $status){
                     $today = date('Y-m-d 00:00:00');
                     $result['test'] = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->get();
-                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     // $result['total_remain'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                     //     ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $total_completed = Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    $total_completed = Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
 
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->where('entrances.created_at', '>' ,$today)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
+                    $result['total_delay'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_delay)->count();
+                    $result['total_lost'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_lost)->count();
                 }
                 if(!$next_step){
                     $today = date('Y-m-d 00:00:00');
                     $status = Status::where('name', 'Đã xử lý')->first()->id;
                     
-                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status)
+                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status)
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $total_completed = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('status_id', '==', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)
+                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
+                    $result['total_delay'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_delay)->count();
+                    $result['total_lost'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_lost)->count();
+
                 }
             }
         }

@@ -160,6 +160,9 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/entrance/get/result', 'EntranceController@getEntranceResult');
             Route::post('/entrance/get/inform', 'EntranceController@getEntranceInform');
             Route::post('/entrance/get/final', 'EntranceController@getEntranceFinal');
+            Route::post('/entrance/get/delay', 'EntranceController@getEntranceDelay');
+            Route::post('/entrance/get/lost', 'EntranceController@getEntranceLost');
+
             Route::post('/entrance/inform/increase', 'EntranceController@increaseInform');
             Route::post('/entrance/init/edit', 'EntranceController@initEdit');
             Route::post('/entrance/appointment/edit', 'EntranceController@appointmentEdit');

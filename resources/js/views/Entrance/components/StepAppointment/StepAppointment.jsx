@@ -9,7 +9,8 @@ import {
     Chip, colors ,
     Typography ,LinearProgress
   } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import ImportExportOutlinedIcon from '@material-ui/icons/ImportExportOutlined';
+
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
@@ -269,8 +270,8 @@ const StepAppointment = (props) => {
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail2', reason: reason, comment: comment})
+    function handleFailClick(rowData, reason, comment, status){
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail2', reason: reason, comment: comment, status: status})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -396,10 +397,10 @@ const StepAppointment = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                     {
@@ -476,10 +477,10 @@ const StepAppointment = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
                                     {
@@ -499,7 +500,7 @@ const StepAppointment = (props) => {
                     
                         <div className= "entrance_table"> 
                             <MaterialTable
-                                title="Danh sách cần tư vấn"
+                                title="Danh sách Chuyển trạng thái"
                                 data={data3}
                                 options={{
                                     pageSize: 5,
@@ -556,7 +557,7 @@ const StepAppointment = (props) => {
                                         onClick: (event, rowData) => {handleOpenDialogTest(rowData)},
                                     },
                                     {
-                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
+                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><ImportExportOutlinedIcon /></Can>,
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
@@ -593,7 +594,7 @@ const StepAppointment = (props) => {
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
-                                handleStatusChange = {(typeStatus == 'type1') ? handleFailClick : handleRemove}
+                                handleStatusChange = {handleFailClick}
                             />   
                             <AppointmentDialog
                                 open = {openAppointment}

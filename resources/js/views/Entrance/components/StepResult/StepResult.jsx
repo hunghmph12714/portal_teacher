@@ -9,7 +9,8 @@ import {
     Chip, colors ,
     Typography ,LinearProgress
   } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+  import ImportExportOutlinedIcon from '@material-ui/icons/ImportExportOutlined';
+
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import AddAlarmIcon from '@material-ui/icons/AddAlarm';
 import AddCommentOutlinedIcon from '@material-ui/icons/AddCommentOutlined';
@@ -274,8 +275,8 @@ const StepResult = (props) => {
         fetchStatus()
         fetchCourse()        
     }, [centers])    
-    function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment})
+    function handleFailClick(rowData, reason, comment, status){
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment, status: status})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -413,10 +414,10 @@ const StepResult = (props) => {
                                         onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
                                     },
                                     {
@@ -491,10 +492,10 @@ const StepResult = (props) => {
                                         onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
                                     },
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Cần tư vấn',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Cần tư vấn',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type3')},
                                     },
                                     {
@@ -571,7 +572,7 @@ const StepResult = (props) => {
                                         onClick: (event, rowData) => {handleOpenAnswerDialog(rowData)},
                                     },
                                     {
-                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><DeleteOutlineOutlinedIcon /></Can>,
+                                        icon: () => <Can I="soft_delete_entrance" on="Ghi danh"><ImportExportOutlinedIcon /></Can>,
                                         tooltip: 'Thất bại tư vấn',
                                         isFreeAction: false,
                                         text: 'Thất bại tư vấn',
@@ -614,7 +615,7 @@ const StepResult = (props) => {
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
-                                handleStatusChange = {(typeStatus == 'type3') ? handleFailClick : handleRemove}
+                                handleStatusChange = {handleFailClick}
                             /> 
                             <EditEntrance 
                                 open={open_edit} 

@@ -9,7 +9,9 @@ import {
     Chip, colors ,
     Typography ,LinearProgress
   } from "@material-ui/core";
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+
+  import ImportExportOutlinedIcon from '@material-ui/icons/ImportExportOutlined';
+
 import PlusOneIcon from '@material-ui/icons/PlusOne';
 import { EditEntrance } from '../../EditEntrance';
 import CreateIcon from '@material-ui/icons/Create';
@@ -289,8 +291,8 @@ const StepFinal = (props) => {
         fetchCourse()  
         fetchClass()      
     }, [centers])    
-    function handleFailClick(rowData, reason, comment){
-        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment})
+    function handleFailClick(rowData, reason, comment, status){
+        axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail4', reason: reason, comment: comment, status:status})
             .then(response => { 
                 fetchdata()
                 enqueueSnackbar('Đã cập nhật', {variant: 'success'});
@@ -449,10 +451,10 @@ const StepFinal = (props) => {
                                             if (window.confirm('Học sinh đã đến học buổi đầu tiên? !')) handleCompleteEntrance(rowData)}
                                     }, 
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                     {
@@ -513,10 +515,10 @@ const StepFinal = (props) => {
                                             if (window.confirm('Học sinh đã đến học buổi đầu tiên? Hoàn thành ghi danh.')) handleCompleteEntrance(rowData)}
                                     }, 
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                     {
@@ -570,10 +572,10 @@ const StepFinal = (props) => {
                                         onClick: (event, rowData) => {handleOpenClassDialog(rowData)},
                                     },   
                                     {
-                                        icon: () => <DeleteOutlineOutlinedIcon />,
-                                        tooltip: 'Thất bại ',
+                                        icon: () => <ImportExportOutlinedIcon />,
+                                        tooltip: 'Chuyển trạng thái',
                                         isFreeAction: false,
-                                        text: 'Thất bại ',
+                                        text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type4')},
                                     },
                                     {
@@ -607,7 +609,7 @@ const StepFinal = (props) => {
                                 open = {openStatus}
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
-                                handleStatusChange = {(typeStatus == 'type4') ? handleFailClick : handleRemove}
+                                handleStatusChange = {handleFailClick}
                             /> 
                             <ClassDialog
                                 open = {open_class}
