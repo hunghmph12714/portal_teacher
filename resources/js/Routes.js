@@ -31,7 +31,8 @@ import {
   Financial, Revenue, CashFlow,
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
-  Users,Budget, BudgetStats, CashBook
+  Users,Budget, BudgetStats, CashBook,
+  Misa
 
 } from './views';
 
@@ -309,7 +310,11 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/event/:id"
       />
-      
+      <ProtectedRouteWithLayout 
+        component = {Misa}
+        layout = {MainLayout}
+        path = "/misa"
+      />
       <Redirect to="/not-found" />
 
     </Switch>

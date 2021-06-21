@@ -1079,8 +1079,14 @@ class StudentController extends Controller
     }
     protected function misaUpload(){
         $arr = ['1','0'];
-        $students = Student::all();
+        $int = 0;
+
+        $students = Student::where('misa_upload', '0')->get();
         $file = fopen(public_path()."/misa_student.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Là tổ chức/cá nhân','Là nhà cung cấp','Mã khách hàng (*)','Tên khách hàng (*)','Địa chỉ', 'Mã số thuế', 'Điện thoại', 'Điện thoại di động', 'Fax', 'Email'];
+        fputcsv($file, $first_line);
+
         foreach($students as $s){
             $arr = ['1','0'];
             array_push($arr, 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT));
@@ -1098,11 +1104,13 @@ class StudentController extends Controller
                 array_push($arr, '');
                 array_push($arr, $parent->email);
             }
+            $s->misa_upload = '1';
+            $s->save();
             fputcsv($file, $arr);
-            echo "<pre>";
-            print_r($arr);
 
         }
+        return response('/public/misa_student.csv');
+
     }
     protected function chuanHoa(){
         $students = Student::all();

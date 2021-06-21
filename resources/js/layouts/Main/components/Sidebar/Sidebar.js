@@ -159,6 +159,10 @@ const Sidebar = props => {
           title: 'Ngân sách',
           href: '/budget',
         },
+        {
+          title: 'Misa',
+          href: '/misa'
+        }
       ]
     },
     {

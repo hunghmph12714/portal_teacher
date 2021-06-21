@@ -565,10 +565,22 @@ class PaperController extends Controller
         return view('paper.print', compact('paper'));
         // return response()->json($paper);
     }
-    protected function misaUploadReceiptTM(){
+    protected function misaUploadReceiptTM(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+
         $arr = [];
-        $file = fopen(public_path()."/misa_receipt.csv","w");
-        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','receipt')->get();
+        $file = fopen(public_path()."/misa_receipt_TM.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = [ 'Hiển thị trên sổ', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ',
+            'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' ];
+        fputcsv($file, $first_line);
+
+        
+        $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->get();
+
         foreach($receipts as $r){
             
             $transactions = $r->transactions()->select(
@@ -603,18 +615,40 @@ class PaperController extends Controller
                 if($t['debit_level_2'] == '111'){
                     $t['debit_level_2'] = '1111';
                 }
+                if($t['debit_level_2'] != '1111') continue;
+
                 array_push($arr, $t['debit_level_2']);
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
                 fputcsv($file, $arr);
+
+                $temp_t = Transaction::find($t['id']);
+                if($temp_t){
+                    $temp_t->misa_upload = 3;
+                    $temp_t->misa_upload_at = date('Y-m-d');
+                    $temp_t->save();
+                }
             }
         }
+        return response('/public/misa_receipt_TM.csv');
 
     }
-    protected function misaUploadReceipt(){
+    protected function misaUploadReceiptNH(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+
         $arr = [];
         $file = fopen(public_path()."/misa_receipt_NH.csv","w");
-        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','receipt')->get();
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Hiển thị trên sổ', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Mã đối tượng',
+            'Tên đối tượng', 'Địa chỉ', 'Nộp vào TK', 'Mở tại NH', 'Lý do thu', 'Diễn giải lý do thu ', 'Nhân viên thu',
+            'Diễn giải', 'TK Nợ (*)', 'TK Có (*)' , 'Số tiền', 'Đối tượng', 'Khoản mục CP', 'Đơn vị', 'Đối tượng THCP',
+            'Công trình', 'Đơn đặt hàng', 'Hợp đồng mua', 'Hợp đồng bán', 'Mã thống kê'];
+        fputcsv($file, $first_line);
+
+        $receipts = Paper::where('created_at','>=', $from)->where('created_at','<',$to)->where('type','receipt')->get();
         foreach($receipts as $r){
             
             $transactions = $r->transactions()->select(
@@ -642,6 +676,8 @@ class PaperController extends Controller
                 array_push($arr, '');
                 switch ($t['debit_level_2']) {
                     case '1111':
+                        continue 2;
+                    case '111':
                         continue 2;
                         break;
                     case '1123':
@@ -674,16 +710,36 @@ class PaperController extends Controller
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
                 array_push($arr, $t['cid']);
                 fputcsv($file, $arr);
+
+                $temp_t = Transaction::find($t['id']);
+                if($temp_t){
+                    $temp_t->misa_upload = 3;
+                    $temp_t->misa_upload_at = date('Y-m-d');
+                    $temp_t->save();
+                }
             }
         }
+        return response('/public/misa_receipt_NH.csv');
 
     }
-    protected function misaUploadPaymentTM(){
+    protected function misaUploadPaymentTM(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+
         $arr = [];
         $file = fopen(public_path()."/misa_payment_TM.csv","w");
-        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
-        foreach($receipts as $r){
-            
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = [ 'Hiển thị trên sổ', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ', 'Nhân viên',
+            'Kèm theo', 'Lý do chi', 'Diễn giải lý do chi', 'Người nhận', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' ];
+        fputcsv($file, $first_line);
+
+        $from = date('Y-m-d', strtotime('2021-01-01'));
+        $to = date('Y-m-d', strtotime('2021-02-01'));
+        $payments = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','payment')->get();
+
+        foreach($payments as $r){
             $transactions = $r->transactions()->select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%m-%d-%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.level_1 as debit_level_1', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
@@ -713,21 +769,45 @@ class PaperController extends Controller
                 array_push($arr, $r->description);
                 array_push($arr, '');
                 array_push($arr, $t['content']);
-                if($t['debit_level_2'] == '111'){
-                    $t['debit_level_2'] = '1111';
+                if($t['credit_level_2'] == '111'){
+                    $t['credit_level_2'] = '1111';
                 }
+                if($t['credit_level_2'] != '1111') continue;
                 array_push($arr, $t['debit_level_2']);
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
                 fputcsv($file, $arr);
+                $temp_t = Transaction::find($t['id']);
+                if($temp_t){
+                    $temp_t->misa_upload = 2;
+                    $temp_t->misa_upload_at = date('Y-m-d');
+                    $temp_t->save();
+                }
+                
             }
         }
+        return response('/public/misa_payment_TM.csv');
+
     }
-    protected function misaUploadPaymentNH(){
+    protected function misaUploadPaymentNH(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+
         $arr = [];
         $file = fopen(public_path()."/misa_payment_NH.csv","w");
-        $receipts = Paper::where('created_at','>','2021-01-01')->where('type','payment')->get();
-        foreach($receipts as $r){
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Hiển thị trên sổ', 'Phương thức thanh toán', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Tài khoản chi', 'Mở tại NH', 'Nội dung thanh toán',
+            'Diễn giải nội dung thanh toán', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ', 'Tài khoản nhận', 'Tên NH nhận', 'Người lĩnh tiền', 'Số CMND', 'Ngày cấp CMND',
+            'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền'];
+        fputcsv($file, $first_line);
+
+        $from = date('Y-m-d', strtotime('2021-01-01'));
+        $to = date('Y-m-d', strtotime('2021-02-01'));
+        $payments = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','payment')->get();
+
+        foreach($payments as $r){
             
             $transactions = $r->transactions()->select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%m-%d-%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
@@ -749,8 +829,10 @@ class PaperController extends Controller
                 array_push($arr,  date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, date('m-d-Y', strtotime($r->created_at)));
                 array_push($arr, 'PC'.$r->method.$r->center_id.str_pad($r->payment_number, 5, '0', STR_PAD_LEFT));
-                if($t['credit_level_2'] == '1111') continue;
+                if($t['credit_level_2'] == '1111' || $t['credit_level_2'] == '111') continue;
                 switch ($t['credit_level_2']) {
+                    case '111':
+                        continue 2;
                     case '1111':
                         continue 2;
                         break;
@@ -792,7 +874,16 @@ class PaperController extends Controller
                 
                 array_push($arr, $t['amount']);
                 fputcsv($file, $arr);
+
+                $temp_t = Transaction::find($t['id']);
+                if($temp_t){
+                    $temp_t->misa_upload = 2;
+                    $temp_t->misa_upload_at = date('Y-m-d');
+                    $temp_t->save();
+                }
             }
         }
+        return response('/public/misa_payment_NH.csv');
+
     }
 }

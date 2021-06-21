@@ -35,6 +35,7 @@ class CenterController extends Controller
             $center->email = $newData['email'];
             $center->phone = $newData['phone'];
             $center->code = $newData['code'];
+            //test
             $center->save();
             return response()->json(200);
         }
@@ -49,5 +50,5 @@ class CenterController extends Controller
         $center = Center::find($request->id)->forceDelete();
         return response()->json(200);
     }
-    
+        
 }

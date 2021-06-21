@@ -325,35 +325,49 @@ class TransactionController extends Controller
             $t->save();
         }
     }
-    public function misaUploadOrder(){
+    public function misaUploadOrder(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
         $arr = [];
         $classes = Classes::where('type','class')->get();
         $acc_131 = Account::where('level_2', '131')->first()->id;
         $acc_3387 = Account::where('level_2', '3387')->first()->id;
         $acc_511 = Account::where('level_2', '511')->first()->id;
         $file = fopen(public_path()."/misa_order.csv","w");
-        $ct = 1;
+
+        $from_d = date('Y-m-1', strtotime($request->from));
+        $to_d = date('Y-m-t', strtotime($request->to));
+        
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Hiển thị trên sổ', 'Hình thức bán hàng', 'Phương thức thanh toán','Kiêm phiếu xuất kho', 'Lập kèm hóa đơn', 'Đã lập hóa đơn',
+            'Ngày hạch toán (*)','Ngày chứng từ (*)','Số chứng từ (*)','Mã khách hàng','Tên khách hàng','Diễn giải','Mã hàng (*)','Tên hàng','Hàng khuyến mại',
+            'TK Tiền/Chi phí/Nợ (*)','TK Doanh thu/Có (*)','ĐVT','Số lượng','Đơn giá sau thuế','Đơn giá','Thành tiền','Tỷ lệ CK (%)','Tiền chiết khấu','TK chiết khấu'];
+        fputcsv($file, $first_line);
+        
+        // get the last so chung tu
+        $ct_temp = Transaction::where('misa_upload', '1')->max('misa_id');
+        $ct = $ct_temp ? $ct_temp+1 : 1;
+
         foreach($classes as $c){
             $students = $c->students;
-            
             foreach($students as $s){
-                $from = date('Y-m-1', strtotime('2021-01-01'));
-                $to = date('Y-m-t', strtotime('2021-06-01'));
-                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s, $from, $to){
+                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s, $from_d, $to_d){
+                
                     $query->where('debit', $acc_131)
-                        ->WhereBetween('time',[$from, $to])
+                        ->WhereBetween('time',[$from_d, $to_d])
                         ->where('class_id', $c->id)
                         ->where('student_id', $s->id);
-                })->orWhere(function($query)  use ($acc_131, $c, $s, $from, $to){
+                })->orWhere(function($query)  use ($acc_131, $c, $s, $from_d, $to_d){
                     $query->where('credit', $acc_131)
-                        ->WhereBetween('time',[$from, $to])
+                        ->WhereBetween('time',[$from_d, $to_d])
                         ->where('class_id', $c->id)
                         ->where('student_id', $s->id);
-                })->get()->toArray();
-                if(count($transactions) == 0 ) continue;
+                })->get()->toArray(); 
                 // echo "<pre>";
                 // print_r($transactions);
-                for ($i=1; $i < 7 ; $i++) { 
+                if(count($transactions) == 0 ) continue;
+                
+                for ($i= date('m', strtotime($from_d)); $i <= date('m', strtotime($to_d)) ; $i++) { 
                     # code...
                     $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
                     $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
@@ -376,12 +390,20 @@ class TransactionController extends Controller
                         if($t['time'] >= $from && $t['time'] <= $to){
                             $hach_toan = date('m/d/Y', strtotime($t['time']));
                             $chung_tu = date('m/d/Y', strtotime($t['time']));
-                            $so_chung_tu = 'BH'.str_pad($ct, 5, '0', STR_PAD_LEFT);
+
+                            $so_chung_tu = $t['misa_id'] ? 'BH'.str_pad($t['misa_id'], 5, '0', STR_PAD_LEFT) : 'BH'.str_pad($ct, 5, '0', STR_PAD_LEFT);
                             if($t['debit'] == $acc_131 && $t['credit'] == $acc_3387){
                                 $amount += $t['amount'];
                             }
                             if($t['debit'] == $acc_3387 || $t['debit'] == $acc_511){
                                 $discount += $t['amount'];
+                            }
+                            $temp_t = Transaction::find($t['id']);
+                            if($temp_t){
+                                $temp_t->misa_upload = 1;
+                                $temp_t->misa_upload_at = date('Y-m-d');
+                                $temp_t->misa_id = $ct;
+                                $temp_t->save();
                             }
                         }
                         else{
@@ -419,6 +441,8 @@ class TransactionController extends Controller
                 }
             }
         }
+        return response('/public/misa_order.csv');
+
     }
     public function misaUploadRevenue(){
         $arr = [];

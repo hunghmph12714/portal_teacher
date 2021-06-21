@@ -390,15 +390,22 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     // Route::get('/student/import', 'StudentController@importStudent');
 //MISA
-    
+    Route::get('/misa', function(){
+        return view('welcome');
+    });
     Route::get('/misa/student', 'StudentController@misaUpload');
-    Route::get('/misa/classes', 'ClassController@misaUpload');
-    Route::get('/misa/order', 'TransactionController@misaUploadOrder');
-    Route::get('/misa/receipt', 'PaperController@misaUploadReceipt');
-    Route::get('/misa/payment', 'PaperController@misaUploadPayment');
-    Route::get('/misa/payment/tm', 'PaperController@misaUploadPaymentTM');
-    Route::get('/misa/payment/nh', 'PaperController@misaUploadPaymentNH');
-    Route::get('/misa/revenue', 'TransactionController@misaUploadRevenue');
+    Route::get('/misa/class', 'ClassController@misaUpload');
+
+    Route::post('/misa/order', 'TransactionController@misaUploadOrder');
+
+    Route::post('/misa/receipt/tm', 'PaperController@misaUploadReceiptTM');
+    Route::post('/misa/receipt/nh', 'PaperController@misaUploadReceiptNH');
+
+    Route::post('/misa/payment/tm', 'PaperController@misaUploadPaymentTM');
+    Route::post('/misa/payment/nh', 'PaperController@misaUploadPaymentNH');
+
+    Route::post('/misa/revenue', 'TransactionController@misaUploadRevenue');
+    
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');

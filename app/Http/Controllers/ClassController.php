@@ -1025,8 +1025,6 @@ class ClassController extends Controller
                         echo "<pre>";
                     }
                 }
-                // print_r($sessions->toArray());
-                // echo "<pre>";
 
             }
         }
@@ -1195,18 +1193,25 @@ class ClassController extends Controller
         $arr = [];
         $classes = Classes::all();
         $file = fopen(public_path()."/misa_class.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Mã(*)', 'Tên (*)', 'Tính chất','Đơn vị tính chính', 'TK doanh thu', 'TK chi phí'];
+        fputcsv($file, $first_line);
         foreach($classes as $c){
             $arr = [];
             
             array_push($arr, $c->id);
-            array_push($arr, $c->code);
+            array_push($arr,$c->year . "_" . $c->code);
             array_push($arr, 2);
             array_push($arr, 'Ca');
             array_push($arr, '3387');
             array_push($arr, '632');
             fputcsv($file, $arr);
-
+            
+            // $c->misa_upload = 1;
+            // $c->save();
         }
+        return response('/public/misa_class.csv');
+
     }
     protected function deleteStudent(Request $request){
         // $sc = StudentClass::Where('class_id', $request->class_id)->where('student_id', $request->id)->
