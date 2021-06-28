@@ -579,7 +579,7 @@ class PaperController extends Controller
         fputcsv($file, $first_line);
 
         
-        $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->get();
+        $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->get();
 
         foreach($receipts as $r){
             
@@ -648,7 +648,7 @@ class PaperController extends Controller
             'Công trình', 'Đơn đặt hàng', 'Hợp đồng mua', 'Hợp đồng bán', 'Mã thống kê'];
         fputcsv($file, $first_line);
 
-        $receipts = Paper::where('created_at','>=', $from)->where('created_at','<',$to)->where('type','receipt')->get();
+        $receipts = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at','<',$to)->where('type','receipt')->get();
         foreach($receipts as $r){
             
             $transactions = $r->transactions()->select(
@@ -737,7 +737,7 @@ class PaperController extends Controller
 
         $from = date('Y-m-d', strtotime('2021-01-01'));
         $to = date('Y-m-d', strtotime('2021-02-01'));
-        $payments = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','payment')->get();
+        $payments = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at', '<', $to)->where('type','payment')->get();
 
         foreach($payments as $r){
             $transactions = $r->transactions()->select(
@@ -805,7 +805,7 @@ class PaperController extends Controller
 
         $from = date('Y-m-d', strtotime('2021-01-01'));
         $to = date('Y-m-d', strtotime('2021-02-01'));
-        $payments = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','payment')->get();
+        $payments = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at', '<', $to)->where('type','payment')->get();
 
         foreach($payments as $r){
             

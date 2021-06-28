@@ -944,7 +944,7 @@ class EntranceController extends Controller
                 $i->final_remain, $i->final_today, $i->final_completed, $i->final_total, $i->final_1, $i->final_2, $i->final_3, $i->final_delay, $i->final_lost,'',
             ];
             fputcsv ($fp, $result);
-            if($j == 3){
+            if($j == 4){
                 $j = 0;
                 fputcsv($fp, []);
             }

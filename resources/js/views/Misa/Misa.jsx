@@ -20,6 +20,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Misa = (props) => {
     const [type, setType] = useState('');
+    const [center, setCenter] = useState('');
     const [from, setFrom] = useState(null);
     const [to, setTo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -27,6 +28,9 @@ const Misa = (props) => {
 
     function handleChange(event){
         setType(event.target.value)
+    }
+    function handleCenterChange(event){
+        setCenter(event.target.value)
     }
     function handleFromChange(date){
         setFrom(date)
@@ -39,7 +43,6 @@ const Misa = (props) => {
             enqueueSnackbar('Vui lòng chọn danh sách cần kết xuất', {variant: 'error'})
         }else{
             setLoading(true)
-            console.log(type)
             switch (type) {
                 case 'student':
                     axios.get('/misa/student')
@@ -62,7 +65,7 @@ const Misa = (props) => {
                         })
                     break;
                 case 'order':
-                    axios.post('/misa/order', {from: from, to: to})
+                    axios.post('/misa/order', {from: from, to: to, center: center})
                         .then(response => {
                             window.open(response.data, '_blank', 'noopener,noreferrer')
                             setLoading(false)
@@ -72,7 +75,7 @@ const Misa = (props) => {
                         })
                     break;
                 case 'receipt_tm':
-                    axios.post('/misa/receipt/tm', {from: from, to: to})
+                    axios.post('/misa/receipt/tm', {from: from, to: to, center: center})
                         .then(response => {
                             window.open(response.data, '_blank', 'noopener,noreferrer')
                             setLoading(false)
@@ -83,7 +86,7 @@ const Misa = (props) => {
                     break;
                     break;
                 case 'receipt_nh':
-                    axios.post('/misa/receipt/nh', {from: from, to: to})
+                    axios.post('/misa/receipt/nh', {from: from, to: to, center: center})
                         .then(response => {
                             window.open(response.data, '_blank', 'noopener,noreferrer')
                             setLoading(false)
@@ -93,7 +96,7 @@ const Misa = (props) => {
                         })
                     break;
                 case 'payment_tm':
-                    axios.post('/misa/payment/tm', {from: from, to: to})
+                    axios.post('/misa/payment/tm', {from: from, to: to, center: center})
                         .then(response => {
                             window.open(response.data, '_blank', 'noopener,noreferrer')
                             setLoading(false)
@@ -103,7 +106,7 @@ const Misa = (props) => {
                         })
                     break;
                 case 'payment_nh':
-                    axios.post('/misa/payment/nh', {from: from, to: to})
+                    axios.post('/misa/payment/nh', {from: from, to: to, center: center})
                         .then(response => {
                             window.open(response.data, '_blank', 'noopener,noreferrer')
                             setLoading(false)
@@ -125,7 +128,7 @@ const Misa = (props) => {
             }
             <h3> Kết xuất dữ liệu Misa</h3>
             <Grid container spacing={2}>
-                <Grid item md={6}>
+                <Grid item md={3}>
                 <FormControl variant="outlined" fullWidth size="small">
                     <InputLabel id="demo-simple-select-outlined-label">Loại kết xuất(*)</InputLabel>
                     <Select
@@ -147,6 +150,28 @@ const Misa = (props) => {
                         <MenuItem value={'payment_nh'}>Danh sách phiếu chi NH</MenuItem>
                         <MenuItem value={'revenue'}>Danh sách Doanh thu</MenuItem>
                         <MenuItem value={'other'}>Danh sách Giao dịch khác</MenuItem>
+                    </Select>
+                </FormControl>
+                </Grid>
+                <Grid item md={3}>
+                <FormControl variant="outlined" fullWidth size="small">
+                    <InputLabel id="demo-simple-select-outlined-label">Cơ sở</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={center}
+                        onChange={handleCenterChange}
+                        label="Cơ sở"
+                    >
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                        <MenuItem value={1}>Hội sở</MenuItem>
+                        <MenuItem value={2}>Trần Duy Hưng</MenuItem>
+                        <MenuItem value={3}>Phạm Tuấn Tài</MenuItem>
+                        <MenuItem value={4}>Đỗ Quang</MenuItem>
+                        <MenuItem value={5}>Trung Yên</MenuItem>
+                        
                     </Select>
                 </FormControl>
                 </Grid>

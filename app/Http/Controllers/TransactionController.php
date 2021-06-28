@@ -329,7 +329,7 @@ class TransactionController extends Controller
         $rules = ['from' => 'required', 'to' => 'required'];
         $this->validate($request, $rules);
         $arr = [];
-        $classes = Classes::where('type','class')->get();
+        $classes = Classes::where('type','class')->where('center_id', $request->center)->get();
         $acc_131 = Account::where('level_2', '131')->first()->id;
         $acc_3387 = Account::where('level_2', '3387')->first()->id;
         $acc_511 = Account::where('level_2', '511')->first()->id;
