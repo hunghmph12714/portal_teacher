@@ -1047,6 +1047,39 @@ class StudentController extends Controller
             fclose($handle);
         }
     }
+    protected function hsk9(){
+        $classes = Classes::where('year', '2020')->where('code', 'LIKE', '%9%')->get();
+        $result = [];
+        foreach($classes as $c){
+            if($c->code == 'TC5.9') continue;
+            $students = $c->students;
+            $r = [];
+            foreach($students as $s){
+                //Check exist
+                $check = 1;
+                foreach($result as $key => $r){
+                    if(in_array($s->id, $r)){
+                        $result[$key][4] = $r[4].",".$c->code;
+                        $result[$key][5] = $r[5].",".$s->detail['drop_time'];
+                        $check = 0;
+                        break;
+                    }
+                }
+                //else
+                if($check == 1){
+                    $p = Parents::find($s->parent_id);
+                    $result[] = [$s->id, 'https://center.vietelite.edu.vn/'.$s->avatar ,$s->fullname, $s->dob, $c->code, $s->detail['drop_time'], $p->email, $p->alt_email];
+                }
+            }
+        }
+        $file = fopen(public_path()."/hsk9.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        foreach($result as $r){
+            fputcsv($file, $r);
+        }
+        return redirect("/public/hsk9.csv");
+      
+    }
     protected function csv(){
         $arr = [];
         $parent = Parents::all();

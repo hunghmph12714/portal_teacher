@@ -341,6 +341,13 @@ class StudentClassObserver
         //
         $student = Student::where($studentClass->student_id);
         $sessions = Session::where('class_id', $studentClass->class_id)->get();
+
+        $sessions = $student->sessions()->where('class_id', $studentClass->class_id)->get();
+
+        foreach($sessions as $s){
+            $s->students()->detach($student->id);
+        }
+        $transactions = Transaction::where('student_id', $student->id)->where('class_id', $studentClass->class_id)->forceDelete();
         
     }
 }

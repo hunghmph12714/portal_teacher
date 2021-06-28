@@ -1,8 +1,8 @@
 ﻿"Hiển thị trên sổ","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Mã đối tượng","Tên đối tượng","Địa chỉ","Nhân viên","Kèm theo","Lý do chi","Diễn giải lý do chi","Người nhận","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
 0,01-04-2021,01-04-2021,PC300183,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,258000
 0,01-05-2021,01-05-2021,PC300184,,,,,,23,"Chi ship chứng từ kế toán sang hội sở",,"Chi ship chứng từ kế toán sang hội sở",64212,1111,18000
-0,01-05-2021,01-05-2021,PC300185,,,,,,23,"Chi tiền vệ sinh môi trường năm 2020",,"Chi tiền vệ sinh môi trường năm 2020",642,1111,300000
-0,01-06-2021,01-06-2021,PC300186,,,,,,23,"Chi mua nước lau sàn + nước rửa tay",,"Chi mua nước lau sàn + nước rửa tay",6423,1111,250000
+0,01-05-2021,01-05-2021,PC300185,,,,,,23,"Chi tiền vệ sinh môi trường năm 2020",,"Chi tiền vệ sinh môi trường năm 2020",64232,1111,300000
+0,01-06-2021,01-06-2021,PC300186,,,,,,23,"Chi mua nước lau sàn + nước rửa tay",,"Chi mua nước lau sàn + nước rửa tay",64233,1111,250000
 0,01-06-2021,01-06-2021,PC300187,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,672000
 0,01-06-2021,01-06-2021,PC300188,,,,,,23,"Chi mua sữa cho học sinh",,"Chi mua sữa cho học sinh",6329,1111,982000
 0,01-08-2021,01-08-2021,PC300189,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,852000
@@ -26,13 +26,70 @@
 0,01-16-2021,01-16-2021,PC300198,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,504000
 0,01-20-2021,01-20-2021,PC300199,,,,,,23,"Chi mua sữa cho học sinh",,"Chi mua sữa cho học sinh",6329,1111,982000
 0,01-20-2021,01-20-2021,PC300200,,,,,,23,"Chi mua bimbim cho học sinh",,"Chi mua bimbim cho học sinh",6329,1111,480000
-0,01-21-2021,01-21-2021,PC300201,,,,,,23,"Chi mau cay lau nhà + găng tay",,"Chi mau cay lau nhà + găng tay",6423,1111,385000
+0,01-21-2021,01-21-2021,PC300201,,,,,,23,"Chi mau cay lau nhà + găng tay",,"Chi mau cay lau nhà + găng tay",64233,1111,385000
 0,01-22-2021,01-22-2021,PC300202,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,882000
 0,01-27-2021,01-27-2021,PC300203,,,,,,23,"Chi mua bánh cho học sinh",,"Chi mua bánh cho học sinh",6329,1111,882000
 0,01-27-2021,01-27-2021,PC300204,,,,,,23,"Chi mua đồ thắp hương rằm",,"Chi mua đồ thắp hương rằm",6429,1111,90000
 0,01-28-2021,01-28-2021,PC300205,,,,,,23,"Chi mua sữa cho học sinh",,"Chi mua sữa cho học sinh",6329,1111,982000
 0,01-28-2021,01-28-2021,PC300206,,,,,,23,"Chi ship rỏ quà tết từ TY sang PTT",,"Chi ship rỏ quà tết từ TY sang PTT",64212,1111,57000
 0,01-29-2021,01-29-2021,PC300207,,,,,,23,"Chi mua văn phòng phẩm",,"Chi mua văn phòng phẩm",64214,1111,1065000
-0,01-29-2021,01-29-2021,PC300208,,,,,,23,"Chi mua cốc giấy cho học sinh",,"Chi mua cốc giấy cho học sinh",6423,1111,40000
+0,01-29-2021,01-29-2021,PC300208,,,,,,23,"Chi mua cốc giấy cho học sinh",,"Chi mua cốc giấy cho học sinh",64233,1111,40000
+0,01-14-2021,01-14-2021,PC500059,,,,,,23,"tiền điện tháng 12",,"tiền điện tháng 12",6428,1111,1353000
+0,01-15-2021,01-15-2021,PC500060,,,,,,23,"2 chổi, găng tay",,"2 chổi, găng tay",64233,1111,95000
+0,01-15-2021,01-15-2021,PC500061,,,,,,23,"200 bánh, 4 thùng sữa",,"200 bánh, 4 thùng sữa",6329,1111,1000000
+0,01-18-2021,01-18-2021,PC500062,,,,,,23,"TT lần 2 tiền 200 bánh, 4 thùng sữa 15/1/2021",,"TT lần 2 tiền 200 bánh, 4 thùng sữa 15/1/2021",6329,1111,1140000
+0,01-19-2021,01-19-2021,PC500063,,,,,,23,"giỏ đựng bánh sữa, decal tết dán kính",,"giỏ đựng bánh sữa, decal tết dán kính",64220,1111,323000
+0,01-20-2021,01-20-2021,PC500064,,,,,,23,"kệ inox để bình nước",,"kệ inox để bình nước",153,1111,293000
+0,01-21-2021,01-21-2021,PC500065,,,,,,23,"Nước lau sàn nhà",,"Nước lau sàn nhà",64233,1111,90000
+0,01-21-2021,01-21-2021,PC500066,,,,,,23,"tiền nước tháng 1",,"tiền nước tháng 1",6428,1111,284200
+0,01-21-2021,01-21-2021,PC500067,,,,,,23,"100 bánh, 3 thùng sữa",,"100 bánh, 3 thùng sữa",6329,1111,1095000
+0,01-21-2021,01-21-2021,PC500068,,,,,,23,"đầu chia mạng",,"đầu chia mạng",153,1111,957000
+0,01-22-2021,01-22-2021,PC500069,,,,,,23,"2 mũi khoan, 3m dây thép, ác quy",,"2 mũi khoan, 3m dây thép, ác quy",6424,1111,290000
+0,01-22-2021,01-22-2021,PC500070,,,,,,23,"200 cốc giấy",,"200 cốc giấy",64233,1111,80000
+0,01-23-2021,01-23-2021,PC500071,,,,,,23,"150 bánh, 2 thùng sữa",,"150 bánh, 2 thùng sữa",6329,1111,1100000
+0,01-25-2021,01-25-2021,PC500072,,,,,,23,"tiền ăn sáng cho nhân viên đi trông thi thử",,"tiền ăn sáng cho nhân viên đi trông thi thử",6326,1111,170000
+0,01-25-2021,01-25-2021,PC500073,,,,,,23,"nước mùi lau ban thờ",,"nước mùi lau ban thờ",6429,1111,115000
+0,01-27-2021,01-27-2021,PC500074,,,,,,23,"bột ngũ linh",,"bột ngũ linh",6429,1111,250000
+0,01-27-2021,01-27-2021,PC500075,,,,,,23,"170 bánh, 3 thùng sữa",,"170 bánh, 3 thùng sữa",6329,1111,1717000
+0,01-27-2021,01-27-2021,PC500076,,,,,,23,"Mứt tết thắp hương",,"Mứt tết thắp hương",6429,1111,35000
+0,01-27-2021,01-27-2021,PC500077,,,,,,23,"3 kệ gỗ để giày",,"3 kệ gỗ để giày",153,1111,500000
+0,01-29-2021,01-29-2021,PC500078,,,,,,23,"Phật thủ thắp hương, 300 cốc giấy",,"300 cốc giấy",64233,1111,120000
+0,01-29-2021,01-29-2021,PC500078,,,,,,23,"Phật thủ thắp hương, 300 cốc giấy",,"Phật thủ thắp hương,",6429,1111,60000
 0,01-30-2021,01-30-2021,PC300209,,,,,,23,"Chi mua nước cho giáo viên",,"Chi mua nước cho giáo viên",64213,1111,300000
 0,01-31-2021,01-31-2021,PC300210,,,,,,23,"Chi ship quà tết âm lịch cho nhân viên cơ sở PTT",,"Chi ship quà tết âm lịch cho nhân viên cơ sở PTT",64212,1111,54000
+0,01-27-2021,01-27-2021,PC200044,,,,,,23,"Mua nước mùi lau bàn thờ",,"Mua nước mùi lau bàn thờ",64212,1111,115000
+0,01-28-2021,01-28-2021,PC200045,,,,,,23,"Thanh toán tiền mua cốc giấy + Phí ship",,"Thanh toán tiền mua cốc giấy + Phí ship",64212,1111,430000
+0,01-28-2021,01-28-2021,PC200046,,,,,,23,"Mua hai quả phật thủ thắp hương rằm",,"Mua hai quả phật thủ thắp hương rằm",6429,1111,120000
+0,01-28-2021,01-28-2021,PC200047,,,,,,23,"Thanh toán tiền bánh sữa cho học sinh",,"Thanh toán tiền bánh sữa cho học sinh",6329,1111,2458000
+0,01-29-2021,01-29-2021,PC200048,,,,,,23,"Chi mua túi nilon, chai nước rửa tay",,"Chi mua túi nilon, chai nước rửa tay",64233,1111,480000
+0,01-29-2021,01-29-2021,PC200049,,,,,,23,"Thanh toán tiền mua 2 hộp khẩu trang cho 2 cơ sở",,"Thanh toán tiền mua 2 hộp khẩu trang cho 2 cơ sở",64212,1111,58000
+0,01-04-2021,01-04-2021,PC200092,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,1501000
+0,01-07-2021,01-07-2021,PC200093,,,,,,23,"Chi tiền mua nước rửa tay",,"Chi tiền mua nước rửa tay",64233,1111,265000
+0,01-07-2021,01-07-2021,PC200094,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2165000
+0,01-08-2021,01-08-2021,PC200095,,,,,,23,"Chi tiền mua trà cho giáo viên",,"Chi tiền mua trà cho giáo viên",63212,1111,30000
+0,01-11-2021,01-11-2021,PC200096,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,1945000
+0,01-12-2021,01-12-2021,PC200097,,,,,,23,"Thanh toán tiền văn phòng phẩm kiểm tra định kỳ",,"Thanh toán tiền văn phòng phẩm kiểm tra định kỳ",64214,1111,470000
+0,01-13-2021,01-13-2021,PC200098,,,,,,23,"Chi tiền mua đồ lễ thắp hương",,"Chi tiền mua đồ lễ thắp hương",6429,1111,300000
+0,01-14-2021,01-14-2021,PC200099,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,1594000
+0,01-14-2021,01-14-2021,PC200100,,,,,,23,"Chi tiền nạp thẻ điện thoại hotline",,"Chi tiền nạp thẻ điện thoại hotline",64210,1111,200000
+0,01-15-2021,01-15-2021,PC200101,,,,,,23,"CHi tiền mua nước rửa tay, bao tay",,"CHi tiền mua nước rửa tay, bao tay",64233,1111,90000
+0,01-15-2021,01-15-2021,PC200102,,,,,,23,"Thanh toán tiền internet tháng 12 cơ sở Đỗ Quang",,"Thanh toán tiền internet tháng 12 cơ sở Đỗ Quang",64215,1111,320000
+0,01-17-2021,01-17-2021,PC200103,,,,,,23,"Chi tiền ăn trưa hỗ trợ thi thử",,"Chi tiền ăn trưa hỗ trợ thi thử",6326,1111,335000
+0,01-18-2021,01-18-2021,PC200104,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,1796000
+0,01-20-2021,01-20-2021,PC200105,,,,,,23,"Chi tiền gửi xe nhân viên tháng 1",,"Chi tiền gửi xe nhân viên tháng 1",64230,1111,800000
+0,01-20-2021,01-20-2021,PC200106,,,,,,23,"Chi tiền mua trà cho giáo viên",,"Chi tiền mua trà cho giáo viên",63212,1111,45000
+0,01-21-2021,01-21-2021,PC200107,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,1934000
+0,01-24-2021,01-24-2021,PC200108,,,,,,23,"Chi tiền ăn trưa hỗ trợ thi thử",,"Chi tiền ăn trưa hỗ trợ thi thử",6326,1111,300000
+0,01-25-2021,01-25-2021,PC200109,,,,,,23,"Thanh toán tiền điện nước",,"Thanh toán tiền điện nước",6428,1111,924634
+0,01-25-2021,01-25-2021,PC200110,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2492000
+0,01-27-2021,01-27-2021,PC200111,,,,,,23,"Chi tiền mua đồ lễ thắp hương mùng rằm",,"Chi tiền mua đồ lễ thắp hương mùng rằm",6429,1111,280000
+0,01-07-2021,01-07-2021,PC400018,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2106000
+0,01-11-2021,01-11-2021,PC400019,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,818000
+0,01-14-2021,01-14-2021,PC400020,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2216000
+0,01-18-2021,01-18-2021,PC400021,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,727000
+0,01-21-2021,01-21-2021,PC400022,,,,,,23,"Chi tiền mua bao tay",,"Chi tiền mua bao tay",64233,1111,25000
+0,01-21-2021,01-21-2021,PC400023,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2104000
+0,01-25-2021,01-25-2021,PC400024,,,,,,23,"Thanh toán tiền điện - nước",,"Thanh toán tiền điện - nước",6329,1111,1548164
+0,01-25-2021,01-25-2021,PC400025,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,491000
+0,01-25-2021,01-25-2021,PC400026,,,,,,23,"Chi tiền mua trà cho giáo viên",,"Chi tiền mua trà cho giáo viên",63212,1111,52000
+0,01-28-2021,01-28-2021,PC400027,,,,,,23,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",,"Thanh toán tiền mua đồ ăn nhẹ cho học sinh",6329,1111,2170000

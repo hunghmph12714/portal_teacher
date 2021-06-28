@@ -54,19 +54,16 @@ class SendThht implements ShouldQueue
         $session_type = $datas['session_type'];
         $session_month = $datas['session_month'];
 
-        // $backup = Mail::getSwiftMailer();
+        $backup = Mail::getSwiftMailer();
 
-        //     // Setup your outlook mailer
-        // $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
-        // $transport->setUsername($mail);
-        // $transport->setPassword($password);
-        // // Any other mailer configuration stuff needed...
+            // Setup your outlook mailer
+        $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
+        $transport->setUsername($mail);
+        $transport->setPassword($password);
+        // Any other mailer configuration stuff needed...
         
-        // $outlook = new \Swift_Mailer($transport);
-        // print_r($password);
-        // Set the mailer as gmail
-        // Mail::setSwiftMailer($outlook);    
-        // print_r($datas);
+        $outlook = new \Swift_Mailer($transport);
+        Mail::setSwiftMailer($outlook);    
         if($session_type == "exam"){
             Mail::send('emails.ktdk', $d, function($message) use ($to_name, $to_email, $datas, $mail, $session_month, $to_email_2) {
                 $message->to($to_email, $to_name)
@@ -90,6 +87,6 @@ class SendThht implements ShouldQueue
                 $message->from($mail,'VIETELITE EDUCATION CENTER');
             });
         }
-        // Mail::setSwiftMailer($backup);
+        Mail::setSwiftMailer($backup);
     }
 }

@@ -15,11 +15,70 @@ use App\Status;
 use App\Source;
 use App\Medium;
 use Illuminate\Support\Facades\Http;
+use App\Tracuu;
 use GuzzleHttp;
 
 class GuestController extends Controller
 {
     //
+    public function importtc(){
+        if (($handle = fopen(app_path()."/tracuu.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {
+                $input['sbd'] = $data[0];
+                $input['ma_hs'] = $data[1];
+                $input['result'] = $data[2];
+                Tracuu::create($input);
+                echo "<pre>";
+                print_r($input);
+            }
+        }
+    }
+    public function traCuu(Request $request){
+        $rules = ['phone' => 'required', 'sbd'=>'required'];
+        $this->validate($request, $rules);
+        $phone = $request->phone;
+        $sbd = $request->sbd;
+        $result = '';
+        $p = Parents::where('phone', $request->phone)->orwhere('alt_phone', $request->phone)->first();
+        if($p){
+            // if($p->tra_cuu){
+            //     $result = $p->tra_cuu;
+            //     return view('form-tra-cuu', compact(['result', 'phone', 'sbd']));
+            // }
+            $t = Tracuu::where('sbd', $request->sbd)->first();
+            if($t){
+                $result = $t->result;
+                $p->tra_cuu = $t->result;
+                $p->sbd = $t->sbd;
+                $p->save();
+            }else{
+                $result = 'Không tìm thấy số báo danh';
+            }
+        }else{
+            $result = 'Không tìm thấy số điện thoại đăng ký tại Vietelite';
+        }
+        return view('form-tra-cuu', compact(['result', 'phone', 'sbd']));
+
+    }
+    public function ketqua(){
+        $parents = Parents::whereNotNull('tra_cuu')->get();
+        $result = [];
+        foreach($parents as $p){
+            $students = $p->students;
+            foreach($students as $s){
+                if(date('Y', strtotime($s->dob)) == '2006' ){
+
+                    $classes = $s->classes;
+                    $class = '';
+                    foreach($classes as $c){
+                        $class = $class. ',' . $c->code;
+                    }
+                    $result[] = [$s->fullname, $s->dob, $class, $p->sbd, $p->tra_cuu];
+                }
+            }
+        }
+        return view('result', compact(['result']));
+    }
     public function testContact(){
         $students = Student::all();
         $url = "https://vietelite.bitrix24.com/rest/5/qi82s82j7jkk1uft/crm.contact.add.json?";

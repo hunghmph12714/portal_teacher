@@ -497,3 +497,13 @@ Route::get('/delete-student/{id}', 'StudentController@deleteId');
 // Route::get('/normalize-db','StudentController@normalizeDb');
 Route::get('test-email', 'JobController@processQueue');
 Route::get('/duration', 'SessionController@setDuration');
+Route::get('/ex-student/k9', 'StudentController@hsk9');
+Route::get('/tra-cuu', function(){
+    $phone = '';
+    $sbd = '';
+    $result = '';
+    return view('form-tra-cuu', compact(['result', 'phone', 'sbd']));
+});
+Route::post('/tra-cuu', 'GuestController@traCuu');
+Route::get('/import-tra-cuu', 'GuestController@importtc');
+Route::get('/kq-tra-cuu', 'GuestController@ketqua');
