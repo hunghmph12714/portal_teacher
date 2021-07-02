@@ -517,6 +517,8 @@ class DiscountController extends Controller
                 $total_amount_6 = 0;
                 $sessions_7 = [];
                 $total_amount_7 = 0;
+                $sessions_8 = [];
+                $total_amount_8 = 0;
             
                 foreach($transactions as $transaction){
                     switch (date('m', strtotime($transaction['time']))) {
@@ -532,7 +534,10 @@ class DiscountController extends Controller
                             $total_amount_7 += $transaction['amount'];
                             $sessions_7[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        
+                        case '08':
+                            $total_amount_8 += $transaction['amount'];
+                            $sessions_8[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
                         default:
                             # code...
                             break;
@@ -586,6 +591,21 @@ class DiscountController extends Controller
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions_7);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_8 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2021-08-30'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_8;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_8);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
             }
