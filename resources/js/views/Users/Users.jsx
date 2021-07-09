@@ -5,12 +5,14 @@ import MaterialTable from "material-table";
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import NumberFormat from 'react-number-format';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import BlockIcon from '@material-ui/icons/Block';
 import axios from 'axios'
 import { colors } from '@material-ui/core';
 
 import { withSnackbar } from 'notistack'
 import { toPlainObject } from 'lodash';
+import { UserClass } from './UserClass';
 const baseUrl = window.Laravel.baseUrl;
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
@@ -46,6 +48,7 @@ class Users extends React.Component{
             selected_permission: [],
             permissions: [],
             roles: [],
+            open_class: false,
         }
         var columns = [
             
@@ -88,9 +91,23 @@ class Users extends React.Component{
             permissions: data
         })
     }
+    handleOpenUserClass = (rowData) => {
+        this.setState({
+            selected_user: rowData,
+            open_class: true,
+            
+        })
+    }
+    handleUserClassClose = () => {
+        this.setState({
+            open_class: false,
+        })
+        this.getUsers()
+    }
     handleOpenDialogPermission = (rowData) => {
         this.fetchdata(rowData)
     }
+    
     onPermissionChange = (p) => {
         this.setState(prevState => {
             let permissions = [...prevState.permissions]
@@ -237,6 +254,15 @@ class Users extends React.Component{
                                 this.handleOpenDialogPermission(rowData)
                             },
                         },
+                        {
+                            icon: () => <AssignmentIcon />,
+                            tooltip: 'Phân lớp',
+                            isFreeAction: false,
+                            text: 'Phân quyền',
+                            onClick: (event, rowData) => {
+                                this.handleOpenUserClass(rowData)
+                            },
+                        },
                     ]}
                     icons = {{
                         Delete: () => <BlockIcon/>,
@@ -280,6 +306,12 @@ class Users extends React.Component{
                     permissions = {this.state.permissions}
                     onPermissionChange = { this.onPermissionChange }
                     handleSubmitPermission = {this.handleSubmitPermission}
+                />
+                <UserClass 
+                    open = {this.state.open_class}
+                    handleClose = {this.handleUserClassClose}
+                    user_id = {this.state.selected_user.id}
+                    user_classes = {this.state.selected_user.classes}
                 />
             </div>
         );

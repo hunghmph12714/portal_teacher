@@ -171,4 +171,15 @@ class UserController extends Controller
         $user->save();
         return response()->json('ok');
     }
+    protected function PermissionClass(Request $request){
+        $rules = ['user_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $class_ids = $request->selectedClasses ? array_column($request->selectedClasses, 'value') : [];
+        print_r($request->user_id);
+        $user = User::find($request->user_id);
+        if($user){
+            $user->classes()->sync($class_ids);
+        }
+    }
 }

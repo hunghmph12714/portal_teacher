@@ -206,7 +206,7 @@ class GuestController extends Controller
         }
         $e['source_id'] = $source_id; $e['medium_id'] = $medium_id;
         if($course){
-            $e['step_id'] = 2;
+            $e['step_id'] = 1;
         }else{
             $e['step_id'] = ($init_step->id) ? $init_step->id : null;
         }

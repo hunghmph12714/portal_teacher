@@ -346,6 +346,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/user/password', 'UserController@updatePassword');
     Route::get('/user/get-year', 'UserController@getYear');
     Route::post('/user/change-year', 'UserController@changeYear');
+    Route::post('/user/class-permission', 'UserController@PermissionClass');
     Route::get('/settings', function(){
         return view('welcome');
     });

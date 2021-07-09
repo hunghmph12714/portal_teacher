@@ -242,6 +242,10 @@ class AdminSettingController extends Controller
         $all_user = User::all();
         $users = [];
         foreach($all_user as $key => $user){
+            //get class permission
+            $classes = $user->classes;
+            $users[$key]['classes'] = $classes;
+            //
             $user->dob = date('d/m/Y', strtotime($user->dob));
             $users[$key] = $user->toArray();
             $user_role = $user->roles()->first();
