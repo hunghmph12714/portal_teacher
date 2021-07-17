@@ -6,6 +6,7 @@
 /public/images/answers/
 /public/images/students/
 /public/docs
+/public/recording
 /storage/*.key
 /vendor
 .idea/

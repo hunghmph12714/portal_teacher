@@ -909,7 +909,7 @@ class StudentController extends Controller
         if($center){
             $center_code = $center->code;
         }
-        $content = $center_code.''.$student->id.' '.$this->vn_to_str($student_name);
+        $content = $center_code.''.$student->id.'_'.$this->vn_to_str($student_name).'_T'. str_replace(' - ', '', $months);
         
         
         $result = ['data' => $data, 'title' => $title, 'classes' => $classes,

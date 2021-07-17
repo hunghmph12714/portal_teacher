@@ -435,7 +435,7 @@ class DiscountController extends Controller
     protected function generateDiscountClass($class_id){
         $class = Classes::find($class_id);
         $from_d = '2021-05-04';
-        $to_d = '2021-07-31';
+        $to_d = '2021-08-31';
         if($class){
             $sessions = Session::whereNotNull('id')->update(['percentage' => NULL]);
             
@@ -454,55 +454,59 @@ class DiscountController extends Controller
                 $students = $session->students;
                 foreach($students as $student){
                     //Check current discount
-                    $student_class = StudentClass::Where('student_id', $student->id)->where('class_id', $class->id)->first()->id;
-                    $d = Discount::Where('student_class_id', $student_class)->first();
-                    if($d){
-                        if($d->expired_at < $from_d || $d->active_at > $to_d){ 
-                            continue;
-                        }
-                        else{
-                            //Bo qua nhung uu dai > 10%
-                            if($d->percentage > 15) {
+                    $student_class = StudentClass::Where('student_id', $student->id)->where('class_id', $class->id)->first();
+                    if($student_class){
+                        $student_class = $student_class->id;
+                        $d = Discount::Where('student_class_id', $student_class)->first();
+                        if($d){
+                            if($d->expired_at < $from_d || $d->active_at > $to_d){ 
                                 continue;
-                            }else{
-                                //Bo ưu đãi của thời gian này
-                                $transaction = $session->transactions()->where('discount_id', $d->id)->first();
-                                
-                                if($transaction){
-                                    $ts = TransactionSession::find($transaction->pivot['id']);
-                                    $ts->forceDelete();
-                                }
-                                $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
-                                $trans['credit'] = Account::Where('level_2', '131')->first()->id;
-                                $trans['class_id'] = $class->id;
-                                $trans['center_id'] = $class->center_id;
-                                $trans['session_id'] = $session->id;
-                                $trans['user'] = auth()->user()->id;
-                                $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
-                                $trans['time'] = date('Y-m-t', strtotime($session->date));
-                                $trans['student_id'] = $student->id;
-                                $trans['discount_id'] = -4;
-                                $trans['amount'] = $session->fee/100*15;
-                                $tr = Transaction::create($trans);
-                                $tr->tags()->syncWithoutDetaching([9]);
                             }
+                            else{
+                                //Bo qua nhung uu dai > 10%
+                                if($d->percentage > 15) {
+                                    continue;
+                                }else{
+                                    //Bo ưu đãi của thời gian này
+                                    $transaction = $session->transactions()->where('discount_id', $d->id)->first();
+                                    
+                                    if($transaction){
+                                        $ts = TransactionSession::find($transaction->pivot['id']);
+                                        $ts->forceDelete();
+                                    }
+                                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                                    $trans['class_id'] = $class->id;
+                                    $trans['center_id'] = $class->center_id;
+                                    $trans['session_id'] = $session->id;
+                                    $trans['user'] = auth()->user()->id;
+                                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                                    $trans['time'] = date('Y-m-t', strtotime($session->date));
+                                    $trans['student_id'] = $student->id;
+                                    $trans['discount_id'] = -4;
+                                    $trans['amount'] = $session->fee/100*15;
+                                    $tr = Transaction::create($trans);
+                                    $tr->tags()->syncWithoutDetaching([9]);
+                                }
+                            }
+                        }else{
+                            //Tao uu dai 10%
+                            $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                            $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                            $trans['class_id'] = $class->id;
+                            $trans['center_id'] = $class->center_id;
+                            $trans['session_id'] = $session->id;
+                            $trans['user'] = auth()->user()->id;
+                            $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                            $trans['time'] = date('Y-m-t', strtotime($session->date));
+                            $trans['student_id'] = $student->id;
+                            $trans['amount'] = $session->fee/100*15;
+                            $trans['discount_id'] = -4;
+                            $tr = Transaction::create($trans);
+                            $tr->tags()->syncWithoutDetaching([9]);
                         }
-                    }else{
-                        //Tao uu dai 10%
-                        $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
-                        $trans['credit'] = Account::Where('level_2', '131')->first()->id;
-                        $trans['class_id'] = $class->id;
-                        $trans['center_id'] = $class->center_id;
-                        $trans['session_id'] = $session->id;
-                        $trans['user'] = auth()->user()->id;
-                        $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
-                        $trans['time'] = date('Y-m-t', strtotime($session->date));
-                        $trans['student_id'] = $student->id;
-                        $trans['amount'] = $session->fee/100*15;
-                        $trans['discount_id'] = -4;
-                        $tr = Transaction::create($trans);
-                        $tr->tags()->syncWithoutDetaching([9]);
                     }
+                    
                     
                 }
             }
