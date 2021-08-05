@@ -201,7 +201,7 @@ const SignIn = props => {
     const data = {
       email: formState.values.email,
       password: formState.values.password,
-      year: (!formState.values.year) ? '2020' : formState.values.year
+      year: (!formState.values.year) ? '2021' : formState.values.year
     }
     axios.post(url, data)
       .then(response => {

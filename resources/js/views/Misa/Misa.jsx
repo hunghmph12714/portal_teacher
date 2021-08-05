@@ -117,6 +117,26 @@ const Misa = (props) => {
                     break;
                 case 'revenue':
                     break;
+                case 'fin-revenue':
+                    axios.post('/financial/revenue', {center: center})
+                        .then(response => {
+                            window.open(response.data, '_blank', 'noopener,noreferrer')
+                            setLoading(false)
+                        })
+                        .catch(err => {
+                            setLoading(false)
+                        })
+                    break;
+                case 'fin-lia':
+                    axios.post('/financial/liabilities', {center: center})
+                        .then(response => {
+                            window.open(response.data, '_blank', 'noopener,noreferrer')
+                            setLoading(false)
+                        })
+                        .catch(err => {
+                            setLoading(false)
+                        })
+                    break;
 
             }
         }
@@ -126,7 +146,7 @@ const Misa = (props) => {
             {
                 loading ? <LinearProgress />:""
             }
-            <h3> Kết xuất dữ liệu Misa</h3>
+            <h3> Kết xuất dữ liệu tài chính</h3>
             <Grid container spacing={2}>
                 <Grid item md={3}>
                 <FormControl variant="outlined" fullWidth size="small">
@@ -141,15 +161,17 @@ const Misa = (props) => {
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
-                        <MenuItem value={'student'}>Danh sách Học sinh (Khách hàng) *Cập nhật</MenuItem>
-                        <MenuItem value={'class'}>Danh sách Lớp học (Hàng bán - Mã thống kê)</MenuItem>
-                        <MenuItem value={'order'}>Danh sách Công nợ</MenuItem>
-                        <MenuItem value={'receipt_tm'}>Danh sách phiếu thu TM</MenuItem>
-                        <MenuItem value={'receipt_nh'}>Danh sách phiếu thu NH</MenuItem>
-                        <MenuItem value={'payment_tm'}>Danh sách phiếu chi TM</MenuItem>
-                        <MenuItem value={'payment_nh'}>Danh sách phiếu chi NH</MenuItem>
-                        <MenuItem value={'revenue'}>Danh sách Doanh thu</MenuItem>
-                        <MenuItem value={'other'}>Danh sách Giao dịch khác</MenuItem>
+                        <MenuItem value={'student'}>MISA - Danh sách Học sinh (Khách hàng) *Cập nhật</MenuItem>
+                        <MenuItem value={'class'}>MISA - Danh sách Lớp học (Hàng bán - Mã thống kê)</MenuItem>
+                        <MenuItem value={'order'}>MISA - Danh sách Công nợ</MenuItem>
+                        <MenuItem value={'receipt_tm'}>MISA - Danh sách phiếu thu TM</MenuItem>
+                        <MenuItem value={'receipt_nh'}>MISA - Danh sách phiếu thu NH</MenuItem>
+                        <MenuItem value={'payment_tm'}>MISA - Danh sách phiếu chi TM</MenuItem>
+                        <MenuItem value={'payment_nh'}>MISA - Danh sách phiếu chi NH</MenuItem>
+                        <MenuItem value={'revenue'}>MISA - Danh sách Doanh thu</MenuItem>
+                        <MenuItem value={'other'}>MISA - Danh sách Giao dịch khác</MenuItem>
+                        <MenuItem value={'fin-revenue'}>Doanh số theo tháng</MenuItem>
+                        <MenuItem value={'fin-lia'}>Công nợ theo tháng (1)</MenuItem>
                     </Select>
                 </FormControl>
                 </Grid>
@@ -166,6 +188,8 @@ const Misa = (props) => {
                     <MenuItem value="">
                         <em>None</em>
                     </MenuItem>
+
+                        <MenuItem value={-1}>Tất cả</MenuItem>
                         <MenuItem value={1}>Hội sở</MenuItem>
                         <MenuItem value={2}>Trần Duy Hưng</MenuItem>
                         <MenuItem value={3}>Phạm Tuấn Tài</MenuItem>

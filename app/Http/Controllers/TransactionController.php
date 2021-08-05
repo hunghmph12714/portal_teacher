@@ -11,10 +11,13 @@ use App\Student;
 use App\Parents;
 use App\Classes;
 use App\StudentClass;
+use App\StudentSession;
 use App\Discount;
+use App\Session;
 use App\Center;
 use App\TransactionSession;
 use Mail;
+use App\Paper;
 use Swift_SmtpTransport;
 
 class TransactionController extends Controller
@@ -106,6 +109,159 @@ class TransactionController extends Controller
         //     }   
             
         // }
+    }
+    public function normalizeHP(){
+        $chuyenhp = Tag::where('name', 'Chuyển HP')->first();
+        // $transactions = $chuyenhp->transactions;
+        $transactions = Transaction::where('center_id', '-1')->get();
+        $equities = Account::where('type', 'equity')->get()->toArray();
+        $equities = array_column($equities, 'id');
+        
+        foreach($transactions as $t){
+            $from = date('Y-m-01 00:00:00', strtotime($t->time));
+            $to = date('Y-m-t 23:59:59', strtotime($t->time));
+            // $rt = Transaction::where('student_id', $t->student_id)->whereNotNull('center_id')->whereBetween('time', [$from, $to])->first();
+            // if($rt){
+            //     $t->center_id = $rt->center_id;
+            //     $t->save();
+            //     echo $t->center_id."<br>";
+            // }
+            
+            // $t->center_id = 1;
+            // $t->save();
+        }
+    }
+    public function FinancialRevenueRange($from, $to, $centers){
+        
+
+        $ss = StudentSession::join('sessions', 'student_session.session_id', 'sessions.id')->whereBetween('sessions.date', [$from, $to])->whereIn('sessions.center_id', $centers)->count();
+        $acc_131 = Account::where('level_2', '131')->first()->id;
+        $acc_3387 = Account::where('level_2', '3387')->first()->id;
+        $acc_511 = Account::where('level_1', '511')->first()->id;
+
+        $equities = Account::where('type', 'equity')->get()->toArray();
+        $equities = array_column($equities, 'id');
+        $chuyenhp = Tag::where('name', 'Chuyển HP')->first();
+        $tag_mg = Tag::where('name', 'Miễn giảm')->first();
+        $tag_hp = Tag::where('name', 'Học phí')->first();
+
+        $hpthua = $chuyenhp->transactions()->where('debit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $hpkisau = $chuyenhp->transactions()->where('credit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+
+        $doanhso = Transaction::where('debit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $doanhso -= $hpthua;
+       
+        $miengiam = $tag_mg->transactions()->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $thucthu = Paper::where('type','receipt')->whereIn('center_id', $centers)->whereBetween('created_at', [$from, $to])->sum('amount');
+        $ttk = Transaction::where('credit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $ttk -= $hpthua;
+        $ttk -= $miengiam;
+        return [date('m-Y', strtotime($from)), $ss ,number_format($doanhso), number_format($miengiam), number_format($doanhso-$miengiam) ,number_format($ttk) , number_format($doanhso-$miengiam-$ttk) , number_format($thucthu) , number_format($hpthua)];
+    }
+    
+    protected function FinancialRevenue(Request $request){
+        $user = auth()->user();
+        $file = fopen(public_path()."/fin-revenue.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Tháng', 'Lượt học/tháng' , 'Doanh số', 'Chiết khấu', 'Khoản phải thu', 'Thu trong kỳ', 'Nợ trong kỳ','Thu thực tế'];
+        fputcsv($file, $first_line);
+        
+        if($request->center == -1){
+            $centers = Center::all()->toArray();
+            $center = array_column($centers, 'id');        
+        }else{
+            $center = [$request->center];
+        }
+        for($i = 1; $i <= 12; $i++){
+            $from = date('Y-m-01 00:00:00', strtotime('01-'.$i.'-'.$user->wp_year));
+            $to = date('Y-m-t 23:59:59', strtotime('01-'.$i.'-'.$user->wp_year));
+            fputcsv($file, $this->FinancialRevenueRange($from, $to, $center));
+        }
+        // for($i = 1; $i <= 12; $i++){
+        //     $from = date('Y-m-01', strtotime('01-'.$i.'-'.$user->wp_year + 1));
+        //     $to = date('Y-m-t', strtotime('01-'.$i.'-'.$user->wp_year + 1));
+        //     fputcsv($file, $this->FinancialRevenueRange($from, $to));
+        // }
+        return response('/public/fin-revenue.csv');
+
+        // return redirect('/public/fin-revenue.csv');
+ 
+    }
+    public function FinancialLiabilities($from, $to, $result, $index, $centers){
+        $year = date('Y', strtotime($from));
+        $acc_131 = Account::where('level_2', '131')->first()->id;
+        $acc_3387 = Account::where('level_2', '3387')->first()->id;
+        $acc_511 = Account::where('level_1', '511')->first()->id;
+
+        $equities = Account::where('type', 'equity')->get()->toArray();
+        $equities = array_column($equities, 'id');
+        $chuyenhp = Tag::where('name', 'Chuyển HP')->first();
+        $tag_mg = Tag::where('name', 'Miễn giảm')->first();
+        $tag_hp = Tag::where('name', 'Học phí')->first();
+        $hpthua = $chuyenhp->transactions()->whereIn('transactions.center_id', $centers)->where('debit', $acc_131)->whereBetween('time', [$from, $to])->sum('amount');
+        $hpkisau = $chuyenhp->transactions()->whereIn('transactions.center_id', $centers)->where('credit', $acc_131)->whereBetween('time', [$from, $to])->sum('amount');
+
+        $doanhso = Transaction::where('debit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $doanhso -= $hpthua;
+    
+        $miengiam = $tag_mg->transactions()->whereIn('transactions.center_id', $centers)->whereBetween('time', [$from, $to])->sum('amount');
+        $phai_thu = $doanhso - $miengiam;
+        
+        
+        for($i = 1; $i<= 12 ; $i++){
+            
+            if($i > date('m', strtotime($from))){
+                break;
+            }
+            else{
+                $tmp_from = date('Y-m-01 00:00:00', strtotime('01-'.$i.'-'.$year));
+                $tmp_to = date('Y-m-t 23:59:59', strtotime('01-'.$i.'-'.$year));
+                if($i == date('m', strtotime($from))){
+                    
+                    $f = date('Y-m-01', strtotime('01-01-'.$year));
+                    $ttk = Transaction::where('credit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$tmp_from, $tmp_to])->where('created_at', '<=', $tmp_to)->sum('amount');
+                    // $hpkisau = $chuyenhp->transactions()->where('credit', $acc_131)->whereBetween('time', [$from, $to])->where('transactions.created_at', '<=', $tmp_to)->sum('amount');
+                    $result[$index][$i-1] = number_format($phai_thu - $ttk + $hpthua + $miengiam);
+                    
+                }
+                else{
+                    $ttk = Transaction::where('credit', $acc_131)->whereIn('transactions.center_id', $centers)->whereBetween('time', [$tmp_from, $tmp_to])->whereBetween('created_at', [$from, $to])->sum('amount');
+                    // $hpkisau = $chuyenhp->transactions()->where('credit', $acc_131)->whereBetween('time', [$tmp_from, $tmp_to])->whereBetween('transactions.created_at', [$from, $to])->sum('amount');
+                    $result[$index][$i-1] = number_format(intval(str_replace(',', '', $result[$index-1][$i-1])) - $ttk);
+                }
+                
+            }
+        }
+        return $result;
+    }
+    protected function FinancialLia(Request $request){
+        $result= [];
+        $user = auth()->user();
+        if($request->center == -1){
+            $centers = Center::all()->toArray();
+            $center = array_column($centers, 'id');        
+        }else{
+            $center = [$request->center];
+        }
+        $file = fopen(public_path()."/fin-liabilities.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = ['Tháng', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+        fputcsv($file, $first_line);
+        for($i = 1; $i <= 12; $i++){
+            $result[$i-1] = [0,0,0,0,0,0,0,0,0,0,0,0];
+            $from = date('Y-m-01 00:00:00', strtotime('01-'.$i.'-'.$user->wp_year));
+            $to = date('Y-m-t 23:59:59', strtotime('01-'.$i.'-'.$user->wp_year));
+            // fputcsv($file, $this->FinancialLiabilities($from, $to));
+            $result = $this->FinancialLiabilities($from, $to, $result, $i-1, $center);
+            
+        }
+        foreach($result as $key => $r){
+            array_unshift($r, $key);
+            fputcsv($file, $r);
+        }
+        
+        return response('/public/fin-liabilities.csv');
+
     }
     protected function addTransaction(Request $request){
         $rules = [

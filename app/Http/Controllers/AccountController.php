@@ -17,10 +17,10 @@ class AccountController extends Controller
         $result = [];
         foreach($accounts as $key => $account){
             $result[$key] = $account;
-            $debit = Transaction::where('debit', $account->id)->sum('amount');
-            $credit = Transaction::where('credit', $account->id)->sum('amount');
-            $result[$key]['debit'] = $debit;
-            $result[$key]['credit'] = $credit;
+            // $debit = Transaction::where('debit', $account->id)->sum('amount');
+            // $credit = Transaction::where('credit', $account->id)->sum('amount');
+            $result[$key]['debit'] = 0;
+            $result[$key]['credit'] = 0;
         }
         return response()->json($result);
     }

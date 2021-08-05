@@ -392,6 +392,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/student/save', 'StudentController@saveStudent');
     Route::post('/student/get-class', 'StudentController@getClass');
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
+    Route::get('/student/remove/{id}', 'StudentController@removeStudent');
     // Route::get('/student/import', 'StudentController@importStudent');
 //MISA
     Route::get('/misa', function(){
@@ -410,6 +411,9 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('/misa/revenue', 'TransactionController@misaUploadRevenue');
     
+    Route::post('/financial/revenue', 'TransactionController@FinancialRevenue');
+    Route::post('/financial/liabilities', 'TransactionController@FinancialLia');
+    Route::get('/financial/normalize', 'TransactionController@normalizeHP');
 //Parent
     Route::post('/parent/create', 'ParentController@createParent');
     Route::get('/parent/find/{key}', 'ParentController@findParent');

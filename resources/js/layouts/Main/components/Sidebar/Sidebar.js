@@ -160,7 +160,7 @@ const Sidebar = props => {
           href: '/budget',
         },
         {
-          title: 'Misa',
+          title: 'Kết xuất dữ liệu',
           href: '/misa'
         }
       ]

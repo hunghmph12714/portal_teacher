@@ -27,6 +27,16 @@ use App\Jobs\SendEventReminder;
 class StudentController extends Controller
 {
     //
+    protected function removeStudent($id){
+        $student = Student::find($id);
+        $student->forceDelete();
+
+        $sc = StudentClass::where('student_id', $id)->forceDelete();
+        
+        $ss = StudentSession::where('student_id', $id)->forceDelete();
+
+        $t = Transaction::where('student_id', $id)->forceDelete();
+    }
     protected function uploadAvatar(Request $request){
         $rules = [
             "id" => "required",
@@ -302,7 +312,7 @@ class StudentController extends Controller
                                 'credit_account.id as credit','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
                                 'students.id as sid', 'students.fullname as sname','students.dob', 
                                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                                'users.id as uid','users.name as uname'
+                                'users.id as uid','users.name as uname', 'transactions.center_id as center_id'
                             )
                             ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
                             ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
@@ -351,6 +361,7 @@ class StudentController extends Controller
                 $result[$month]['content'] = 'Tổng tiền tháng '.$month;
                 $result[$month]['detail'] = '';
                 $result[$month]['cname'] = '';
+                $result[$month]['center_id'] = $t->center_id;
 
             }
             else{
@@ -362,6 +373,7 @@ class StudentController extends Controller
                 $tarray['parent_id'] = $result[$month]['id'];
                 $tarray['time'] = Date('d/m/Y', strtotime($t->time));
                 $tarray['detail'] = $detail;
+                $tarray['center_id'] = $t->center_id;
                 $result[$month]['detail'] = '';
                 if($show_detail){
                     array_push($result, $tarray);
@@ -445,11 +457,13 @@ class StudentController extends Controller
                     $t['student_id'] = $student_id;
                     $t['content'] = 'Chuyển học phí dư có';
                     $t['user'] = auth()->user()->id;
+                    $t['center_id'] = $r['center_id'];
                     $transfer = Transaction::create($t);
                     
                     $transfer->tags()->attach([$tag->id]);
                     $dt['debit'] = Account::where('level_2','1111')->first()->id;
                     $dt['credit'] = Account::where('level_2', '131')->first()->id;
+                    $dt['center_id'] = $r['center_id'];
                     $dt['amount'] = -$r['amount'];
                     if($key == sizeof($result)-1){
                         $dt['time'] = date('Y-m-d', strtotime("+1 month", strtotime('28-'.$r['month'])));
