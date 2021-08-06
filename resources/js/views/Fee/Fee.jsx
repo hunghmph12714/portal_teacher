@@ -255,7 +255,7 @@ const ListFee = React.memo(props => {
                         s += r.amount;
                     }
                 })
-                s = s/2
+                // s = s/2
                 let format_sum = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(s)
                 const x = enqueueSnackbar('Tổng số tiền đã chọn: ' + format_sum, {
                     'variant': 'success', 
