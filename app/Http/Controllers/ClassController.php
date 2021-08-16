@@ -354,6 +354,27 @@ class ClassController extends Controller
             $sc->save();
         }
     }
+    protected function dropStudents(Request $request){
+        foreach($request->students as $student){
+            $student_id = $student['student_id'];
+            $sc = StudentClass::where('student_id', $student_id)->where('class_id', $request->class_id)->first();
+            if($sc){
+                if($sc->status == 'active'){
+                    $sc->status = $request->status;
+                    if(!$request->drop_date){
+                        return response()->json('Vui lòng điền đầy đủ *', 442);
+                    }
+                    $sc->drop_time = ($request->drop_date) ?  date('Y-m-d', strtotime($request->drop_date)) : date('Y-m-d');
+                    $stats = ($sc->stats) ? $sc->stats : [];
+                    $sc->stats = $stats;
+                    
+                    $sc->save();
+                }
+               
+            }
+            
+        }
+    }
     protected function getClass($center_id, $course_id){
         $center_operator = ($center_id == '-1')? '!=': '=';
         $center_value = ($center_id == '-1')? NULL: $center_id;

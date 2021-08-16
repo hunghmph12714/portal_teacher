@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import DialogCreate from './DialogCreate'
 import DialogTransfer from './DialogTransfer'
+import DialogDropout from './DialogDropout'
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
     Menu,
     MenuItem,
@@ -40,6 +42,8 @@ const ListStudent = (props) => {
 
     const[ openUpload, setOpenUpload ] = useState(false);
     const[ openStatus, setOpenStatus] = useState(false);
+    const [ openDropout, setOpenDropout ] = useState(false);
+
     // const[ ]
     useEffect(() => {
         const fetchdata = async() => {
@@ -65,6 +69,16 @@ const ListStudent = (props) => {
     }
     function handleCloseStatus(){
         setOpenStatus(false)
+        setSelectedData([])
+        setReload(!reload)
+    }
+
+    function openDropoutDialog(rows){
+        setOpenDropout(true)
+        setSelectedData(rows)
+    }
+    function handleCloseDropout(){
+        setOpenDropout(false)
         setSelectedData([])
         setReload(!reload)
     }
@@ -156,6 +170,15 @@ const ListStudent = (props) => {
                             text: 'Chuyển lớp',
                             onClick: (event, rows) => {
                                 openStatusDialog(rows)
+                            },
+                        },
+                        {
+                            icon: () => <MeetingRoomIcon />,
+                            tooltip: 'Nghỉ học',
+                            isFreeAction: false,
+                            text: 'Nghỉ học',
+                            onClick: (event, rows) => {
+                                openDropoutDialog(rows)
                             },
                         },
                     ]}
@@ -395,6 +418,12 @@ const ListStudent = (props) => {
             <DialogTransfer
                 open = {openStatus}
                 handleClose = {handleCloseStatus}
+                class_id = {class_id}
+                students = {selected_data}
+            />
+            <DialogDropout
+                open = {openDropout}
+                handleClose = {handleCloseDropout}
                 class_id = {class_id}
                 students = {selected_data}
             />

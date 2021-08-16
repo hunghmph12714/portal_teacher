@@ -376,6 +376,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/class/add-student', 'ClassController@addStudentToClass');
     Route::post('/class/edit-student', 'ClassController@editStudentInClass');
     Route::post('/class/transfer-students', 'ClassController@transferStudents');
+    Route::post('/class/drop-students', 'ClassController@dropStudents');
 
     Route::post('/class/active-student', 'ClassController@getActiveStudent');
     
