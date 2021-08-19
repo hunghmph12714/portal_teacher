@@ -1,24 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import './Discount.scss'
-import {StudentSearch} from '../../components'
+import {DiscountDialog} from './components';
+
 import {
-    Grid,
-    Menu,
-    MenuItem,
-    IconButton,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    FormControlLabel,
-    RadioGroup,
-    Radio,
-    TextField,
     Tooltip,
     Typography,
   } from "@material-ui/core";
 import MaterialTable from "material-table";
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+
 import {MTableAction} from "material-table";
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -29,6 +21,7 @@ import Select , { components }  from "react-select";
 
 import { TwitterPicker } from 'react-color';
 
+import {StudentSearch} from '../../components'
 import axios from 'axios'
 import { withSnackbar } from 'notistack'
 const baseUrl = window.Laravel.baseUrl;
@@ -55,34 +48,7 @@ function NumberFormatCustom(props) {
     );
 }
 //
-const ClassSelect = React.memo(props => {
-    const {center, course, student} = props
-    const [classes, setClasses] = useState([])
-    useEffect(() => {
-        const fetchdata = async() => {
-            var r = await axios.get(baseUrl + '/class/get/'+center+'/'+course)
-            if(student){
-                r = await axios.post(baseUrl + '/class/student', {'student_id': student})
-            }
-            setClasses(r.data.map(c => {
-                return {label: c.code + ' - ' +c.name, value: c.id}
-            }))        
-            
-        }
-        fetchdata()
-    }, [student])
-    
-    return( 
-        <Select className = "select-box"
-            key = "class-select"
-            value = {props.selected_class}
-            name = "selected_class"
-            placeholder="Chọn lớp"
-            isClearable
-            options={classes}
-            onChange={props.handleChange}
-        />)
-})
+
 class Discount extends React.Component{
     constructor(props){
         super(props)
@@ -146,21 +112,7 @@ class Discount extends React.Component{
                         return (
                             <div> {rowData.code} </div>
                         )
-                    },
-                    editComponent : props => {
-                            return (
-                                <ClassSelect 
-                                    selected_class = {props.value}
-                                    handleChange={newValue => {
-                                        props.onChange(newValue)                                
-                                    }}
-                                    course = {-1}
-                                    center = {-1}
-                                    student = {student_id}
-                                />
-                        )
-                    }
-                        
+                    },                        
                     
                 },
             // Coupon
@@ -227,18 +179,18 @@ class Discount extends React.Component{
                     }
                 },
             //Max use
-                {
-                    title: "Số lần",
-                    field: "max_use",
-                    type: "numeric",
-                    headerStyle: {
-                        fontWeight: '600',
-                        width: '5%',
-                    },
-                    cellStyle: {
-                        width: '5%',
-                    }
-                },
+                // {
+                //     title: "Số lần",
+                //     field: "max_use",
+                //     type: "numeric",
+                //     headerStyle: {
+                //         fontWeight: '600',
+                //         width: '5%',
+                //     },
+                //     cellStyle: {
+                //         width: '5%',
+                //     }
+                // },
             //Status
                 {
                     title: "Tình trạng",
@@ -255,7 +207,27 @@ class Discount extends React.Component{
             ],
             data: [],
             c: 10000,
+            open: false,
+            selectedRow: null,
+            type: 'create',
         }
+    }
+    handleOpenDialog = () => {
+        this.setState({
+            type: 'create',
+            open: true,
+        })
+    }
+    handleOpenEdit = (rowData) => {
+        this.setState({
+            open: true,
+            selectedRow: rowData,
+            type: 'edit'
+        })
+    }
+    handleCloseDialog = () => {
+        this.getDiscount()
+        this.setState({open: false})
     }
     getDiscount = () =>{
         axios.get(window.Laravel.baseUrl + "/discount/get")
@@ -271,35 +243,7 @@ class Discount extends React.Component{
     componentDidMount(){
         this.getDiscount()
     }
-    addNewDiscount = (newData) => {
-        // newData.ative_at = newData.active_at.getTime()/1000
-        // newData.expired_at = newData.expired_at.getTime()/1000  
-        return axios.post(baseUrl + '/discount/create', newData)
-            .then((response) => {
-                this.getDiscount()
-                this.props.enqueueSnackbar('Tạo ưu đãi thành công', {
-                    variant: 'success'
-                })
-            })
-            .catch(err => {
-                if(err.response.status == '421'){
-                    this.props.enqueueSnackbar(err.response.data, { 
-                        variant: 'error',
-                      });
-                }
-                if(err.response.status == 500){
-                    this.props.enqueueSnackbar('Lỗi server, vui lòng thử lại sau', {
-                        variant: 'error',
-                    })
-                }
-                if(err.response.status == 422){
-                    this.props.enqueueSnackbar('Vui lòng điền đầy đủ các trường', {
-                        variant: 'error',
-                    })
-                }
-
-            })
-    }
+    
     //edit
     editDiscount = (oldData, newData) => {
         let req = {id: oldData.id, newData: newData}
@@ -365,11 +309,41 @@ class Discount extends React.Component{
                         pageSize: 10,
                         filter: true,
                     }}
-                    editable={{
-                        onRowAdd: newData => this.addNewDiscount(newData) ,
-                        onRowUpdate: (newData, oldData) => this.editDiscount(oldData, newData),
-                        onRowDelete: oldData => this.deleteDiscount(oldData),
-                    }}
+                    actions={[                       
+                        {
+                            icon: () => <AddBoxIcon />,
+                            tooltip: 'Thêm mới ưu đãi',
+                            isFreeAction: true,
+                            text: 'Thêm ưu đãi',
+                            onClick: (event) => {
+                                this.handleOpenDialog()
+                            },
+                        },
+                        {
+                            icon: () => <EditOutlinedIcon />,
+                            tooltip: 'Sửa ưu đãi',
+                            isFreeAction: false,
+                            text: 'Sửa ưu đãi',
+                            onClick: (event, rowData) => {
+                                this.handleOpenEdit(rowData)
+                            },
+                        },
+                        {
+                            icon: () => <DeleteForeverIcon />,
+                            tooltip: 'Xoá ưu đãi',
+                            isFreeAction: false,
+                            text: 'Xoá ưu đãi',
+                            onClick: (event, rowData) => {
+                                if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) this.deleteDiscount(rowData)
+                            },
+                        },
+                        
+                    ]}
+                    // editable={{
+                    //     onRowAdd: newData => this.addNewDiscount(newData) ,
+                    //     onRowUpdate: (newData, oldData) => this.editDiscount(oldData, newData),
+                    //     onRowDelete: oldData => this.deleteDiscount(oldData),
+                    // }}
                     localization={{
                         header: {
                             actions: ''
@@ -399,7 +373,12 @@ class Discount extends React.Component{
                         }
                     }}
                 />
-                
+                <DiscountDialog 
+                    open = {this.state.open}
+                    handleClose = {this.handleCloseDialog}
+                    type = {this.state.type}
+                    selected_data = {this.state.selectedRow}
+                />
             </div>
         );
     }

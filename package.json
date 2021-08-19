@@ -89,7 +89,7 @@
         "ckeditor5vee": "0.0.3",
         "date-fns": "^2.15.0",
         "fs": "0.0.1-security",
-        "material-table": "^1.52.0",
+        "material-table": "^1.67.1",
         "material-ui-dropzone": "^2.5.0",
         "mui-tables": "^2.0.4",
         "notistack": "^0.9.17",

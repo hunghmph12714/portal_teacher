@@ -50,7 +50,6 @@ class DiscountController extends Controller
         $rules = [
             'sname' => 'required',
             'class' => 'required',
-            // 'expired_at' => 'required',
         ];
         $this->validate($request, $rules);
 
@@ -63,7 +62,7 @@ class DiscountController extends Controller
             $input['percentage'] = $request->percentage ? $request->percentage : NULL;
             $input['amount'] = $request->amount ? $request->amount : NULL;
             $input['status'] = $request->status;
-            $input['max_use'] = $request->max_use;
+            // $input['max_use'] = $request->max_use;
             // print_r($input);
             $discount = Discount::create($input);
             
@@ -80,7 +79,6 @@ class DiscountController extends Controller
             'did'=>'required',
             'active_at' => 'required',
             'expired_at' => 'required',            
-            'max_use' => 'required'
         ];
         $this->validate($request, $rules);
         $c = StudentClass::where('student_id', $request->student['value'])->where('class_id', $request->class['value'])->first();
@@ -98,7 +96,6 @@ class DiscountController extends Controller
                     $d->expired_at = explode('T', $request->expired_at)[0];
                     $d->percentage = $request->percentage;
                     $d->amount = $request->amount;
-                    $d->max_use = $request->max_use;
                     $d->status = $request->status;
                     $d->student_class_id = $c->id;
                     $d->save();
@@ -108,7 +105,6 @@ class DiscountController extends Controller
                 $d->expired_at = explode('T', $request->expired_at)[0];
                 $d->percentage = $request->percentage;
                 $d->amount = $request->amount;
-                $d->max_use = $request->max_use;
                 $d->status = $request->status;
                 $d->student_class_id = $c->id;
                 $d->save();
