@@ -12,6 +12,7 @@ use App\Account;
 use App\Transaction;
 use App\Student;
 use App\TransactionSession;
+use App\Center;
 use App\Tag;
 class DiscountController extends Controller
 {
@@ -443,10 +444,15 @@ class DiscountController extends Controller
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
-            
+            $dm = 15;
             foreach($sessions as $session){
                 $session->percentage = -1;
                 $session->save();
+                if(date('m', strtotime($session->date)) == '08'){
+                    $dm = 20;
+                }else{
+                    $dm = 15;
+                }
                 $students = $session->students;
                 foreach($students as $student){
                     //Check current discount
@@ -460,7 +466,7 @@ class DiscountController extends Controller
                             }
                             else{
                                 //Bo qua nhung uu dai > 10%
-                                if($d->percentage > 15) {
+                                if($d->percentage > $dm) {
                                     continue;
                                 }else{
                                     //Bo ưu đãi của thời gian này
@@ -476,11 +482,11 @@ class DiscountController extends Controller
                                     $trans['center_id'] = $class->center_id;
                                     $trans['session_id'] = $session->id;
                                     $trans['user'] = auth()->user()->id;
-                                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                                    $trans['content'] = 'Miễn giảm học phí ONLINE '.$dm.'%';
                                     $trans['time'] = date('Y-m-t', strtotime($session->date));
                                     $trans['student_id'] = $student->id;
                                     $trans['discount_id'] = -4;
-                                    $trans['amount'] = $session->fee/100*15;
+                                    $trans['amount'] = $session->fee/100*$dm;
                                     $tr = Transaction::create($trans);
                                     $tr->tags()->syncWithoutDetaching([9]);
                                 }
@@ -493,10 +499,10 @@ class DiscountController extends Controller
                             $trans['center_id'] = $class->center_id;
                             $trans['session_id'] = $session->id;
                             $trans['user'] = auth()->user()->id;
-                            $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                            $trans['content'] = 'Miễn giảm học phí ONLINE -'.$dm.'%';
                             $trans['time'] = date('Y-m-t', strtotime($session->date));
                             $trans['student_id'] = $student->id;
-                            $trans['amount'] = $session->fee/100*15;
+                            $trans['amount'] = $session->fee/100*$dm;
                             $trans['discount_id'] = -4;
                             $tr = Transaction::create($trans);
                             $tr->tags()->syncWithoutDetaching([9]);
@@ -599,7 +605,7 @@ class DiscountController extends Controller
                     $trans['class_id'] = $class->id;
                     $trans['center_id'] = $class->center_id;
                     $trans['user'] = auth()->user()->id;
-                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -20%';
                     $trans['time'] = date('Y-m-t', strtotime('2021-08-30'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_8;
