@@ -575,7 +575,7 @@ class PaperController extends Controller
         $file = fopen(public_path()."/misa_receipt_TM.csv","w");
         fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
         $first_line = [ 'Hiển thị trên sổ', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ',
-            'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' ];
+            'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' , 'Đối tượng', 'TK ngân hàng', 'mã thống kê'];
         fputcsv($file, $first_line);
 
         
@@ -620,6 +620,9 @@ class PaperController extends Controller
                 array_push($arr, $t['debit_level_2']);
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, $t['cname']);
                 fputcsv($file, $arr);
 
                 $temp_t = Transaction::find($t['id']);
@@ -708,7 +711,14 @@ class PaperController extends Controller
                 array_push($arr, $t['credit_level_2']);
                 array_push($arr, $t['amount']);
                 array_push($arr, 'KH'.str_pad($t['sid'], 5, '0', STR_PAD_LEFT));
-                array_push($arr, $t['cid']);
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, '');
+                array_push($arr, $t['cname']);
                 fputcsv($file, $arr);
 
                 $temp_t = Transaction::find($t['id']);
