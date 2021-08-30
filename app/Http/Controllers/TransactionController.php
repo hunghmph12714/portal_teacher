@@ -600,14 +600,27 @@ class TransactionController extends Controller
         return response('/public/misa_order.csv');
 
     }
-    public function misaUploadRevenue(){
+    public function misaUploadRevenue(Request $request){
+        $rules = ['from' => 'required', 'to' => 'required'];
+        $this->validate($request, $rules);
+
         $arr = [];
         $acc_511 = Account::where('level_2', '511')->first()->id;
         $acc_3387 = Account::where('level_2', '3387')->first()->id;
-        $file = fopen(public_path()."/misa-revenue.csv","w");
+        
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+        $arr = [];
+        $file = fopen(public_path()."/misa_revenue.csv","w");
+        fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+        $first_line = [ 'Hiển thị trên sổ', 'Ngày chứng từ (*)', 'Ngày hạch toán (*)', 'Số chứng từ (*)', 'Diễn giải', 'Hạn thanh toán', 'Diễn giải (Hạch toán)', 'TK Nợ (*)',
+        'TK Có (*)', 'Số tiền', 'Đối tượng Nợ', 'Đối tượng Có', 'TK ngân hàng', 'Khoản mục CP', 'Đơn vị', 'Đối tượng THCP', 'Công trình', 'Hợp đồng bán', 'CP không hợp lý','Mã thống kê'];
+        fputcsv($file, $first_line); 
 
-        $transactions = Transaction::Where('credit',$acc_511)->where('debit', $acc_3387)->get();
+        $transactions = Transaction::Where('credit',$acc_511)->where('debit', $acc_3387)->where('time','>=', $from)->where('time', '<', $to)->where('center_id', $request->center)->get();
         foreach($transactions as $t){
+            $class = Classes::find($t->class_id);
+            
             $arr = [''];
             array_push($arr, date('m-d-Y', strtotime($t->time)));
             array_push($arr, date('m-d-Y', strtotime($t->time)));
@@ -627,11 +640,12 @@ class TransactionController extends Controller
             array_push($arr, '');
             array_push($arr, '');
             array_push($arr, '');
-            array_push($arr, $t->class_id);
+            array_push($arr, $class->code);
 
             fputcsv($file, $arr);
         }
 
+        return response('/public/misa_revenue.csv');
 
     }
 }

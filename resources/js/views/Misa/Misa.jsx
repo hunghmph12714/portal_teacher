@@ -116,6 +116,14 @@ const Misa = (props) => {
                         })
                     break;
                 case 'revenue':
+                    axios.post('/misa/revenue', {from: from, to: to, center: center})
+                        .then(response => {
+                            window.open(response.data, '_blank', 'noopener,noreferrer')
+                            setLoading(false)
+                        })
+                        .catch(err => {
+                            setLoading(false)
+                        })
                     break;
                 case 'fin-revenue':
                     axios.post('/financial/revenue', {center: center})
