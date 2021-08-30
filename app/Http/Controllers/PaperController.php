@@ -745,8 +745,6 @@ class PaperController extends Controller
             'Kèm theo', 'Lý do chi', 'Diễn giải lý do chi', 'Người nhận', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' ];
         fputcsv($file, $first_line);
 
-        $from = date('Y-m-d', strtotime('2021-01-01'));
-        $to = date('Y-m-d', strtotime('2021-02-01'));
         $payments = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at', '<', $to)->where('type','payment')->get();
 
         foreach($payments as $r){
@@ -812,9 +810,6 @@ class PaperController extends Controller
             'Diễn giải nội dung thanh toán', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ', 'Tài khoản nhận', 'Tên NH nhận', 'Người lĩnh tiền', 'Số CMND', 'Ngày cấp CMND',
             'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền'];
         fputcsv($file, $first_line);
-
-        $from = date('Y-m-d', strtotime('2021-01-01'));
-        $to = date('Y-m-d', strtotime('2021-02-01'));
         $payments = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at', '<', $to)->where('type','payment')->get();
 
         foreach($payments as $r){
