@@ -112,20 +112,20 @@ class TransactionController extends Controller
     }
     public function normalizeHP(){
         $chuyenhp = Tag::where('name', 'Chuyển HP')->first();
-        // $transactions = $chuyenhp->transactions;
-        $transactions = Transaction::where('center_id', '-1')->get();
+        $transactions = $chuyenhp->transactions;
+        // $transactions = Transaction::where('center_id', '-1')->get();
         $equities = Account::where('type', 'equity')->get()->toArray();
         $equities = array_column($equities, 'id');
         
         foreach($transactions as $t){
             $from = date('Y-m-01 00:00:00', strtotime($t->time));
             $to = date('Y-m-t 23:59:59', strtotime($t->time));
-            // $rt = Transaction::where('student_id', $t->student_id)->whereNotNull('center_id')->whereBetween('time', [$from, $to])->first();
-            // if($rt){
-            //     $t->center_id = $rt->center_id;
-            //     $t->save();
-            //     echo $t->center_id."<br>";
-            // }
+            $rt = Transaction::where('student_id', $t->student_id)->whereNotNull('center_id')->whereBetween('time', [$from, $to])->first();
+            if($rt){
+                $t->center_id = $rt->center_id;
+                $t->save();
+                echo $t->center_id."<br>";
+            }
             
             // $t->center_id = 1;
             // $t->save();

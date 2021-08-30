@@ -552,7 +552,7 @@ class DiscountController extends Controller
                             $total_amount_9 += $transaction['amount'];
                             $sessions_9[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '100':
+                        case '10':
                             $total_amount_10 += $transaction['amount'];
                             $sessions_10[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
