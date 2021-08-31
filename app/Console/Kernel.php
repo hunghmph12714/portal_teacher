@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
         'App\Console\Commands\everyHour',
+        'App\Console\Commands\GenerateRevenue',
     ];
 
     /**
@@ -27,6 +28,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('entrance:stat')
                  ->everyMinute();
+        $schedule->command('revenue:generate')
+                 ->daily();
     }
 
     /**
