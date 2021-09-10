@@ -421,7 +421,7 @@ Route::group(['middleware' => ['auth']], function() {
 //Session
     Route::post('/session/get-last', 'SessionController@getLastSession');
     Route::post('/session/get', 'SessionController@getSession');
-    Route::post('/session/get-today', 'SessionController@getTodaySession');
+    Route::post('/session/get-dashboard', 'SessionController@getDashboard');
     Route::post('/session/create','SessionController@createSession');
     Route::post('/session/delete', 'SessionController@deleteSession');
     Route::post('/session/edit', 'SessionController@editSession');

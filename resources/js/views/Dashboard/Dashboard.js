@@ -22,8 +22,9 @@ const useStyles = makeStyles(theme => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-  
+  document.title = 'Bảng điều khiển'
   return (
+    
     <div className={classes.root}>
       <Grid
         container

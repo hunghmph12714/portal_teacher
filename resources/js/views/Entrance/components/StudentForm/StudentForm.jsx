@@ -4,6 +4,7 @@ import { StudentSearch, ParentSearch } from '../../../../components'
 import { Grid , Paper} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import { throttle } from "lodash";
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import vi from "date-fns/locale/vi";
 
@@ -15,7 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { throttle } from "lodash";
+
 const baseUrl = window.Laravel.baseUrl
 
 

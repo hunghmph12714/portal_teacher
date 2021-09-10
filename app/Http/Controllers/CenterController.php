@@ -10,6 +10,11 @@ class CenterController extends Controller
     //d
     protected function index(){
         $center = Center::all()->toArray();
+        array_push($center, [
+            'id' => -1,
+            'name' => 'Tất cả cơ sở',
+            'code' => 'all',
+        ]);                                                         
         return response()->json($center);
     }
 

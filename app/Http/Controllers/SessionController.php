@@ -454,16 +454,24 @@ class SessionController extends Controller
         }
         return response()->json($result);
     }
-    protected function getTodaySession(Request $request){
+    protected function getDashboard(Request $request){
         $rules = [
             'center_id' => 'required',
+            'from' => 'required',
+            'to' => 'required',
         ];
         $this->validate($request, $rules);
         $result = [];
-        $today = date('Y-m-d');
-        $sessions = Session::Where('sessions.date', $today)->
+        $stats = [
+            'diemdanh' => 0, 'uptl' => 0, 'upbt' => 0, 'hsvang' => 0, 'hsnghi' => 0, 'hsmoi' => 0, 'hsnoti' => 0
+        ];
+        $from = date('Y-m-d', strtotime($request->from));
+        $to = date('Y-m-d', strtotime($request->to));
+        $centers = array_column($request->center_id, 'value');
+        if(in_array('-1', $centers)){
+            $sessions = Session::WhereBetween('sessions.date', [$from, $to])->
             select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
-                'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.code as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                 'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
                 'classes.code as code')->
             leftJoin('teacher','sessions.teacher_id','teacher.id')->
@@ -471,11 +479,43 @@ class SessionController extends Controller
             leftJoin('classes','sessions.class_id', 'classes.id')->
             leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
             get();
+        }else{
+            $sessions = Session::WhereBetween('sessions.date', [$from, $to])->whereIn('sessions.center_id', $centers)->
+            select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
+                'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.code as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
+                'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
+                'classes.code as code')->
+            leftJoin('teacher','sessions.teacher_id','teacher.id')->
+            leftJoin('center','sessions.center_id','center.id')->
+            leftJoin('classes','sessions.class_id', 'classes.id')->
+            leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
+            get();
+        }
+        
         foreach($sessions as $key => $value){
             $result[$key] = $value->toArray();
             $result[$key]['students'] = $value->students()->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get()->toArray();
+            $check_diemdanh = 0;
+            foreach($result[$key]['students'] as $s){
+                if($s['pivot']['attendance'] != 'holding') $check_diemdanh = 1;
+                if($s['pivot']['attendance'] == 'n_absence') $stats['hsvang']++;
+                if(!property_exists('sent_at', $s['pivot']['logs'])) $stats['hsnoti']++;
+            }
+            if(!$value['document']) $stats['uptl']++;
+            if(!$value['exercice']) $stats['upbt']++;
+            if(!$check_diemdanh) $stats['diemdanh']++;
         }
-        return response()->json($result);
+        $classes = array_unique(array_column($sessions->toArray(), 'cid'));
+        foreach($classes as $class_id){
+            $class = Classes::find($class_id);
+            $students = $class->students;
+            
+            foreach($students as $s){
+                if($s->detail['drop_time'] >= $from && $s->detail['drop_time'] <= $to) $stats['hsnghi']++;
+                if($s->detail['entrance_date'] >= $from && $s->detail['entrance_date'] <= $to) $stats['hsmoi']++;
+            }
+        }
+        return response()->json(['result'=>$result, 'stats' => $stats]);
     }
     protected function getStudentOfProduct(Request $request){
         $rules = ['session_id' => 'required'];

@@ -14,12 +14,36 @@ import { withSnackbar } from 'notistack';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import vi from "date-fns/locale/vi";
 import Select , { components }  from "react-select";
-
+import AsyncCreatableSelect from 'react-select/async-creatable';
+import { throttle } from "lodash";
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider
 } from "@material-ui/pickers";
 const baseUrl = window.Laravel.baseUrl
+
+
+//s
+const wait = 1000; // milliseconds
+
+const promptTextCreator = (value) => {
+    return 'Tạo mới '+value
+}
+const findSchools = (inputValue) => {
+    return axios.get(baseUrl + '/school/find/' + inputValue)
+        .then(response => {
+            return  response.data.map(school => { return {label: school.name, value: school.id} })
+        })
+        .catch(err => {
+            console.log('get schools bug' + err.response.data)
+        })
+}
+const loadOptions = (type, inputValue) => {            
+    if(type == 'school'){
+        return findSchools(inputValue)
+    }
+};
+const debouncedLoadOptions = throttle(loadOptions, wait)
 const CenterSelect = React.memo(props => {
     const [centers, setCenters] = useState([])
     useEffect(() => {
@@ -214,13 +238,13 @@ class QuickCreateEntrance extends React.Component {
                         <h4 className="root-header">Ghi danh học sinh</h4>
                         <h5 className="title-header">Thông tin học sinh</h5> 
                         <Grid container spacing={3} className="student-form" >                
-                            <Grid item md={6} lg={6} sm={12} xs={12}>
+                            <Grid item md={4} lg={4} sm={12} xs={12}>
                                 <StudentSearch
                                     student_name={this.state.student_name}
                                     handleStudentChange={this.handleStudentChange}
                                 />
                             </Grid>
-                            <Grid item md={6} lg={6} sm={12} xs={12}>
+                            <Grid item md={4} lg={4} sm={12} xs={12}>
                                 <div className="date-time">
                                     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi}>
 
@@ -238,6 +262,19 @@ class QuickCreateEntrance extends React.Component {
                                     </MuiPickersUtilsProvider>     
                                 </div>
                         
+                            </Grid>
+                            <Grid item md={4} lg={4} sm={12} xs={12}>
+                                <AsyncCreatableSelect 
+                                    cacheOptions
+                                    autosize={true}
+                                    loadOptions={inputValue => debouncedLoadOptions('school',inputValue)}
+                                    placeholder={'Trường học'}
+                                    onChange={this.handleChange}
+                                    name="student_school"
+                                    value={this.state.student_school}
+                                    formatCreateLabel={promptTextCreator} 
+                                    className="select-box"    
+                                />
                             </Grid>
                         </Grid>
                         

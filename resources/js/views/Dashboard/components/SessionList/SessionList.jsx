@@ -15,16 +15,26 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import DialogDocument from './DialogDocument'
+import Select from 'react-select';
 import {
+    Grid,
     Menu,
     MenuItem,
     IconButton,
-    Tooltip,
-    Button,
+    Tooltip,LinearProgress,
+    Button, Card, CardContent
   } from "@material-ui/core";
   import MaterialTable from "material-table";
   import Chip from '@material-ui/core/Chip';
   import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+  import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+
+import vi from "date-fns/locale/vi";
+import {
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
 const baseUrl = window.Laravel.baseUrl
 const SessionList = (props) => {
     const Vndate = ['','Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
@@ -43,7 +53,24 @@ const SessionList = (props) => {
     const [open_check, setOpenCheck] = useState(false);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
+    const [from, setFrom] = useState(new Date());
+    const [to, setTo] = useState(new Date());
+    const [centers, setCenters] = useState([]);
+    const [selected_centers, setSelectedCenter] = useState([{value: -1, label: 'Tất cả cơ sở'}])
 
+    const [stats, setStats] = useState({
+      diemdanh: 0, upbt: 0, uptl: 0, hsvang: 0, hsnghi: 0, hsmoi: 0, hsnoti: 0
+    })
+    function onCenterChange(value){
+      setSelectedCenter(value)
+    }
+
+    function handleFromChange(value){
+      setFrom(value)
+    }
+    function handleToChange(value){
+      setTo(value)
+    }
     function handleOpenDocument(rowData){
       setOpenDocument(true)
       setDocument(rowData.document ? rowData.document : '')
@@ -109,8 +136,9 @@ const SessionList = (props) => {
         })
     }
     const fetchdataa = async() => {
-        const response = await axios.post(baseUrl + '/session/get-today', {center_id: -1})
-        setData(response.data.map(r => {
+        setLoading(false)
+        const response = await axios.post(baseUrl + '/session/get-dashboard', {center_id: selected_centers, from: from, to: to})
+        setData(response.data.result.map(r => {
             let date = new Date(r.date)
             r.from_full = r.from
             r.to_full = r.to
@@ -124,15 +152,169 @@ const SessionList = (props) => {
             return r
           })
         )
+        setStats(response.data.stats)
         setLoading(true)
     }
+    function refreshDashboard(){
+      fetchdataa()
+    }
+    useEffect(() => {
+      axios.get('/get-center')
+        .then(response => {
+          setCenters(response.data.map(d => {
+              return {value: d.id, label: d.name }
+            })
+          )
+        })
+        .catch(err => {
+          console.log('get center bug: '+ err)
+        })
+    }, [])
     useEffect(() => {
         fetchdataa()
-    }, [fetchdata, props.from, props.to])
+    }, [fetchdata])
     return (
         <React.Fragment>
+            {!isLoading ? <LinearProgress  className="loading"/>: ''}
+            <div className='dashboard-select'>
+              <Grid container spacing={2}>
+                <Grid item md={4}>
+                  <Card>
+                    <CardContent>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} >
+                        <KeyboardDatePicker
+                          autoOk
+                          size= "small"
+                          className="input-from-range"
+                          variant="inline"
+                          inputVariant="outlined"
+                          format="dd/MM/yyyy"
+                          label="Từ ngày"
+                          views={["year", "month", "date"]}
+                          value={from}
+                          onChange={handleFromChange}
+                        />  
+                      </MuiPickersUtilsProvider>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} className='to'>
+                        <KeyboardDatePicker
+                          autoOk
+                          minDate = {from}
+                          className="input-to-range"
+                          size= "small"
+                          variant="inline"
+                          inputVariant="outlined"
+                          format="dd/MM/yyyy"
+                          label="Đến ngày"
+                          views={["year", "month", "date"]}
+                          value={to}
+                          onChange={handleToChange}
+                        />  
+                      </MuiPickersUtilsProvider>
+                        <Select
+                          className="center"
+                          placeholder="Lựa chọn cơ sở"
+                          isMulti
+                          isClearable={false}
+                          name="centers"
+                          options={centers}
+                          value = {selected_centers}
+                          onChange = {onCenterChange}
+                        />
+                        <Button fullWidth className="refresh-btn" onClick={refreshDashboard}> Làm mới</Button>
+                    </CardContent>
+                  </Card>
+                  </Grid>
+                <Grid item md={8}>
+                  <div className="stats"> 
+                      <Grid container spacing={2} className="grid-no-shadow">
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span" color="textSecondary" gutterBottom>
+                                Ca chưa điểm danh: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.diemdanh}</span>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span" color="textSecondary" gutterBottom>
+                                Ca chưa up bài tập:<br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.upbt} </span>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span"  color="textSecondary" gutterBottom>
+                                Ca chưa up tài liệu: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.uptl} </span>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span"  color="textSecondary" gutterBottom>
+                                Nghỉ không phép: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.hsvang} </span>
+                              
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span"  color="textSecondary" gutterBottom>
+                                Học sinh thôi học: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.hsnghi} </span>
+                              
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span"  color="textSecondary" gutterBottom>
+                                Học sinh mới: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.hsmoi} </span>
+                              
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        
+                      </Grid>
+
+                      <Grid container spacing={2} className="grid-no-shadow, stats-row-second">
+                        <Grid item md={2} sm={12}>
+                          <Card>
+                            <CardContent>
+                              <Typography variant="span" color="textSecondary" gutterBottom>
+                                Chưa gửi THHT: <br/>
+                              </Typography>
+                              <span className="stats_number"> {stats.hsnoti}</span>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        
+                      </Grid>
+                
+                
+                </div>
+            
+                  </Grid>
+                </Grid>
+            </div>  
             <MaterialTable
-                title="Danh sách ca học ngày hôm nay"
+                title="Danh sách ca học"
                 data={data}
                 isLoading={!isLoading}
                 options={{
@@ -216,44 +398,7 @@ const SessionList = (props) => {
                     }}
                 columns={
                   [
-                    //Actionsds
-                      {
-                        title: "",
-                        field: "action",
-                        filtering: false,
-                        disableClick: true,
-                        sorting: false,
-                        headerStyle: {
-                            padding: '0px', 
-                            width: '140px',
-                        },
-                        cellStyle: {
-                            width: '114px',
-                            padding: '0px',
-                        },
-                        render: rowData => (
-                            <div style = {{display: 'block'}}>
-                                {
-                                  (rowData.status == 0) ? (
-                                    <Tooltip title="" arrow>
-                                      <IconButton onClick={() => handleCheckSession(rowData)}>
-                                        <DoneIcon fontSize='inherit' />
-                                      </IconButton>
-                                    </Tooltip>
-                                  ): (
-                                    <Tooltip title="" arrow>
-                                      <IconButton onClick={() => {
-                                      if (window.confirm('Mở khoá ca học sẽ ảnh hưởng đến hạch toán, xác nhận thao tác')) 
-                                        handleUnlockSession(rowData)}
-                                      }>
-                                        <LockOpenOutlinedIcon fontSize='inherit' />
-                                      </IconButton>
-                                    </Tooltip>
-                                  )
-                                }
-                            </div>
-                        )
-                      },
+                    
                     //Lớp
                       {
                         title: "Lớp",
@@ -278,29 +423,7 @@ const SessionList = (props) => {
                             padding: '0px',
                         },
                     },
-                    //Phòng học
-                      {
-                        title: "Phòng học",
-                        field: "rname",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                        render: rowData => {                            
-                          return (                              
-                            <Tooltip title={rowData.ctname}>
-                              <Chip variant="outlined" label={rowData.rname} size="small" />
-                            </Tooltip>                          
-                          )
-                        },
-                        renderGroup: (rname, groupData) => (                            
-                          <Chip variant="outlined" label={rname} size="small" />
-                        )                
-                      }, 
-
+                   
                       {
                         title: "Thời gian",
                         field: "time",
@@ -356,18 +479,7 @@ const SessionList = (props) => {
                           ): ("")
                         } 
                       },  
-                      {
-                        title: "Ghi chú",
-                        field: "note",
-                        grouping: false,
-                        headerStyle: {
-                          padding: '0px',
-                          fontWeight: '600',                      
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                      } ,
+                      
                       // {
                       //   title: "Loại",
                       //   field: "type",
