@@ -174,7 +174,7 @@ const SessionList = (props) => {
         fetchdataa()
     }, [fetchdata])
     return (
-        <React.Fragment>
+        <div>
             {!isLoading ? <LinearProgress  className="loading"/>: ''}
             <div className='dashboard-select'>
               <Grid container spacing={2}>
@@ -575,7 +575,7 @@ const SessionList = (props) => {
               </Dialog>) : ""
             }
             
-        </React.Fragment>
+        </div>
     )
 }
 export default (SessionList)
