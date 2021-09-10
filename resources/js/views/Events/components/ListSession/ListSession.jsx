@@ -122,7 +122,7 @@ const ListSession = (props) => {
         fetchdataa()
     }, [fetchdata, props.from, props.to])
     return (
-        <React.Fragment>
+        <div>
             <MaterialTable
               title="Danh sách sản phẩm"
               data={data}
@@ -394,7 +394,7 @@ const ListSession = (props) => {
               session_id = {sessionId}
               session_name = {session_name}
             />
-        </React.Fragment>
+        </div>
     )
 }
 export default (ListSession)

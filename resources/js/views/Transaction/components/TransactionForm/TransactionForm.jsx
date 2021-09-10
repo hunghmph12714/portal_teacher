@@ -174,7 +174,7 @@ const TransactionForm = props => {
     onChange, handleDateChange , handleDebitChange, handleCreditChange, handleStudentChange, handleClassChange, handleSessionChange, onSubmitTransaction, handleTagChange,
     handleAmountChange, handleContentChange, handleBudgetChange, budget} = props
     return(
-        <React.Fragment>
+        <div>
             <Grid container spacing={2} className="account-select">
                 <Grid item xs={12} sm={4}>
                     <FormLabel color="primary">Tài khoản nợ</FormLabel>
@@ -269,7 +269,7 @@ const TransactionForm = props => {
                 </Grid>
             )
             : (
-                <React.Fragment>
+                <div>
                     <Grid container spacing={2}>
                         <Grid item lg={4} xs={12}>
                             <FormLabel color="primary">Học sinh</FormLabel>
@@ -333,10 +333,10 @@ const TransactionForm = props => {
                         </Grid>
                 
                     </Grid>
-                </React.Fragment> 
+                </div> 
             )}
             
-        </React.Fragment>
+        </div>
         
     )
 

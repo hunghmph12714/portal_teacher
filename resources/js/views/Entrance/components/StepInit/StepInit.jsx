@@ -304,12 +304,12 @@ const StepInit = (props) => {
     }
     
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Danh sách ghi danh trong 24h"
@@ -520,11 +520,11 @@ const StepInit = (props) => {
                                 fetchdata = {fetchdata}
                             />
                         </div>
-                    </React.Fragment>
+                    </div>
         
                 )
             }
-        </React.Fragment>
+        </div>
         
     )
 }

@@ -115,7 +115,7 @@ const ListStudent = (props) => {
             })
     }
     return (
-        <React.Fragment>
+        <div>
             <MaterialTable
                 title="Danh sách học sinh"
                 data={data}
@@ -433,7 +433,7 @@ const ListStudent = (props) => {
                 id = {selected_data.id}
                 avatar = {selected_data.avatar}
             />
-        </React.Fragment>
+        </div>
     )
 }
 export default ListStudent

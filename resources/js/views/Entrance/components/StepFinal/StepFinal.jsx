@@ -388,12 +388,12 @@ const StepFinal = (props) => {
             })
     }
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="HS sắp nhập học"
@@ -627,10 +627,10 @@ const StepFinal = (props) => {
                             />
                         </div>
                     
-                    </React.Fragment>
+                    </div>
                 )
             }
-        </React.Fragment>
+        </div>
     )
 }
 export default StepFinal

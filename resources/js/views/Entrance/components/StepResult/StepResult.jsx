@@ -340,12 +340,12 @@ const StepResult = (props) => {
         setOpenStatus(false)
     }
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Đã kiểm tra trong vòng 48h"
@@ -625,10 +625,10 @@ const StepResult = (props) => {
                             />
                         </div>
                     
-                    </React.Fragment>
+                    </div>
                 )
             }
-        </React.Fragment>
+        </div>
     )
 }
 export default StepResult

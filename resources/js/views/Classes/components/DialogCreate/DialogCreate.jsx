@@ -183,7 +183,7 @@ const DefaultConfig = React.memo( props => {
             )
         }
     }
-    return <React.Fragment>{classes}</React.Fragment>
+    return <div>{classes}</div>
 })
 const initState = {
     name: "",

@@ -165,7 +165,7 @@ const ListFee = React.memo(props => {
                 var detail = rowData.detail.split('+')
                 // console.log(detail)
                 return (      
-                    <React.Fragment>
+                    <div>
                         <a data-tip data-for={rowData.content + rowData.cname}> {rowData.content} </a>
                         <ReactTooltip id={rowData.content + rowData.cname} aria-haspopup='true' >
                             {detail.map(d => {
@@ -174,7 +174,7 @@ const ListFee = React.memo(props => {
                                 )
                             })}
                         </ReactTooltip>
-                    </React.Fragment>                         
+                    </div>                         
                                                  
                 )
             },
@@ -521,7 +521,7 @@ class Fee extends React.Component{
     render(){
         document.title = "Học phí"
         return(
-            <React.Fragment>
+            <div>
                 
                 <Paper className="form-fee form-index">
                     <Grid container spacing={1} className="select-session">
@@ -673,7 +673,7 @@ class Fee extends React.Component{
                     </Button>
                     </DialogActions>
                 </Dialog>
-            </React.Fragment>
+            </div>
             
         )
     }

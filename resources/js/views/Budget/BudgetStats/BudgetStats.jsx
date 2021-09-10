@@ -446,7 +446,7 @@ class BudgetStats extends React.Component {
     render(){
         document.title = 'Ngân sách'
         return(
-            <React.Fragment>
+            <div>
                 <DetailView
                     budget_id = {this.props.match.params.id}
                 />
@@ -457,7 +457,7 @@ class BudgetStats extends React.Component {
                     handleDeleteTransaction = {this.handleDeleteTransaction}
                     budget_id = {this.props.match.params.id}
                 />
-            </React.Fragment>
+            </div>
         )
     }
 }

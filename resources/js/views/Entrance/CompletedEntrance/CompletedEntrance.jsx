@@ -305,12 +305,12 @@ const CompletedEntrance = (props) => {
     }
     
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Danh sách ghi danh đã hoàn thành"
@@ -372,11 +372,11 @@ const CompletedEntrance = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 fetchdata = {fetchdata}
                             />   
-                    </React.Fragment>
+                    </div>
         
                 )
             }
-        </React.Fragment>
+        </div>
         
     )
 }

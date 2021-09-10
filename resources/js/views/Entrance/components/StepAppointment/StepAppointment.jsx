@@ -322,12 +322,12 @@ const StepAppointment = (props) => {
         setOpenStatus(false)
     }
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Ghi danh kiểm tra sắp tới"
@@ -612,10 +612,10 @@ const StepAppointment = (props) => {
                             />
                         </div>
                     
-                    </React.Fragment>
+                    </div>
                 )
             }
-        </React.Fragment>
+        </div>
     )
 }
 export default StepAppointment

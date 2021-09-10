@@ -236,7 +236,7 @@ const CashBook = (props) => {
       fetchJSON()
   }
   return (
-    <React.Fragment>
+    <div>
         <div className="select-central">
         <Grid container spacing={2} className="select-central">
             <Grid item md={6} ms={12}> 
@@ -293,7 +293,7 @@ const CashBook = (props) => {
             onChange = {setSheets}
         
         />
-    </React.Fragment>
+    </div>
   )
 }
 

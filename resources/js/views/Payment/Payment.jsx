@@ -585,7 +585,7 @@ class Payment extends React.Component {
     render(){
         document.title = 'Phiếu chi'
         return (
-            <React.Fragment>
+            <div>
                 <DialogForm 
                     open = {this.state.open}
                     type = {this.state.type}
@@ -1070,7 +1070,7 @@ class Payment extends React.Component {
                     
                     }}
                 />
-            </React.Fragment>
+            </div>
         )
     }
 

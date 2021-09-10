@@ -417,12 +417,12 @@ const StepInform = (props) => {
             })
     }
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Chưa liên lạc"
@@ -774,10 +774,10 @@ const StepInform = (props) => {
                             />
                         </div>
                     
-                    </React.Fragment>
+                    </div>
                 )
             }
-        </React.Fragment>
+        </div>
     )
 }
 export default StepInform

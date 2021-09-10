@@ -85,7 +85,7 @@ const InfoForm = (props) => {
 
   const debouncedLoadOptions = throttle(loadOptions, 1000)
   return(
-    <React.Fragment>
+    <div>
       <Grid container spacing={2}>
         <Grid item md={4} xs={12}>
           <TextField  label="Họ tên học sinh(*)"  
@@ -174,7 +174,7 @@ const InfoForm = (props) => {
           </FormControl>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </div>
   )
 }
 class PublicStudent extends React.Component{
@@ -594,7 +594,7 @@ class PublicStudent extends React.Component{
               </Grid>
               <Grid item md={5} sm={12}>
                 {(this.state.total_fee != 0)? 
-                  <React.Fragment>
+                  <div>
                     <Grid container spacing={2}> 
                       <Grid item md={6} sm={12}>
                         <FormControl component="fieldset" size="small" fullWidth>
@@ -630,7 +630,7 @@ class PublicStudent extends React.Component{
                          Tổng lệ phí:  <span className="fee">{formatter.format(this.state.total_fee - this.state.discount_fee)}</span>
                         </Button>
                   </FormControl>
-                </React.Fragment>
+                </div>
                 : ""}
               </Grid>
               

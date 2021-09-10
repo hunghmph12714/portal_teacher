@@ -70,7 +70,7 @@ const MessageInput = props => {
       })
   }
   return (
-    <React.Fragment>
+    <div>
       <TextField  label="Tin nhắn" 
         className = "input-text"
         variant="outlined"
@@ -84,7 +84,7 @@ const MessageInput = props => {
       <Button color="primary" onClick = {sendMessage}>
         Lưu
       </Button>
-    </React.Fragment>
+    </div>
      
   )
 }
@@ -285,11 +285,11 @@ class ViewEntrance extends React.Component{
     render(){      
       document.title = 'Danh sách ghi danh'
         return(          
-          <React.Fragment>  
+          <div>  
             {!this.state.loaded ? (
               <LinearProgress  className="loading"/>
             ): (
-              <React.Fragment> 
+              <div> 
                 <div  className="root-entrance">
                   <Grid container spacing={2}>
                     <Grid item md={6} sm={12}>
@@ -424,9 +424,9 @@ class ViewEntrance extends React.Component{
                         4: <StepFinal centers = {this.state.selected_centers_param}/>,
                       }[this.state.activeStep]
                 }
-              </React.Fragment>
+              </div>
             )}
-            </React.Fragment>
+            </div>
         )
     }
 }

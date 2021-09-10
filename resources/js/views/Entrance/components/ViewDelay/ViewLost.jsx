@@ -363,12 +363,12 @@ const ViewLost = (props) => {
     function handleActive(rowData){
     }
     return(
-        <React.Fragment>
+        <div>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
-                    <React.Fragment> 
+                    <div> 
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Danh sách học sinh đã mất"
@@ -451,11 +451,11 @@ const ViewLost = (props) => {
                                 type = {'Mất'}
                             />   
                         </div>
-                    </React.Fragment>
+                    </div>
                     
                 )
             }
-        </React.Fragment>
+        </div>
     )
 }
 export default ViewLost

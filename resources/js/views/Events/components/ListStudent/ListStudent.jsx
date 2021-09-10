@@ -303,7 +303,7 @@ const ListStudent = (props) => {
         tableRef.current.onQueryChange();
     }
     return (
-        <React.Fragment>
+        <div>
             <div className="table-student-event">
             <MaterialTable    
                 tableRef={tableRef}            
@@ -439,7 +439,7 @@ const ListStudent = (props) => {
                 class_name = {'Lệ phí '+class_name}
             />
             </div>
-        </React.Fragment>
+        </div>
     )
 }
 export default ListStudent

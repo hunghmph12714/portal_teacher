@@ -410,7 +410,7 @@ class Transaction extends React.Component {
     render(){
         document.title = 'Giao dịch'
         return(
-            <React.Fragment>
+            <div>
                 <DialogTransaction 
                     open= {this.state.open_dialog}
                     handleClose = {this.handleCloseDialog}
@@ -423,7 +423,7 @@ class Transaction extends React.Component {
                     handleOpenEdit = {this.handleOpenEditDialog}
                     handleDeleteTransaction = {this.handleDeleteTransaction}
                 />
-            </React.Fragment>
+            </div>
         )
     }
 }
