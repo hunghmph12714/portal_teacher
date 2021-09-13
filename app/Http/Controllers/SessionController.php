@@ -499,7 +499,7 @@ class SessionController extends Controller
             foreach($result[$key]['students'] as $s){
                 if($s['pivot']['attendance'] != 'holding') $check_diemdanh = 1;
                 if($s['pivot']['attendance'] == 'n_absence') $stats['hsvang']++;
-                if(!property_exists('sent_time', $s['pivot']['logs'])) $stats['hsnoti']++;
+                if(strpos($s['pivot']['logs'], 'sent_time') == false) $stats['hsnoti']++;
             }
             if(!$value['document']) $stats['uptl']++;
             if(!$value['exercice']) $stats['upbt']++;
