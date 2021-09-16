@@ -339,8 +339,8 @@ class TransactionController extends Controller
         }
         if(empty($request->filter)){
             $result['page'] = $request->page;
-            $result['total'] = Transaction::Where('debit', '!=',$acc3387)->where('credit','!=',$acc511)->count();
-            $transactions = Transaction::Where('debit', '!=',$acc3387)->where('credit','!=',$acc511)->Select(
+            $result['total'] = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->count();
+            $transactions = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->Select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at as created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                 'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
@@ -363,7 +363,7 @@ class TransactionController extends Controller
                 if($f['column']['field'] == 'sname'){     
                     $sname = $f['value'];            
                 }                
-                $transactions = Transaction::Where('debit', '!=',$acc3387)->where('credit','!=',$acc511)->Select(
+                $transactions = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->Select(
                     'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                     'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                     'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
