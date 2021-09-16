@@ -339,7 +339,7 @@ class TransactionController extends Controller
         }
         if(empty($request->filter)){
             $result['page'] = $request->page;
-            $result['total'] = Transaction::all()->count();
+            $result['total'] = Transaction::Where('debit', '!=',$acc3387)->where('credit','!=',$acc511)->count();
             $transactions = Transaction::Where('debit', '!=',$acc3387)->where('credit','!=',$acc511)->Select(
                 'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at as created_at',
                 'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
