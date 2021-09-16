@@ -363,7 +363,7 @@ class TransactionController extends Controller
                 if($f['column']['field'] == 'sname'){     
                     $sname = $f['value'];            
                 }                
-                $transactions = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->Select(
+                $transactions = Transaction::Select(
                     'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
                     'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
                     'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
@@ -373,6 +373,9 @@ class TransactionController extends Controller
                 )
                     ->whereHas('students', function($q) use($sname) {
                         $q->where('fullname', 'like', '%'.$sname.'%');
+                    })
+                    ->where(function($query) use ($acc3387, $acc511) {
+                        $query->Where('debit_id', '!=',$acc3387)->orwhere('credit_id','!=',$acc511);
                     })
                     ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
                     ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
@@ -511,8 +514,7 @@ class TransactionController extends Controller
         foreach($classes as $c){
             $students = $c->students;
             foreach($students as $s){
-                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s, $from_d, $to_d){
-                
+                $transactions = Transaction::Where(function($query) use ($acc_131, $c, $s, $from_d, $to_d){                
                     $query->where('debit', $acc_131)
                         ->WhereBetween('time',[$from_d, $to_d])
                         ->where('class_id', $c->id)
