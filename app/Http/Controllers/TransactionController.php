@@ -375,7 +375,7 @@ class TransactionController extends Controller
                         $q->where('fullname', 'like', '%'.$sname.'%');
                     })
                     ->where(function($query) use ($acc3387, $acc511) {
-                        $query->Where('debit_id', '!=',$acc3387)->orwhere('credit_id','!=',$acc511);
+                        $query->Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511);
                     })
                     ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
                     ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
