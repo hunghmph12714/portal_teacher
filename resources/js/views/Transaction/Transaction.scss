@@ -18,10 +18,19 @@
             margin-bottom: 5px;
         }
     }
+    
 }
 .submit-btn{
         margin-top: 15px;
     }
 .credit-account{
     margin-left: 13px !important;
+}
+.filter{
+    .student{
+        .select-box{
+            z-index: 999;
+        }
+    }
+    
 }
