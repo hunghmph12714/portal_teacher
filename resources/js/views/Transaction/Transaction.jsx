@@ -257,322 +257,323 @@ const TransactionView = React.memo(props => {
             {/* <Grid container spacing={2}> 
                 <Grid item> </Grid>
             </Grid> */}
-            
-            <MaterialTable
-                title="Danh sách giao dịch"
-                tableRef={ tableRef }
-                data={(query) => new Promise((resolve, reject) => {
-                    axios.post(baseUrl + '/transaction/get', {filter: filters, page: query.page, per_page: query.pageSize})
-                        .then(response => {
-                            resolve(
-                                {
-                                    filters: {},
-                                    data: response.data.data,
-                                    page: response.data.page,
-                                    totalCount: response.data.total
-                                }
-                            )
-                            query.filters = filters
+            <div className="transaction-table">
+                <MaterialTable
+                    title="Danh sách giao dịch"
+                    tableRef={ tableRef }
+                    data={(query) => new Promise((resolve, reject) => {
+                        axios.post(baseUrl + '/transaction/get', {filter: filters, page: query.page, per_page: query.pageSize})
+                            .then(response => {
+                                resolve(
+                                    {
+                                        filters: {},
+                                        data: response.data.data,
+                                        page: response.data.page,
+                                        totalCount: response.data.total
+                                    }
+                                )
+                                query.filters = filters
+                            })
                         })
-                    })
-                }
-                options={{
-                    pageSize: 20,
-                    pageSizeOptions: [20, 50, 100],
-                    grouping: true,
-                    filtering: true,
-                    exportButton: true,
-                    rowStyle: rowData => {                          
-                    },
-                    filterCellStyle: {
-                        paddingLeft: '0px'
                     }
-                }}
-                onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
-                actions={[                       
-                    {
-                        icon: () => <AddBoxIcon />,
-                        tooltip: 'Thêm giao dịch',
-                        isFreeAction: true,
-                        text: 'Thêm giao dịch',
-                        onClick: (event) => {
-                            props.handleOpenCreate()
+                    options={{
+                        pageSize: 20,
+                        pageSizeOptions: [20, 50, 100],
+                        grouping: true,
+                        filtering: true,
+                        exportButton: true,
+                        rowStyle: rowData => {                          
                         },
-                    },
-                ]}
-                icon={{
-                    Filter: () => <div />
-                }}
-                localization={{
-                    body: {
-                        emptyDataSourceMessage: 'Không tìm thấy giao dịch'
-                    },
-                    toolbar: {
-                        searchTooltip: 'Tìm kiếm',
-                        searchPlaceholder: 'Tìm kiếm',
-                        nRowsSelected: '{0} hàng được chọn'
-                    },
-                    pagination: {
-                        labelRowsSelect: 'dòng',
-                        labelDisplayedRows: ' {from}-{to} của {count}',
-                        firstTooltip: 'Trang đầu tiên',
-                        previousTooltip: 'Trang trước',
-                        nextTooltip: 'Trang tiếp theo',
-                        lastTooltip: 'Trang cuối cùng'
-                    },
-                    grouping: {
-                        placeholder: 'Kéo tên cột vào đây để nhóm'
-                    }
-                }}
-                columns={[
-                //Actions
-                    {
-                        title: "",
-                        field: "action",
-                        filtering: false,
-                        disableClick: true,
-                        sorting: false,
-                        headerStyle: {
-                            padding: '0px',
-                            width: '80px',
+                        filterCellStyle: {
+                            paddingLeft: '0px'
+                        }
+                    }}
+                    onRowClick={(event, rowData) => { console.log(rowData.tableData.id) }}
+                    actions={[                       
+                        {
+                            icon: () => <AddBoxIcon />,
+                            tooltip: 'Thêm giao dịch',
+                            isFreeAction: true,
+                            text: 'Thêm giao dịch',
+                            onClick: (event) => {
+                                props.handleOpenCreate()
+                            },
                         },
-                        cellStyle: {
-                            width: '80px',
-                            padding: '0px 5px 0px 0px',
+                    ]}
+                    icon={{
+                        Filter: () => <div />
+                    }}
+                    localization={{
+                        body: {
+                            emptyDataSourceMessage: 'Không tìm thấy giao dịch'
                         },
-                        render: rowData => (
-                            <div style = {{display: 'block'}}>
-                                {/* {rowData.tableData.id} */}
-                                <Tooltip title="Chỉnh sửa" arrow>
-                                    <IconButton onClick={() => {props.handleOpenEdit(rowData)}}>
-                                    <EditOutlinedIcon fontSize='inherit' />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Vô hiệu hóa giao dịch" arrow>
-                                    <IconButton onClick={() => {
-                                    if (window.confirm('Bạn có muốn vô hiệu hóa giao dịch này ? ')) 
-                                        props.handleDeleteTransaction(rowData.id, rowData.tableData.id)}
-                                    }>
-                                    <DeleteForeverIcon fontSize='inherit' />
-                                    </IconButton>
-                                </Tooltip>                                
-                            </div>
-                        )
-                    },
-                //Thời  gian thực hiện giao dịch
-                    {
-                        title: "Thời gian",
-                        field: "time",
-                        grouping: false,
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                            width: '130px',
+                        toolbar: {
+                            searchTooltip: 'Tìm kiếm',
+                            searchPlaceholder: 'Tìm kiếm',
+                            nRowsSelected: '{0} hàng được chọn'
                         },
-                        cellStyle: {
-                            padding: '0px',
-                            width: '130px',
+                        pagination: {
+                            labelRowsSelect: 'dòng',
+                            labelDisplayedRows: ' {from}-{to} của {count}',
+                            firstTooltip: 'Trang đầu tiên',
+                            previousTooltip: 'Trang trước',
+                            nextTooltip: 'Trang tiếp theo',
+                            lastTooltip: 'Trang cuối cùng'
                         },
-                        render: rowData => (<span> {rowData.time_formated} </span>)
-                    },
-                //Số tiền  
-                    {
-                        title: "Số tiền",
-                        field: "amount",
-                        type: "currency", 
-                        grouping: false,
-                        headerStyle: {
-                            padding: '0px 0px',
-                            fontWeight: '600',
-                            width: '80px',
-                            textAlign: 'right',
+                        grouping: {
+                            placeholder: 'Kéo tên cột vào đây để nhóm'
+                        }
+                    }}
+                    columns={[
+                    //Actions
+                        {
+                            title: "",
+                            field: "action",
+                            filtering: false,
+                            disableClick: true,
+                            sorting: false,
+                            headerStyle: {
+                                padding: '0px',
+                                width: '80px',
+                            },
+                            cellStyle: {
+                                width: '80px',
+                                padding: '0px 5px 0px 0px',
+                            },
+                            render: rowData => (
+                                <div style = {{display: 'block'}}>
+                                    {/* {rowData.tableData.id} */}
+                                    <Tooltip title="Chỉnh sửa" arrow>
+                                        <IconButton onClick={() => {props.handleOpenEdit(rowData)}}>
+                                        <EditOutlinedIcon fontSize='inherit' />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Vô hiệu hóa giao dịch" arrow>
+                                        <IconButton onClick={() => {
+                                        if (window.confirm('Bạn có muốn vô hiệu hóa giao dịch này ? ')) 
+                                            props.handleDeleteTransaction(rowData.id, rowData.tableData.id)}
+                                        }>
+                                        <DeleteForeverIcon fontSize='inherit' />
+                                        </IconButton>
+                                    </Tooltip>                                
+                                </div>
+                            )
                         },
-                        cellStyle: {
-                            padding: '0px 15px 0px 0px',
-                            width: '80px',
+                    //Thời  gian thực hiện giao dịch
+                        {
+                            title: "Thời gian",
+                            field: "time",
+                            grouping: false,
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                                width: '130px',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                                width: '130px',
+                            },
+                            render: rowData => (<span> {rowData.time_formated} </span>)
+                        },
+                    //Số tiền  
+                        {
+                            title: "Số tiền",
+                            field: "amount",
+                            type: "currency", 
+                            grouping: false,
+                            headerStyle: {
+                                padding: '0px 0px',
+                                fontWeight: '600',
+                                width: '80px',
+                                textAlign: 'right',
+                            },
+                            cellStyle: {
+                                padding: '0px 15px 0px 0px',
+                                width: '80px',
+                                
+                            },
+                            render: rowData => {
+                                return (                                
+                                    <Typography variant="body2" component="p">                                    
+                                        <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                                    </Typography>
+                                )
+                            },                            
                             
                         },
-                        render: rowData => {
+                    //Tài khoản nợ
+                        {
+                            title: "TK nợ",
+                            field: "debit_level_2",
+                            grouping: false,
+                            headerStyle: {
+                                fontWeight: '600',
+                                textAlign: 'right',
+                                width: '100px',
+                            },
+                            cellStyle: {
+                                padding: '0px 15px 0px 0px',
+                                textAlign: 'right',
+                                width: '100px',
+                            },
+                            render: rowData => {
+                                var color = '#fef3d8'
+                                if(rowData.debit_type === 'equity') {
+                                    color = '#f6deda';
+                                }
+                                if(rowData.debit_type === 'assets') {
+                                    color = '#bfdced';
+                                }
+                                if(rowData.debit_type === 'liabilties') {
+                                    color = '#fdeab5';
+                                }
+                                return (
+                                    <Chip style={customChip(color)} variant="outlined" label={rowData.debit_level_2} size="small" clickable/>
+                                )
+                            }
+                        },    
+                    //Tài khoản có
+                        {
+                            title: "TK có",
+                            field: "credit_level_2",
+                            grouping: false,
+                            headerStyle: {
+                                fontWeight: '600',
+                                width: '100px',
+                            },
+                            cellStyle: {
+                                padding: '3px 0px',
+                                width: '100px',
+                            },
+                            render: rowData => {
+                                var color = '#fef3d8'
+                                if(rowData.credit_type === 'equity') {
+                                    color = '#f6deda';
+                                }
+                                if(rowData.credit_type === 'assets') {
+                                    color = '#bfdced';
+                                }
+                                if(rowData.credit_type === 'liabilties') {
+                                    color = '#fdeab5';
+                                }
+                                return (
+                                    <span> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
+                                )
+                            }
+                        },          
+                    // Miêu tả
+                        {
+                            title: "Nội dung",
+                            field: "content",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                            },
+                        },
+                    //Tag
+                        {
+                            title: "Tag",
+                            field: "tags",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                            },
+                            render: rowData => {
+                                return (<span>
+                                    {rowData.tags.map(tag => {
+                                        return (<Chip color="secondary" size="small" label={tag.name} clickable/>)
+                                    })}
+                                </span>)
+                            }
+                        },
+                    // Học sinh
+                        {
+                            title: "Học sinh",
+                            field: "sname",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                                
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                            },
+                            render: rowData => {
                             return (                                
                                 <Typography variant="body2" component="p">                                    
-                                    <b><NumberFormat value={rowData.amount} displayType={'text'} thousandSeparator={true}/></b>
+                                    <b>{rowData.sname}</b>
+                                    <br /> {rowData.dob}
                                 </Typography>
+                                
                             )
-                        },                            
-                        
-                    },
-                //Tài khoản nợ
-                    {
-                        title: "TK nợ",
-                        field: "debit_level_2",
-                        grouping: false,
-                        headerStyle: {
-                            fontWeight: '600',
-                            textAlign: 'right',
-                            width: '100px',
-                        },
-                        cellStyle: {
-                            padding: '0px 15px 0px 0px',
-                            textAlign: 'right',
-                            width: '100px',
-                        },
-                        render: rowData => {
-                            var color = '#fef3d8'
-                            if(rowData.debit_type === 'equity') {
-                                color = '#f6deda';
-                            }
-                            if(rowData.debit_type === 'assets') {
-                                color = '#bfdced';
-                            }
-                            if(rowData.debit_type === 'liabilties') {
-                                color = '#fdeab5';
-                            }
-                            return (
-                                <Chip style={customChip(color)} variant="outlined" label={rowData.debit_level_2} size="small" clickable/>
-                            )
-                        }
-                    },    
-                //Tài khoản có
-                    {
-                        title: "TK có",
-                        field: "credit_level_2",
-                        grouping: false,
-                        headerStyle: {
-                            fontWeight: '600',
-                            width: '100px',
-                        },
-                        cellStyle: {
-                            padding: '3px 0px',
-                            width: '100px',
-                        },
-                        render: rowData => {
-                            var color = '#fef3d8'
-                            if(rowData.credit_type === 'equity') {
-                                color = '#f6deda';
-                            }
-                            if(rowData.credit_type === 'assets') {
-                                color = '#bfdced';
-                            }
-                            if(rowData.credit_type === 'liabilties') {
-                                color = '#fdeab5';
-                            }
-                            return (
-                                <span> <Chip className="credit-account" style={customChip(color)} label={rowData.credit_level_2} size="small" clickable/> </span>
-                            )
-                        }
-                    },          
-                // Miêu tả
-                    {
-                        title: "Nội dung",
-                        field: "content",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                    },
-                //Tag
-                    {
-                        title: "Tag",
-                        field: "tags",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                        },
-                        render: rowData => {
-                            return (<span>
-                                {rowData.tags.map(tag => {
-                                    return (<Chip color="secondary" size="small" label={tag.name} clickable/>)
-                                })}
-                            </span>)
-                        }
-                    },
-                // Học sinh
-                    {
-                        title: "Học sinh",
-                        field: "sname",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
+                            },
                             
+                            renderGroup: (sname, groupData) => (
+                                <Chip variant="outlined" label={sname} size="small" />      
+                            )
+                        },
+                    //Lớp học
+                        {
+                            title: "Lớp học",
+                            field: "cname",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                                width: '100px',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                                width: '100px',
+                            },
+                        },
+                    //Người tạo
+                        {
+                            title: "Người tạo",
+                            field: "uname",
+                            headerStyle: {
+                                padding: '0px',
+                                fontWeight: '600',
+                                width: '100px',
+                            },
+                            cellStyle: {
+                                padding: '0px',
+                                width: '100px',
+                            },                            
+                        },
+                    //Ngày tạo
+                        {
+                        title: "Ngày tạo",
+                        field: "created_at",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                            width: '100px',
                         },
                         cellStyle: {
                             padding: '0px',
+                            width: '100px',
                         },
                         render: rowData => {
-                        return (                                
-                            <Typography variant="body2" component="p">                                    
-                                <b>{rowData.sname}</b>
-                                <br /> {rowData.dob}
-                            </Typography>
-                            
-                        )
+                            let date = format(new Date(rowData.created_at),  'dd-MM-yyyy')
+                            return (<span>{date}</span>)
+                        }
                         },
-                        
-                        renderGroup: (sname, groupData) => (
-                            <Chip variant="outlined" label={sname} size="small" />      
-                        )
-                    },
-                //Lớp học
-                    {
-                        title: "Lớp học",
-                        field: "cname",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                            width: '100px',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                            width: '100px',
-                        },
-                    },
-                //Người tạo
-                    {
-                        title: "Người tạo",
-                        field: "uname",
-                        headerStyle: {
-                            padding: '0px',
-                            fontWeight: '600',
-                            width: '100px',
-                        },
-                        cellStyle: {
-                            padding: '0px',
-                            width: '100px',
-                        },                            
-                    },
-                //Ngày tạo
-                    {
-                    title: "Ngày tạo",
-                    field: "created_at",
-                    headerStyle: {
-                        padding: '0px',
-                        fontWeight: '600',
-                        width: '100px',
-                    },
-                    cellStyle: {
-                        padding: '0px',
-                        width: '100px',
-                    },
-                    render: rowData => {
-                        let date = format(new Date(rowData.created_at),  'dd-MM-yyyy')
-                        return (<span>{date}</span>)
-                    }
-                    },
-                
-                ]}
-                detailPanel={rowData => {
-                return (
-                    <div> {rowData.step} </div>
-                )
-                
-                }}   
-            />
+                    
+                    ]}
+                    detailPanel={rowData => {
+                    return (
+                        <div> {rowData.step} </div>
+                    )
+                    
+                    }}   
+                />
+            </div>
         </div>
     )
 })
