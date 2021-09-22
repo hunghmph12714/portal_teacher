@@ -22,4 +22,46 @@ class Transaction extends Model
             ->withPivot('id','amount');
     }
     
+    public function scopeTransactionStudent($query, $filter){
+        if(!empty($filter)){
+            if( $filter['student'] && $filter['student'] != ''){
+                $query->where('student_id', $filter['student']['value']);
+            }
+        }
+        return $query;
+    }
+    public function scopeTransactionTime($query, $filter){
+
+        $from = ($filter['from'] ? date('Y-m-d', strtotime($filter['from'])) : date('Y-m-d', strtotime('1999-01-01')));
+        $to = ($filter['to'] ? date('Y-m-d', strtotime($filter['to'])) : date('Y-m-d', strtotime('2222-01-01')));
+       
+        return $query->whereBetween('time', [$from, $to]);
+    }
+    public function scopeTransactionDebit($query, $filter){
+        if($filter['debit'] && $filter['debit'] != ''){
+            $query->where('debit', $filter['debit']['id']);
+        }
+        return $query;
+    }
+    public function scopeTransactionCredit($query, $filter){
+        if($filter['credit'] && $filter['credit'] != ''){
+            $query->where('credit', $filter['credit']['id']);
+        }
+        return $query;
+    }
+    public function scopeTransactionClass($query, $filter){
+        if($filter['selected_class']){
+            $query->where('transactions.class_id', $filter['selected_class']['value']);
+        }
+        return $query;
+    }
+    public function scopeTransactionTag($query, $filter){
+        if($filter['tags']){
+            $tags = array_column($filter['tags'], 'value');
+            $query->whereHas('tags', function($query) use($tags) {
+                $query->whereIn('tags.id', $tags);
+            });
+        }
+        return $query;
+    }
 }

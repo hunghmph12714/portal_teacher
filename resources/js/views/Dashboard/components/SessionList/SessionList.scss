@@ -22,6 +22,11 @@
     }
     .stats{
         margin-bottom: 15px;
+        .dashboard-icon{
+            .MuiCardContent-root{
+                padding: 16px 7px !important;
+            }
+        }
         a{
             float: right;
         }

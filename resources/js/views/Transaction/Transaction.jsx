@@ -53,15 +53,42 @@ function NumberFormatCustom(props) {
         />
     );
 }
+const TagSelect = React.memo(props => {
+    const [data, setData] = useState([])
+    const fetchdata = async() => {
+        const r = await axios.get(window.Laravel.baseUrl + "/tag/get")
+        let data = r.data.map(c => {
+            return {label: c.name, value: c.id}
+        })
+        setData(data)
+    }
+    useEffect(() => {        
+        fetchdata()
+    }, [])    
+    return(        
+        <div className = "tag-input">
+            <Select                
+                key = "tag-select"
+                className="select-box"
+                isMulti
+                value = {props.tags}
+                name = "tags"
+                placeholder="Chọn nhãn dán"
+                options={data}
+                onChange={props.handleChange}
+            />                 
+        </div>
+    )
+})
 const ClassSelect = React.memo(props => {
     const {center, course, student} = props
     const [classes, setClasses] = useState([])
     useEffect(() => {
         const fetchdata = async() => {
             var r = await axios.get(baseUrl + '/class/get-all/'+center+'/'+course)
-            if(student){
-                r = await axios.post(baseUrl + '/class/student', {'student_id': student.value})
-            }
+            // if(student){
+            //     r = await axios.post(baseUrl + '/class/student', {'student_id': student.value})
+            // }
             setClasses(r.data.map(c => {
                 return {label: c.code + ' - ' +c.name, value: c.id}
             }))        
@@ -72,6 +99,7 @@ const ClassSelect = React.memo(props => {
     
     return( 
         <Select className = "select-box"
+            isMulti={props.isMulti}
             key = "class-select"
             value = {props.selected_class}
             name = "selected_class"
@@ -90,6 +118,8 @@ const TransactionView = React.memo(props => {
         to: null,
         credit: '',
         debit: '',
+        tags:[],
+        touched: false,
     })
     const tableRef = React.createRef();
     const [data, setData] = useState([])
@@ -97,22 +127,29 @@ const TransactionView = React.memo(props => {
     // useEffect(() => console.log(tableRef.) ,[reload])
     
     function handleStudentChange(value){
-        setFilters({...filters, student: value})
+        setFilters({...filters, student: value, touched: true})
     }
     function handleClassChange(value){
-        setFilters({...filters, selected_class: value})
+        setFilters({...filters, selected_class: value, touched: true})
     }
     function handleToChange(date){
-        setFilters({...filters, to: date})
+        setFilters({...filters, to: date, touched: true})
     }
     function handleFromChange(date){
-        setFilters({...filters, from: date})
+        setFilters({...filters, from: date, touched: true})
     }
     function handleDebitChange(debit){
-        setFilters({...filters, debit: debit})
+        setFilters({...filters, debit: debit, touched: true})
     }
     function handleCreditChange(credit){
-        setFilters({...filters, credit: credit})
+        setFilters({...filters, credit: credit, touched: true})
+    }
+    function handleTagChange(tags){
+        setFilters({...filters, tags:tags, touched: true})
+    }
+    function handleFilter(){
+        console.log(filters)
+        tableRef.current && tableRef.current.onQueryChange() 
     }
     return(
         <div>
@@ -120,7 +157,7 @@ const TransactionView = React.memo(props => {
                 <Grid container spacing={2}>
                     <Grid item md={4}>
                         <FormLabel color="primary">Khoảng thời gian</FormLabel>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={2}>
                             <Grid item md={6} sm={12}> 
                                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} >
                                 <KeyboardDatePicker
@@ -185,18 +222,35 @@ const TransactionView = React.memo(props => {
                 <Grid container spacing={2}>
                     <Grid item md={3}>
                         <FormLabel color="primary">Tài khoản nợ</FormLabel>
+                        <div className="account">
                         <AccountSearch
                             account={filters.debit}
                             handleAccountChange={handleDebitChange}
                         />
+                        </div>
                     </Grid>
                     <Grid item md={3}>
                         <FormLabel color="primary">Tài khoản có</FormLabel>
+                        <div className="account">
                         <AccountSearch
                             account={filters.credit}
                             handleAccountChange={handleCreditChange}
                         />
-                        
+                        </div>
+                    </Grid>
+                    <Grid item md={4}>
+                        <FormLabel color="primary">Tag</FormLabel>
+                        <div className="tag"> 
+                            <TagSelect 
+                                tags = {filters.tag}
+                                isMulti = {true}
+                                handleChange = {handleTagChange}
+                            />
+                        </div>
+                    </Grid>
+                    <Grid item md={2}>
+                        <Button variant="outlined" color="primary" fullWidth className="btn" onClick={handleFilter}> 
+                        Lọc giao dịch </Button>
                     </Grid>
                 </Grid>
             </div>
@@ -207,11 +261,8 @@ const TransactionView = React.memo(props => {
             <MaterialTable
                 title="Danh sách giao dịch"
                 tableRef={ tableRef }
-                query = {{filters: {
-                    'sname' : 'iw'
-                }}}
                 data={(query) => new Promise((resolve, reject) => {
-                    axios.post(baseUrl + '/transaction/get', {filter: query.filters, page: query.page, per_page: query.pageSize})
+                    axios.post(baseUrl + '/transaction/get', {filter: filters, page: query.page, per_page: query.pageSize})
                         .then(response => {
                             resolve(
                                 {
@@ -221,8 +272,7 @@ const TransactionView = React.memo(props => {
                                     totalCount: response.data.total
                                 }
                             )
-                            query.filters = {}
-                            
+                            query.filters = filters
                         })
                     })
                 }

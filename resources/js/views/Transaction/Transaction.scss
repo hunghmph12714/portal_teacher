@@ -27,10 +27,28 @@
     margin-left: 13px !important;
 }
 .filter{
+    padding: 15px;
     .student{
         .select-box{
             z-index: 999;
         }
     }
-    
+    .class{
+        .select-box{
+            z-index: 999;
+        }
+    }
+    .tag{
+        .select-box{
+            z-index: 998 !important;
+        }
+    }
+    .account{
+        .select-box{
+            z-index: 998 !important;
+        }
+    }
+    .btn{
+        margin-top: 26px;
+    }
 }

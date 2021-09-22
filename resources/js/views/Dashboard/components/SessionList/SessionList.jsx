@@ -239,37 +239,37 @@ const SessionList = (props) => {
                   <div className="stats"> 
                       <Grid container spacing={2} className="grid-no-shadow">
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
-                              <Typography variant="p" color="textSecondary" gutterBottom>
-                                Ca chưa điểm danh: <br/>
+                              <Typography variant="span" color="textSecondary" gutterBottom>
+                                Chưa điểm danh: <br/>
                               </Typography>
-                              <span className="stats_number"> {stats.diemdanh}</span>
+                              <span className="stats_number"> {stats.diemdanh}  </span>
                             </CardContent>
                           </Card>
                         </Grid>
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span" color="textSecondary" gutterBottom>
-                                Ca chưa up bài tập:<br/>
+                                Chưa up bài tập:<br/>
                               </Typography>
                               <span className="stats_number"> {stats.upbt} </span>
                             </CardContent>
                           </Card>
                         </Grid>
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span"  color="textSecondary" gutterBottom>
-                                Ca chưa up tài liệu: <br/>
+                                Chưa up tài liệu: <br/>
                               </Typography>
                               <span className="stats_number"> {stats.uptl} </span>
                             </CardContent>
                           </Card>
                         </Grid>
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span"  color="textSecondary" gutterBottom>
                                 Nghỉ không phép: <br/>
@@ -280,10 +280,10 @@ const SessionList = (props) => {
                           </Card>
                         </Grid>
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span"  color="textSecondary" gutterBottom>
-                                Học sinh thôi học: <br/>
+                                HS thôi học: <br/>
                               </Typography>
                               <span className="stats_number"> {stats.hsnghi} </span>
                               
@@ -291,10 +291,10 @@ const SessionList = (props) => {
                           </Card>
                         </Grid>
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span"  color="textSecondary" gutterBottom>
-                                Học sinh mới: <br/>
+                                HS mới: <br/>
                               </Typography>
                               <span className="stats_number"> {stats.hsmoi} </span>
                               
@@ -306,7 +306,7 @@ const SessionList = (props) => {
 
                       <Grid container spacing={2} className="grid-no-shadow, stats-row-second">
                         <Grid item md={2} sm={12}>
-                          <Card>
+                          <Card className="dashboard-icon">
                             <CardContent>
                               <Typography variant="span" color="textSecondary" gutterBottom>
                                 Chưa gửi THHT: <br/>

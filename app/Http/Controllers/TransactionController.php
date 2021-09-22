@@ -337,7 +337,7 @@ class TransactionController extends Controller
             }
             return response()->json($result);
         }
-        if(empty($request->filter)){
+        if(!$request->filter['touched']){
             $result['page'] = $request->page;
             $result['total'] = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->count();
             $transactions = Transaction::Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511)->Select(
@@ -358,33 +358,32 @@ class TransactionController extends Controller
         }
         else{
             $result['page'] = $request->page;
-            foreach($request->filter as $f){
-                $sname = '';
-                if($f['column']['field'] == 'sname'){     
-                    $sname = $f['value'];            
-                }                
-                $transactions = Transaction::Select(
-                    'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
-                    'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
-                    'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
-                    'students.id as sid', 'students.fullname as sname','students.dob', 
-                    'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
-                    'users.id as uid','users.name as uname'
-                )
-                    ->whereHas('students', function($q) use($sname) {
-                        $q->where('fullname', 'like', '%'.$sname.'%');
-                    })
-                    ->where(function($query) use ($acc3387, $acc511) {
-                        $query->Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511);
-                    })
-                    ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
-                    ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
-                    ->leftJoin('students','transactions.student_id','students.id')
-                    ->leftJoin('classes','transactions.class_id','classes.id')
-                    ->leftJoin('sessions', 'transactions.session_id','sessions.id')
-                    ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.created_at', 'DESC')->offset($offset)->limit($request->per_page)
-                    ->get();
-            }
+            $transactions = Transaction::query();
+            $transactions->transactionStudent($request->filter)
+                ->transactionTime($request->filter)
+                ->transactionClass($request->filter)
+                ->transactionDebit($request->filter)
+                ->transactionCredit($request->filter)
+                ->transactionTag($request->filter);
+            $transactions = $transactions->Select(
+                'transactions.id as id','transactions.amount' ,DB::raw("DATE_FORMAT(transactions.time, '%d/%m/%Y') as time_formated"),'transactions.time','transactions.content','transactions.created_at',
+                'debit_account.id as debit_id','debit_account.level_2 as debit_level_2', 'debit_account.name as debit_name', 'debit_account.type as debit_type',
+                'credit_account.id as credit_id','credit_account.level_2 as credit_level_2', 'credit_account.name as credit_name', 'credit_account.type as credit_type',
+                'students.id as sid', 'students.fullname as sname','students.dob', 
+                'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
+                'users.id as uid','users.name as uname'
+            )
+                ->where(function($query) use ($acc3387, $acc511) {
+                    $query->Where('debit', '!=',$acc3387)->orwhere('credit','!=',$acc511);
+                })
+                ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
+                ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
+                ->leftJoin('students','transactions.student_id','students.id')
+                ->leftJoin('classes','transactions.class_id','classes.id')
+                ->leftJoin('sessions', 'transactions.session_id','sessions.id')
+                ->leftJoin('users', 'transactions.user', 'users.id')->orderBy('transactions.created_at', 'DESC')->offset($offset)->limit($request->per_page)
+                ->get();
+            
         }
         if($transactions){
             $x = $transactions->toArray();
