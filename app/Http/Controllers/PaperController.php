@@ -562,7 +562,7 @@ class PaperController extends Controller
         $paper['amount'] = number_format($paper['amount'], 0, '', ',');
         $t = explode('-',  explode(' ', $paper['created_at'])[0]);
         $paper['time'] = 'Ngày '.$t[2]. ' tháng '.$t[1]. ' năm '.$t[0];
-        return view('paper.print', compact('paper'));
+        return view('paper.print', compact('paper'));   
         // return response()->json($paper);
     }
     protected function misaUploadReceiptTM(Request $request){
@@ -577,9 +577,12 @@ class PaperController extends Controller
         $first_line = [ 'Hiển thị trên sổ', 'Ngày hạch toán (*)', 'Ngày chứng từ (*)', 'Số chứng từ (*)', 'Mã đối tượng', 'Tên đối tượng', 'Địa chỉ',
             'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' , 'Đối tượng', 'TK ngân hàng', 'mã thống kê'];
         fputcsv($file, $first_line);
-
-        
-        $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->get();
+        if($request->center == '-1'){
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->get();
+        }
+        else{
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->get();
+        }
 
         foreach($receipts as $r){
             
@@ -650,8 +653,12 @@ class PaperController extends Controller
             'Diễn giải', 'TK Nợ (*)', 'TK Có (*)' , 'Số tiền', 'Đối tượng', 'Khoản mục CP', 'Đơn vị', 'Đối tượng THCP',
             'Công trình', 'Đơn đặt hàng', 'Hợp đồng mua', 'Hợp đồng bán', 'Mã thống kê'];
         fputcsv($file, $first_line);
-
-        $receipts = Paper::where('created_at','>=', $from)->where('center_id', $request->center)->where('created_at','<',$to)->where('type','receipt')->get();
+        if($request->center == '-1'){
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->get();
+        }
+        else{
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->get();
+        }
         foreach($receipts as $r){
             
             $transactions = $r->transactions()->select(
