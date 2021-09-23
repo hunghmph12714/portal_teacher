@@ -578,10 +578,10 @@ class PaperController extends Controller
             'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' , 'Đối tượng', 'TK ngân hàng', 'mã thống kê'];
         fputcsv($file, $first_line);
         if($request->center == '-1'){
-            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->where('method', 'TM')->get();
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->where('method', '!=' , 'NH')->get();
         }
         else{
-            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->where('method', 'TM')->get();
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->where('method', '!=' , 'NH')->get();
         }
 
         foreach($receipts as $r){
@@ -593,7 +593,7 @@ class PaperController extends Controller
                 'students.id as sid', 'students.fullname as sname','students.dob',
                 'classes.id as cid', 'classes.code as cname', 'sessions.id as ssid', 'sessions.date as session_date ',
                 'users.id as uid','users.name as uname', 'paper_id'
-            )
+                )
                 ->leftJoin('accounts as debit_account','transactions.debit','debit_account.id')
                 ->leftJoin('accounts as credit_account','transactions.credit','credit_account.id')
                 ->leftJoin('students','transactions.student_id','students.id')
