@@ -578,10 +578,10 @@ class PaperController extends Controller
             'Lý do nộp', 'Diễn giải lý do nộp', 'Người nộp', 'Nhân viên thu', 'Kèm theo', 'Diễn giải', 'TK Nợ (*)', 'TK Có (*)', 'Số tiền' , 'Đối tượng', 'TK ngân hàng', 'mã thống kê'];
         fputcsv($file, $first_line);
         if($request->center == '-1'){
-            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->where('method', '!=' , 'NH')->get();
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->whereIn('center_id', [1,2,3,4,5,6,7,8,9,10])->where('method','TM')->get();
         }
         else{
-            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->where('method', '!=' , 'NH')->get();
+            $receipts = Paper::where('created_at','>=', $from)->where('created_at', '<', $to)->where('type','receipt')->where('center_id', $request->center)->where('method', 'TM')->get();
         }
 
         foreach($receipts as $r){
