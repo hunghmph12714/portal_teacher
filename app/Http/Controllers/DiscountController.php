@@ -443,7 +443,7 @@ class DiscountController extends Controller
 
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
-            $sessions = $class->sessions()->where('type', 'main')->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
+            $sessions = $class->sessions()->whereIn('type', ['main', 'exam'])->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
             $dm = 15;
             foreach($sessions as $session){
                 $session->percentage = -1;
