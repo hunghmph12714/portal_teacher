@@ -32,7 +32,7 @@ import {
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
-  Misa
+  Misa, Syllabus
 
 } from './views';
 
@@ -315,6 +315,14 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/misa"
       />
+      <ProtectedRouteWithLayout 
+        component = {Syllabus}
+        layout = {MainLayout}
+        path = "/khoa-hoc"
+      />
+      {/* <ProtectedRouteWithLayout
+        component = {}
+      /> */}
       <Redirect to="/not-found" />
 
     </Switch>

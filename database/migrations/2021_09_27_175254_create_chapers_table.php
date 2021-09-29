@@ -13,7 +13,7 @@ class CreateChapersTable extends Migration
      */
     public function up()
     {
-        Schema::create('chapters', function (Blueprint $table) {
+        Schema::create('lms_chapters', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->smallInteger('syllabus_id');
             $table->string('title');

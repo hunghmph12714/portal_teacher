@@ -13,7 +13,7 @@ class CreateSubjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('lms_subjects', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->smallInteger('chapter_id');
             $table->string('title');

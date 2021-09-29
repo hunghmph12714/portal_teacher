@@ -13,7 +13,7 @@ class CreateSyllabusTable extends Migration
      */
     public function up()
     {
-        Schema::create('syllabus', function (Blueprint $table) {
+        Schema::create('lms_syllabus', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('description')->nullable();
