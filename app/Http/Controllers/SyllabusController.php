@@ -20,4 +20,7 @@ class SyllabusController extends Controller
 
         return response()->json($s);
     }   
+    protected function getSyllabus($id){
+        return response()->json($id);
+    }
 }

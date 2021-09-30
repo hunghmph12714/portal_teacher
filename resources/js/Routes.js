@@ -320,6 +320,11 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/khoa-hoc"
       />
+      <ProtectedRouteWithLayout 
+        component = {Syllabus}
+        layout = {MainLayout}
+        path = "/khoa-hoc/:id"
+      />
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}
