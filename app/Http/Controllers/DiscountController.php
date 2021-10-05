@@ -448,7 +448,7 @@ class DiscountController extends Controller
             foreach($sessions as $session){
                 $session->percentage = -1;
                 $session->save();
-                if(date('m', strtotime($session->date)) == '08'){
+                if(date('m', strtotime($session->date)) == '08' || date('m', strtotime($session->date)) == '09'){
                     $dm = 20;
                 }else{
                     $dm = 15;
@@ -632,7 +632,7 @@ class DiscountController extends Controller
                     $trans['class_id'] = $class->id;
                     $trans['center_id'] = $class->center_id;
                     $trans['user'] = auth()->user()->id;
-                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -20%';
                     $trans['time'] = date('Y-m-t', strtotime('2021-09-30'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_9;

@@ -3,14 +3,31 @@ import {
     Grid,
     Paper,
     TextField, FormControl, InputLabel, Select, FormControlLabel,
-    Switch, FormGroup, Button
+    Switch, FormGroup, Button,
+    AccordionDetails, Accordion, AccordionSummary,
     
 } from '@material-ui/core'
-
+// import TreeView from '@material-ui/lab/TreeView';
+// import TreeItem from '@material-ui/lab/TreeItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddIcon from '@material-ui/icons/Add';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5vee/build/ckeditor';
 import axios from 'axios';
 import './Syllabus.scss'
+// const renderTree = (nodes) => {
+//     <TreeItem key={nodes.title} nodeId={nodes.title} label={nodes.title}>
+//       {Array.isArray(nodes.subjects)
+//         ? nodes.subjects.map((node) => renderTree(node))
+//         : null}
+//       {Array.isArray(nodes.topics)
+//         ? nodes.topics.map((node) => renderTree(node))
+//         : null}  
+//     </TreeItem>
+// }
+var id_global = 0;
 const Syllabus = (props) => {
     const [syllabus, setSyllabus] = useState({
         title: '',
@@ -19,8 +36,10 @@ const Syllabus = (props) => {
         description: '',
         subject: '',
         public: true,
-
+        id: null,
     })
+    const [current, setCurrent] = useState({chapter: '', subject: ''})
+    const [chapters, setChapters] = useState([])
     function onChange(event){
         setSyllabus({...syllabus, [event.target.name]: event.target.value })
     }
@@ -28,12 +47,107 @@ const Syllabus = (props) => {
         setSyllabus({...syllabus, public: event.target.checked})
     }
     function submitSyllabus(){
+        axios.post('/syllabus/create', {...syllabus, chapters})
+            .then(response => {
+                setChapters(response.data.chapters)
+                setSyllabus({
+                    title: response.data.title,
+                    grade: response.data.grade,
+                    subject: response.data.subject,
+                    description: response.data.description,
+                    public: response.data.public,
+                    id: response.data.id,
+                })
+                console.log(chapters)
+            })
+            .catch(err => {
+                
+            })
+    }
+    function addChapter(){
+        setChapters([...chapters, {
+            title: '',
+            subjects: [
+                {
+                    title: '',
+                    topics: [{
+                        title: '',
+                        content: '',
+                    }]
+                }
+            ]
+        }])
 
+    }
+    function onChapterChange(event, index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter[index][event.target.name] = event.target.value
+        setChapters(tmp_chapter)
+    }
+    function deleteChapter(index){
+        let tmp_chapter = [...chapters]        
+        tmp_chapter = tmp_chapter.filter((c, i) => {return i !== index})
+        setChapters(tmp_chapter)
+        
+    }
+    function addSubject(index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter[index].subjects = [...tmp_chapter[index].subjects, {
+            title:'',
+            topics: [{
+                title: '',
+                content: '',
+            }]
+        }]
+        setChapters(tmp_chapter)
+    }
+    function deleteSubject(index, s_index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter = tmp_chapter.map((c,i) => {
+            if(i == index) {
+                let tmp_subject = [...c.subjects]
+                tmp_subject = tmp_subject.filter((s,j) => {return j !== s_index})
+                return {...c, subjects: tmp_subject}
+            }else return c
+        })
+        setChapters(tmp_chapter)
+    }
+    function addTopic(index, s_index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter[index].subjects[s_index].topics = [...tmp_chapter[index].subjects[s_index].topics, {title: '', content: ''}]
+        setChapters(tmp_chapter)
+    }
+    function onSubjectChange(event, index, s_index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter[index].subjects[s_index].title = event.target.value
+        setChapters(tmp_chapter)
+    }
+    function onTopicChange(event, index, s_index, t_index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter[index].subjects[s_index].topics[t_index].title = event.target.value
+        setChapters(tmp_chapter)
+    }
+    function deleteTopic(index, s_index, t_index){
+        let tmp_chapter = [...chapters]
+        tmp_chapter = tmp_chapter.map((c,i) => {
+            if(i == index) {
+                let tmp_subject = [...c.subjects]
+                tmp_subject = tmp_subject.map((s, j) => {
+                    if(j == s_index){
+                        let tmp_topic = [...s.topics]
+                        tmp_topic = tmp_topic.filter((t, k) => {return k !== t_index})
+                        return {...s, topics: tmp_topic}
+                    }else return s
+                })
+                return {...c, subjects: tmp_subject}
+            }else return c
+        })
+        setChapters(tmp_chapter)
     }
     return(
         <div className="syllabus-root">
             <Grid container spacing={2}>
-                <Grid item md={9}> 
+                <Grid item md={9}>
                     <Paper>
                         <div className="syllabus-content">
                             <h4>Tạo mới khoá học</h4>
@@ -85,9 +199,9 @@ const Syllabus = (props) => {
                                             label="Bộ môn(*)"
                                         >
                                             <option aria-label="None" value="" />
-                                            <option value={1}>Toán </option>
-                                            <option value={2}>Tiếng Việt</option>
-                                            <option value={3}>Tiếng Anh</option>
+                                            <option value={'Toán'}>Toán </option>
+                                            <option value={'Tiếng Việt'}>Tiếng Việt</option>
+                                            <option value={'Tiếng Anh'}>Tiếng Anh</option>
                                         </Select>
                                     </FormControl>
                                 </Grid>
@@ -136,14 +250,223 @@ const Syllabus = (props) => {
                         </div>
                         
                     </Paper> 
+                    {chapters.map((c, index) => 
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-label="Expand"
+                                aria-controls="additional-actions1-content"
+                                id="additional-actions1-header"
+                            >
+                                <div onClick={e => {e.stopPropagation()}} className="chapter-content">
+                                    <span style={{marginRight: '10px'}}> <strong> Chuơng {index+1}: </strong></span>
+                                    <TextField 
+                                        className="chapter-title"
+                                        label="Tên chương" 
+                                        variant="outlined" 
+                                        size="small"
+                                        name="title"
+                                        value = {c.title}
+                                        onChange = {event => onChapterChange(event, index)}
+                                    />
+                                    <div
+                                        onClick={() => {
+                                            if(confirm('Xoá chương ra khỏi khoá học ?') ) deleteChapter(index)
+                                        }}
+                                        className = 'chapter-action-btn action-btn'
+                                    >
+                                        <DeleteForeverIcon />
+                                        <span>Xoá chương</span>
+                                    </div>
+                                    <div
+                                        onClick={() => {
+                                            addSubject(index)
+                                        }}
+                                        className = 'chapter-action-btn action-btn'
+                                    >
+                                        <AddIcon />
+                                        <span>Thêm chủ đề</span>
+                                    </div>
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails> 
+                                
+                                <Grid container spacing={2}>
+                                    <Grid md={12} className="test">
+                                        {c.subjects.map((s, s_index) => 
+                                            <Accordion> 
+                                                <AccordionSummary
+                                                    expandIcon={<ExpandMoreIcon />}
+                                                    aria-label="Expand"
+                                                    aria-controls="additional-actions1-content"
+                                                > 
+                                                    <div className="subject-content" onClick={e => {e.stopPropagation()}}> 
+                                                        <b style={{marginRight: '10px'}}>Chủ đề {s_index+1}: </b>
+                                                        <TextField 
+                                                            className="subject-title"
+                                                            label="Tên chủ đề" 
+                                                            variant="outlined"
+                                                            size="small"
+                                                            name="title"
+                                                            value={s.title}
+                                                            onChange={event => onSubjectChange(event, index, s_index)}
+                                                            onFocus = { () => {
+                                                                setCurrent({
+                                                                    chapter: index+1 +': '+ c.title,
+                                                                    subject: ''
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            if(confirm('Xoá chủ đề ra khỏi chương ?') ) deleteSubject(index, s_index)
+                                                        }}
+                                                        className = 'chapter-action-btn action-btn'
+                                                    >
+                                                        <DeleteForeverIcon />
+                                                        <span>Xoá chủ đề</span>
+                                                    </div>
+                                                    <div
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            addTopic(index, s_index)
+                                                        }}
+                                                        className = 'chapter-action-btn action-btn'
+                                                    >
+                                                        <AddIcon />
+                                                        <span>Thêm bài</span>
+                                                    </div>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <Grid container spacing={2}>
+                                                        {s.topics.map((t, t_index) => 
+                                                            <>
+                                                            <Grid item md={12} className="topic-root">
+                                                                <div style={{marginRight: '20px'}} className="topic-content">
+                                                                    <span style={{marginRight: '10px'}}> <b>Bài {t_index + 1}:</b> </span>
+                                                                    <TextField 
+                                                                        className="topic-title"
+                                                                        label="Tên bài"
+                                                                        variant="outlined"
+                                                                        size="small"
+                                                                        name="title"
+                                                                        value={t.title}
+                                                                        onChange={event => onTopicChange(event, index, s_index, t_index)}
+                                                                        onFocus = { () => {
+                                                                            setCurrent({
+                                                                                chapter: index+1 +': '+ c.title,
+                                                                                subject: s_index+1 +': '+ s.title
+                                                                            })
+                                                                        }}
+                                                                    />
+                                                                    <div
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation()
+                                                                            if(confirm('Xoá bài '+ t.title +' ?') ) deleteTopic(index, s_index, t_index)
+                                                                        }}
+                                                                        onFocus = { () => {
+                                                                        setCurrent({
+                                                                            chapter: index+1 +': '+ c.title,
+                                                                            subject: s_index+1 +': '+ s.title
+                                                                        })
+                                                                    }}
+                                                                        className = 'chapter-action-btn action-btn'
+                                                                    >
+                                                                        <DeleteForeverIcon />
+                                                                        <span>Xoá bài</span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </Grid>
+                                                            <div className="topic-description">
+                                                                <CKEditor
+                                                                    editor={ClassicEditor}
+                                                                    config={{
+                                                                        toolbar: {
+                                                                            items: [
+                                                                                'heading',
+                                                                                '|',
+                                                                                'bold',
+                                                                                'italic',
+                                                                                'link',
+                                                                                'bulletedList',
+                                                                                'numberedList',
+                                                                                'imageUpload',
+                                                                                'mediaEmbed',
+                                                                                'insertTable',
+                                                                                'blockQuote',
+                                                                                'undo',
+                                                                                'redo'
+                                                                            ]
+                                                                        },
+                                                                    }}
+                                                                    data= {t.content}
+                                                                    onReady={editor => {
+                                                                        // You can store the "editor" and use when it is needed.
+                                                                        // console.log( 'Editor is ready to use!', editor );
+                                                                        }}
+                                                                    onChange={ ( event, editor ) => {
+                                                                        let tmp_chapter = [...chapters]
+                                                                        tmp_chapter[index].subjects[s_index].topics[t_index].content = editor.getData()
+                                                                        setChapters(tmp_chapter)
+                                                                    }}
+                                                                    onFocus = { () => {
+                                                                        setCurrent({
+                                                                            chapter: index+1 +': '+ c.title,
+                                                                            subject: s_index+1 +': '+ s.title
+                                                                        })
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </>)}
+                                                    </Grid>
+                                                           
+                                                    
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        )}
+                                        
+                                    </Grid>
+                                </Grid>
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
                 </Grid>
                 <Grid item md={3}> 
-                    <Paper>
+                    <Paper className="syllabus-action-paper">
                         <div className="syllabus-action">
-                            <Button variant="outlined" color="primary" fullWidth onClick={submitSyllabus}> 
+                            <Button className="chapter-add-btn" variant="outlined" color="primary" fullWidth onClick={addChapter}> 
+                                Chương mới
+                            </Button>
+                            <Button className="chapter-add-btn" variant="outlined" color="primary" fullWidth onClick={addChapter}> 
+                                Tải lên giáo án
+                            </Button>
+                            <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitSyllabus}> 
                                 Xuất bản
                             </Button>
+                            {/* <TreeView
+                                aria-label="rich object"
+                                defaultCollapseIcon={<ExpandMoreIcon />}
+                                defaultExpanded={['root']}
+                                defaultExpandIcon={<ChevronRightIcon />}
+                            >
+                                {renderTree(chapters)}
+                            </TreeView> */}
+                            {(current.chapter !== '' && current.subject !== '') ? (
+                                <div className="where-am-i">
+                                <span className="header">Bạn đang ở đây: </span><br/>
+                                <span className="chapter">
+                                    <i>{(current.chapter !== '') ? 'Chương '+ current.chapter : ''}</i>
+                                </span>
+                                <br/>
+                                <span className="subject"><i>{(current.subject !== '') ? 'Chủ đề '+ current.subject : ''}</i></span>
+                            </div>
+                            ): ''}
+                            
                         </div>
+                        
                     </Paper>
                 </Grid>
             </Grid>

@@ -459,13 +459,14 @@ Route::group(['middleware' => ['auth']], function() {
     // Route::get('/student/list', 'ClassController@listStudent');
     // Route::get('/teacher/list', 'ClassController@listTeacher');
     Route::get('/tkb', 'ClassController@tkb');
+    
+    
+//LMS 
     Route::get('/khoa-hoc', function(){
         return view('welcome');
     });
     Route::get('/khoa-hoc/{id}', 'SyllabusController@getSyllabus');
     Route::post('/syllabus/create', 'SyllabusController@createSyllabus');
-    
-//LMS 
     
 });
 //EVENT PUBLIC

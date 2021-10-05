@@ -19,6 +19,7 @@ class CreateSyllabusTable extends Migration
             $table->text('description')->nullable();
             $table->integer('user_id');
             $table->smallInteger('grade');
+            $table->boolean('public');
             $table->string('subject');
             $table->timestamps();
         });

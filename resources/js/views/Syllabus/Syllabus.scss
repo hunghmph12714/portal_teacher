@@ -14,7 +14,111 @@
             }
         }
     }
-    .syllabus-action{
-        padding: 15px;
+    .chapter-content{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .chapter-title{
+            margin-right: 10px;
+            input{
+                width: 300px;
+            }
+        }
     }
+    .subject-content{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .subject-title{
+            margin-right: 10px;
+            input{
+                width: 300px;
+            }
+        }
+    }
+
+    .chapters-content{
+        padding: 15px;
+        margin-top: 15px;
+        .chapter-title{
+            margin: 10px 0px;
+            input{
+                width: 300px !important;
+            }
+        }
+        .ck-content{
+            ol li{
+                margin-left: 15px;
+            }
+            ul li{
+                margin-left: 15px;
+            }
+        }
+    }
+   
+    .topic-content{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .topic-title{
+            margin-right: 10px;
+            input{
+                width: 300px;
+            }
+        }
+        
+    }
+    .topic-description{
+        margin-left: 36px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    .test{
+        margin-left: 30px;
+        .topic-content{
+            margin-left: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap
+        }
+    }
+    .action-btn{
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-right: 10px;
+    }
+    .syllabus-action-paper{
+        position: sticky;
+        top: 72px;
+        .syllabus-action{
+            padding: 15px;
+            
+            .chapter-add-btn{
+                margin-bottom: 10px;
+            }
+        }
+    }
+    .where-am-i{
+        padding: 10px;
+        border: 1px solid #ffc83d;
+        margin-top: 13px;
+        border-radius: 5px;
+        .header{
+            font-size: 16px;
+            color: #3e3e3e;
+            font-weight: bold;
+        }
+        .chapter::before{
+            content: '✓';
+        }
+        .subject{
+            margin-left: 8px;
+            &:before{
+                content: '✓';    
+            }
+        }
+    }
+    
 }
