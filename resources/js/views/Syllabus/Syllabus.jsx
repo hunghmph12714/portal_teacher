@@ -49,8 +49,9 @@ const Syllabus = (props) => {
                     subject: data.subject,
                     public: data.public,
                     id: data.id,
+                    description: data.description
                 }))
-                setSyllabus({...syllabus, description: data.description})
+                // setSyllabus({...syllabus, description: data.description})
                 setMode('edit')
             }
             fetchData()
