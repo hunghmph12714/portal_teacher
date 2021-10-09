@@ -134,7 +134,8 @@ class SyllabusController extends Controller
     }
     protected function listSyllabus(Request $request){
         $data = Syllabus::where('public', true)
-            ->select('title', 'description', 'public', 'users.name', 'lms_syllabus.created_at', 'subject', 'grade')
+            ->select('title', 'description', 'public', 'users.name',
+                'lms_syllabus.created_at', 'subject', 'grade', 'lms_syllabus.id')
             ->join('users', 'user_id', 'users.id')
             ->get();
         return response()->json($data->toArray());
