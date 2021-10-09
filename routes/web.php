@@ -465,9 +465,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/khoa-hoc', function(){
         return view('welcome');
     });
-    Route::get('/khoa-hoc/{id}', 'SyllabusController@getSyllabus');
+    Route::get('/khoa-hoc/{id}',  function(){
+        return view('welcome');
+    });
+    Route::post('/syllabus/get', 'SyllabusController@getSyllabus');
+    Route::post('/syllabus/list', 'SyllabusController@listSyllabus');
     Route::post('/syllabus/create', 'SyllabusController@createSyllabus');
+    Route::post('/syllabus/edit', 'SyllabusController@editSyllabus');
     
+    Route::post('/syllabus/delete-chapter', 'SyllabusController@deleteChapter');
+    Route::post('/chapter/delete-subject', 'SyllabusController@deleteSubject');
+    Route::post('/subject/delete-topic', 'SyllabusController@deletetopic');
+
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -510,6 +519,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('/count-event', 'SessionController@countEvent');
 // Route::get('/move-file', 'SessionController@moveFiles');
 // Route::get('/normalize-db','StudentController@normalizeDb');
+// Route::get('/kq-tra-cuu', 'GuestController@ketqua');
 // Route::get('test-email', 'JobController@processQueue');
 // Route::get('/duration', 'SessionController@setDuration');
 // Route::get('/ex-student/k9', 'StudentController@hsk9');
@@ -521,4 +531,3 @@ Route::get('/home', 'HomeController@index')->name('home');
 // });
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
-// Route::get('/kq-tra-cuu', 'GuestController@ketqua');

@@ -72,7 +72,11 @@ const Sidebar = props => {
         {
           title: 'Thi thử',
           href: '/events',
-        },      
+        },   
+        {
+          title: 'Khoá học',
+          href: '/khoa-hoc',
+        },    
       ]
     },
     {

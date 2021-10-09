@@ -17,6 +17,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5vee/build/ckeditor';
 import axios from 'axios';
 import './Syllabus.scss'
+import { useSnackbar } from 'notistack'
+import { PopoverCloseButton } from '@chakra-ui/core';
 // const renderTree = (nodes) => {
 //     <TreeItem key={nodes.title} nodeId={nodes.title} label={nodes.title}>
 //       {Array.isArray(nodes.subjects)
@@ -40,6 +42,28 @@ const Syllabus = (props) => {
     })
     const [current, setCurrent] = useState({chapter: '', subject: ''})
     const [chapters, setChapters] = useState([])
+    const [mode, setMode] = useState('create')
+    const {enqueueSnackbar} = useSnackbar()
+    useEffect(()=> {
+        if(props.match.params.id){
+            
+            async function fetchData(){
+                let response = await axios.post('/syllabus/get', {id: props.match.params.id})
+                let data = await response.data
+                setChapters(data.chapters)
+                setSyllabus(preSyllabus => ({
+                    title: data.title,
+                    grade: data.grade,
+                    subject: data.subject,
+                    public: data.public,
+                    id: data.id,
+                }))
+                setSyllabus({...syllabus, description: data.description})
+                setMode('edit')
+            }
+            fetchData()
+        }
+    }, [])
     function onChange(event){
         setSyllabus({...syllabus, [event.target.name]: event.target.value })
     }
@@ -49,6 +73,7 @@ const Syllabus = (props) => {
     function submitSyllabus(){
         axios.post('/syllabus/create', {...syllabus, chapters})
             .then(response => {
+                enqueueSnackbar('Tạo mới thành công', {variant : 'success'})
                 setChapters(response.data.chapters)
                 setSyllabus({
                     title: response.data.title,
@@ -58,7 +83,26 @@ const Syllabus = (props) => {
                     public: response.data.public,
                     id: response.data.id,
                 })
-                console.log(chapters)
+                setMode('edit')
+                props.history.push('/khoa-hoc/'+response.data.id)
+            })
+            .catch(err => {
+                enqueueSnackbar('Có lỗi xảy ra', {variant : 'error'})
+            })
+    }
+    function submitEdit(){
+        axios.post('/syllabus/edit', {...syllabus, chapters})
+            .then(response => {
+                enqueueSnackbar('Sửa thành công', {variant : 'success'})
+                setChapters(response.data.chapters)
+                setSyllabus({
+                    title: response.data.title,
+                    grade: response.data.grade,
+                    subject: response.data.subject,
+                    description: response.data.description,
+                    public: response.data.public,
+                    id: response.data.id,
+                })
             })
             .catch(err => {
                 
@@ -86,9 +130,15 @@ const Syllabus = (props) => {
     }
     function deleteChapter(index){
         let tmp_chapter = [...chapters]        
-        tmp_chapter = tmp_chapter.filter((c, i) => {return i !== index})
+        tmp_chapter = tmp_chapter.filter((c, i) => {
+            if( i === index && c.id){
+                axios.post('/syllabus/delete-chapter', {chapter_id: c.id})
+            }
+            return i !== index
+        })
         setChapters(tmp_chapter)
-        
+        enqueueSnackbar('Xoá thành công', {variant : 'success'})
+
     }
     function addSubject(index){
         let tmp_chapter = [...chapters]
@@ -106,11 +156,18 @@ const Syllabus = (props) => {
         tmp_chapter = tmp_chapter.map((c,i) => {
             if(i == index) {
                 let tmp_subject = [...c.subjects]
-                tmp_subject = tmp_subject.filter((s,j) => {return j !== s_index})
+                tmp_subject = tmp_subject.filter((s,j) => {
+                    if( j === s_index && s.id){
+                        axios.post('/chapter/delete-subject', {subject_id: s.id})
+                    }
+                    return j !== s_index
+                })
                 return {...c, subjects: tmp_subject}
             }else return c
         })
         setChapters(tmp_chapter)
+        enqueueSnackbar('Xoá thành công', {variant : 'success'})
+
     }
     function addTopic(index, s_index){
         let tmp_chapter = [...chapters]
@@ -135,7 +192,12 @@ const Syllabus = (props) => {
                 tmp_subject = tmp_subject.map((s, j) => {
                     if(j == s_index){
                         let tmp_topic = [...s.topics]
-                        tmp_topic = tmp_topic.filter((t, k) => {return k !== t_index})
+                        tmp_topic = tmp_topic.filter((t, k) => {
+                            if( t === t_index && t.id ){
+                                axios.post('/subject/delete-topic', {id: t.id})
+                            }
+                            return k !== t_index
+                        })
                         return {...s, topics: tmp_topic}
                     }else return s
                 })
@@ -143,6 +205,8 @@ const Syllabus = (props) => {
             }else return c
         })
         setChapters(tmp_chapter)
+        enqueueSnackbar('Xoá thành công', {variant : 'success'})
+
     }
     return(
         <div className="syllabus-root">
@@ -150,7 +214,7 @@ const Syllabus = (props) => {
                 <Grid item md={9}>
                     <Paper>
                         <div className="syllabus-content">
-                            <h4>Tạo mới khoá học</h4>
+                            {mode == "create" ? <h4>Tạo mới khoá học</h4> : <h4>Chỉnh sửa khoá học </h4>}
                             <TextField 
                                 className="syllabus-title"
                                 label="Tên khoá học" 
@@ -238,7 +302,7 @@ const Syllabus = (props) => {
                                         ]
                                     },
                                     }}
-                                data= {syllabus.description}
+                                data= {(syllabus.description) ? syllabus.description : ''}
                                 onReady={editor => {
                                     // You can store the "editor" and use when it is needed.
                                     // console.log( 'Editor is ready to use!', editor );
@@ -402,7 +466,7 @@ const Syllabus = (props) => {
                                                                             ]
                                                                         },
                                                                     }}
-                                                                    data= {t.content}
+                                                                    data= {(t.content) ? t.content : ''}
                                                                     onReady={editor => {
                                                                         // You can store the "editor" and use when it is needed.
                                                                         // console.log( 'Editor is ready to use!', editor );
@@ -443,9 +507,15 @@ const Syllabus = (props) => {
                             <Button className="chapter-add-btn" variant="outlined" color="primary" fullWidth onClick={addChapter}> 
                                 Tải lên giáo án
                             </Button>
-                            <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitSyllabus}> 
-                                Xuất bản
-                            </Button>
+                            {mode == 'create' ? (
+                                <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitSyllabus}> 
+                                    Xuất bản
+                                </Button>
+                            ): (
+                                <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitEdit}> 
+                                    Lưu
+                                </Button>
+                            )}
                             {/* <TreeView
                                 aria-label="rich object"
                                 defaultCollapseIcon={<ExpandMoreIcon />}

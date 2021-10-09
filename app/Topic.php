@@ -8,6 +8,6 @@ class Topic extends Model
 {
     //
     public $table = 'lms_topics';
-    protected $fillable = ['id', 'subject_id', 'title', 'content'];
+    protected $fillable = ['subject_id', 'title', 'content'];
     
 }

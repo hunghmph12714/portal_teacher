@@ -8,7 +8,7 @@ class Subject extends Model
 {
     //
     public $table = 'lms_subjects';
-    protected $fillable = ['id', 'chapter_id', 'title', 'description'];
+    protected $fillable = ['chapter_id', 'title', 'description'];
     public function topics(){
         return $this->hasMany('App\Topic','subject_id','id');
     }

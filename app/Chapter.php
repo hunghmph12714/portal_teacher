@@ -8,8 +8,8 @@ class Chapter extends Model
 {
     //
     public $table = 'lms_chapters';
-    protected $fillable = ['id', 'syllabus_id', 'title', 'description'];
+    protected $fillable = ['syllabus_id', 'title', 'description'];
     public function subjects(){
-        $this->hasMany('App\Subject', 'chapter_id', 'id');
+        return $this->hasMany('App\Subject', 'chapter_id', 'id');
     }
 }

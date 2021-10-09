@@ -32,7 +32,7 @@ import {
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
-  Misa, Syllabus
+  Misa, Syllabus, ListSyllabus
 
 } from './views';
 
@@ -318,13 +318,19 @@ const Routes = (props) => {
       <ProtectedRouteWithLayout 
         component = {Syllabus}
         layout = {MainLayout}
-        path = "/khoa-hoc"
+        path = "/khoa-hoc/:id"
       />
       <ProtectedRouteWithLayout 
         component = {Syllabus}
         layout = {MainLayout}
-        path = "/khoa-hoc/:id"
+        path = "/khoa-hoc/tao-moi"
       />
+      <ProtectedRouteWithLayout 
+        component = {ListSyllabus}
+        layout = {MainLayout}
+        path = "/khoa-hoc"
+      />
+      
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}
