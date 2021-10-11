@@ -46,7 +46,7 @@ const Topbar = props => {
       .catch(err => {
 
       })
-  })
+  }, [])
   const handleStudentChange = (value) => {
     if(value){
       window.open('/student/'+value.sid)

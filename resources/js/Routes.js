@@ -32,8 +32,8 @@ import {
   StudentDetail, Documents,
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
-  Misa, Syllabus, ListSyllabus
-
+  Misa, Syllabus, ListSyllabus,
+  Question,
 } from './views';
 
 const Routes = (props) => {
@@ -330,7 +330,11 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/khoa-hoc"
       />
-      
+      <ProtectedRouteWithLayout
+        component = {Question}
+        layout = {MainLayout}
+        path = "/cau-hoi"  
+      />
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}

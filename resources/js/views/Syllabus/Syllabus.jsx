@@ -467,7 +467,7 @@ const Syllabus = (props) => {
                                                                                 'insertTable',
                                                                                 'blockQuote',
                                                                                 'undo',
-                                                                                'redo'
+                                                                                'redo',
                                                                             ]
                                                                         },
                                                                     }}
@@ -491,8 +491,6 @@ const Syllabus = (props) => {
                                                             </div>
                                                         </>)}
                                                     </Grid>
-                                                           
-                                                    
                                                 </AccordionDetails>
                                             </Accordion>
                                         )}
@@ -516,7 +514,7 @@ const Syllabus = (props) => {
                                 <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitSyllabus}> 
                                     Xuất bản
                                 </Button>
-                            ): (
+                            ):(
                                 <Button className="syllabus-submit" variant="outlined" color="primary" fullWidth onClick={submitEdit}> 
                                     Lưu
                                 </Button>

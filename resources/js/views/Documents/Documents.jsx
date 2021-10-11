@@ -412,7 +412,7 @@ class Documents extends React.Component{
                        <Grid container spacing={1}>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Môn(*)</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Môn học</InputLabel>
                                     <Select
                                         native
                                         value={this.state.major}
@@ -422,8 +422,8 @@ class Documents extends React.Component{
                                     >
                                         <option aria-label="None" value="" />
                                         <option value={'Toán'}>Toán</option>
-                                        <option value={'Văn'}>Văn</option>
-                                        <option value={'Anh'}>Anh</option>
+                                        <option value={'Tiếng Việt'}>Tiếng Việt/Văn</option>
+                                        <option value={'Anh'}>Tiếng Anh</option>
                                         <option value={'Lý'}>Lý</option>
                                         <option value={'Hoá'}>Hoá</option>
                                     </Select>
@@ -431,7 +431,7 @@ class Documents extends React.Component{
                             </Grid>
                             <Grid item md={1} xs={12}>
                                 <FormControl variant="outlined" size="small" fullWidth>
-                                    <InputLabel htmlFor="outlined-age-native-simple">Khối(*)</InputLabel>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Khối</InputLabel>
                                     <Select
                                         native
                                         value={this.state.grade}

@@ -37,3 +37,4 @@ export { Events, EventDetail, PublicForm, PublicResult } from './Events';
 export { Budget, BudgetStats } from './Budget';
 export { default as Misa } from './Misa';
 export { Syllabus, ListSyllabus } from './Syllabus';
+export { Question } from './Question';

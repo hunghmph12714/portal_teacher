@@ -851,7 +851,7 @@ class ClassController extends Controller
     protected function getCenterReport($id){
         $center = Center::find($id);
         if($center){
-            $classes = Classes::where('center_id', $id);
+            $classes = Classes::where('center_id', $id)->where('year', '2021');
             $class_count = $classes->count();
             $classes = $classes->get();
             $arr_student = [];

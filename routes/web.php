@@ -477,6 +477,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/chapter/delete-subject', 'SyllabusController@deleteSubject');
     Route::post('/subject/delete-topic', 'SyllabusController@deletetopic');
 
+    Route::get('/cau-hoi', function(){
+        return view('welcome');
+    });
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

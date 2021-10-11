@@ -15,7 +15,7 @@ class CreateTopicQuestionTable extends Migration
     {
         Schema::create('lms_topic_question', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->smallInteger('quizz_id');
+            $table->smallInteger('question_id');
             $table->smallInteger('topic_id');
             $table->enum('type', ['main', 'sub']);
             $table->timestamps();
