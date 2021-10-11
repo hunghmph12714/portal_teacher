@@ -864,6 +864,11 @@ class ClassController extends Controller
                     $students = $class->activeStudents;
                 }
                 foreach($students as $student){
+                    if($year < 2021){
+                        if(date('Y-m-d', strtotime($student['detail']['entrance_date'])) > date('Y-m-d', strtotime('2020/10/31'))){
+                            continue;
+                        }
+                    }
                     $sum_student++;
                     if(!in_array($student->id, $arr_student)){
                         $arr_student[] = $student->id;
