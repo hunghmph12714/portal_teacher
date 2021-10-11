@@ -858,7 +858,11 @@ class ClassController extends Controller
             $arr_student = [];
             $sum_student = 0;
             foreach($classes as $class){
-                $students = $class->activeStudents;
+                if($year < 2021){
+                    $students = $class->students;
+                }else{
+                    $students = $class->activeStudents;
+                }
                 foreach($students as $student){
                     $sum_student++;
                     if(!in_array($student->id, $arr_student)){
