@@ -677,10 +677,10 @@ class DiscountController extends Controller
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                     $trans['time'] = date('Y-m-t', strtotime('2021-11-30'));
                     $trans['student_id'] = $student->id;
-                    $trans['amount'] = $total_amount_10;
+                    $trans['amount'] = $total_amount_11;
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
-                    $tr->sessions()->syncWithoutDetaching($sessions_10);
+                    $tr->sessions()->syncWithoutDetaching($sessions_11);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
                 if($total_amount_12 > 0){
@@ -692,10 +692,10 @@ class DiscountController extends Controller
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                     $trans['time'] = date('Y-m-t', strtotime('2021-12-31'));
                     $trans['student_id'] = $student->id;
-                    $trans['amount'] = $total_amount_10;
+                    $trans['amount'] = $total_amount_12;
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
-                    $tr->sessions()->syncWithoutDetaching($sessions_10);
+                    $tr->sessions()->syncWithoutDetaching($sessions_12);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
             }

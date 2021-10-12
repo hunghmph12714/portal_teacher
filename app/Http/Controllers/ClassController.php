@@ -865,9 +865,9 @@ class ClassController extends Controller
                 }
                 foreach($students as $student){
                     if($year < 2021){
-                        if(date('Y-m-d', strtotime($student['detail']['entrance_date'])) > date('Y-m-d', strtotime('2020/10/31'))){
-                            continue;
-                        }
+                        if(date('Y-m-d', strtotime($student['detail']['entrance_date'])) > date('Y-m-d', strtotime('2020/10/31')) 
+                            || date('Y-m-d', strtotime($student['detail']['entrance_date'])) < date('Y-m-d', strtotime('2020/07/01'))
+                        ) continue;
                     }
                     $sum_student++;
                     if(!in_array($student->id, $arr_student)){

@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-import {Grid} from '@material-ui/core'
+import {Grid,
+    FormControl, InputLabel, Select,
+    } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
 const Question = (props) =>{
     const {enqueueSnackbar} = useSnackbar()
@@ -62,7 +64,7 @@ const Question = (props) =>{
                     </FormControl>
                 </Grid>
                 <Grid item md={4} xs={12}>
-                    <Creatable 
+                    {/* <Creatable 
                         options={this.state.topics}
                         autosize={true}
                         placeholder={'Chuyên đề(*)'}
@@ -70,10 +72,10 @@ const Question = (props) =>{
                         value={this.state.topic}
                         formatCreateLabel={promptTextCreator} 
                         className="select-box"    
-                    />
+                    /> */}
                 </Grid>
                 <Grid item md={4} xs={12}>
-                    <Creatable 
+                    {/* <Creatable 
                         isMulti
                         options={this.state.relateds}
                         autosize={true}
@@ -83,12 +85,12 @@ const Question = (props) =>{
                         value={this.state.related}
                         formatCreateLabel={promptTextCreator} 
                         className="select-box"    
-                    />
+                    /> */}
                 </Grid>
                 <Grid item md={1} xs={12}>
                     <FormControl variant="outlined" size="small" fullWidth>
                         <InputLabel htmlFor="outlined-age-native-simple">Loại bài(*)</InputLabel>
-                        <Select
+                        {/* <Select
                             native
                             value={this.state.type}
                             onChange={this.onChange}
@@ -99,13 +101,13 @@ const Question = (props) =>{
                             <option value={'Tự luận'}>Tự luận</option>
                             <option value={'Trắc nghiệm'}>Trắc nghiệm</option>
                             <option value={'Khác'}>Khác</option>                                        
-                        </Select>
+                        </Select> */}
                     </FormControl>
                 </Grid>
                 <Grid item md={1} xs={12}>
                     <FormControl variant="outlined" size="small" fullWidth>
                         <InputLabel htmlFor="outlined-age-native-simple">Độ khó(*)</InputLabel>
-                        <Select
+                        {/* <Select
                             native
                             value={this.state.level}
                             onChange={this.onChange}
@@ -116,7 +118,7 @@ const Question = (props) =>{
                             <option value={1}>1</option>
                             <option value={2}>2</option>
                             <option value={3}>3</option>
-                        </Select>
+                        </Select> */}
                     </FormControl>
                 </Grid>
             </Grid>
