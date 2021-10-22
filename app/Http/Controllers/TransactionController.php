@@ -504,7 +504,8 @@ class TransactionController extends Controller
         fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
         $first_line = ['Hiển thị trên sổ', 'Hình thức bán hàng', 'Phương thức thanh toán','Kiêm phiếu xuất kho', 'Lập kèm hóa đơn', 'Đã lập hóa đơn',
             'Ngày hạch toán (*)','Ngày chứng từ (*)','Số chứng từ (*)','Mã khách hàng','Tên khách hàng','Diễn giải','Mã hàng (*)','Tên hàng','Hàng khuyến mại',
-            'TK Tiền/Chi phí/Nợ (*)','TK Doanh thu/Có (*)','ĐVT','Số lượng','Đơn giá sau thuế','Đơn giá','Thành tiền','Tỷ lệ CK (%)','Tiền chiết khấu','TK chiết khấu'];
+            'TK Tiền/Chi phí/Nợ (*)','TK Doanh thu/Có (*)','ĐVT','Số lượng','Đơn giá sau thuế','Đơn giá','Thành tiền','Tỷ lệ CK (%)'
+            ,'Tiền chiết khấu','TK chiết khấu','Hạn thanh toán'];
         fputcsv($file, $first_line);
         
         // get the last so chung tu
@@ -526,15 +527,13 @@ class TransactionController extends Controller
                         ->where('student_id', $s->id);
                 })->get()->toArray(); 
                 // echo "<pre>";
-                // print_r($transactions);
+                // print_r($transactions); 
                 if(count($transactions) == 0 ) continue;
                 
                 for ($i= date('m', strtotime($from_d)); $i <= date('m', strtotime($to_d)) ; $i++) { 
                     # code...
                     $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
                     $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
-                    // echo $from."<br/>";
-                    // echo $to;
                     $arr = [0,0,0,0,0,0];
                     $hach_toan = date('m/d/Y');
                     $chung_tu = date('m/d/Y');
@@ -545,14 +544,23 @@ class TransactionController extends Controller
                     $ten_hang = $c->code;
                     $debit = '131';
                     $credit = '3387';
-                    $des = "Học phí tháng 0".$i;
+                    $des = "Học phí tháng ".$i;
                     $amount = 0;
                     $discount = 0;
+                    $han_tt = null;
                     foreach($transactions as $t){
                         if($t['time'] >= $from && $t['time'] <= $to){
-                            $hach_toan = date('m/d/Y', strtotime($t['time']));
-                            $chung_tu = date('m/d/Y', strtotime($t['time']));
-
+                            $hach_toan = date('m/01/Y', strtotime($t['time']));
+                            $chung_tu = date('m/01/Y', strtotime($t['time']));
+                            // Hạn thanh toán
+                            $month_tt = intval(date('m', strtotime($t['time'])));
+                            if($month_tt % 2 == 0){
+                                $month_tt--;
+                            }
+                            $year = date('Y', strtotime($t['time']));
+                            $han_tt = date('m/d/Y', strtotime('15-'.$month_tt.'-'.$year));
+                            
+                            //
                             $so_chung_tu = $t['misa_id'] ? 'BH'.str_pad($t['misa_id'], 5, '0', STR_PAD_LEFT) : 'BH'.str_pad($ct, 5, '0', STR_PAD_LEFT);
                             if($t['debit'] == $acc_131 && $t['credit'] == $acc_3387){
                                 $amount += $t['amount'];
@@ -594,6 +602,7 @@ class TransactionController extends Controller
                         array_push($arr, ceil($discount/$amount*100));
                         array_push($arr, $discount);
                         array_push($arr, $credit);
+                        array_push($arr, $han_tt);
                         
                         // echo "<pre>";
                         // print_r($arr);
@@ -620,13 +629,12 @@ class TransactionController extends Controller
         $file = fopen(public_path()."/misa_revenue.csv","w");
         fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
         $first_line = [ 'Hiển thị trên sổ', 'Ngày chứng từ (*)', 'Ngày hạch toán (*)', 'Số chứng từ (*)', 'Diễn giải', 'Hạn thanh toán', 'Diễn giải (Hạch toán)', 'TK Nợ (*)',
-        'TK Có (*)', 'Số tiền', 'Đối tượng Nợ', 'Đối tượng Có', 'TK ngân hàng', 'Khoản mục CP', 'Đơn vị', 'Đối tượng THCP', 'Công trình', 'Hợp đồng bán', 'CP không hợp lý','Mã thống kê'];
+        'TK Có (*)', 'Số tiền', 'Đối tượng Nợ', 'Đối tượng Có', 'TK ngân hàng', 'Khoản mục CP', 'Đơn vị', 'Đối tượng THCP', '   trình', 'Hợp đồng bán', 'CP không hợp lý','Mã thống kê'];
         fputcsv($file, $first_line); 
 
         $transactions = Transaction::Where('credit',$acc_511)->where('debit', $acc_3387)->where('time','>=', $from)->where('time', '<', $to)->where('center_id', $request->center)->get();
         foreach($transactions as $t){
             $class = Classes::find($t->class_id);
-            
             $arr = [''];
             array_push($arr, date('m-d-Y', strtotime($t->time)));
             array_push($arr, date('m-d-Y', strtotime($t->time)));
@@ -650,8 +658,6 @@ class TransactionController extends Controller
 
             fputcsv($file, $arr);
         }
-
         return response('/public/misa_revenue.csv');
-
     }
 }

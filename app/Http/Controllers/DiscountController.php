@@ -241,7 +241,7 @@ class DiscountController extends Controller
         }
         return response()->json($discounts);
     }
-   
+
     protected function editAdjustFee(Request $request){
         $rules = [
             'did'=>'required',
@@ -714,8 +714,6 @@ class DiscountController extends Controller
                 $t->discount_id = $discount->id;
                 $t->save();
             }
-            
         }
-        
     }
 }
