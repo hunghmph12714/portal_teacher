@@ -88,10 +88,7 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
     <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> 
     hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu). 
     </i></li>
-    <li><i>Đối với học sinh học <b>3 môn trở lên </b>, có <b>anh/chị/em ruột học tại trung tâm</b> 
-    hoặc <b>có thẻ AMSER PASS </b> sẽ được giảm 5% học phí.(Yêu cầu: bản sao Sổ Hộ Khẩu).
-    </i></li>
-
+    <li><b>Lưu ý: </b><i>Các ưu đãi trên không áp dụng đồng thời VÀ không áp dụng trong thời gian học ONLINE</i</li>
 </ul>
 <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
 
