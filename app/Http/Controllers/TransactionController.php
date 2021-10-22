@@ -530,7 +530,7 @@ class TransactionController extends Controller
                 // print_r($transactions); 
                 if(count($transactions) == 0 ) continue;
                 
-                for ($i= date('m', strtotime($from_d)); $i <= date('m', strtotime($to_d)) ; $i++) { 
+                for ($i= intval(date('m', strtotime($from_d))); $i <= intval(date('m', strtotime($to_d))) ; $i++) { 
                     # code...
                     $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
                     $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
@@ -544,7 +544,7 @@ class TransactionController extends Controller
                     $ten_hang = $c->code;
                     $debit = '131';
                     $credit = '3387';
-                    $des = "Học phí tháng ".$i;
+                    $des = "Học phí tháng 0".$i;
                     $amount = 0;
                     $discount = 0;
                     $han_tt = null;
