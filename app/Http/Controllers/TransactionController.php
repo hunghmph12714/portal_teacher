@@ -540,8 +540,8 @@ class TransactionController extends Controller
                     $so_chung_tu = 'BH';
                     $ma_kh = 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT);
                     $ten_kh = $s->fullname;
-                    $ma_hang = $c->id;
-                    $ten_hang = $c->code;
+                    $ma_hang = $c->code;
+                    $ten_hang = $c->name;
                     $debit = '131';
                     $credit = '3387';
                     $des = "Học phí tháng 0".$i;

@@ -476,7 +476,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/syllabus/delete-chapter', 'SyllabusController@deleteChapter');
     Route::post('/chapter/delete-subject', 'SyllabusController@deleteSubject');
     Route::post('/subject/delete-topic', 'SyllabusController@deletetopic');
-
+    // Route::post('/subject/')
     Route::get('/cau-hoi', function(){
         return view('welcome');
     });

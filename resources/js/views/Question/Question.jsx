@@ -6,7 +6,7 @@ import {Grid,
 import { useSnackbar } from 'notistack'
 const Question = (props) =>{
     const {enqueueSnackbar} = useSnackbar()
-    const [config, setConfig] = useState(null)
+    const [config, setConfig] = useState([])
     useEffect(() => {
         setConfig({
             subject: '',
@@ -14,6 +14,12 @@ const Question = (props) =>{
 
         })
     },[])
+    function onSubjectChange(subject){
+        
+    }
+    function onGradeChange(grade){
+
+    }
     return(
         <div className="question-root">
             <Grid container spacing={1}>
@@ -23,7 +29,7 @@ const Question = (props) =>{
                         <Select
                             native
                             value={config.subject}
-                            onChange={onChange}
+                            onChange={onSubjectChange}
                             label="Môn học"
                             name = "subject"
                         >
@@ -42,7 +48,7 @@ const Question = (props) =>{
                         <Select
                             native
                             value={config.grade}
-                            onChange={this.onChange}
+                            onChange={onGradeChange}
                             name="grade"
                             label="Khối"
                             name = "grade"
