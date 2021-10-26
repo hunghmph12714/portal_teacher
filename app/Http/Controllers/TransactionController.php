@@ -504,8 +504,8 @@ class TransactionController extends Controller
         fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
         $first_line = ['Hiển thị trên sổ', 'Hình thức bán hàng', 'Phương thức thanh toán','Kiêm phiếu xuất kho', 'Lập kèm hóa đơn', 'Đã lập hóa đơn',
             'Ngày hạch toán (*)','Ngày chứng từ (*)','Số chứng từ (*)','Mã khách hàng','Tên khách hàng','Diễn giải','Mã hàng (*)','Tên hàng','Hàng khuyến mại',
-            'TK Tiền/Chi phí/Nợ (*)','TK Doanh thu/Có (*)','ĐVT','Số lượng','Đơn giá sau thuế','Đơn giá','Thành tiền','Tỷ lệ CK (%)'
-            ,'Tiền chiết khấu','TK chiết khấu','Hạn thanh toán'];
+            'TK Tiền/Chi phí/Nợ (*)','TK Doanh thu/Có (*)','ĐVT','Số lượng','Đơn giá sau thuế','Đơn giá','Thành tiền','Tỷ lệ CK (%)',
+            'Tiền chiết khấu','TK chiết khấu','Hạn thanh toán'];
         fputcsv($file, $first_line);
         
         // get the last so chung tu
@@ -535,8 +535,8 @@ class TransactionController extends Controller
                     $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
                     $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
                     $arr = [0,0,0,0,0,0];
-                    $hach_toan = date('m/d/Y');
-                    $chung_tu = date('m/d/Y');
+                    $hach_toan = date('d/m/Y');
+                    $chung_tu = date('d/m/Y');
                     $so_chung_tu = 'BH';
                     $ma_kh = 'KH'.str_pad($s->id, 5, '0', STR_PAD_LEFT);
                     $ten_kh = $s->fullname;
@@ -550,15 +550,15 @@ class TransactionController extends Controller
                     $han_tt = null;
                     foreach($transactions as $t){
                         if($t['time'] >= $from && $t['time'] <= $to){
-                            $hach_toan = date('m/01/Y', strtotime($t['time']));
-                            $chung_tu = date('m/01/Y', strtotime($t['time']));
+                            $hach_toan = date('01/m/Y', strtotime($t['time']));
+                            $chung_tu = date('01/m/Y', strtotime($t['time']));
                             // Hạn thanh toán
                             $month_tt = intval(date('m', strtotime($t['time'])));
                             if($month_tt % 2 == 0){
                                 $month_tt--;
                             }
                             $year = date('Y', strtotime($t['time']));
-                            $han_tt = date('m/d/Y', strtotime('15-'.$month_tt.'-'.$year));
+                            $han_tt = date('d/m/Y', strtotime('15-'.$month_tt.'-'.$year));
                             
                             //
                             $so_chung_tu = $t['misa_id'] ? 'BH'.str_pad($t['misa_id'], 5, '0', STR_PAD_LEFT) : 'BH'.str_pad($ct, 5, '0', STR_PAD_LEFT);
