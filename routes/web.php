@@ -359,7 +359,6 @@ Route::group(['middleware' => ['auth']], function() {
     });
     Route::get('/class/get/{center_id}/{course_id}','ClassController@getClass');
     Route::get('/class/get-all/{center_id}/{course_id}','ClassController@getAllClass');
-    Route::get('/class/get-all/{center_id}/{course_id}','ClassController@getAllClass');
     Route::post('/class/create', 'ClassController@createClass');
     Route::post('/class/edit', 'ClassController@editClass');
     Route::post('/class/deactive', 'ClassController@deactiveClass');
