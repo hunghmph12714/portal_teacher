@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import DialogCreate from './DialogCreate'
 import DialogNew from './DialogNew'
 import DialogFee from './DialogFee'
+import { Can } from '../../../../Can';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import {
     Menu,
@@ -143,7 +144,6 @@ const ListStudent = (props) => {
             renderGroup: (pname, groupData) => (
                 <Chip variant="outlined" label={pname} size="small" />       
             )
-
         },
         {
             title: "Đăng ký",

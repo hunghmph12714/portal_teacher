@@ -90,6 +90,12 @@ class StudentController extends Controller
             ->leftjoin('parents', 'students.parent_id', 'parents.id')
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
             ->first();
+        if(!auth()->user()->can('read_phone')){
+            $student->pphone = '******'.substr($student->pphone, 6);
+        }
+        if(!auth()->user()->can('read_email')){
+            $student->pemail = '******'.substr($student->pemail, 6);
+        }
         if($student){
             $brothers = Student::where('id', '!=', $student->sid)->where('parent_id', $student->pid)->get();
             return response()->json($student);
@@ -182,6 +188,12 @@ class StudentController extends Controller
                 $s[$key]['entrance_status']= $entrance->entrance_status;
 
             }
+            if(!auth()->user()->can('read_phone')){
+                $s[$key]['p_phone'] = '******'.substr($s[$key]['p_phone'], 6);
+            }
+            if(!auth()->user()->can('read_email')){
+                $s[$key]['p_email'] = '******'.substr($s[$key]['p_email'], 6);
+            }
         }
         return response()->json($s);
     }
@@ -203,7 +215,17 @@ class StudentController extends Controller
                                 ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
                                 ,'relationships.color', 'relationships.id as rid')
                             ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
-                $result[$key]['parent'] = ($parent) ? $parent->toArray() : [];
+                $p = [];
+                if($parent){
+                    $p = $parent->toArray();
+                    if(!auth()->user()->can('read_phone')){
+                        $p['pphone'] = '******'.substr($parent['pphone'], 6);
+                    }
+                    if(!auth()->user()->can('read_email')){
+                        $p['pemail'] = '******'.substr($parent['pemail'], 6);
+                    }
+                }
+                $result[$key]['parent'] = $p;
             }
         }
         
@@ -259,7 +281,17 @@ class StudentController extends Controller
                             ,'parents.email as pemail','parents.alt_fullname','parents.alt_email','parents.alt_phone','parents.note as pnote'
                             ,'relationships.color', 'relationships.id as rid','parents.password as passcode')
                         ->leftJoin('relationships','parents.relationship_id','relationships.id')->first();
-            $result['data'][$key]['parent'] = ($parent) ? $parent->toArray() : [];
+            $p = [];
+            if($parent){
+                $p = $parent->toArray();
+                if(!auth()->user()->can('read_phone')){
+                    $p['pphone'] = '******'.substr($parent['pphone'], 6);
+                }
+                if(!auth()->user()->can('read_email')){
+                    $p['pemail'] = '******'.substr($parent['pemail'], 6);
+                }
+            }
+            $result['data'][$key]['parent'] = $p;
             $result['data'][$key]['sbd'] = $class->code.''.$student['sc_id'];
             $result['data'][$key]['classes'] = $student->activeClasses;
             $acc_131 = Account::where('level_1', '131')->first();

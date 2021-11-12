@@ -85,26 +85,26 @@ const StepInit = (props) => {
             },
           //Phụ huynh
             {
-              title: "Phụ huynh",
-              field: "pname",
-              headerStyle: {
-                  padding: '0px',
-                  fontWeight: '600',
-              },
-              cellStyle: {
-                  padding: '3px 0px',
-              },
-              render: rowData => 
-                (                              
-                  <Typography variant="body2" component="p">
-                      <b>{rowData.pname}</b> 
-                      <Can I="read_phone" on="Ghi danh"><br />{rowData.phone} </Can>                                
-                      <br />{rowData.pemail}
-                  </Typography>                              
-                ),
-              renderGroup: (pname, groupData) => (
-                <Chip variant="outlined" label={pname} size="small" />       
-              )
+                title: "Phụ huynh",
+                field: "pname",
+                headerStyle: {
+                    padding: '0px',
+                    fontWeight: '600',
+                },
+                cellStyle: {
+                    padding: '3px 0px',
+                },
+                render: rowData => 
+                    (                              
+                    <Typography variant="body2" component="p">
+                        <b>{rowData.pname}</b> 
+                        <br/>{rowData.phone}                                 
+                        <br />{rowData.pemail}
+                    </Typography>                              
+                    ),
+                renderGroup: (pname, groupData) => (
+                    <Chip variant="outlined" label={pname} size="small" />       
+                )
         
             },
           //Quan hệ

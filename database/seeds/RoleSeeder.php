@@ -50,7 +50,10 @@ class RoleSeeder extends Seeder
             //Ghi danh
             ['name' => 'delete_comment', 'name_vn' => 'Xoá bình luận', 'subject' => 'Ghi danh'],
             ['name' => 'soft_delete_entrance', 'name_vn' => 'Xoá ghi danh', 'subject' => 'Ghi danh'],
-            ['name' => 'read_phone', 'name_vn' => 'Xem số điện thoại PH', 'subject' => 'Ghi danh'],
+
+            //Thông tin khách hàng
+            ['name' => 'read_phone', 'name_vn' => 'Xem số điện thoại PH', 'subject' => 'Khách hàng'],
+            ['name' => 'read_email', 'name_vn' => 'Xem email PH', 'subject' => 'Khách hàng'],
             
         ];
         $tpdt_permission = [

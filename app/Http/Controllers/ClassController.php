@@ -18,7 +18,7 @@ use App\StudentSession;
 use App\Teacher;
 use App\Center;
 use Illuminate\Http\Request;
-
+use App\UserClass;
 class ClassController extends Controller
 {
     // Phòng học
@@ -380,8 +380,10 @@ class ClassController extends Controller
         $center_value = ($center_id == '-1')? NULL: $center_id;
         $course_operator = ($course_id == '-1')? '!=': '=';
         $course_value = ($course_id == '-1')? NULL: $course_id;
+
         $wp_year = auth()->user()->wp_year;
-        $result = Classes::where('center_id', $center_operator, $center_value)->
+        
+        $result = auth()->user()->classes()->where('center_id', $center_operator, $center_value)->
                         where('course_id', $course_operator, $course_value)->
                         where('classes.year', $wp_year)->
                         where('classes.type', 'class')->
@@ -519,7 +521,14 @@ class ClassController extends Controller
     }
     //Class Detail
     protected function detailClass($class_id){
-        return view('welcome');
+        $user_id = auth()->user()->id;
+        $uc = UserClass::where('user_id', $user_id)->where('class_id', $class_id)->first();
+        if($uc){
+            return view('welcome');
+        }else{
+            return view('unauthorised');
+        }
+        // return view('welcome');
         // return $class_id;
     }
     protected function detailStudentClass(Request $request){

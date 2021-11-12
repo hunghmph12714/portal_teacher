@@ -6,10 +6,13 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-title" content="VEE">
         <meta http-equiv='cache-control' content='no-cache'>
-<meta http-equiv='expires' content='0'>
-<meta http-equiv='pragma' content='no-cache'>
+        <meta http-equiv='expires' content='0'>
+        <meta http-equiv='pragma' content='no-cache'>
         <title>VieElite Education</title>
-
+        <link
+            href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css"
+            rel="stylesheet"
+        />
         <!-- Fonts -->
         <link rel="stylesheet" type="text/css" href="{{ asset('public/css/app.css') }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -43,6 +46,12 @@
     </head>
     <body>
         <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+    <script src="/public/js/ckeditor5-build-classic/build/ckeditor.js"></script>
+
     <script type="text/javascript" src="{{ asset('public/js/app.js') }}"></script>
+    <script>
+        
+    </script>
     </body>
 </html>

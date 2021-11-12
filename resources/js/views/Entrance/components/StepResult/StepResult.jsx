@@ -108,7 +108,7 @@ const StepResult = (props) => {
                 (                              
                   <Typography variant="body2" component="p">
                       <b>{rowData.pname}</b> 
-                      <Can I="read_phone" on="Ghi danh"><br />{rowData.phone} </Can>                                
+                      {rowData.phone}                                 
                       <br />{rowData.pemail}
                   </Typography>                              
                 ),

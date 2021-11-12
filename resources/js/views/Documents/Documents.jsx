@@ -25,8 +25,8 @@ import ErrorOutlinedIcon from '@material-ui/icons/ErrorOutlined';
 import MaterialTable from "material-table";
 import NumberFormat from 'react-number-format';
 import Creatable from 'react-select/creatable';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor5vee/build/ckeditor';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from 'ckeditor5vee/build/ckeditor';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -555,7 +555,7 @@ class Documents extends React.Component{
                         ) : (
                             <div>
                                 <div className="question">
-                                    <CKEditor
+                                    {/* <CKEditor
                                         editor={ClassicEditor}
                                         config={{
                                             toolbar: {
@@ -584,7 +584,7 @@ class Documents extends React.Component{
                                         onChange={ ( event, editor ) => {
                                             this.setState({question: editor.getData()})
                                         } }
-                                    />
+                                    /> */}
                                 </div>
                                 <div className="answer">
                                 <CKEditor

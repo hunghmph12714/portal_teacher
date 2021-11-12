@@ -167,6 +167,7 @@ const ListScore = (props) => {
         snap={true}
         selectionMode='row|column|both'
     />
+    // <div/>
   )
 }
 export default ListScore

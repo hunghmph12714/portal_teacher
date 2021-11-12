@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/centers', function(){
                 return view('welcome');
             });
-            Route::get('/get-center', 'CenterController@index'); 
+            
             Route::post('/center/create', 'CenterController@create');
             Route::post('/center/edit', 'CenterController@edit');
             Route::post('/center/delete', 'CenterController@delete');
@@ -84,7 +84,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/rooms', function(){
                 return view('welcome');
             });
-            Route::get('/get-rooms','ClassController@getRoom');
             Route::get('/get-room/{center}', 'ClassController@getRoomCenter');
             Route::post('/room/create', 'ClassController@createRoom');
             Route::post('/room/edit', 'ClassController@editRoom');
@@ -93,7 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/courses', function(){
                 return view('welcome');
             });
-            Route::get('/get-courses','ClassController@getCourse');
+            
             Route::post('/course/create', 'ClassController@createCourse');
             Route::post('/course/edit', 'ClassController@editCourse');
             Route::post('/course/delete', 'ClassController@deleteCourse');
@@ -119,7 +118,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/settings/step', function(){
                 return view('welcome');
             });
-            Route::post('/step/get', 'AdminSettingController@getStep'); 
             Route::post('/step/create', 'AdminSettingController@createStep');
             Route::post('/step/edit', 'AdminSettingController@editStep');
             Route::post('/step/delete', 'AdminSettingController@deleteStep');
@@ -128,12 +126,15 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/settings/status', function(){
                 return view('welcome');
             });
-            Route::post('/status/get', 'AdminSettingController@getStatus'); 
             Route::post('/status/create', 'AdminSettingController@createStatus');
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         });
-        
+        Route::get('/get-center', 'CenterController@index'); 
+        Route::post('/step/get', 'AdminSettingController@getStep'); 
+        Route::post('/status/get', 'AdminSettingController@getStatus'); 
+        Route::get('/get-rooms','ClassController@getRoom');
+        Route::get('/get-courses','ClassController@getCourse');
         //Schools
         //Entrance
             Route::get('/entrance/create', function(){
@@ -480,6 +481,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/cau-hoi', function(){
         return view('welcome');
     });
+    Route::post('/question/fetch-syllabus', 'SyllabusController@fetchSyllabus');
+    Route::post('/question/fetch-topic', 'SyllabusController@fetchTopic');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

@@ -10,6 +10,32 @@ use App\Topic;
 class SyllabusController extends Controller
 {
     //
+    public function fetchSyllabus(Request $request){
+        $rules = ['domain' => 'required', 'grade' => 'required'];
+        $this->validate($request, $rules);
+        
+        $s = Syllabus::where('subject', $request->domain['value'])->where('grade', $request->grade['value'])->where('public', '1')->get();
+        return response()->json($s->toArray());
+    }
+    public function fetchTopic(Request $request){
+        $rules = ['syllabus' => 'required'];
+        $this->validate($request, $rules);
+
+        $result = [];
+        $chapters = Chapter::where('syllabus_id', $request->syllabus['value'])->get();
+        foreach($chapters as $k => $c){
+            $subjects = Subject::where('chapter_id', $c->id)->get();
+            $r = [];
+            foreach($subjects as $key => $s){
+                $result[$k + $key]['label'] = $s->title;
+                $topics = Topic::where('subject_id', $s->id)->get();
+                foreach($topics as $j => $t){
+                    $result[$k + $key]['options'][$j] = ['label' => $s->title." - ".$t->title, 'value'=> $t->id ];
+                }
+            }
+        }
+        return response()->json($result);
+    }
     public function createChapter($syllabus_id, $chapter){
         $c['title'] = ($chapter['title'] != '') ? $chapter['title']: 'Chưa có tên';
         $c['syllabus_id'] = $syllabus_id;

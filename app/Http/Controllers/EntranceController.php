@@ -204,7 +204,15 @@ class EntranceController extends Controller
         ->leftJoin('courses','course_id','courses.id')->leftJoin('center','center_id','center.id')
         ->leftJoin('steps','step_id','steps.id')->leftJoin('status','status_id','status.id')
         ->leftJoin('classes','class_id','classes.id')->orderBy('entrances.status_id','asc')
-        ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
+        ->orderBy('priority','desc')->orderBy('created_at','desc')->get()->toArray();
+        foreach($entrances as $key => $entrance){
+            if(!auth()->user()->can('read_phone')){
+                $entrances[$key]['phone'] = '******'.substr($entrance['phone'], 6);
+            }
+            if(!auth()->user()->can('read_email')){
+                $entrances[$key]['pemail'] = '******'.substr($entrance['pemail'], 6);
+            }
+        }
         return $entrances;
     }
     protected function getEntranceByStatus($status, $centers){

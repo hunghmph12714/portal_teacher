@@ -13,12 +13,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor5vee/build/ckeditor';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from 'ckeditor5vee/build/ckeditor';
 import axios from 'axios';
 import './Syllabus.scss'
 import { useSnackbar } from 'notistack'
-import { PopoverCloseButton } from '@chakra-ui/core';
 // const renderTree = (nodes) => {
 //     <TreeItem key={nodes.title} nodeId={nodes.title} label={nodes.title}>
 //       {Array.isArray(nodes.subjects)

@@ -37,7 +37,7 @@ import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 import MathJax from 'react-mathjax'
 
-import {CKEditor} from '@ckeditor/ckeditor5-react';
+// import {CKEditor} from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from 'ckeditor5-classic-with-mathtype';
 import vi from "date-fns/locale/vi";
 const baseUrl = window.Laravel.baseUrl
