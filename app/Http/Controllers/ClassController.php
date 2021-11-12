@@ -375,6 +375,35 @@ class ClassController extends Controller
             
         }
     }
+    protected function getAllClass($center_id, $course_id){
+        $center_operator = ($center_id == '-1')? '!=': '=';
+        $center_value = ($center_id == '-1')? NULL: $center_id;
+        $course_operator = ($course_id == '-1')? '!=': '=';
+        $course_value = ($course_id == '-1')? NULL: $course_id;
+
+        $wp_year = auth()->user()->wp_year;
+        
+        $result = Classes::where('center_id', $center_operator, $center_value)->
+                        where('course_id', $course_operator, $course_value)->
+                        where('classes.year', $wp_year)->
+                        select('classes.id as id','classes.name as name','classes.code as code',
+                            'center.name as center',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                            'student_number','open_date','classes.active as status', 'classes.cost',
+                            'config','classes.fee as fee','online_id','password','droped_number','waiting_number')->
+                        leftJoin('center','classes.center_id','center.id')->
+                        leftJoin('courses','classes.course_id','courses.id')->get();
+        $classes = $result->toArray();
+        foreach($result as $key => $class){
+            $last_session = $class->sessions->last();            
+            if($last_session){
+                $classes[$key]['last_session'] = $last_session->date;
+            }
+            else{
+                $classes[$key]['last_session'] = '';
+            }
+        }
+        return response()->json($classes);
+    }
     protected function getClass($center_id, $course_id){
         $center_operator = ($center_id == '-1')? '!=': '=';
         $center_value = ($center_id == '-1')? NULL: $center_id;

@@ -18,7 +18,7 @@ const UserClass = (props) => {
     const [selectedClasses, setSelectClasses] = useState([])
     useEffect(() => {
         if(open){
-            axios.get(window.Laravel.baseUrl + "/class/get/-1/-1")
+            axios.get(window.Laravel.baseUrl + "/class/get-all/-1/-1")
             .then(response => {    
                 setClasses(response.data.map(c => {
                     return {label: c.code, value: c.id}
