@@ -48,7 +48,7 @@ const SingleQuestion = (props) => {
                             <option aria-label="None" value="" />
                             <option value={'mcq'}>Trắc nghiệm</option>
                             <option value={'fib'}>Điền vào chỗ trống</option>
-                            <option value={'order'}>Sắp xếp thứ tự</option>
+                            <option value={'order'}>Sắdp xếp thứ tự</option>
                             <option value={'matrix'}>Nối đáp án</option>
                             <option value={'complex'}>Câu hỏi phức</option>
                         </Select>
