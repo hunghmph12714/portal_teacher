@@ -19,7 +19,7 @@
         "bootstrap": "^4.5.2",
         "chart.js": "^2.8.0",
         "clsx": "^1.1.1",
-        "cross-env": "^5.1",
+        "cross-env": "^5.2.1",
         "history": "^4.9.0",
         "jquery": "^3.5.1",
         "laravel-mix": "^5.0.4",
