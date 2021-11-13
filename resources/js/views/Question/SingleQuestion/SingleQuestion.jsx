@@ -12,15 +12,15 @@ const SingleQuestion = (props) => {
     const [content, setContent] = useState('')
     const [statement, setStatement] = useState('')
     const [question_type, setQuestionType] = useState('')
-    useEffect(() => {
-        ClassicEditor.create( document.querySelector( '#editor-vee' ) )
-        .then( editor => {
-            console.log(editor)
-        } )
-        .catch( error => {
-            console.error( 'There was a problem initializing the editor.', error );
-        } );
-    },[])
+    // useEffect(() => {
+    //     ClassicEditor.create( document.querySelector( '#editor-vee' ) )
+    //     .then( editor => {
+    //         console.log(editor)
+    //     } )
+    //     .catch( error => {
+    //         console.error( 'There was a problem initializing the editor.', error );
+    //     } );
+    // },[])
     return (
         <div className="single-question-root">
             <Grid container spacing={2}>
