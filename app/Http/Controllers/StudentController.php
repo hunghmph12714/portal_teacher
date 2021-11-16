@@ -971,18 +971,18 @@ class StudentController extends Controller
         }else{
             $result['max_date'] = $request->max_date;
             $d = ['result' => $result];
-            $to_email = $parent_email;        
+            $to_email = $parent_email;
             $to_name = '';
             $mail = 'ketoantrungyen@vietelite.edu.vn';
-            $password = 'Mot23457';
+            $password = 'V33du2020';
             if($center_id == 5){
                 $mail = 'ketoantrungyen@vietelite.edu.vn';
-                $password = 'Mot23457';
+                $password = 'V33du2020';
             }
             
             if($center_id == 2 || $center_id == 4){
                 $mail = 'ketoancs1@vietelite.edu.vn';
-                $password = '12345Bay';
+                $password = 'V33du2020';
             }
             if($center_id == 3){
                 $mail = 'cs.phamtuantai@vietelite.edu.vn';
