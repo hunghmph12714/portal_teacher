@@ -183,6 +183,8 @@ class ReportController extends Controller
                             }
                         }
                     }
+                    //Class fee
+                    $result['revenue'] -= $class->cost;
                 }
                 if($s->pivot['attendance'] == 'holding'){
                     $result['holding']++;

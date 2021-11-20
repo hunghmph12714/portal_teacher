@@ -20,7 +20,6 @@ const Footer = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
-      
     </div>
   );
 };

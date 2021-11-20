@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 
 const Sidebar = props => {
   const { open, variant, onClose, className, ...rest } = props;
-
   const classes = useStyles();
 
   const pages = [
@@ -252,7 +251,6 @@ const Sidebar = props => {
         {...rest}
         className={clsx(classes.root, className)}
       >
-
         <SidebarNav
           className={classes.nav}
           pages={pages}
