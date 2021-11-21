@@ -132,10 +132,6 @@ const Sidebar = props => {
           href: '/receipt',
         },
         {
-          title: 'Điều chỉnh HP',
-          href: '/fee-adjust'
-        },
-        {
           title: 'Báo cáo',
           href: '#',
           children: [
@@ -148,19 +144,11 @@ const Sidebar = props => {
               href: '/report/book'
             },
             {
-              title: 'Báo cáo doanh thu',
+              title: 'Lương giáo viên',
               href: '/report/revenue'
-            },
-            {
-              title: 'Báo cáo tài chính',
-              href: '/report/financial'
             },
             
           ]
-        },
-        {
-          title: 'Ngân sách',
-          href: '/budget',
         },
         {
           title: 'Kết xuất dữ liệu',
