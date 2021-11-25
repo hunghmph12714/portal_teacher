@@ -120,10 +120,7 @@ const StudentForm = props => {
                     name = 'aspiration'
                     value = {state.aspiration}
                     onChange = {onChange}
-                />    
-                
-
-                
+                />   
             </Grid>
             <Grid item md={12} lg={4} sm={12}  xs={12}>
                 <Grid container spacing={2}>
@@ -154,7 +151,6 @@ const StudentForm = props => {
                         />      
                     </Grid>
                 </Grid>
-                
                 <TextField  label="Kết quả (Ngăn cách bằng dấu | )" 
                     className = "input-text"
                     variant="outlined"

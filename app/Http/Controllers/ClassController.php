@@ -251,9 +251,9 @@ class ClassController extends Controller
             $p = Parents::find($request->parent_id);
             if($p){
                 $p->relationship_id = $request->selected_relationship['value'];
-                $p->fullname = $request->parent_name;
-                $p->phone = $request->parent_phone['label'];
-                $p->email = $request->parent_email;
+                $p->fullname = $request->parent_name;                
+                $p->email = (strpos($request->parent_email, '***') !== false)?$p->email: $request->parent_email;
+                $p->phone = (strpos($request->parent_phone['label'], '***') !== false)?$p->phone: $request->parent_phone['label'];
                 $p->note = $request->parent_note;
                 $p->alt_fullname = $request->parent_alt_name;
                 $p->alt_email = $request->parent_alt_email;

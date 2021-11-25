@@ -10,7 +10,6 @@ import { Hidden } from '@material-ui/core';
 import useRouter from '../../../../utils/useRouter';
 import { Navigation } from '../../../../components';
 import navigationConfig from './navigationConfig';
-
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',

@@ -286,7 +286,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/report/revenue', function(){
                 return view('welcome');
             });
-            // Route::get('/report/get-revenue', 'ReportController@getRevenue');
             Route::post('/report/get-revenue', 'ReportController@getRevenue');
 
             Route::get('/report/generate-revenue', 'ReportController@generateRevenue');
@@ -306,7 +305,7 @@ Route::group(['middleware' => ['auth']], function() {
                 return redirect('/report/revenue');
             });
             Route::get('/transaction/center', 'ReportController@fillCenter');
-        //Events 
+        //Events
             Route::get('/events', function(){                
                 return view('welcome');
             });
