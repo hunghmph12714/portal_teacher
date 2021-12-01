@@ -95,6 +95,7 @@ const NavBar = props => {
           open={openMobile}
           variant="temporary"
         >
+          
           <div
             {...rest}
             className={clsx(classes.root, className)}

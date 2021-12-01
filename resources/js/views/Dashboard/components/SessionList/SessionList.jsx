@@ -102,6 +102,7 @@ const SessionList = (props) => {
       setOpenCheck(false)
       setSelectedSession([])
 
+      
     }
     function handleSubmitChecked(){
       axios.post('/session/lock', {'session_id': selected_session.id})
@@ -326,7 +327,7 @@ const SessionList = (props) => {
             </div>  
             <Grid container spacing={2}>
               
-              <Grid item md={8} sm={12}>
+              <Grid item md={12} sm={12}>
                 <MaterialTable
                   title="Danh sách ca học"
                   data={data}
@@ -553,7 +554,6 @@ const SessionList = (props) => {
                   }
                 />
               </Grid>
-              <Grid item md={4}> </Grid>
             </Grid>
             <DialogSession
               open={open}

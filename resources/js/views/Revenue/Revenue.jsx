@@ -153,6 +153,8 @@ class Revenue extends React.Component{
                             13: {text: 'Lương tối thiểu', bold:true, locked: true,stroke:'black'},               
                             14: {text: 'Bước nhảy', bold:true, locked: true,stroke:'black'},               
                             15: {text: 'Tạm tính', bold:true, locked: true,stroke:'black'},               
+                            16: {text: 'Thuế TNCN', bold:true, locked: true,stroke:'black'},               
+                            17: {text: 'Sau thuế', bold:true, locked: true,stroke:'black'},               
                         }
                     },
                     id: 1,
@@ -162,7 +164,7 @@ class Revenue extends React.Component{
                             top: 1,
                             bottom: data.length + 1,
                             left: 1,
-                            right: 14,
+                            right: 16,
                             }
                         }
                     ],
@@ -188,11 +190,14 @@ class Revenue extends React.Component{
                     sheet.cells[rowIndex][13] = {text: d.basic,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
                     sheet.cells[rowIndex][14] = {text: d.jump,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
                     sheet.cells[rowIndex][15] = {text: d.pretax,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][16] = {text: d.personal_tax,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
+                    sheet.cells[rowIndex][17] = {text: d.taxed,  horizontalAlign: 'right',datatype: 'number', format: '#,##0'}
                 }
                 sheet.cells[2 + data.length] =  sheet.cells[2 + data.length] ?? {}
                 sheet.cells[2 + data.length][9] = { text: '=SUM(I2:I'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
                 sheet.cells[2 + data.length][10] = { text: '=SUM(J2:J'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
                 sheet.cells[2 + data.length][15] = { text: '=SUM(O2:O'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
+                sheet.cells[2 + data.length][17] = { text: '=SUM(Q2:Q'+(data.length+1) +')',datatype: 'number', format: '#,##0'}
                 // console.log(sheet)
                 this.setState({sheet: [sheet]})
             })

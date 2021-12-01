@@ -144,7 +144,9 @@ class ReportController extends Controller
             'basic' => 0,
             'jump' => 0,
             'personal_tax' => 0,
+            'taxed' => 0,
             'pretax' => 0];
+        $result['personal_tax'] = $teacher->personal_tax;
         if($session){
             //Thoi luong ca hoc
 
@@ -153,7 +155,6 @@ class ReportController extends Controller
             $diff = ($to - $from)/3600;
             $students = $session->students;
             $result['diff'] = round($diff, 2);
-
 
             // echo "<pre>";
             // print_r($students->toArray());
@@ -197,6 +198,7 @@ class ReportController extends Controller
                 }
             }
             $result['pretax'] = $result['revenue']/100*$result['percentage'] + $result['diff']*$result['perhour'];
+            $result['taxed'] = $result['pretax']/100*(100-$result['personal_tax']); 
         }
         return $result;
     }
