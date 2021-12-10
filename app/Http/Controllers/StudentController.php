@@ -125,7 +125,7 @@ class StudentController extends Controller
             $parent->alt_fullname = $s['pname2'];
             $parent->email = (strpos($s['pemail'], '***') !== false)?$parent->email: $s['pemail'];
 
-            $parent->phone = (strpos($s['phone'], '***') !== false)?$parent->phone: $s['phone'];
+            $parent->phone = (strpos($s['pphone'], '***') !== false)?$parent->phone: $s['pphone'];
             $parent->alt_email = $s['pemail2'];
             $parent->alt_phone = $s['pphone2'];
             $parent->relationship_id = $s['relationship']['value'];
