@@ -716,7 +716,7 @@ class DiscountController extends Controller
                     $trans['center_id'] = $class->center_id;
                     $trans['user'] = auth()->user()->id;
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
-                    $trans['time'] = date('Y-m-t', strtotime('2021-01-31'));
+                    $trans['time'] = date('Y-m-t', strtotime('2022-01-31'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_1;
                     $trans['discount_id'] = '-5';
@@ -731,7 +731,7 @@ class DiscountController extends Controller
                     $trans['center_id'] = $class->center_id;
                     $trans['user'] = auth()->user()->id;
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
-                    $trans['time'] = date('Y-m-t', strtotime('2021-02-28'));
+                    $trans['time'] = date('Y-m-t', strtotime('2022-02-28'));
                     $trans['student_id'] = $student->id;
                     $trans['amount'] = $total_amount_2;
                     $trans['discount_id'] = '-5';
