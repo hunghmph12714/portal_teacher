@@ -17,7 +17,6 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { Profile, SidebarNav } from './components';
-
 const useStyles = makeStyles(theme => ({
   drawer: {
     width: 200,
