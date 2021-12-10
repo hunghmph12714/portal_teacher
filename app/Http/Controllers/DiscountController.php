@@ -432,7 +432,7 @@ class DiscountController extends Controller
     protected function generateDiscountClass($class_id){
         $class = Classes::find($class_id);
         $from_d = '2021-05-04';
-        $to_d = '2021-12-31';
+        $to_d = '2022-02-28';
         if($class){
             $sessions = Session::whereNotNull('id')->update(['percentage' => NULL]);
             
