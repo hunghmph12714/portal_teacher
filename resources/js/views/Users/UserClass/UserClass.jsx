@@ -27,9 +27,12 @@ const UserClass = (props) => {
             .catch(err => {
                 console.log('class get bug: ' + err)
             })
-        setSelectClasses(props.user_classes.map(uc => {
-            return {label: uc.code, value: uc.id}
-        }))
+        if(props.user_classes){
+            setSelectClasses(props.user_classes.map(uc => {
+                return {label: uc.code, value: uc.id}
+            }))
+        }
+        
         }
         
     }, [open])
