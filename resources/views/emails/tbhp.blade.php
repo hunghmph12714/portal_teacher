@@ -92,12 +92,12 @@ Thông tin chi tiết học phí của con, phụ huynh vui lòng xem trong b�
 </ul>
 <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
 
-    *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+    <!-- *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
     Chủ TK: Phan Việt Anh<br/>
     Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
-    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a> 
+    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}</strong> </a>  -->
     
-<br/><br>
+<!-- <br/><br> -->
 <!-- @if($result['center_id'] == 5)
    
     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -113,12 +113,12 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
 
 @switch($result['center_id'])
     @case(5)
-        <!-- *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+        *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
         Chủ TK: Phan Việt Anh<br/>
         Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
         *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/><br>
--->
+
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
             Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoantrungyen@vietelite.edu.vn  <br/>
             Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0962136604'>0366.765.565</a>để được giải đáp kịp thời. <br/>
@@ -126,23 +126,22 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
         @break 
     @case(2)
     @case(4)
-        <!-- *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+        *NH: <strong>VP BANK - CN Trung Hòa Nhân Chính</strong> <br/>
         Chủ TK: Phan Việt Anh<br/>
-        Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
+        Số TK: <a href="#"><strong>6873065565</strong> </a> <br/>
         *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
-        <br/><br>-->
-
+        <br/><br>
+        
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
         Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: ketoancs1@vietelite.edu.vn  <br/>
         Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 1 hoặc <a href='tel: 0962136604'>096.213.6604</a>để được giải đáp kịp thời. <br/>
         @break 
     @case(3)
-        <!-- * NH: <strong>TCB CN THĂNG LONG</strong> <br/>
-        Chủ TK: Bùi Huyền Nga<br/>
-        Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
+        *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+        Chủ TK: Phan Việt Anh<br/>
+        Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
         *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
-        <br/>
-        <br>-->
+        <br/><br>
 
         <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
         Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: cs.phamtuantai@vietelite.edu.vn  <br/>
