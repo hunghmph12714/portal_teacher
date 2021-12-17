@@ -4,8 +4,10 @@ import Mcq from './Mcq'
 import axios from 'axios'
 // import CKEditor from 'ckeditor5-vee-math';
 // var Latex = require('react-latex');
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from 'ckeditor5vee/build/ckeditor';
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from 'ckeditor-lms-vee/build/ckeditor';
+
 import {TextField, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
 
 const SingleQuestion = (props) => {
@@ -56,6 +58,36 @@ const SingleQuestion = (props) => {
                 </Grid>
             </Grid>
             <div id="editor-vee"></div>
+            <CKEditor
+                editor={ClassicEditor}
+                config={{
+                    toolbar: {
+                        items: [
+                            'heading', 'MathType', 'ChemType',
+                            '|',
+                            'bold',
+                            'italic',
+                            'link',
+                            'bulletedList',
+                            'numberedList',
+                            'imageUpload',
+                            'mediaEmbed',
+                            'insertTable',
+                            'blockQuote',
+                            'undo',
+                            'redo'
+                        ]
+                    },
+                }}
+                data= {content}
+                onReady={editor => {
+                    // You can store the "editor" and use when it is needed.
+                    // console.log( 'Editor is ready to use!', editor );
+                }}
+                onChange={ ( event, editor ) => {
+                    setContent(editor.getData())
+                } }
+            />
             {/* <Latex displayMode={true}>{content}</Latex>
             <Latex>{content}</Latex> */}
             {question_type == 'mcq' ? (

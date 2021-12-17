@@ -84,6 +84,7 @@
         "@wiris/mathtype-ckeditor5": "^7.24.1",
         "chokidar": "^3.4.0",
         "chroma-js": "^2.1.0",
+        "ckeditor-lms-vee": "0.0.1",
         "ckeditor5-classic-with-mathtype": "^1.0.0",
         "date-fns": "^2.15.0",
         "fs": "0.0.1-security",
