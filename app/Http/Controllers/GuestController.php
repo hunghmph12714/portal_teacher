@@ -21,6 +21,48 @@ use GuzzleHttp;
 class GuestController extends Controller
 {
     //
+    public function Ams($khoi, $id){
+        require_once('html_parser.php');
+            // Create DOM from URL or file
+            $html = file_get_html('http://center.vn/public/'.$khoi.'/'.$id.'.html','text/html');
+            $opt = ['A', 'B', 'C', 'D'];
+            // Find all images
+            $k = 1;
+            $answers = [];
+            foreach($html->find('#ctl00_ContentPlaceHolder1_ctl00_RadGrid1_ctl00 tbody tr') as  $element){
+                
+                foreach($element->find('.question .content') as $e){
+                    echo "<hr>";
+                    echo '<b>Câu '.$k.': </b>'. $e . "<br>";
+                    $k++;
+                }
+                echo '<div style="margin-bottom: 25px;">';
+                foreach($element->find('.ans .content table tbody tr') as $cau => $a){
+                    
+                    foreach($a->find('td') as $key => $ans){
+                        if($key == 0){
+                            if($ans->find('img')){
+                                $answers[] = $ans->find('span')[0]->innertext;
+                            }
+                            continue;
+                        }
+                        echo '<b>'.$opt[$cau] . ': </b>' . $ans->find('p')[0]->innertext.' ';
+                    }
+                    
+                }
+                echo '</div>';
+
+            }
+            foreach($answers as $key => $value){
+                $i = $key+1;
+                echo "Câu ".$i.": ". $value. " |  ";
+            }
+            // foreach($html->find('.rgMasterTable') as $key => $element){
+
+            //     echo $element . '<br/>';
+
+            // }    
+    }
     public function importtc(){
         if (($handle = fopen(app_path()."/tracuu.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {

@@ -14,6 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/ams/{khoi}/{id}', 'GuestController@Ams');
+
 Route::get('/form-public','GuestController@formPublic');
 Route::get('/form-public-simplified','GuestController@formPublicSimplified');
 Route::post('/handle-simplified-form', 'GuestController@handleSimplifiedForm');
