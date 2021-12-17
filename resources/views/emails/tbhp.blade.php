@@ -113,9 +113,9 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
 
 @switch($result['center_id'])
     @case(5)
-        *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+        *NH: <strong>SHB, CN Kinh Đô, PGD Kim Giang</strong> <br/>
         Chủ TK: Phan Việt Anh<br/>
-        Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
+        Số TK: <a href="#"><strong>8818698888</strong> </a> <br/>
         *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
         <br/><br>
 
