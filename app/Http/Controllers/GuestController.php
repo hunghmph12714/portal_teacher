@@ -24,7 +24,7 @@ class GuestController extends Controller
     public function Ams($khoi, $id){
         require_once('html_parser.php');
             // Create DOM from URL or file
-            $html = file_get_html('http://center.vn/public/'.$khoi.'/'.$id.'.html','text/html');
+            $html = file_get_html('http://center.vietelite.edu.vn/public/'.$khoi.'/'.$id.'.html','text/html');
             $opt = ['A', 'B', 'C', 'D'];
             // Find all images
             $k = 1;
