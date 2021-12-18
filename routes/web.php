@@ -27,7 +27,7 @@ Route::get('/login', function () {
 Route::post('/login', 'Auth\LoginController@authenticate');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'cors']], function() {
     Route::get('/parent-export', 'StudentController@csv');
     Route::get('/dashboard', function () {
         return view('welcome');

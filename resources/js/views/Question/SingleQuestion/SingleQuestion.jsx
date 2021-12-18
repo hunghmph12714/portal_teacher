@@ -63,7 +63,7 @@ const SingleQuestion = (props) => {
                 config={{
                     toolbar: {
                         items: [
-                            'heading', 'MathType', 'ChemType',
+                            'heading', 
                             '|',
                             'bold',
                             'italic',
