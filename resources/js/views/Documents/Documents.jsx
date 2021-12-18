@@ -26,7 +26,7 @@ import MaterialTable from "material-table";
 import NumberFormat from 'react-number-format';
 import Creatable from 'react-select/creatable';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-lms-vee/build/ckeditor';
+import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

@@ -6,7 +6,7 @@ import axios from 'axios'
 // var Latex = require('react-latex');
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-lms-vee/build/ckeditor';
+import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
 
 import {TextField, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
 
@@ -63,6 +63,7 @@ const SingleQuestion = (props) => {
                 config={{
                     toolbar: {
                         items: [
+                            'MathType', 'ChemType',
                             'heading', 
                             '|',
                             'bold',
