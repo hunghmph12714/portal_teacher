@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './SingleQuestion.scss';
 import Mcq from './Mcq'
+import Fib from './Fib'
 import axios from 'axios'
 // import CKEditor from 'ckeditor5-vee-math';
 // var Latex = require('react-latex');
@@ -49,8 +50,9 @@ const SingleQuestion = (props) => {
                         >
                             <option aria-label="None" value="" />
                             <option value={'mcq'}>Trắc nghiệm</option>
+                            <option value={'essay'}>Tự luận</option>
                             <option value={'fib'}>Điền vào chỗ trống</option>
-                            <option value={'order'}>Sắdp xếp thứ tự</option>
+                            <option value={'order'}>Sắp xếp thứ tự</option>
                             <option value={'matrix'}>Nối đáp án</option>
                             <option value={'complex'}>Câu hỏi phức</option>
                         </Select>
@@ -63,7 +65,6 @@ const SingleQuestion = (props) => {
                 config={{
                     toolbar: {
                         items: [
-                            'MathType', 'ChemType',
                             'heading', 
                             '|',
                             'bold',
@@ -76,7 +77,9 @@ const SingleQuestion = (props) => {
                             'insertTable',
                             'blockQuote',
                             'undo',
-                            'redo'
+                            'redo',
+                            'MathType', 'ChemType',
+
                         ]
                     },
                 }}
@@ -94,7 +97,7 @@ const SingleQuestion = (props) => {
             {question_type == 'mcq' ? (
                 <Mcq id={props.id}/>
             ): question_type == 'fib' ? (
-                <div />
+                <Fib id={props.id} />
             ): ''}
         </div>
     )

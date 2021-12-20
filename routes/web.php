@@ -132,6 +132,15 @@ Route::group(['middleware' => ['auth', 'cors']], function() {
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         });
+        //OBJECTIVES MANAGEMENT
+            Route::get('/muc-tieu', function(){
+                return view('welcome');
+            });
+            Route::post('/objective/get','ObjectiveController@getObjective');
+            Route::post('/objective/edit','ObjectiveController@editObjective');
+            Route::post('/objective/delete', 'ObjectiveController@deleteObjective');
+            Route::post('/objective/create', 'ObjectiveController@addObjective');
+
         Route::get('/get-center', 'CenterController@index'); 
         Route::post('/step/get', 'AdminSettingController@getStep'); 
         Route::post('/status/get', 'AdminSettingController@getStatus'); 

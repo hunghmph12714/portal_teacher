@@ -38,3 +38,4 @@ export { Budget, BudgetStats } from './Budget';
 export { default as Misa } from './Misa';
 export { Syllabus, ListSyllabus } from './Syllabus';
 export { Question } from './Question';
+export { default as Objective } from './Objective';

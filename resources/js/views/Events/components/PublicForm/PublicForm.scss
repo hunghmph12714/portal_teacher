@@ -16,7 +16,7 @@ body{
             margin-top: 8px;
             background:white;
             .MuiInputBase-root{
-                height: 45px;
+                height: 45px !important;
                 background:white;
             }
             input{
@@ -33,7 +33,7 @@ body{
             }
         }
         .school-select>div{
-            height: 45px;
+            height: 45px !important;
         }
         .school-select{
             margin-top: 7px;

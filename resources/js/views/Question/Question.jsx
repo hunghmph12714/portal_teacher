@@ -102,6 +102,8 @@ const Question = (props) =>{
     function onTopicChange(event){
         setConfig({...config, topics: event})
     }
+    // Setup the `beforeunload` event listener
+    
     return(
         <div className="question-root">
             <div className="question-action">
@@ -160,8 +162,8 @@ const Question = (props) =>{
                                 />
                             </Grid>
                             <Grid md={2} className="question-add" xs={12}>
-                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Thêm câu hỏi </Button>
-                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu bộ câu hỏi </Button>
+                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu và thêm mới </Button>
+                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu và thoát </Button>
                             </Grid>
                         </Grid>
                     </div>

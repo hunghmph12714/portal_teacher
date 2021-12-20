@@ -33,7 +33,7 @@ import {
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
   Misa, Syllabus, ListSyllabus,
-  Question,
+  Question, Objective
 } from './views';
 
 const Routes = (props) => {
@@ -335,6 +335,12 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/cau-hoi"  
       />
+      <ProtectedRouteWithLayout
+        component = {Objective}
+        layout = {MainLayout}
+        path = "/muc-tieu"  
+      />
+
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}
