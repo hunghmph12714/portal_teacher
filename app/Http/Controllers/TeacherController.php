@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Teacher;
+use App\Models\Classes;
+use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -135,9 +137,11 @@ class TeacherController extends Controller
             }
         }
     }
-    public function teacher_class($teacher)
-
+    public function teacher_class($id)
     {
-        # code...
+        $model = Session::where('teacher_id', $id)->get();
+        $model->load('classes');
+
+        dd($model[0]->classes);
     }
 }

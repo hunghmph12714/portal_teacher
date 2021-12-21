@@ -62,6 +62,15 @@ class Teacher extends Authenticatable
      */
     public function classes()
     {
-        return $this->belongsToMany(Classes::class, 'sessions', 'class_id', 'teacher_id');
+        return $this->belongsToMany('App\Models\Classes', 'sessions', 'teacher_id', 'class_id')->using('App\Models\Session');
+    }
+    /**
+     * Get all of the sessions for the Teacher
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sessions()
+    {
+        return $this->hasMany(Session::class, 'teacher_id');
     }
 }
