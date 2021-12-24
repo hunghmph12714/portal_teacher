@@ -21,6 +21,12 @@ const grade_options  = [
     {value: '9', label: '9'}, {value: '10', label: '10'},
     {value: '11', label: '11'}, {value: '12', label: '12'},
 ]
+const level_options = [
+    {value: 'NB', label: 'Nhận biết'},
+    {value: 'TH', label: 'Thông hiểu'},
+    {value: 'VDT', label: 'Vận dụng thấp'},
+    {value: 'VDC', label: 'Vận dụng cao'},
+]
 const groupBadgeStyles = {
     backgroundColor: '#EBECF0',
     borderRadius: '2em',
@@ -50,6 +56,7 @@ const Question = (props) =>{
     const [config, setConfig] = useState([])
     const [syllabus_opt, setSyllabusOpt] = useState([])
     const [topic_opt, setTopicOpt] = useState([])
+    const [objective_opt, setObjectiveOpt] = useState([])
     const [questions, setQuestions] = useState([{id: 'tmp_1'}])
     useEffect(() => {
         setConfig({
@@ -57,10 +64,14 @@ const Question = (props) =>{
             grade: null,
             syllabus: null,
             topics: [],
+            objectives: [],
+            level: null,
+            
         })
     },[])
     useEffect(() => {
         fetchSyllabus()
+        fetchObjective()
     }, [config.domain, config.grade])
     useEffect(() => {
         fetchTopic()
@@ -77,6 +88,7 @@ const Question = (props) =>{
                 })
         }
     }
+    
     function fetchSyllabus(){
         if(config.domain && config.grade){
             axios.post('/question/fetch-syllabus', {domain: config.domain, grade: config.grade})
@@ -87,13 +99,23 @@ const Question = (props) =>{
                     
                 })
         }
-        
+    }
+    function fetchObjective(){
+        if(config.grade){
+            axios.post('/objective/fetch-by-grade', {grade: config.grade})
+                .then(response => {
+                    setObjectiveOpt(response.data.map(r => {return {value: r.id, label: r.content}}))
+                })
+                .catch(err => {
+
+                })
+        }
     }
     function onDomainChange(event){
         setConfig({...config, domain: event, syllabus: null})
     }
     function onGradeChange(event){
-        setConfig({...config, grade: event, syllabus: null})
+        setConfig({...config, grade: event, syllabus: null, objectives: []})
         
     }
     function onSyllabusChange(event){
@@ -102,15 +124,22 @@ const Question = (props) =>{
     function onTopicChange(event){
         setConfig({...config, topics: event})
     }
+    function onObjectiveChange(event){
+        setConfig({...config, objectives: event})
+    }
+    function onLevelChange(event){
+        setConfig({...config, level: event})
+    }
+    
     // Setup the `beforeunload` event listener
     
     return(
         <div className="question-root">
             <div className="question-action">
-                <h3>Thêm bộ câu hỏi </h3>
-                {/* <h4>Phân loại câu hỏi</h4> */}
+                <h3 style={{fontWeight: 'bold'}}>Thêm mới câu hỏi </h3>
+                <h4>Gắn nhãn</h4>
                 <Grid container spacing={1}>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={2} xs={12} className='first'>
                         <Select
                             value={config.domain}
                             onChange={onDomainChange}
@@ -119,17 +148,17 @@ const Question = (props) =>{
                             options={domain_options}
                         />
                     </Grid>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={2} xs={12} className='first'>
                         <Select
                             value={config.grade}
                             onChange={onGradeChange}
                             name="grade"
                             label="Khối"
-                            placeholder="Khối lớp"
+                            placeholder="Khối"
                             options={grade_options}
                         />
                     </Grid>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={2} xs={12} className='first'>
                         <Select
                             value={config.syllabus}
                             onChange={onSyllabusChange}
@@ -139,8 +168,9 @@ const Question = (props) =>{
                         />
                         
                     </Grid>
-                    <Grid item md={6} xs={12}>
+                    <Grid item md={6} xs={12} className='first'>
                         <Select
+                            closeMenuOnSelect= {false}
                             isMulti
                             value={config.topics}
                             onChange={onTopicChange}
@@ -149,23 +179,42 @@ const Question = (props) =>{
                             formatGroupLabel={formatGroupLabel}
                         />
                     </Grid>
+                    <Grid item md={2} xs={12} className=''>
+                        
+                        <Select
+                            value={config.level}
+                            onChange={onLevelChange}
+                            name="level"
+                            placeholder="Độ khó"
+                            options={level_options}
+                        />
+                    </Grid>
+                    <Grid item md={10} xs={12}> 
+                        <Select
+                            closeMenuOnSelect= {false}
+                            isMulti
+                            value={config.objectives}
+                            onChange={onObjectiveChange}
+                            placeholder="Mục tiêu học tập"
+                            options={objective_opt}
+                            formatGroupLabel={formatGroupLabel}
+                        />  
+                    </Grid>
+
                 </Grid>
+                
             </div>
             {questions.map(q => {
                 return(
                     <div className="question-content" key={q.id}>
-                        <Grid container spacing={2}  >
-                            <Grid md={10} xs={12} className="question-detail"> 
-                                <SingleQuestion
-                                    topics = {config.topics}
-                                    id = {q.id}
-                                />
-                            </Grid>
-                            <Grid md={2} className="question-add" xs={12}>
-                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu và thêm mới </Button>
-                                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu và thoát </Button>
-                            </Grid>
-                        </Grid>
+                        <h4 style={{margin: '15px 0px'}}>Nội dung câu hỏi</h4>
+
+                        <SingleQuestion
+                            topics = {config.topics}
+                            id = {q.id}
+                            config = {config}
+                        />
+                       
                     </div>
                 )
             })}

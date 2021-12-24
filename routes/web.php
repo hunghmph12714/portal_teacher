@@ -14,8 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/student-4', 'StudentController@get4');
+Route::get('/student-5', 'StudentController@get5');
 Route::get('/ams/{khoi}/{id}', 'GuestController@Ams');
-
+// Route::get('/ams/')
 Route::get('/form-public','GuestController@formPublic');
 Route::get('/form-public-simplified','GuestController@formPublicSimplified');
 Route::post('/handle-simplified-form', 'GuestController@handleSimplifiedForm');
@@ -140,6 +142,7 @@ Route::group(['middleware' => ['auth', 'cors']], function() {
             Route::post('/objective/edit','ObjectiveController@editObjective');
             Route::post('/objective/delete', 'ObjectiveController@deleteObjective');
             Route::post('/objective/create', 'ObjectiveController@addObjective');
+            Route::post('/objective/fetch-by-grade', 'ObjectiveController@getByGrade');
 
         Route::get('/get-center', 'CenterController@index'); 
         Route::post('/step/get', 'AdminSettingController@getStep'); 
@@ -488,11 +491,18 @@ Route::group(['middleware' => ['auth', 'cors']], function() {
     Route::post('/chapter/delete-subject', 'SyllabusController@deleteSubject');
     Route::post('/subject/delete-topic', 'SyllabusController@deletetopic');
     // Route::post('/subject/')
-    Route::get('/cau-hoi', function(){
+    Route::get('/cau-hoi/tao-moi', function(){
         return view('welcome');
     });
     Route::post('/question/fetch-syllabus', 'SyllabusController@fetchSyllabus');
     Route::post('/question/fetch-topic', 'SyllabusController@fetchTopic');
+    Route::post('/question/create', 'QuestionController@create');
+
+    Route::get('/cau-hoi', function(){
+        return view('welcome');
+    });
+
+    Route::post('/questions', 'QuestionController@get');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

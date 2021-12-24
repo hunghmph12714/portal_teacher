@@ -6,34 +6,31 @@ import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Fib = (props) => {
-    const [options, setOptions] = useState([
-        {content: '', options: {}, weight: 0, set: ''},
-        {content: '', options: {}, weight: 0, set: ''},
-    ])
+
     return(
         <div style={{marginTop: '15px'}}>
-            <h4 style={{fontSize: '1.1rem', fontWeight: 'bold'}}>Các đáp án được chấp nhận</h4>
+            <h4 style={{fontSize: '1.1rem', fontWeight: 'bold', marginBottom:'20px'}}>Các đáp án được chấp nhận</h4>
             {/* <p> </p> */}
-        {options.map((o, index) => {return(
+        {props.options.map((o, index) => {return(
 
             <Grid container spacing={2} >
                 <Grid item md={1}>
-                    <ControlPointIcon key={index} onClick={(e) => {
+                    <ControlPointIcon key={'add'+index} onClick={(e) => {
                         e.preventDefault()
-                        let opt = [...options]
-                        opt.splice(index+1, 0 , {content: '', weight: 0, options: {}, set: ''})
-                        setOptions(opt)
+                        let opt = [...props.options]
+                        opt.splice(index+1, 0 , {content: '', weight: 0, set: ''})
+                        props.setOptions(opt)
                     }
                         
                     } style={{cursor: 'pointer', marginTop: '7px',}}/>
-                    <RemoveCircleOutline key={index} style={{marginLeft: '12px', marginTop: '7px', cursor: 'pointer'}}
+                    <RemoveCircleOutline key={'remove'+index} style={{marginLeft: '12px', marginTop: '7px', cursor: 'pointer'}}
                         onClick={(e) => {
                             e.preventDefault()
-                            let opt = [...options]
+                            let opt = [...props.options]
                             if(opt.length > 1){
                                 opt.splice(index, 1)
                             }
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>
@@ -46,9 +43,9 @@ const Fib = (props) => {
                         value = {o.content}
                         fullWidth
                         onChange = {event => {
-                            let opt = [...options]
+                            let opt = [...props.options]
                             opt[index].content = event.target.value
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>
@@ -63,9 +60,9 @@ const Fib = (props) => {
                         value = {o.weight}
                         fullWidth
                         onChange = {event => {
-                            let opt = [...options]
+                            let opt = [...props.options]
                             opt[index].weight = (event.target.value >=1 ) ? 1 : event.target.value
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>
@@ -79,9 +76,9 @@ const Fib = (props) => {
                         value = {o.set}
                         fullWidth
                         onChange = {event => {
-                            let opt = [...options]
+                            let opt = [...props.options]
                             opt[index].set = event.target.value
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>

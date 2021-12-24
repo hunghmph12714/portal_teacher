@@ -39,3 +39,4 @@ export { default as Misa } from './Misa';
 export { Syllabus, ListSyllabus } from './Syllabus';
 export { Question } from './Question';
 export { default as Objective } from './Objective';
+export { default as QuestionList } from './QuestionList';

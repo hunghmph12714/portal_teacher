@@ -8,6 +8,9 @@
         .MuiGrid-item{
             z-index:999;
         }
+        .first{
+            z-index: 1000 !important;
+        }
     }
     .question-content{
         margin-top: 10px;

@@ -45,4 +45,13 @@ class ObjectiveController extends Controller
             $obj->forceDelete();
         }
     }
+    protected function getByGrade(Request $request){
+        $rules = ['grade' => 'required'];
+        $this->validate($request, $rules);
+
+        $grade = $request->grade['value'];
+        $obj = Objective::where('grade', $grade)->get();
+        return response()->json($obj);
+        
+    }
 }

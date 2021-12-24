@@ -6,33 +6,30 @@ import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Mcq = (props) => {
-    const [options, setOptions] = useState([
-        {content: '', options: {}, weight: 0},
-        {content: '', options: {}, weight: 0},
-    ])
+    
     return(
         <div style={{marginTop: '15px'}}>
             <h4 style={{fontSize: '1.1rem', fontWeight: 'bold'}}>Các phương án lựa chọn</h4>
-        {options.map((o, index) => {return(
+        {props.options.map((o, index) => {return(
 
             <Grid container spacing={2} >
                 <Grid item md={1}>
-                    <ControlPointIcon key={index} onClick={(e) => {
+                    <ControlPointIcon key={'add' + index} onClick={(e) => {
                         e.preventDefault()
-                        let opt = [...options]
-                        opt.splice(index+1, 0 , {content: '', weight: 0, options: {}})
-                        setOptions(opt)
+                        let opt = [...props.options]
+                        opt.splice(index+1, 0 , {content: '', weight: 0})
+                        props.setOptions(opt)
                     }
                         
                     } style={{cursor: 'pointer',marginTop: '7px',}}/>
-                    <RemoveCircleOutline key={index} style={{marginLeft: '12px', marginTop: '7px',cursor: 'pointer'}}
+                    <RemoveCircleOutline key={'remove' + index} style={{marginLeft: '12px', marginTop: '7px',cursor: 'pointer'}}
                         onClick={(e) => {
                             e.preventDefault()
-                            let opt = [...options]
+                            let opt = [...props.options]
                             if(opt.length > 1){
                                 opt.splice(index, 1)
                             }
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>
@@ -57,9 +54,9 @@ const Mcq = (props) => {
                             // console.log( 'Editor is ready to use!', editor );
                         }}
                         onChange={ ( event, editor ) => {
-                            let opt = [...options]
+                            let opt = [...props.options]
                             opt[index].content = editor.getData()
-                            setOptions(opt)
+                            props.setOptions(opt)
                         } }
                     />
                 </Grid>
@@ -76,9 +73,9 @@ const Mcq = (props) => {
                         value = {o.weight}
                         fullWidth
                         onChange = {event => {
-                            let opt = [...options]
+                            let opt = [...props.options]
                             opt[index].weight = (event.target.value >=1 ) ? 1 : event.target.value
-                            setOptions(opt)
+                            props.setOptions(opt)
                         }}
                     />
                 </Grid>
