@@ -38,7 +38,7 @@ class StudentController extends Controller
             $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
         }
         foreach($van as $v){
-            $van_studen = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+            $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
         }
         foreach($anh as $a){
             $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
@@ -47,8 +47,13 @@ class StudentController extends Controller
         $ta = array_intersect($toan_student, $anh_student);
         $av = array_intersect($anh_student, $van_student);
         $tva = array_intersect($tv, $anh_student);
-        echo "<pre>";
-        print_r($av);
+        echo "Toán: ".sizeof($toan_student)."<br/>";
+        echo "Văn: ".sizeof($van_student)."<br/>";
+        echo "Anh: ".sizeof($anh_student)."<br/>";
+        echo "Toán Anh: ".sizeof($ta)."<br/>";
+        echo "Toán Văn: ".sizeof($tv)."<br/>";
+        echo "Anh Văn: ".sizeof($av)."<br/>";
+        echo "Toán Văn Anh: ".sizeof($tva)."<br/>";
     }
     protected function get5(){
         $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
