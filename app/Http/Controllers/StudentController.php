@@ -43,17 +43,17 @@ class StudentController extends Controller
         foreach($anh as $a){
             $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
         }
-        $tv = array_intersect($toan_student, $van_student);
-        $ta = array_intersect($toan_student, $anh_student);
-        $av = array_intersect($anh_student, $van_student);
-        $tva = array_intersect($tv, $anh_student);
-        echo "Toán: ".sizeof($toan_student)."<br/>";
-        echo "Văn: ".sizeof($van_student)."<br/>";
-        echo "Anh: ".sizeof($anh_student)."<br/>";
-        echo "Toán Anh: ".sizeof($ta)."<br/>";
-        echo "Toán Văn: ".sizeof($tv)."<br/>";
-        echo "Anh Văn: ".sizeof($av)."<br/>";
-        echo "Toán Văn Anh: ".sizeof($tva)."<br/>";
+        $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+        $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
+        $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
+        $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
+        echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
+        echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
+        echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
+        echo "Toán Anh: ".($ta)."<br/>";
+        echo "Toán Văn: ".($tv)."<br/>";
+        echo "Anh Văn: ".($av)."<br/>";
+        echo "Toán Văn Anh: ".($tva)."<br/>";
     }
     protected function get5(){
         $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
@@ -71,19 +71,17 @@ class StudentController extends Controller
         foreach($anh as $a){
             $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
         }
-        $tv = array_intersect($toan_student, $van_student);
-        $ta = array_intersect($toan_student, $anh_student);
-        $av = array_intersect($anh_student, $van_student);
-        $tva = array_intersect($tv, $anh_student);
-        echo "<pre>";
-        // print_r($van);
-        echo "Toán: ".sizeof($toan_student)."<br/>";
-        echo "Văn: ".sizeof($van_student)."<br/>";
-        echo "Anh: ".sizeof($anh_student)."<br/>";
-        echo "Toán Anh: ".sizeof($ta)."<br/>";
-        echo "Toán Văn: ".sizeof($tv)."<br/>";
-        echo "Anh Văn: ".sizeof($av)."<br/>";
-        echo "Toán Văn Anh: ".sizeof($tva)."<br/>";
+        $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+        $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
+        $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
+        $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
+        echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
+        echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
+        echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
+        echo "Toán Anh: ".($ta)."<br/>";
+        echo "Toán Văn: ".($tv)."<br/>";
+        echo "Anh Văn: ".($av)."<br/>";
+        echo "Toán Văn Anh: ".($tva)."<br/>";
     }
     protected function removeStudent($id){
         $student = Student::find($id);
