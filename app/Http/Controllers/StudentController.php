@@ -44,6 +44,10 @@ class StudentController extends Controller
             $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
         }
         $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+        echo "<pre>";
+        print_r(array_intersect($toan_student, $anh_student));
+        echo "<pre>";
+        print_r(array_intersect($toan_student, $anh_student, $van_student));
         $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
         $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
         $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
