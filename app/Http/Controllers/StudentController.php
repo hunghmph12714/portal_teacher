@@ -60,9 +60,9 @@ class StudentController extends Controller
         echo "Toán Văn Anh: ".($tva)."<br/>";
     }
     protected function get9(){
-        $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->get();
-        $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->get();
-        $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->get();
+        $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
+        $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
+        $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
         $toan_student = [];
         $van_student = [];
         $anh_student = [];
