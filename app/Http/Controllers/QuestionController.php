@@ -27,6 +27,7 @@ class QuestionController extends Controller
         $q['content'] = $request->content;
         $q['domain'] = $request->config['domain']['value'];
         $q['hint'] = ($request->answer)?$request->answer:'';
+        $q['grade'] = $request->config['grade']['value'];
         $question = Question::create($q);
 
         //Add options
@@ -62,7 +63,10 @@ class QuestionController extends Controller
     }
     protected function get(Request $request){
 
-        $questions = Question::get();
+        $questions = Question::with('topics')->with('objectives')->with('options')->orderBy('id', 'DESC')
+            ->get();
+        
+        
         return response()->json($questions);
     }
     

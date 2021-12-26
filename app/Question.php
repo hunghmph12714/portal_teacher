@@ -10,7 +10,7 @@ class Question extends Model
     public $table = 'lms_questions';
     protected $fillable = ['question_level', 'question_type', 
         'statement', 'content', 'complex', 'ref_question_id', 'domain', 
-        'public', 'hint'];
+        'public', 'hint', 'grade'];
     public function topics(){
         return $this->belongsToMany('App\Topic', 'lms_topic_question','question_id','topic_id')->using('App\TopicQuestion')
             ->withPivot('type')

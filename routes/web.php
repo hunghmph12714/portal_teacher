@@ -16,8 +16,8 @@ Route::get('/', function () {
 });
 // Route::get('/student-4', 'StudentController@get4');
 // Route::get('/student-5', 'StudentController@get5');
-Route::get('/student-9', 'StudentController@get9');
-// Route::get('/ams/{khoi}/{id}', 'GuestController@Ams');
+// Route::get('/student-9', 'StudentController@get9');
+Route::get('/ams/{khoi}/{id}', 'GuestController@Ams');
 // Route::get('/ams/')
 Route::get('/form-public','GuestController@formPublic');
 Route::get('/form-public-simplified','GuestController@formPublicSimplified');

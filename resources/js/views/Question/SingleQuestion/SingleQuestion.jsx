@@ -8,10 +8,13 @@ import axios from 'axios'
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
-
+import {PreviewQuestion} from './'
+import { useSnackbar } from 'notistack';
 import {TextField, Button, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
 
 const SingleQuestion = (props) => {
+    const history = {props}
+    const {enqueueSnackbar} = useSnackbar()
     const [content, setContent] = useState('')
     const [statement, setStatement] = useState('')
     const [question_type, setQuestionType] = useState('')
@@ -20,7 +23,14 @@ const SingleQuestion = (props) => {
         {content: '', weight: 0, set: ''},
         {content: '', weight: 0, set: ''},
     ])
-    function createQuestion(){
+    const [preview_open, setPreviewOpen] = useState(false)
+    function handleOpenPreview(){
+        setPreviewOpen(true)
+    }
+    function handleClosePreview(){
+        setPreviewOpen(false)
+    }
+    function createQuestion(type){
         axios.post('/question/create', {
             config: props.config,
             content: content,
@@ -29,9 +39,17 @@ const SingleQuestion = (props) => {
             answer: answer, options: options
         })
             .then(response => {
-
+                enqueueSnackbar('Thêm câu hỏi thành công', {variant: 'success'})
+                if(type=='stay'){
+                    setContent('')
+                    setStatement('')
+                    setOptions([{content: '', weight: 0, set: ''}])
+                }else{
+                    window.location.href='/cau-hoi'         
+                 }
             })
             .catch(err => {
+                enqueueSnackbar('Có lỗi xảy ra', {variant: 'error'})
 
             })
     }
@@ -71,7 +89,7 @@ const SingleQuestion = (props) => {
                                     label="Loại câu hỏi"
                                 >
                                     <option aria-label="None" value="" />
-                                    <option value={'mcq'}>Trắc nghiệm</option>
+                                    <option value={'mc'}>Trắc nghiệm</option>
                                     <option value={'essay'}>Tự luận</option>
                                     <option value={'fib'}>Điền vào chỗ trống</option>
                                     <option value={'order'}>Sắp xếp thứ tự</option>
@@ -117,7 +135,7 @@ const SingleQuestion = (props) => {
                     {/* <Latex displayMode={true}>{content}</Latex>
                     <Latex>{content}</Latex> */}
                     <hr/>
-                    {question_type == 'mcq' ? (
+                    {question_type == 'mc' ? (
                         <Mcq id={props.id} options={options} setOptions={setOptions} />
                     ): question_type == 'fib' ? (
                         <Fib id={props.id} options={options} setOptions={setOptions} />
@@ -163,10 +181,19 @@ const SingleQuestion = (props) => {
             </Grid>
             <Grid md={2} className="question-add" xs={12}>
                 <Button variant="outlined" className="question-btn" color="primary" fullWidth
-                    onClick={() => createQuestion()}> Lưu và thêm mới </Button>
-                <Button variant="outlined" className="question-btn" color="primary" fullWidth> Lưu và thoát </Button>
-                <Button variant="outlined" className="question-btn" color="secondary" fullWidth> Xem trước </Button>
+                    onClick={() => createQuestion('stay')}> Lưu và thêm mới </Button>
+                <Button variant="outlined" className="question-btn" color="primary" fullWidth
+                    onClick={() => createQuestion('exit')}
+                > Lưu và thoát </Button>
+                <Button variant="outlined" className="question-btn" color="secondary" fullWidth
+                    onClick={() => handleOpenPreview()}
+                > Xem trước </Button>
             </Grid>
+            <PreviewQuestion
+                open={preview_open}
+                handleCloseDialog={handleClosePreview}
+                question={{content: content,  options: options}}
+           />
         </Grid>
         
     )

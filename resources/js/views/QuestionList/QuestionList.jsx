@@ -3,33 +3,117 @@ import './QuestionList.scss'
 // import {QuestionDialog} from './components';
 import MaterialTable from "material-table";
 import axios from 'axios'
-
+import Chip from '@material-ui/core/Chip';
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import {PreviewQuestion} from '../Question/SingleQuestion'
+import EditIcon from '@material-ui/icons/Edit';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
 const QuestionList = (props) => {
-    const columns = [];
-    const [data, setData] = useState('')
+    const columns = [
+        { title: 'Đề bài', field: 'content' ,
+        render: rowData => {
+            return <div>{ReactHtmlParser(rowData.content)}</div>
+        },
+        width: 500,
+        },
+        { title: 'Môn', field: 'domain' },
+        { title: 'Khối', field: 'grade' },
+        { title: 'Dạng bài', field: 'question_type',
+            lookup: { 'mc':'TN', 'fib':'ĐVCT', 'essay':'TL'},
+        },
+        { title: 'Độ khó', field: 'question_level',
+            // lookup: { 'mc':'TN', 'fib':'ĐVCT', 'essay':'TL'},
+        },
+        { title: 'Chủ đề', field: 'topics', 
+            render: rowData => {
+                return (<span>
+                    {rowData.topics.map(topic => {
+                        return (<Chip style={{margin: '3px'}} color="secondary" size="small" label={topic.title} clickable/>)
+                    })}
+                </span>)
+            }
+        },
+        { title: 'Mục tiêu', field: 'objectives', 
+            render: rowData => {
+                return (<span>
+                    {rowData.objectives.map(obj => {
+                        return (<Chip style={{margin: '3px'}} color="secondary" size="small" label={obj.content} clickable/>)
+                    })}
+                </span>)
+            }
+        },
+                
+
+    ];
+    const [data, setData] = useState([])
+    const [preview_open, setPreviewOpen] = useState(false)
+    const [question, setQuestion] = useState({
+        content: '',
+        options: [],
+
+    })
+    useEffect(
+        () => {
+            fetchQuestion();
+        },[])
+    function handleOpenPreview(rowData){
+        setPreviewOpen(true)
+        setQuestion(rowData)
+    }
+    function handleClosePreview(){
+        setPreviewOpen(false)
+    }
+    function fetchQuestion(){
+        axios.post('/questions', {})
+            .then(response => {
+                setData(response.data);
+            })
+            .catch(err => {
+
+            })
+    }
     return(
         <div className="root-question">
             <MaterialTable
                 title = "Danh sách câu hỏi"
                 columns = {columns}
-                data = {this.state.data}
+                data = {data}
                 options = {{
                     grouping: true,
                     pageSize: 10,
                 }}
-                editable={{
-                    onRowAdd: newData => this.addNewQuestionList(newData) ,
-                    onRowUpdate: (newData, oldData) => this.editQuestionList(oldData, newData),
-                    onRowDelete: oldData => this.deleteQuestionList(oldData),
-                }}
+                // editable={{
+                //     onRowAdd: newData => addNewQuestionList(newData) ,
+                //     onRowUpdate: (newData, oldData) => editQuestionList(oldData, newData),
+                //     onRowDelete: oldData => deleteQuestionList(oldData),
+                // }}
                 actions = {[
                     {
-                        icon: () => <AddBoxIcon />,
-                        tooltip: 'Thêm ',
+                        icon: () => <ZoomInIcon />,
+                        tooltip: 'Xem trước ',
                         isFreeAction: false,
-                        text: 'Thêm sự kiện',
+                        text: 'Xem trước',
                         onClick: (event, rowData) => {
-                            this.handleOpenDialogQuestion(rowData)
+                            handleOpenPreview(rowData)
+                        },
+                    },
+                    {
+                        icon: () => <EditIcon />,
+                        tooltip: 'Sửa ',
+                        isFreeAction: false,
+                        text: 'Sửa câu hỏi',
+                        onClick: (event, rowData) => {
+                            handleOpenPreview(rowData)
+                        },
+                    },
+                    {
+                        icon: () => <AddBoxIcon />,
+                        tooltip: 'Thêm câu hỏi ',
+                        isFreeAction: true,
+                        text: 'Thêm câu hỏi',
+                        onClick: (event, rowData) => {
+                            props.history.push('/cau-hoi/tao-moi')
                         },
                     },
                 ]}
@@ -62,15 +146,11 @@ const QuestionList = (props) => {
                     }
                 }}
             />
-            {/* <QuestionDialog
-                handleCloseQuestion = {this.handleCloseQuestion}
-                open_permission = {this.state.open_permission}
-                selected_permission = {this.state.selected_permission}
-                selected_id = {this.state.selected_role.id}
-                permissions = {this.state.permissions}
-                onQuestionChange = { this.onQuestionChange }
-                handleSubmitQuestion = {this.handleSubmitQuestion}
-            /> */}
+           <PreviewQuestion
+                open={preview_open}
+                handleCloseDialog={handleClosePreview}
+                question={question}
+           />
         </div>
     )
 }

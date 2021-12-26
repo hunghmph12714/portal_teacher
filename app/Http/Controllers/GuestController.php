@@ -16,6 +16,8 @@ use App\Source;
 use App\Medium;
 use Illuminate\Support\Facades\Http;
 use App\Tracuu;
+use App\Question;
+use App\Option;
 use GuzzleHttp;
 
 class GuestController extends Controller
@@ -29,24 +31,42 @@ class GuestController extends Controller
             // Find all images
             $k = 1;
             $answers = [];
+            
             foreach($html->find('#ctl00_ContentPlaceHolder1_ctl00_RadGrid1_ctl00 tbody tr') as  $element){
+                $question = [
+                    'grade' => $khoi,
+                    'domain' => 'Toán',
+                    'question_type' => 'mc',
+                    'content' => ''
+                ];
                 
                 foreach($element->find('.question .content') as $e){
                     echo "<hr>";
                     echo '<b>Câu '.$k.': </b>'. $e . "<br>";
+                    $question['content'] = $e;
+                    echo "created question";
+                    $q = Question::create($question);
                     $k++;
                 }
+                
+
                 echo '<div style="margin-bottom: 25px;">';
                 foreach($element->find('.ans .content table tbody tr') as $cau => $a){
+                    $options = [
                     
+                    ];
                     foreach($a->find('td') as $key => $ans){
+                        $options['question_id'] = $q->id;
                         if($key == 0){
                             if($ans->find('img')){
+                                $options['weight'] = 1;
                                 $answers[] = $ans->find('span')[0]->innertext;
                             }
                             continue;
                         }
-                        echo '<b>'.$opt[$cau] . ': </b>' . $ans->find('p')[0]->innertext.' ';
+                        $options['content'] = $ans->find('p')[0]->innertext;
+                        // echo '<b>'.$opt[$cau] . ': </b>' . $ans->find('p')[0]->innertext.' ';
+                        Option::create($options);
                     }
                     
                 }
