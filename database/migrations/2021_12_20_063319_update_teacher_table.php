@@ -15,6 +15,9 @@ class UpdateTeacherTable extends Migration
     {
         Schema::table('teacher', function (Blueprint $table) {
             $table->string('first_password')->nullable();
+            $table->dateTime('sent_otp_at')->nullable();
+            $table->string('referral_code')->nullable();
+            $table->decimal('percent')->nullable();
         });
     }
 

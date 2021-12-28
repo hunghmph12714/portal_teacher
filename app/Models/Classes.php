@@ -24,4 +24,13 @@ class Classes extends Model
     {
         return $this->hasMany(Session::class, 'class_id');
     }
+    /**
+     * The roles that belong to the Classes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_class', 'class_id', 'student_id');
+    }
 }

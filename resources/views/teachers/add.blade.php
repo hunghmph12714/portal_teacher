@@ -1,4 +1,4 @@
-	@extends('layouts.main')
+	@extends('layout.main')
         @section('content')
              <form action="" method="POST" enctype="multipart/form-data">
                     @csrf

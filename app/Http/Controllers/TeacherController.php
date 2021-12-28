@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Models\Classes;
 use App\Models\Session;
+use App\Models\StudentClass;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 // use Illuminate\Support\Facades\Mail as FacadesMail;
 use Mail;
+use Str;
 use Illuminate\Validation\Rule;
 use PhpParser\Node\Expr\Cast\Object_;
 
@@ -24,6 +27,15 @@ class TeacherController extends Controller
                 $model->system_teacher = 0;
                 $model->first_password = null;
             } else {
+                $str = Str::slug($model->name);
+                $listStr = explode('-', $str);
+                $name = end($listStr);
+                dd($listStr);
+                foreach ($listStr as $v) {
+                    if ($v !== end($listStr))  $name .= substr($v, 0, 1);
+                }
+                $model->name = $name .    substr($model->phone, -3);
+
                 $model->system_teacher = $request->system_teacher;
                 $model->first_password = 'vee123';
                 $data = [
@@ -31,10 +43,8 @@ class TeacherController extends Controller
                     'email' => $model->email,
                 ];
                 $email = $model->email;
-
                 Mail::send('teachers.send_mail',  $data,  function ($message) use ($email) {
                     // dd($email);
-
                     $message->from('manhhung17062001@gmail.com', 'VietElite');
                     $message->to($email, 'VietElite');
                     $message->subject('Đăng ký thành viên hệ thống');
@@ -54,6 +64,8 @@ class TeacherController extends Controller
         $teachers = Teacher::all();
         return view('teachers.index', compact('teachers'));
     }
+
+
     public function editForm($id)
     {
         $teacher = Teacher::find($id);
@@ -137,11 +149,58 @@ class TeacherController extends Controller
             }
         }
     }
-    public function teacher_class($id)
-    {
-        $model = Session::where('teacher_id', $id)->get();
-        $model->load('classes');
 
-        dd($model[0]->classes);
+
+
+
+
+    public function teacherClass($id)
+    {
+        $day = date('w') - 1;
+        $week_start = date('Y-m-d', strtotime('-' . $day . ' days'));
+        $week_end = date('Y-m-d', strtotime('+' . (6 - $day) . ' days'));
+
+        $sessions = Session::where('teacher_id', $id)->where('from', '>=', $week_start)->where('from', '<=', $week_end)
+            ->select('classes.id as id', 'class_id', 'name', 'from', 'year', 'content', 'student_number')
+            ->join('classes', 'class_id', 'classes.id')
+            ->get()->toArray();
+
+        $teacher = Teacher::find($id);
+        return view('teachers.teacher_class', compact('sessions', 'teacher'));
     }
-}
+
+    public function myClasses()
+    {
+        $day = date('w') - 1;
+        $week_start = date('Y-m-d', strtotime('-' . $day . ' days'));
+        $week_end = date('Y-m-d', strtotime('+' . (6 - $day) . ' days'));
+
+        $sessions = Session::where('teacher_id', Auth::user()->id)->where('from', '>=', $week_start)->where('from', '<=', $week_end)
+            ->select('classes.id as id', 'class_id', 'name', 'from', 'year', 'content', 'student_number')
+            ->join('classes', 'class_id', 'classes.id')
+            ->get()->toArray();
+        $teacher = Teacher::find(Auth::user()->id);
+        return view('teachers.teacher_class', compact('sessions', 'teacher'));
+    }
+
+    public function classStudent($class_id)
+    {
+        $class = Classes::find($class_id);
+        $students = StudentClass::where('class_id', $class_id)
+            ->select('student_class.id as id', 'class_id', 'fullname', 'phone', 'student_id')
+            ->join('students', 'student_id', 'students.id')
+            ->get();
+        // dd($students);
+        return view('students.student_class', compact('students', 'class'));
+    }
+    public  function formatName()
+    {
+        $str = Str::slug('hà mạnh hùng');
+        $listStr = explode('-', $str);
+        $name = end($listStr);
+        foreach ($listStr as $v) {
+            if ($v !== end($listStr)) $name .= substr($v, 0, 1);
+        }
+        return $name;
+    }
+}// thử xem b

@@ -1,23 +1,27 @@
-@extends('layouts.main')
+@extends('layout.main')
 @section('content')
-Danh sách lớp dạy trong tuần của giáo viên: 
-<table class="table table-stripped">
+<h3 style="text-align: center">DANH SÁCH LỚP DẠY CỦA GIÁO VIÊN:</h3><h3> @isset($teacher->name)
+    {{ $teacher->name }}
+@endisset
+</h3>
+
+<table class="table table-stripped table-border">
     <thead>
         <th>ID</th>
         <th>tên lớp</th>
-        <th>Số học sinh</th>
+        <th>Nội dung buổi học</th>
         <th>Năm học</th>
-       
-
        
     </thead>
     <tbody>
-        @foreach ($classes as $item)
+        @foreach ($sessions as $item)
         <tr>
-            <td>{{$item->id}}</td>
-            <td>{{$item->name}}</td>
-            <td>{{$item->student_number}}</td>
-             <td>{{$item->year}}</td>    
+            <td>{{$item['id']}}</td>
+            <td><a href="{{ route('teacher.classStudent', ['class_id'=>$item['class_id']]) }}">{{$item['name']}}</a></td>
+            <td>{{$item['content']}}</td>
+             <td>{{$item['year']}}</td>    
+             <td>
+             </td>
 
             <td>
                 
@@ -26,5 +30,10 @@ Danh sách lớp dạy trong tuần của giáo viên:
         @endforeach
     </tbody>
 </table>
+@if (empty($sessions[0]))
+        <p>Ui!!!   May quá, tuần này bạn không phải dạy rồi!</p>
+
+@endif
+
 
 @endsection

@@ -19,21 +19,35 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('login', [LoginController::class, 'loginForm'])->name('login.form');
+Route::get('forgotPassword', [LoginController::class, 'forgotPasswordForm'])->name('login.forgotPassword');
+Route::post('forgotPassword', [LoginController::class, 'forgotPasswordSend']);
+
+
 Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
 
+Route::get('loginZalo', [LoginController::class, 'formLoginZalo'])->name('login.formZalo');
+Route::post('loginZalo', [LoginController::class, 'LoginZalo']);
+Route::post('loginZaloOTP', [LoginController::class, 'verifyOTP']);
 
-Route::prefix('teacher')->group(function () {
+
+
+Route::prefix('teacher')->middleware('teacher')->group(function () {
     Route::get('/', [TeacherController::class, 'index'])->name('teacher.index');
     Route::get('/edit/{id}', [TeacherController::class, 'editForm'])->name('teacher.edit');
     Route::post('/edit/{id}', [TeacherController::class, 'saveEdit']);
 
     Route::post('/', [TeacherController::class, 'index']);
-    Route::get('/updatePassword/{id}', [TeacherController::class, 'updatePasswordForm'])->name('teacher.updatePassword');
-    Route::post('/updatePassword/{id}', [TeacherController::class, 'updatePassword']);
-    Route::get('/class/{id}', [TeacherController::class, 'teacher_class'])->name('teacher.class');
+    // Route::get('/updatePassword/{id}', [TeacherController::class, 'updatePasswordForm'])->name('teacher.updatePassword');
+    // Route::post('/updatePassword/{id}', [TeacherController::class, 'updatePassword']);
+    Route::get('/class/{id}', [TeacherController::class, 'teacherClass'])->name('teacher.class');
+    Route::get('/class/student/{class_id}', [TeacherController::class, 'classStudent'])->name('teacher.classStudent');
+
     // Route::get('/class/{id}', [SessionController::class, 'teacher_class']);
 });
+Route::get('teacher/updatePassword/{id}', [TeacherController::class, 'updatePasswordForm'])->name('teacher.updatePassword');
+Route::post('teacher/updatePassword/{id}', [TeacherController::class, 'updatePassword']);
 
+Route::get('demo', [TeacherController::class, 'formatName']);
 
 
 Route::get('/', function () {
@@ -43,3 +57,6 @@ Route::any('logout', function () {
     Auth::logout();
     return redirect(route('login.form'));
 })->name('user.logout');
+Route::get('/403', function () {
+    return "<h1 href='/car'>Bạn không có quyền truy cập</h1><a href='#'  onclick=' history.back()'>Quay lai</a>";
+})->name('error.403');
