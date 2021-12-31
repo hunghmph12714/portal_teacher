@@ -142,6 +142,10 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        // 'g-recaptcha-response' => [
+        //     'Required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
+        //     'captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
+        // ],
     ],
 
     /*

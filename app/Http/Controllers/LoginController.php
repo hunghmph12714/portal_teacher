@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Teacher;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use PharIo\Manifest\Email;
+// use PharIo\Manifest\Email;
+use Illuminate\Http\Request;
+
 
 class LoginController extends Controller
 {
@@ -19,11 +20,15 @@ class LoginController extends Controller
     {
         $request->validate([
             'email' => 'required|email|exists:teacher',
-            'password' => 'required'
+            'password' => 'required',
+            'g-recaptcha-response' => 'required|captcha'
         ], [
             'email.required' => 'Vui lòng nhập email',
             'email.exists' => 'Thông tin tài khoản không đúng',
-            'password.required' => 'Vui lòng mật khẩu'
+            'password.required' => 'Vui lòng mật khẩu',
+            'g-recaptcha-response.required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
+            'g-recaptcha-response.captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
+
         ]);
         $email = $request->email;
         $password = $request->password;

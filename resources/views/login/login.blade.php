@@ -168,8 +168,25 @@
                     <span class="text-muted">Remember me</span>
                   </label>
                 </div>
+{!! NoCaptcha :: renderJs () !!}            
+    {!! NoCaptcha :: display () !!}
+    
+{{-- @if ( $error -> has ( 'g-recaptcha-response' ))
+    <span class = "help-block" >
+        <strong> {{ $error -> first ( 'g-recaptcha-response' )}} </strong>
+    </span>
+@endif --}}
+@error('g-recaptcha-response')
+                      <p class="text-danger"> {{ $message }}</p>
+
+@enderror
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary my-4">Sign in</button>
+                  <button type="submit" 
+                    class="btn btn-primary my-4" 
+                    {{-- data-sitekey="reCAPTCHA_site_key" 
+                    data-callback='onSubmit' 
+                    data-action='submit' --}}
+                  >Sign in</button>
                 </div>
               </form>
             </div>
@@ -215,7 +232,12 @@
     </div>
   </footer>
   <!-- Argon Scripts -->
-@include('layout.script')
+@include('layout.script') 
+{{-- <script>
+   function onSubmit(token) {
+     document.getElementById("demo-form").submit();
+   }
+ </script> --}}
 </body>
 
 </html>

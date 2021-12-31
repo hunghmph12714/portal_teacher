@@ -58,5 +58,5 @@ Route::any('logout', function () {
     return redirect(route('login.form'));
 })->name('user.logout');
 Route::get('/403', function () {
-    return "<h1 href='/car'>Bạn không có quyền truy cập</h1><a href='#'  onclick=' history.back()'>Quay lai</a>";
+    return view('error_403');
 })->name('error.403');

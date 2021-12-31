@@ -30,7 +30,7 @@ class TeacherController extends Controller
                 $str = Str::slug($model->name);
                 $listStr = explode('-', $str);
                 $name = end($listStr);
-                dd($listStr);
+                // dd($listStr);
                 foreach ($listStr as $v) {
                     if ($v !== end($listStr))  $name .= substr($v, 0, 1);
                 }
@@ -169,19 +169,19 @@ class TeacherController extends Controller
         return view('teachers.teacher_class', compact('sessions', 'teacher'));
     }
 
-    public function myClasses()
-    {
-        $day = date('w') - 1;
-        $week_start = date('Y-m-d', strtotime('-' . $day . ' days'));
-        $week_end = date('Y-m-d', strtotime('+' . (6 - $day) . ' days'));
+    // public function myClasses()
+    // {
+    //     $day = date('w') - 1;
+    //     $week_start = date('Y-m-d', strtotime('-' . $day . ' days'));
+    //     $week_end = date('Y-m-d', strtotime('+' . (6 - $day) . ' days'));
 
-        $sessions = Session::where('teacher_id', Auth::user()->id)->where('from', '>=', $week_start)->where('from', '<=', $week_end)
-            ->select('classes.id as id', 'class_id', 'name', 'from', 'year', 'content', 'student_number')
-            ->join('classes', 'class_id', 'classes.id')
-            ->get()->toArray();
-        $teacher = Teacher::find(Auth::user()->id);
-        return view('teachers.teacher_class', compact('sessions', 'teacher'));
-    }
+    //     $sessions = Session::where('teacher_id', Auth::user()->id)->where('from', '>=', $week_start)->where('from', '<=', $week_end)
+    //         ->select('classes.id as id', 'class_id', 'name', 'from', 'year', 'content', 'student_number')
+    //         ->join('classes', 'class_id', 'classes.id')
+    //         ->get()->toArray();
+    //     $teacher = Teacher::find(Auth::user()->id);
+    //     return view('teachers.teacher_class', compact('sessions', 'teacher'));
+    // }
 
     public function classStudent($class_id)
     {
