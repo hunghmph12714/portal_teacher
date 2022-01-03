@@ -51,11 +51,13 @@ const PreviewQuestion = props => {
                 <RadioGroup aria-label="quiz" name="quiz" style={{marginLeft: '10px'}} 
                     onChange={(event) => setSelected(event.target.value)} value={selected}
                 >
-                    {props.question.options.map((o, index) => {
+                    {props.question.options ? (props.question.options.map((o, index) => {
                         return(
-                            <FormControlLabel key={'op_'+o.id} value={'a'+o.id} control={<Radio />} label={ReactHtmlParser(o.content)} />
+                            <FormControlLabel key={'op_'+o.id} value={'a'+o.id} control={<Radio />} label={
+                                ReactHtmlParser(o.content)
+                            }/>
                         )
-                    })}
+                    })): ''}
                 </RadioGroup>
                 
             </DialogContent>    

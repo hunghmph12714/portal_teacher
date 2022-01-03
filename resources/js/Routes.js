@@ -33,7 +33,7 @@ import {
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
   Misa, Syllabus, ListSyllabus,
-  Question, Objective, QuestionList
+  Question, Objective, QuestionList, QuizConfig,QuizConfigList
 } from './views';
 
 const Routes = (props) => {
@@ -333,6 +333,11 @@ const Routes = (props) => {
       <ProtectedRouteWithLayout
         component = {Question}
         layout = {MainLayout}
+        path = "/cau-hoi/sua/:id"
+      />
+      <ProtectedRouteWithLayout
+        component = {Question}
+        layout = {MainLayout}
         path = "/cau-hoi/tao-moi"  
       />
       <ProtectedRouteWithLayout
@@ -346,6 +351,24 @@ const Routes = (props) => {
         path = "/muc-tieu"  
       />
 
+      <ProtectedRouteWithLayout
+        component = {QuizConfig}
+        layout = {MainLayout}
+        path = "/quiz-config/:id"  
+      />
+      <ProtectedRouteWithLayout
+        component = {QuizConfig}
+        layout = {MainLayout}
+        path = "/quiz-config"  
+      />
+      
+      <ProtectedRouteWithLayout
+        component = {QuizConfigList}
+        layout = {MainLayout}
+        path = "/cau-hinh-cau-hoi"  
+      />
+      
+      
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}

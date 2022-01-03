@@ -73,6 +73,9 @@ const QuestionList = (props) => {
 
             })
     }
+    function handleEditQuestion(rowData){
+        props.history.push('/cau-hoi/sua/'+rowData.id)
+    }
     return(
         <div className="root-question">
             <MaterialTable
@@ -104,7 +107,7 @@ const QuestionList = (props) => {
                         isFreeAction: false,
                         text: 'Sửa câu hỏi',
                         onClick: (event, rowData) => {
-                            handleOpenPreview(rowData)
+                            handleEditQuestion(rowData)
                         },
                     },
                     {

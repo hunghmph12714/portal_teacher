@@ -53,6 +53,15 @@ const SingleQuestion = (props) => {
 
             })
     }
+    useEffect(() => {
+        // console.log(props.question)
+        if(props.question.content){
+            setContent(props.question.content)
+            setStatement(props.question.statement)
+            setOptions(props.question.options)
+            setQuestionType(props.question.question_type)
+        }
+    }, [])
     // useEffect(() => {
     //     ClassicEditor.create( document.querySelector( '#editor-vee' ) )
     //     .then( editor => {
@@ -127,6 +136,8 @@ const SingleQuestion = (props) => {
                         onReady={editor => {
                             // You can store the "editor" and use when it is needed.
                             // console.log( 'Editor is ready to use!', editor );
+                            editor.setData( content );
+
                         }}
                         onChange={ ( event, editor ) => {
                             setContent(editor.getData())

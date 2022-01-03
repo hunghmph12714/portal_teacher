@@ -68,6 +68,31 @@ const Question = (props) =>{
             level: null,
             
         })
+        if(props.match.params.id){
+            axios.post('/question/get-single', {id: props.match.params.id})
+                .then(response => {
+                    let c = {
+                        domain: {value: response.data.domain, label: response.data.domain},
+                        grade: {value: response.data.grade, label: response.data.grade},
+                        syllabus: {value: response.data.syllabus.id, label: response.data.syllabus.title},
+                        topics: response.data.topics.map(t => {return {value: t.id, label: t.title}}),
+                        objectives: response.data.objectives.map(o => {return {value: o.id, label: o.content}}),
+                        level: level_options.filter(o => o.value == response.data.question_level),
+                    }
+                    let q = [{
+                        id: props.match.params.id,
+                        content: response.data.content,
+                        statement: response.data.statement,
+                        question_type: response.data.question_type,
+                        options: response.data.options,
+                    }]
+                    setQuestions(q)
+                    setConfig(c)
+                })
+                .catch(err => {
+
+                })
+        }
     },[])
     useEffect(() => {
         fetchSyllabus()
@@ -80,7 +105,6 @@ const Question = (props) =>{
         if(config.syllabus){
             axios.post('/question/fetch-topic', {syllabus: config.syllabus})
                 .then(response => {
-                    console.log(response.data)
                     setTopicOpt(response.data)
                 })
                 .catch(err => {
@@ -131,7 +155,7 @@ const Question = (props) =>{
         setConfig({...config, level: event})
     }
     
-    // Setup the `beforeunload` event listener
+    
     
     return(
         <div className="question-root">
@@ -213,6 +237,7 @@ const Question = (props) =>{
                             topics = {config.topics}
                             id = {q.id}
                             config = {config}
+                            question={q}
                         />
                        
                     </div>

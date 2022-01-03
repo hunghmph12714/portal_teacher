@@ -52,6 +52,7 @@ const Mcq = (props) => {
                         onReady={editor => {
                             // You can store the "editor" and use when it is needed.
                             // console.log( 'Editor is ready to use!', editor );
+                            editor.setData( o.content )
                         }}
                         onChange={ ( event, editor ) => {
                             let opt = [...props.options]

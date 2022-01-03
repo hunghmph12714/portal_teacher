@@ -56,10 +56,24 @@ class QuestionController extends Controller
 
             // $image_base64 = base64_decode($image_parts[1]); 
         //
+    }
+    protected function getSingle(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
 
-
-        
-
+        $syllabus = [];
+        $question = Question::where('id', $request->id)->with('topics')->with('objectives')->with('options')->first();
+        $question->chapter = [];
+        $question->syllabus = [];
+        if(sizeof($question->topics) > 0){
+            $subject = Subject::find($question->topics[0]['subject_id']);
+            if($subject){
+                $chapter = Chapter::find($subject->chapter_id);
+                $question->syllabus = Syllabus::find($chapter->syllabus_id);
+                $question->chapter = $chapter;
+            }
+        }
+        return response()->json($question);
     }
     protected function get(Request $request){
 

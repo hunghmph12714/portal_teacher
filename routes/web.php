@@ -496,14 +496,32 @@ Route::group(['middleware' => ['auth', 'cors']], function() {
         return view('welcome');
     });
     Route::post('/question/fetch-syllabus', 'SyllabusController@fetchSyllabus');
+    Route::post('/question/get-single', 'QuestionController@getSingle');
     Route::post('/question/fetch-topic', 'SyllabusController@fetchTopic');
     Route::post('/question/create', 'QuestionController@create');
-
+    Route::get('/cau-hoi/sua/{id}', function(){
+        return view('welcome');
+    });
     Route::get('/cau-hoi', function(){
         return view('welcome');
     });
 
     Route::post('/questions', 'QuestionController@get');
+
+    //Quizz Config
+    Route::get('/quiz-config', function(){
+        return view('welcome');
+    });
+    Route::get('/quiz-config/get', 'QuizConfigController@get');
+    Route::post('/quiz-config/get-id', 'QuizConfigController@getId');
+
+    Route::get('/quiz-config/{id}', function(){
+        return view('welcome');
+    });
+    Route::post('/quiz-config', 'QuizConfigController@create');
+    Route::get('/cau-hinh-cau-hoi', function(){
+        return view('welcome');
+    });
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
