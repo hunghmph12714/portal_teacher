@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Teacher;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 // use PharIo\Manifest\Email;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -106,12 +107,15 @@ class LoginController extends Controller
 
     protected function loginZalo(Request $request)
     {
-        $rules = [
-            'phone' => 'required',
-            // 'sent_at' => 'required'
 
-        ];
-        $this->validate($request, $rules);
+        $request->validate([
+            'phone' => 'required',
+            'g-recaptcha-response' => 'required|captcha'
+        ], [
+            'phone.required' => 'Bạn phải nhập số điện thoại',
+            'g-recaptcha-response.required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
+            'g-recaptcha-response.captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
+        ]);
         //Check phone number
         $teacher = Teacher::where('phone', $request->phone)->first();
         if ($teacher && $teacher->system_teacher == 1) {
@@ -149,18 +153,11 @@ class LoginController extends Controller
                     $teacher->otp = $otp;
                     // $teacher->sent_at = date('Y-m-d h:i:s', $sent_at);
                     $teacher->save();
-                    $verify = 1;
+                    // $verify = 1;
                     $phone = $teacher->phone;
-                    return view('login.login_zalo', compact('verify', 'phone'));
+                    return view('login.verify_otp', compact('phone'));
                 }
             }
-
-            //Send OTP + lưu lại thời gian gửi otp
-
-
-            //  else {
-            //     return response()->json('Có lỗi xảy ra, vui lòng thử lại sau', 403);
-            // }
         } else {
             return back()->with('msg', 'Số điện thoại không có trong hệ thống');
         }
@@ -172,18 +169,16 @@ class LoginController extends Controller
             ['otp' => 'required'],
             ['otp.required' => 'Vui lòng nhập mã OTP']
         );
-        // dd($request);
+        dd($request);
         $teacher = Teacher::where('phone', $request->phone)->first();
         // dd($teacher);
         if ($teacher->otp == $request->otp && $teacher->phone == $request->phone) {
-            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-                return redirect(route('teacher.class'));
-            } else {
-                $verify = 1;
-
-                return back()->with('msg', 'Lỗi hệ thống, vui lòng thử lại sau', compact('verify'));
-            }
+            Auth::loginUsingId($teacher->id);
+            // dd(Auth::user());
+            return redirect(route('teacher.class', ['id' => Auth::user()->id]));
         } else {
+
+            // dd(2);
             $verify = 1;
             return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ', compact('verify'));
         }

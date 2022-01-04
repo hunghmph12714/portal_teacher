@@ -67,7 +67,7 @@
                 <span></span>
                 <span></span>
               </button>
-            </div>m 
+            </div>
           </div>
         </div>
        
@@ -136,21 +136,11 @@
               </div>
             
 
-     <form @if ($verify==0)
-           action="loginZalo"
-           @else
-              action="loginZaloOTP"
-
-           @endif
-       method="post">
+     <form action=""       method="post">
           @csrf
         <div class="input-group mb-3">
           <input type="number" class="form-control" name="phone"
-           @if (!empty($phone))
-              value="{{ $phone }}" 
-          @else
-              value="{{ old('phone') }}"
-          @endif placeholder="Số điện thoại..." >
+          value="{{ $phone }}" placeholder="Số điện thoại..." >
 
           <div class="input-group-append">
             <div class="input-group-text">
@@ -166,9 +156,6 @@
                 @enderror   
               <div >
                     <input placeholder="Mã xác nhận..." class="form-control mb-5" 
-                    @if ($verify==0)
-                        hidden 
-                    @endif 
                     type="text" name="otp" >
  
             </div> 

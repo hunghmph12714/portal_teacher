@@ -170,22 +170,13 @@
                 </div>
 {!! NoCaptcha :: renderJs () !!}            
     {!! NoCaptcha :: display () !!}
-    
-{{-- @if ( $error -> has ( 'g-recaptcha-response' ))
-    <span class = "help-block" >
-        <strong> {{ $error -> first ( 'g-recaptcha-response' )}} </strong>
-    </span>
-@endif --}}
 @error('g-recaptcha-response')
-                      <p class="text-danger"> {{ $message }}</p>
+<p class="text-danger"> {{ $message }}</p>
 
 @enderror
                 <div class="text-center">
                   <button type="submit" 
                     class="btn btn-primary my-4" 
-                    {{-- data-sitekey="reCAPTCHA_site_key" 
-                    data-callback='onSubmit' 
-                    data-action='submit' --}}
                   >Sign in</button>
                 </div>
               </form>
