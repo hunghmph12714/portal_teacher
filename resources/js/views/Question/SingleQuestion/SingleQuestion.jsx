@@ -13,7 +13,6 @@ import { useSnackbar } from 'notistack';
 import {TextField, Button, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
 
 const SingleQuestion = (props) => {
-    const history = {props}
     const {enqueueSnackbar} = useSnackbar()
     const [content, setContent] = useState('')
     const [statement, setStatement] = useState('')
@@ -46,11 +45,31 @@ const SingleQuestion = (props) => {
                     setOptions([{content: '', weight: 0, set: ''}])
                 }else{
                     window.location.href='/cau-hoi'         
-                 }
+                }
             })
             .catch(err => {
                 enqueueSnackbar('Có lỗi xảy ra', {variant: 'error'})
 
+            })
+    }
+    function editQuestion(type){
+        axios.post('/question/edit', {
+            id: props.id,
+            config: props.config,
+            content: content,
+            statement: statement,
+            question_type: question_type,
+            answer: answer, options: options
+        })
+            .then(response => {
+                if(type=='exit'){
+                    window.location.href='/cau-hoi'         
+                }
+                enqueueSnackbar('Sửa câu hỏi thành công', {variant: 'success'})
+
+            })
+            .catch(err => {
+                enqueueSnackbar('Có lỗi xảy ra', {variant: 'error'})
             })
     }
     useEffect(() => {
@@ -192,9 +211,23 @@ const SingleQuestion = (props) => {
             </Grid>
             <Grid md={2} className="question-add" xs={12}>
                 <Button variant="outlined" className="question-btn" color="primary" fullWidth
-                    onClick={() => createQuestion('stay')}> Lưu và thêm mới </Button>
+                    onClick={() => {
+                        if(props.type == 'create'){
+                            createQuestion('stay')
+                        }
+                        else{
+                            editQuestion('stay')
+                        }
+                    }}> {(props.type=='create') ? 'Lưu và thêm mới' : 'Lưu'} </Button>
                 <Button variant="outlined" className="question-btn" color="primary" fullWidth
-                    onClick={() => createQuestion('exit')}
+                    onClick={() => {
+                        if(props.type == 'create'){
+                            createQuestion('exit')
+                        }
+                        else{
+                            editQuestion('exit')
+                        }
+                    }}
                 > Lưu và thoát </Button>
                 <Button variant="outlined" className="question-btn" color="secondary" fullWidth
                     onClick={() => handleOpenPreview()}

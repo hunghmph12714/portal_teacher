@@ -58,6 +58,7 @@ const Question = (props) =>{
     const [topic_opt, setTopicOpt] = useState([])
     const [objective_opt, setObjectiveOpt] = useState([])
     const [questions, setQuestions] = useState([{id: 'tmp_1'}])
+    const [type, setType] = useState('create')
     useEffect(() => {
         setConfig({
             domain: null,
@@ -69,6 +70,7 @@ const Question = (props) =>{
             
         })
         if(props.match.params.id){
+            setType('edit')
             axios.post('/question/get-single', {id: props.match.params.id})
                 .then(response => {
                     let c = {
@@ -77,7 +79,7 @@ const Question = (props) =>{
                         syllabus: {value: response.data.syllabus.id, label: response.data.syllabus.title},
                         topics: response.data.topics.map(t => {return {value: t.id, label: t.title}}),
                         objectives: response.data.objectives.map(o => {return {value: o.id, label: o.content}}),
-                        level: level_options.filter(o => o.value == response.data.question_level),
+                        level: level_options.filter(o => o.value == response.data.question_level)[0],
                     }
                     let q = [{
                         id: props.match.params.id,
@@ -112,7 +114,6 @@ const Question = (props) =>{
                 })
         }
     }
-    
     function fetchSyllabus(){
         if(config.domain && config.grade){
             axios.post('/question/fetch-syllabus', {domain: config.domain, grade: config.grade})
@@ -238,6 +239,7 @@ const Question = (props) =>{
                             id = {q.id}
                             config = {config}
                             question={q}
+                            type = {type}
                         />
                        
                     </div>

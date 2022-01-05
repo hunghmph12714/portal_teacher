@@ -31,11 +31,22 @@ class QuestionController extends Controller
         $question = Question::create($q);
 
         //Add options
-        $o = [];
-        foreach($request->options as $option){
-            $option['question_id'] = $question->id;
-            $o[] = Option::create($option);
+        switch ($request->question_type) {
+            case 'FIB':
+            case 'MC':
+                $o = [];
+                foreach($request->options as $option){
+                    $option['question_id'] = $question->id;
+                    $o[] = Option::create($option);
+                }
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
         }
+        
 
         
         // Add topic - question
@@ -45,7 +56,7 @@ class QuestionController extends Controller
         $obj = array_column($request->config['objectives'], 'value');
         $question->objectives()->sync($obj);
 
-        return response()->json($o);
+        return response()->json();
 
         //SAVE FOR LATER BASE64 -> BOB
             // $image_parts = explode(";base64,", $request->content); 
@@ -75,9 +86,70 @@ class QuestionController extends Controller
         }
         return response()->json($question);
     }
+    protected function edit(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $question = Question::find($request->id);
+        $q['question_level'] = $request->config['level']['value'];
+        $q['question_type'] = $request->question_type;
+        $q['statement'] = $request->statement;
+        $q['content'] = $request->content;
+        $q['domain'] = $request->config['domain']['value'];
+        $q['hint'] = ($request->answer)?$request->answer:'';
+        $q['grade'] = $request->config['grade']['value'];
+        $q = $question->update($q);
+        //Update topics
+        // update topic - question
+        $topics = array_column($request->config['topics'], 'value');
+        $question->topics()->sync($topics);
+        // update objective
+        $obj = array_column($request->config['objectives'], 'value');
+        $question->objectives()->sync($obj);
+
+        //update ooption
+        switch ($request->question_type) {
+            case 'fib':
+            case 'mc':
+                $o = [];
+                foreach($request->options as $option){
+                    if(!array_key_exists('id', $option)){
+                        $option['question_id'] = $question->id;
+                        $op = Option::create($option);
+                        $o[] = $op->id;
+                    }else{
+                        Option::where('id', $option['id'])->update($option);
+                        $o[] = $option['id'];
+                    }
+                    
+                }
+                $old_option = Option::where('question_id', $question->id)->select('id')->get()->toArray();
+                $old_option = array_column($old_option, 'id');
+                $dif = array_diff($old_option, $o);
+                foreach($dif as $id){
+                    Option::find($id)->forceDelete();
+                }
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        
+
+    }
+    protected function deactive(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $q = Question::find($request->id);
+        $q->active = false;
+        $q->save();
+    }
     protected function get(Request $request){
 
-        $questions = Question::with('topics')->with('objectives')->with('options')->orderBy('id', 'DESC')
+        $questions = Question::with('topics')->with('objectives')->with('options')->where('active',true)->orderBy('id', 'DESC')
             ->get();
         
         

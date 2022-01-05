@@ -788,13 +788,18 @@ class StudentController extends Controller
                 //Phu huynh chua co password
                 if(!$parent->password){
                     $pass = Str::random(5);
-                    $parent->password = $pass;
+                    $parent->password = Hash::make($pass);
+                    $parent->ftp =$pass;
                     $parent->save();
                 }
                 //Phu huynh da co password
                 //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
                 else{
-                    $pass = $parent->password;
+                    if(!$parent->ftp){
+                        $pass = 'Password đã được phụ huynh đổi';
+                    }else{
+                        $pass = $parent->ftp;
+                    }
                 }
                 $result['sbd'] = $student['sbd'];
                 $result['pass'] = $pass;

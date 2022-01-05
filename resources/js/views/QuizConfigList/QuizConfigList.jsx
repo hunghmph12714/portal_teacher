@@ -56,6 +56,16 @@ const QuizConfigList = (props) => {
     function handleEditQuizConfig(rowData){
         props.history.push('/quiz-config/'+rowData.id)
     }
+    function handleGenerateQuiz(rowData){
+        
+        axios.post('/generate-quiz', {config_id: rowData.id})
+                .then(response => {
+
+                })
+                .catch(err => {
+                    
+                })
+    }
     return(
         <div className="root-quiz-config">
             <MaterialTable
@@ -80,6 +90,15 @@ const QuizConfigList = (props) => {
                         text: 'Sửa cấu hình câu hỏi',
                         onClick: (event, rowData) => {
                             handleEditQuizConfig(rowData)
+                        },
+                    },
+                    {
+                        icon: () => <EditIcon />,
+                        tooltip: 'Xem đề ',
+                        isFreeAction: false,
+                        text: 'Xem đề',
+                        onClick: (event, rowData) => {
+                            handleGenerateQuiz(rowData)
                         },
                     },
                     {
