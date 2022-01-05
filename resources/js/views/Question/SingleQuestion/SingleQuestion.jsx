@@ -77,19 +77,16 @@ const SingleQuestion = (props) => {
         if(props.question.content){
             setContent(props.question.content)
             setStatement(props.question.statement)
-            setOptions(props.question.options)
+            if(props.question.options.length == 0){
+                setOptions([{content: '', weight: 0, set: ''},])
+            }else{
+                setOptions(props.question.options)
+            }
+            
             setQuestionType(props.question.question_type)
         }
     }, [])
-    // useEffect(() => {
-    //     ClassicEditor.create( document.querySelector( '#editor-vee' ) )
-    //     .then( editor => {
-    //         console.log(editor)
-    //     } )
-    //     .catch( error => {
-    //         console.error( 'There was a problem initializing the editor.', error );
-    //     } );
-    // },[])
+    
     return (
         <Grid container spacing={2}  >
             <Grid md={10} xs={12} className="question-detail"> 
@@ -237,6 +234,7 @@ const SingleQuestion = (props) => {
                 open={preview_open}
                 handleCloseDialog={handleClosePreview}
                 question={{content: content,  options: options}}
+                setOptions = {setOptions}
            />
         </Grid>
         

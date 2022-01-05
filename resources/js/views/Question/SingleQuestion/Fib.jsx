@@ -6,7 +6,7 @@ import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Fib = (props) => {
-
+    
     return(
         <div style={{marginTop: '15px'}}>
             <h4 style={{fontSize: '1.1rem', fontWeight: 'bold', marginBottom:'20px'}}>Các đáp án được chấp nhận</h4>
