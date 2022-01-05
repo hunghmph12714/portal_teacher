@@ -145,7 +145,7 @@ export default class DialogEdit extends React.Component {
                                     md={12}
                                     lg={6}
                                 >
-                                    <h5>Chi tiết hợp đồng1234</h5>
+                                    <h5>Chi tiết hợp đồng</h5>
                                     <TextField
                                         fullWidth
                                         id="outlined-select-currency-native"
