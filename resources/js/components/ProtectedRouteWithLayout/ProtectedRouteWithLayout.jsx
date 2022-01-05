@@ -5,17 +5,16 @@ import auth from '../../auth';
 
 const ProtectedRouteWithLayout = props => {
   const { layout: Layout, component: Component, ...rest } = props;
-  // let auth = false;
   return (
-    
+
     <Route
       {...rest}
-      render={matchProps =>(
+      render={matchProps => (
         auth.isAuthenticated() === true
-        ? <Layout>
-                <Component {...matchProps} />
-            </Layout>
-        : <Redirect to='/login' />
+          ? <Layout>
+            <Component {...matchProps} />
+          </Layout>
+          : <Redirect to='/login' />
       )}
     />
   );
