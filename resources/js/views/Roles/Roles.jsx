@@ -9,7 +9,6 @@ import { withSnackbar } from 'notistack'
 const baseUrl = window.Laravel.baseUrl;
 function NumberFormatCustom(props) {
     const { inputRef, onChange, name, ...other } = props;
-
     return (
         <NumberFormat
             {...other}

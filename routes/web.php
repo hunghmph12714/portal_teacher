@@ -14,6 +14,11 @@
 Route::get('/', function () {
     return view('welcome');
 });
+// Route::get('/student-4', 'StudentController@get4');
+// Route::get('/student-5', 'StudentController@get5');
+// Route::get('/student-9', 'StudentController@get9');
+Route::get('/ams/{khoi}/{id}', 'GuestController@Ams');
+// Route::get('/ams/')
 Route::get('/form-public','GuestController@formPublic');
 Route::get('/form-public-simplified','GuestController@formPublicSimplified');
 Route::post('/handle-simplified-form', 'GuestController@handleSimplifiedForm');
@@ -25,7 +30,7 @@ Route::get('/login', function () {
 Route::post('/login', 'Auth\LoginController@authenticate');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'cors']], function() {
     Route::get('/parent-export', 'StudentController@csv');
     Route::get('/dashboard', function () {
         return view('welcome');
@@ -130,6 +135,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         });
+        //OBJECTIVES MANAGEMENT
+            Route::get('/muc-tieu', function(){
+                return view('welcome');
+            });
+            Route::post('/objective/get','ObjectiveController@getObjective');
+            Route::post('/objective/edit','ObjectiveController@editObjective');
+            Route::post('/objective/delete', 'ObjectiveController@deleteObjective');
+            Route::post('/objective/create', 'ObjectiveController@addObjective');
+            Route::post('/objective/fetch-by-grade', 'ObjectiveController@getByGrade');
+
         Route::get('/get-center', 'CenterController@index'); 
         Route::post('/step/get', 'AdminSettingController@getStep'); 
         Route::post('/status/get', 'AdminSettingController@getStatus'); 
@@ -477,11 +492,39 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/chapter/delete-subject', 'SyllabusController@deleteSubject');
     Route::post('/subject/delete-topic', 'SyllabusController@deletetopic');
     // Route::post('/subject/')
-    Route::get('/cau-hoi', function(){
+    Route::get('/cau-hoi/tao-moi', function(){
         return view('welcome');
     });
     Route::post('/question/fetch-syllabus', 'SyllabusController@fetchSyllabus');
+    Route::post('/question/get-single', 'QuestionController@getSingle');
     Route::post('/question/fetch-topic', 'SyllabusController@fetchTopic');
+    Route::post('/question/create', 'QuestionController@create');
+    Route::post('/question/edit', 'QuestionController@edit');
+    Route::get('/cau-hoi/sua/{id}', function(){
+        return view('welcome');
+    });
+    Route::get('/cau-hoi', function(){
+        return view('welcome');
+    });
+    Route::post('/question/deactive', 'QuestionController@deactive');
+    Route::post('/questions', 'QuestionController@get');
+
+    //Quizz Config
+    Route::get('/quiz-config', function(){
+        return view('welcome');
+    });
+    Route::get('/quiz-config/get', 'QuizConfigController@get');
+    Route::post('/quiz-config/get-id', 'QuizConfigController@getId');
+
+    Route::get('/quiz-config/{id}', function(){
+        return view('welcome');
+    });
+    Route::post('/quiz-config', 'QuizConfigController@create');
+    Route::get('/cau-hinh-cau-hoi', function(){
+        return view('welcome');
+    });
+    
+    Route::post('/generate-quiz', 'QuizController@generateQuiz');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

@@ -27,6 +27,98 @@ use App\Jobs\SendEventReminder;
 class StudentController extends Controller
 {
     //
+    protected function get4(){
+        $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%4.%')->where('year', '2021')->get();
+        $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%4.%')->where('year', '2021')->get();
+        $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
+        $toan_student = [];
+        $van_student = [];
+        $anh_student = [];
+        foreach($toan as $t){
+            $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+        }
+        foreach($van as $v){
+            $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+        }
+        foreach($anh as $a){
+            $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+        }
+        $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+        echo "<pre>";
+        print_r(array_intersect($toan_student, $anh_student));
+        echo "<pre>";
+        print_r(array_intersect($toan_student, $anh_student, $van_student));
+        $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
+        $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
+        $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
+        echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
+        echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
+        echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
+        echo "Toán Anh: ".($ta)."<br/>";
+        echo "Toán Văn: ".($tv)."<br/>";
+        echo "Anh Văn: ".($av)."<br/>";
+        echo "Toán Văn Anh: ".($tva)."<br/>";
+    }
+    // protected function get9(){
+    //     $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
+    //     $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
+    //     $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
+    //     $toan_student = [];
+    //     $van_student = [];
+    //     $anh_student = [];
+    //     foreach($toan as $t){
+    //         $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     foreach($van as $v){
+    //         $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     foreach($anh as $a){
+    //         $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+    //     echo "<pre>";
+    //     print_r(array_intersect($toan_student, $anh_student));
+    //     echo "<pre>";
+    //     print_r(array_intersect($toan_student, $anh_student, $van_student));
+    //     $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
+    //     $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
+    //     $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
+    //     echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
+    //     echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
+    //     echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
+    //     echo "Toán Anh: ".($ta)."<br/>";
+    //     echo "Toán Văn: ".($tv)."<br/>";
+    //     echo "Anh Văn: ".($av)."<br/>";
+    //     echo "Toán Văn Anh: ".($tva)."<br/>";
+    // }
+    // protected function get5(){
+    //     $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
+    //     $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
+    //     $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
+    //     $toan_student = [];
+    //     $van_student = [];
+    //     $anh_student = [];
+    //     foreach($toan as $t){
+    //         $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     foreach($van as $v){
+    //         $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     foreach($anh as $a){
+    //         $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
+    //     }
+    //     $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
+    //     $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
+    //     $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
+    //     $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
+    //     echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
+    //     echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
+    //     echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
+    //     echo "Toán Anh: ".($ta)."<br/>";
+    //     echo "Toán Văn: ".($tv)."<br/>";
+    //     echo "Anh Văn: ".($av)."<br/>";
+    //     echo "Toán Văn Anh: ".($tva)."<br/>";
+    // }
     protected function removeStudent($id){
         $student = Student::find($id);
         $student->forceDelete();
@@ -125,7 +217,7 @@ class StudentController extends Controller
             $parent->alt_fullname = $s['pname2'];
             $parent->email = (strpos($s['pemail'], '***') !== false)?$parent->email: $s['pemail'];
 
-            $parent->phone = (strpos($s['phone'], '***') !== false)?$parent->phone: $s['phone'];
+            $parent->phone = (strpos($s['pphone'], '***') !== false)?$parent->phone: $s['pphone'];
             $parent->alt_email = $s['pemail2'];
             $parent->alt_phone = $s['pphone2'];
             $parent->relationship_id = $s['relationship']['value'];
@@ -696,13 +788,18 @@ class StudentController extends Controller
                 //Phu huynh chua co password
                 if(!$parent->password){
                     $pass = Str::random(5);
-                    $parent->password = $pass;
+                    $parent->password = Hash::make($pass);
+                    $parent->ftp =$pass;
                     $parent->save();
                 }
                 //Phu huynh da co password
                 //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
                 else{
-                    $pass = $parent->password;
+                    if(!$parent->ftp){
+                        $pass = 'Password đã được phụ huynh đổi';
+                    }else{
+                        $pass = $parent->ftp;
+                    }
                 }
                 $result['sbd'] = $student['sbd'];
                 $result['pass'] = $pass;

@@ -16,11 +16,73 @@ use App\Source;
 use App\Medium;
 use Illuminate\Support\Facades\Http;
 use App\Tracuu;
+use App\Question;
+use App\Option;
 use GuzzleHttp;
 
 class GuestController extends Controller
 {
     //
+    public function Ams($khoi, $id){
+        require_once('html_parser.php');
+            // Create DOM from URL or file
+            $html = file_get_html('http://teacher.vietelite.edu.vn/public/'.$khoi.'/'.$id.'.html','text/html');
+            $opt = ['A', 'B', 'C', 'D'];
+            // Find all images
+            $k = 1;
+            $answers = [];
+            
+            foreach($html->find('#ctl00_ContentPlaceHolder1_ctl00_RadGrid1_ctl00 tbody tr') as  $element){
+                $question = [
+                    'grade' => $khoi,
+                    'domain' => 'Toán',
+                    'question_type' => 'mc',
+                    'content' => ''
+                ];
+                
+                foreach($element->find('.question .content') as $e){
+                    echo "<hr>";
+                    echo '<b>Câu '.$k.': </b>'. $e . "<br>";
+                    $question['content'] = $e;
+                    echo "created question";
+                    $q = Question::create($question);
+                    $k++;
+                }
+                
+
+                echo '<div style="margin-bottom: 25px;">';
+                foreach($element->find('.ans .content table tbody tr') as $cau => $a){
+                    $options = [
+                    
+                    ];
+                    foreach($a->find('td') as $key => $ans){
+                        $options['question_id'] = $q->id;
+                        if($key == 0){
+                            if($ans->find('img')){
+                                $options['weight'] = 1;
+                                $answers[] = $ans->find('span')[0]->innertext;
+                            }
+                            continue;
+                        }
+                        $options['content'] = $ans->find('p')[0]->innertext;
+                        // echo '<b>'.$opt[$cau] . ': </b>' . $ans->find('p')[0]->innertext.' ';
+                        Option::create($options);
+                    }
+                    
+                }
+                echo '</div>';
+
+            }
+            foreach($answers as $key => $value){
+                $i = $key+1;
+                echo "Câu ".$i.": ". $value. " |  ";
+            }
+            // foreach($html->find('.rgMasterTable') as $key => $element){
+
+            //     echo $element . '<br/>';
+
+            // }    
+    }
     public function importtc(){
         if (($handle = fopen(app_path()."/tracuu.csv", "r")) !== FALSE) {
             while (($data = fgetcsv($handle, 100000000, "|")) !== FALSE) {

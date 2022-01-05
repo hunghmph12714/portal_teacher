@@ -82,18 +82,6 @@ const ListStudent = (props) => {
                 width: '20px',
             },
         },
-        {
-            title: "Pass",
-            field: "passcode",
-            filtering: false,
-            headerStyle: {
-                width: '20px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                width: '20px',
-            },
-        },
         //Học sinh
         {
             title: "Học sinh",

@@ -432,7 +432,7 @@ class DiscountController extends Controller
     protected function generateDiscountClass($class_id){
         $class = Classes::find($class_id);
         $from_d = '2021-05-04';
-        $to_d = '2021-12-31';
+        $to_d = '2022-02-28';
         if($class){
             $sessions = Session::whereNotNull('id')->update(['percentage' => NULL]);
             
@@ -533,7 +533,10 @@ class DiscountController extends Controller
                 $total_amount_11 = 0;
                 $sessions_12 = [];
                 $total_amount_12 = 0;
-            
+                $total_amount_1 = 0;
+                $sessions_1 = [];
+                $total_amount_2 = 0;
+                $sessions_2 = [];
                 foreach($transactions as $transaction){
                     switch (date('m', strtotime($transaction['time']))) {
                         case '05':
@@ -567,6 +570,14 @@ class DiscountController extends Controller
                         case '12':
                             $total_amount_12 += $transaction['amount'];
                             $sessions_12[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
+                        case '01':
+                            $total_amount_1 += $transaction['amount'];
+                            $sessions_1[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
+                        case '02':
+                            $total_amount_2 += $transaction['amount'];
+                            $sessions_2[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
                         default:
                             # code...
@@ -696,6 +707,36 @@ class DiscountController extends Controller
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions_12);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_1 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2022-01-31'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_1;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_1);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_2 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2022-02-28'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_2;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_2);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
             }
