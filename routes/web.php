@@ -498,6 +498,7 @@ Route::group(['middleware' => ['auth', 'cors']], function() {
     Route::post('/question/fetch-syllabus', 'SyllabusController@fetchSyllabus');
     Route::post('/question/get-single', 'QuestionController@getSingle');
     Route::post('/question/fetch-topic', 'SyllabusController@fetchTopic');
+    Route::post('/question/filter', 'QuestionController@filter');
     Route::post('/question/create', 'QuestionController@create');
     Route::post('/question/edit', 'QuestionController@edit');
     Route::get('/cau-hoi/sua/{id}', function(){

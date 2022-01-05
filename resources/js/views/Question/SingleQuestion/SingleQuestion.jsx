@@ -106,7 +106,7 @@ const SingleQuestion = (props) => {
                         </Grid>
                         <Grid item md={4}>
                             <FormControl variant="outlined" size="small" fullWidth>
-                                <InputLabel htmlFor="outlined-age-native-simple">Loại câu hỏi</InputLabel>
+                                <InputLabel htmlFor="ougtlined-age-native-simple">Loại câu hỏi</InputLabel>
                                 <Select
                                     native
                                     value={question_type}

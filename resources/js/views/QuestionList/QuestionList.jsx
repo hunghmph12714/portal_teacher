@@ -218,6 +218,15 @@ const QuestionList = (props) => {
         
 
     }
+    function filterQuestion(){
+        axios.post('/question/filter', {config: config})
+            .then(response => {
+
+            })
+            .catch(err => {
+
+            })
+    }
     return(
         <div className="root-question">
             <div className="question-action">
@@ -286,6 +295,8 @@ const QuestionList = (props) => {
                     </Grid>
 
                 </Grid>
+                <Button variant='outlined' color='primary' onClick={() => filterQuestion()} style={{marginTop: '15px'}}>
+                    Tìm kiếm câu hỏi</Button>
                 
             </div>
             <MaterialTable
@@ -293,8 +304,9 @@ const QuestionList = (props) => {
                 columns = {columns}
                 data = {data}
                 options = {{
-                    grouping: true,
+                    grouping: false,
                     pageSize: 10,
+                    filter: true,
                 }}
                 // editable={{
                 //     onRowAdd: newData => addNewQuestionList(newData) ,
