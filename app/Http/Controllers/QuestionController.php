@@ -32,8 +32,8 @@ class QuestionController extends Controller
 
         //Add options
         switch ($request->question_type) {
-            case 'FIB':
-            case 'MC':
+            case 'fib':
+            case 'mc':
                 $o = [];
                 foreach($request->options as $option){
                     $option['question_id'] = $question->id;
