@@ -311,7 +311,7 @@ const QuestionList = (props) => {
                 // editable={{
                 //     onRowAdd: newData => addNewQuestionList(newData) ,
                 //     onRowUpdate: (newData, oldData) => editQuestionList(oldData, newData),
-                //     onRowDelete: oldData => deleteQuestionList(oldData),
+                //     onRowDelete: oldData => deleteQuestionList(oldData),f
                 // }}
                 actions = {[
                     {
