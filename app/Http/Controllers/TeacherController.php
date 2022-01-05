@@ -49,6 +49,36 @@ class TeacherController extends Controller
         $input['insurance'] = $this->checkNull($request->insurance);
         $input['salary_per_hour'] = $this->checkNull($request->salary_per_hour);
         $input['percent_salary'] = $this->checkNull($request->salary_percent);
+        $input['system_teacher'] = $request->system_teacher;
+
+        if ($request->system_teacher == 0) {
+            $input['first_password']  = null;
+            $input['password']  = null;
+        } else {
+            $str = Str::slug($request->name);
+            $listStr = explode('-', $str);
+            $name = end($listStr);
+            // dd($listStr);
+            foreach ($listStr as $v) {
+                if ($v !== end($listStr))  $name .= substr($v, 0, 1);
+            }
+            $input['referral_code'] = $name .    substr($request->phone, -3);
+
+            // $model->system_teacher = $request->system_teacher;
+            $input['first_password']  = 'vee123';
+            $data = [
+                'name' => $request->name,
+                'email' => $request->email,
+            ];
+            $email = $request->email;
+            Mail::send('teachers.send_mail',  $data,  function ($message) use ($email) {
+                // dd($email);
+                $message->from('manhhung17062001@gmail.com', 'VietElite');
+                $message->to($email, 'VietElite');
+                $message->subject('Đăng ký thành viên hệ thống');
+            });
+        }
+
 
         $teacher = Teacher::create($input);
 
