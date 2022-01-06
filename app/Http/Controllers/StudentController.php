@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\SendEventNotify;
 use App\Jobs\SendEventReminder;
+use GuzzleHttp\Client;
 
 class StudentController extends Controller
 {
