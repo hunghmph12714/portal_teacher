@@ -1477,7 +1477,22 @@ class StudentController extends Controller
         $d = ['result' => $result];
         
         SendEventNotify::dispatch($result, $to_email, $to_name);
-
+        $product_str = implode(', ', array_column($request->products, 'content'));
+        $body = [
+            'phone' => '+84'.$result['parent']['phone'],
+            'template_id' => '201874',
+            'template_data' => [
+                'student_name' => $result['student']['name'],
+                'event_name' => $result['event']['name'],
+                'date' => $result['event']['open_date'],
+                'dob' => $result['student']['dob'],
+                'product' => $product_str,
+                'fee' => $result['total_fee']
+            ],
+            'tracking_id'=>$parent->id
+        ];
+        $response = Http::post('https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK', 
+        $body);
         return response()->json(200);
         try{}
         catch(\Exception $e){
