@@ -1507,6 +1507,8 @@ class StudentController extends Controller
         
         SendEventNotify::dispatch($result, $to_email, $to_name);
         $product_str = implode(', ', array_column($request->products, 'content'));
+        if (strlen($product_str) > 10)
+            $product_str = substr($product_str, 0, 25) . '...';
         $body = [
             'phone' => '+84'.ltrim($result['parent']['phone'], '0'),
             'template_id' => '201874',
