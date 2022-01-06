@@ -787,21 +787,27 @@ class StudentController extends Controller
             $parent = Parents::find($student['parent_id']);
             if($parent){
                 //Phu huynh chua co password
-                if(!$parent->password){
-                    $pass = Str::random(5);
-                    $parent->password = Hash::make($pass);
-                    $parent->ftp =$pass;
-                    $parent->save();
-                }
-                //Phu huynh da co password
-                //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
-                else{
-                    if(!$parent->ftp){
-                        $pass = 'Password đã được phụ huynh đổi';
-                    }else{
-                        $pass = $parent->ftp;
-                    }
-                }
+                // if(!$parent->password){
+                //     $pass = Str::random(5);
+                //     $parent->password = Hash::make($pass);
+                //     $parent->ftp =$pass;
+                //     $parent->save();
+                // }
+                // //Phu huynh da co password
+                // //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
+                // else{
+                //     if(!$parent->ftp){
+                //         $pass = 'Password đã được phụ huynh đổi';
+                //     }else{
+                //         $pass = $parent->ftp;
+                //     }
+                // }
+                $pass = Str::random(4);
+                $parent->password = Hash::make($pass);
+                $parent->ftp =$pass;
+
+                $result['phone'] = $parent->phone;
+                $result['event_name'] = $class->name;
                 $result['sbd'] = $student['sbd'];
                 $result['pass'] = $pass;
                 $result['student_name'] = $student['fullname'];
@@ -811,8 +817,28 @@ class StudentController extends Controller
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
                 $password = 'Boc24038';
-                $d = ['result' => $result];
-                //Send 
+                $d = ['
+                result' => $result];
+                //Send Email
+                //Send Zns
+                $body = [
+                    'phone' => '+84'.ltrim($result['phone'], '0'),
+                    'template_id' => '201880',
+                    'template_data' => [
+                        'event_name' => $result['event_name'],
+                        'fee' => $result['total_fee'],
+                        'receipt_number' => $result['receipt_number'],
+                        'sbd' => $result['sbd'],
+                        'passcode' => $result['pass'],
+                    ],
+                ];
+                $client = new Client();
+                $zns_api = 'https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK';
+                $response = $client->request('POST', $zns_api, [
+                    \GuzzleHttp\RequestOptions::JSON => $body
+                ]);
+                echo $response->getbody();
+                try{
                     $backup = Mail::getSwiftMailer();
                     // Setup your outlook mailer
                     $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
@@ -836,11 +862,13 @@ class StudentController extends Controller
 
                     // Restore your original mailer
                     Mail::setSwiftMailer($backup);
-                    try{}
+                }
                 catch(\Exception $e){
                     // Get error here
                     return response()->json(418);
                 }
+                
+                
             }
         //
         }
@@ -1480,21 +1508,22 @@ class StudentController extends Controller
         SendEventNotify::dispatch($result, $to_email, $to_name);
         $product_str = implode(', ', array_column($request->products, 'content'));
         $body = [
-            'phone' => '+84'.$result['parent']['phone'],
+            'phone' => '+84'.ltrim($result['parent']['phone'], '0'),
             'template_id' => '201874',
             'template_data' => [
                 'student_name' => $result['student']['name'],
                 'event_name' => $result['event']['name'],
-                'date' => $result['event']['open_date'],
+                'date' => date('d/m/Y', strtotime($result['event']['open_date'])),
                 'dob' => $result['student']['dob'],
-                'product' => $product_str,
+                'products' => $product_str,
                 'fee' => $result['total_fee']
             ],
-            'tracking_id'=>$parent->id
         ];
         $client = new Client();
         $zns_api = 'https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK';
-        $response = $client->request('POST', $zns_api, $body);
+        $response = $client->request('POST', $zns_api, [
+            \GuzzleHttp\RequestOptions::JSON => $body
+        ]);
         return response()->json(200);
         try{}
         catch(\Exception $e){
