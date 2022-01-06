@@ -805,7 +805,7 @@ class StudentController extends Controller
                 $pass = Str::random(4);
                 $parent->password = Hash::make($pass);
                 $parent->ftp =$pass;
-
+                $parent->save();
                 $result['phone'] = $parent->phone;
                 $result['event_name'] = $class->name;
                 $result['sbd'] = $student['sbd'];
