@@ -23,7 +23,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\SendEventNotify;
 use App\Jobs\SendEventReminder;
-use Illuminate\Support\Facades\Http;
 
 class StudentController extends Controller
 {
@@ -1492,8 +1491,9 @@ class StudentController extends Controller
             ],
             'tracking_id'=>$parent->id
         ];
-        $response = Http::post('https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK', 
-        $body);
+        $client = new GuzzleHttp\Client();
+        $zns_api = 'https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK';
+        $response = $client->request('POST', $zns_api, $body);
         return response()->json(200);
         try{}
         catch(\Exception $e){
