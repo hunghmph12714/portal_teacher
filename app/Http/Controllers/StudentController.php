@@ -1524,6 +1524,8 @@ class StudentController extends Controller
         $response = $client->request('POST', $zns_api, [
             \GuzzleHttp\RequestOptions::JSON => $body
         ]);
+        echo $response->getbody();
+
         return response()->json(200);
         try{}
         catch(\Exception $e){
