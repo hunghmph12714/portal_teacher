@@ -14,7 +14,7 @@ class UpdateRoleTableAddDepartmant extends Migration
     public function up()
     {
         Schema::table('roles', function (Blueprint $table) {
-            
+
             $table->string('department')->nullable();
             $table->string('note')->nullable();
         });

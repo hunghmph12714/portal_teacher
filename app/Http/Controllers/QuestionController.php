@@ -10,10 +10,12 @@ use App\Subject;
 use App\Chapter;
 use App\Syllabus;
 use App\Option;
+
 class QuestionController extends Controller
 {
     //
-    protected function create(Request $request){
+    protected function create(Request $request)
+    {
         $rules = ['config' => 'required', 'question_type' => 'required', 'content' => 'required'];
         $this->validate($request, $rules);
         // protected $fillable = ['question_level', 'question_type', 
@@ -26,7 +28,7 @@ class QuestionController extends Controller
         $q['statement'] = $request->statement;
         $q['content'] = $request->content;
         $q['domain'] = $request->config['domain']['value'];
-        $q['hint'] = ($request->answer)?$request->answer:'';
+        $q['hint'] = ($request->answer) ? $request->answer : '';
         $q['grade'] = $request->config['grade']['value'];
         $question = Question::create($q);
 
@@ -35,20 +37,20 @@ class QuestionController extends Controller
             case 'fib':
             case 'mc':
                 $o = [];
-                foreach($request->options as $option){
+                foreach ($request->options as $option) {
                     $option['question_id'] = $question->id;
                     $o[] = Option::create($option);
                 }
                 # code...
                 break;
-            
+
             default:
                 # code...
                 break;
         }
-        
 
-        
+
+
         // Add topic - question
         $topics = array_column($request->config['topics'], 'value');
         $question->topics()->sync($topics);
@@ -59,16 +61,17 @@ class QuestionController extends Controller
         return response()->json();
 
         //SAVE FOR LATER BASE64 -> BOB
-            // $image_parts = explode(";base64,", $request->content); 
+        // $image_parts = explode(";base64,", $request->content); 
 
-            // $image_type_aux = explode("image/", $image_parts[3]); 
+        // $image_type_aux = explode("image/", $image_parts[3]); 
 
-            // $image_type = $image_type_aux[1]; 
+        // $image_type = $image_type_aux[1]; 
 
-            // $image_base64 = base64_decode($image_parts[1]); 
+        // $image_base64 = base64_decode($image_parts[1]); 
         //
     }
-    protected function getSingle(Request $request){
+    protected function getSingle(Request $request)
+    {
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
 
@@ -76,9 +79,9 @@ class QuestionController extends Controller
         $question = Question::where('id', $request->id)->with('topics')->with('objectives')->with('options')->first();
         $question->chapter = [];
         $question->syllabus = [];
-        if(sizeof($question->topics) > 0){
+        if (sizeof($question->topics) > 0) {
             $subject = Subject::find($question->topics[0]['subject_id']);
-            if($subject){
+            if ($subject) {
                 $chapter = Chapter::find($subject->chapter_id);
                 $question->syllabus = Syllabus::find($chapter->syllabus_id);
                 $question->chapter = $chapter;
@@ -86,7 +89,8 @@ class QuestionController extends Controller
         }
         return response()->json($question);
     }
-    protected function edit(Request $request){
+    protected function edit(Request $request)
+    {
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
 
@@ -96,7 +100,7 @@ class QuestionController extends Controller
         $q['statement'] = $request->statement;
         $q['content'] = $request->content;
         $q['domain'] = $request->config['domain']['value'];
-        $q['hint'] = ($request->answer)?$request->answer:'';
+        $q['hint'] = ($request->answer) ? $request->answer : '';
         $q['grade'] = $request->config['grade']['value'];
         $q = $question->update($q);
         //Update topics
@@ -112,34 +116,32 @@ class QuestionController extends Controller
             case 'fib':
             case 'mc':
                 $o = [];
-                foreach($request->options as $option){
-                    if(!array_key_exists('id', $option)){
+                foreach ($request->options as $option) {
+                    if (!array_key_exists('id', $option)) {
                         $option['question_id'] = $question->id;
                         $op = Option::create($option);
                         $o[] = $op->id;
-                    }else{
+                    } else {
                         Option::where('id', $option['id'])->update($option);
                         $o[] = $option['id'];
                     }
-                    
                 }
                 $old_option = Option::where('question_id', $question->id)->select('id')->get()->toArray();
                 $old_option = array_column($old_option, 'id');
                 $dif = array_diff($old_option, $o);
-                foreach($dif as $id){
+                foreach ($dif as $id) {
                     Option::find($id)->forceDelete();
                 }
                 # code...
                 break;
-            
+
             default:
                 # code...
                 break;
         }
-        
-
     }
-    protected function deactive(Request $request){
+    protected function deactive(Request $request)
+    {
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
 
@@ -147,16 +149,50 @@ class QuestionController extends Controller
         $q->active = false;
         $q->save();
     }
-    protected function get(Request $request){
+    protected function get(Request $request)
+    {
 
-        $questions = Question::with('topics')->with('objectives')->with('options')->where('active',true)->orderBy('id', 'DESC')
+        $questions = Question::with('topics')->with('objectives')->with('options')->where('active', true)->orderBy('id', 'DESC')
             ->get();
-        
-        
+
         return response()->json($questions);
     }
-    protected function filter(Request $request){
-        
+    protected function filter(Request $request)
+    {
+        // dd($request);
+        $questions   = Question::query()
+
+            ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
+            // ->select('topic_id', 'domain', 'question_level', 'grade')
+            ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
+            ->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
+            ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
+            ->select(
+                'title',
+                'topic_id',
+                'lms_question_objective.question_id',
+                'lms_question_objective.objective_id',
+                'question_level',
+                'question_type',
+                'statement',
+                'lms_questions.content',
+                'complex',
+                'domain',
+                'public',
+                'hint',
+                'active',
+                // 'objectives.content',
+                'user_id',
+                'lms_questions.grade'
+            )
+            ->domain($request)
+            ->questionLevel($request)
+            ->grade($request)
+            ->topics($request)
+            ->objectives($request)
+            ->get();
+
+
+        return response()->json($questions);
     }
-    
 }
