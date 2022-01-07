@@ -65,7 +65,7 @@ const Sidebar = props => {
         },
         {
           title: 'Kho bài tập',
-          href: '/documents'
+          href: '/cau-hoi'
         },  
         {
           title: 'Thi thử',
