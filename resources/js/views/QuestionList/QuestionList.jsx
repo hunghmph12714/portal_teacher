@@ -221,7 +221,7 @@ const QuestionList = (props) => {
     function filterQuestion(){
         axios.post('/question/filter', {config: config})
             .then(response => {
-
+                setData(response.data)
             })
             .catch(err => {
 
