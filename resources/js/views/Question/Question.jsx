@@ -71,29 +71,29 @@ const Question = (props) =>{
         })
         if(props.match.params.id){
             setType('edit')
-            axios.post('/question/get-single', {id: props.match.params.id})
-                .then(response => {
-                    let c = {
-                        domain: {value: response.data.domain, label: response.data.domain},
-                        grade: {value: response.data.grade, label: response.data.grade},
-                        syllabus: {value: response.data.syllabus.id, label: response.data.syllabus.title},
-                        topics: response.data.topics.map(t => {return {value: t.id, label: t.title}}),
-                        objectives: response.data.objectives.map(o => {return {value: o.id, label: o.content}}),
-                        level: level_options.filter(o => o.value == response.data.question_level)[0],
-                    }
-                    let q = [{
-                        id: props.match.params.id,
-                        content: response.data.content,
-                        statement: response.data.statement,
-                        question_type: response.data.question_type,
-                        options: response.data.options,
-                    }]
-                    setQuestions(q)
-                    setConfig(c)
-                })
-                .catch(err => {
+            const fetchData = async() => {
+                const response = await axios.post('/question/get-single', {id: props.match.params.id})
 
-                })
+                let c = {
+                    domain: {value: response.data.domain, label: response.data.domain},
+                    grade: {value: response.data.grade, label: response.data.grade},
+                    syllabus: {value: response.data.syllabus.id, label: response.data.syllabus.title},
+                    topics: response.data.topics.map(t => {return {value: t.id, label: t.title}}),
+                    objectives: response.data.objectives.map(o => {return {value: o.id, label: o.content}}),
+                    level: level_options.filter(o => o.value == response.data.question_level)[0],
+                }
+                let q = [{
+                    id: props.match.params.id,
+                    content: response.data.content,
+                    statement: response.data.statement,
+                    question_type: response.data.question_type,
+                    options: response.data.options,
+                }]
+                setQuestions(q)
+                setConfig(c)
+            }
+            fetchData()
+            
         }
     },[])
     useEffect(() => {
