@@ -31,8 +31,11 @@ class Question extends Model
 
     public function scopeDomain($query, $request)
     {
-        if ($request->config['domain']['value']) {
-            $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
+        if (!empty($request->config['domain'])) {
+
+            if ($request->config['domain']['value']) {
+                $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
+            }
         }
 
         return $query;
@@ -40,17 +43,19 @@ class Question extends Model
 
     public function scopeQuestionLevel($query, $request)
     {
-        if ($request->config['level']['value']) {
-            $query->where('question_level', 'like', '%' . $request->config['level']['value'] . '%');
+        if (!empty($request->config['level'])) {
+            if ($request->config['level']['value']) {
+                $query->where('question_level', 'like', '%' . $request->config['level']['value'] . '%');
+            }
         }
-
         return $query;
     }
     public function scopeGrade($query, $request)
     {
-
-        if ($request->config['grade']['value']) {
-            $query->where('lms_questions.grade',  $request->config['grade']['value']);
+        if (!empty($request->config['grade'])) {
+            if ($request->config['grade']['value']) {
+                $query->where('lms_questions.grade',  $request->config['grade']['value']);
+            }
         }
 
         return $query;
@@ -58,14 +63,16 @@ class Question extends Model
 
     public function scopeTopics($query, $request)
     {
+        if (!empty($request->config['topics'])) {
 
 
-        if ($request->config['topics']) {
-            $t = [];
-            foreach ($request->config['topics'] as $tp) {
-                array_push($t, $tp['value']);
+            if ($request->config['topics']) {
+                $t = [];
+                foreach ($request->config['topics'] as $tp) {
+                    array_push($t, $tp['value']);
+                }
+                $query->WhereIn('lms_topic_question.topic_id', $t);
             }
-            $query->WhereIn('lms_topic_question.topic_id', $t);
         }
 
         return $query;
@@ -73,13 +80,14 @@ class Question extends Model
     public function scopeObjectives($query, $request)
     {
 
-        // dd($request);
-        if ($request->config['objectives']) {
-            $o = [];
-            foreach ($request->config['objectives'] as $tp) {
-                array_push($o, $tp['value']);
+        if (!empty($request->config['objectives'])) {
+            if ($request->config['objectives']) {
+                $o = [];
+                foreach ($request->config['objectives'] as $tp) {
+                    array_push($o, $tp['value']);
+                }
+                $query->WhereIn('lms_question_objective.objective_id', $o);
             }
-            $query->WhereIn('lms_question_objective.objective_id', $o);
         }
 
         return $query;

@@ -191,8 +191,6 @@ class QuestionController extends Controller
             ->topics($request)
             ->objectives($request)
             ->get();
-
-
         return response()->json($questions);
     }
 }
