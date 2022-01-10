@@ -74,30 +74,17 @@
         <hr class="d-lg-none" />
         <ul class="navbar-nav align-items-lg-center ml-lg-auto">
           <li class="nav-item">
-            <a class="nav-link nav-link-icon" href="https://www.facebook.com/creativetim" target="_blank" data-toggle="tooltip" data-original-title="Like us on Facebook">
+            <a class="nav-link nav-link-icon" href="https://www.facebook.com/vietelite" target="_blank" data-toggle="tooltip" data-original-title="Đi đến Facebook của VietElite">
               <i class="fab fa-facebook-square"></i>
               <span class="nav-link-inner--text d-lg-none">Facebook</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-link-icon" href="https://www.instagram.com/creativetimofficial" target="_blank" data-toggle="tooltip" data-original-title="Follow us on Instagram">
-              <i class="fab fa-instagram"></i>
-              <span class="nav-link-inner--text d-lg-none">Instagram</span>
+            <a class="nav-link nav-link-icon" href="https://vietelite.edu.vn/" target="_blank" data-toggle="tooltip" data-original-title="Đi đến ebsite cuả VietElite">
+              <i class="fab fa-internet-explorer"></i>
+              <span class="nav-link-inner--text d-lg-none">Website</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link nav-link-icon" href="https://twitter.com/creativetim" target="_blank" data-toggle="tooltip" data-original-title="Follow us on Twitter">
-              <i class="fab fa-twitter-square"></i>
-              <span class="nav-link-inner--text d-lg-none">Twitter</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link nav-link-icon" href="https://github.com/creativetimofficial" target="_blank" data-toggle="tooltip" data-original-title="Star us on Github">
-              <i class="fab fa-github"></i>
-              <span class="nav-link-inner--text d-lg-none">Github</span>
-            </a>
-          </li>
-         
         </ul>
       </div>
     </div>
@@ -134,7 +121,10 @@
             <div class="card-body px-lg-5 py-lg-5">
               <div class="text-center text-muted mb-4">
               </div>
-            
+                
+       @if(Session::has('msg'))
+                     <p class="login-box-msg text-danger">{{Session::get('msg')}}</p>
+                    @endif
 
            <form 
               action=""
@@ -148,7 +138,7 @@
 
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+          <i class="fa fa-mobile" aria-hidden="true"></i>
              </div>
            
            </div>
@@ -191,7 +181,7 @@
     </div>
   </div>
   <!-- Footer -->
-  <footer class="py-5" id="footer-main">
+  {{-- <footer class="py-5" id="footer-main">
     <div class="container">
       <div class="row align-items-center justify-content-xl-between">
         <div class="col-xl-6">
@@ -217,7 +207,7 @@
         </div>
       </div>
     </div>
-  </footer>
+  </footer> --}}
   <!-- Argon Scripts -->
 @include('layout.script')
 </body>

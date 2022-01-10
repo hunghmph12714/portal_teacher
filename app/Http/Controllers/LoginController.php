@@ -22,15 +22,12 @@ class LoginController extends Controller
         $request->validate([
             'phone' => 'required|digits:10|exists:teacher',
             'password' => 'required',
-            'g-recaptcha-response' => 'required|captcha'
         ], [
             'phone.required' => 'Vui lòng nhập số điện thoại',
             'phone.exists' => 'Thông tin tài khoản không đúng',
             'phone.digits' => 'Số điện thoại không hợp lệ',
 
             'password.required' => 'Vui lòng mật khẩu',
-            'g-recaptcha-response.required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
-            'g-recaptcha-response.captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
 
         ]);
         $phone = $request->phone;
@@ -66,15 +63,20 @@ class LoginController extends Controller
         // dd($request);
         $request->validate(
             [
-                'email' => 'required|email'
+                'phone' => 'required|digits:10|exists:teacher',
+                'g-recaptcha-response' => 'required|captcha'
+
+
             ],
             [
-                'email.required' => 'Vui lòng nhập email',
-                'email.email' => 'Vui lòng nhập đúng định dạng email',
-                // 'email.unique' => 'Email không tồn tại trên hệ thống'
+                'phone.required' => 'Vui lòng nhập số điện thoại',
+                'phone.exists' => 'Thông tin tài khoản không đúng',
+                'phone.digits' => 'Số điện thoại không hợp lệ',
+                'g-recaptcha-response.required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
+                'g-recaptcha-response.captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
             ]
         );
-        $teacher = Teacher::where('email', 'like', $request->email)->get();
+        $teacher = Teacher::where('phone', 'like', $request->phone)->get();
         if (!$teacher) {
             return back()->with('msg', 'Tài khoản không đúng hoặc chưa được đăng ký');
         }
@@ -125,7 +127,11 @@ class LoginController extends Controller
                 // dd($request->otp);
                 $sent_at = strtotime(now(7));
                 // Check thời gian cooldown
-                if ($teacher->send_otp_at) {
+                if ($teacher->sent_otp_at) {
+                    if ($sent_at - strtotime($teacher->sent_otp_at) < 150) {
+                        $phone = $teacher->phone;
+                        return redirect(route('login.formOTP', ['phone' => $phone]))->with('msg', 'Mã OTP chưa hết hạn');
+                    }
                 }
                 //  Gửi otp
 
@@ -164,7 +170,6 @@ class LoginController extends Controller
     }
     public function formOtp($phone)
     {
-        // dd($phone);
         $phone = $phone;
         return view('login.verify_otp', compact('phone'));
     }
@@ -176,9 +181,18 @@ class LoginController extends Controller
         );
         $teacher = Teacher::where('phone', $request->phone)->first();
         if (!empty($teacher)) {
+            // dd($request->otp);
+            $sent_at = strtotime(now(7));
+            // Check thời gian cooldown
+            if ($teacher->sent_otp_at) {
+                if ($sent_at - strtotime($teacher->sent_otp_at) >= 150) {
+                    $phone = $teacher->phone;
+                    return redirect(route('login.formZalo'))->with('msg', 'Mã OTP đã hết hạn');
+                }
+            }
             if ($teacher->otp == $request->otp && $teacher->phone == $request->phone) {
                 $teacher->otp = null;
-                $teacher->send_otp_at = null;
+                $teacher->sent_otp_at = null;
                 $teacher->save();
                 Auth::loginUsingId($teacher->id);
 
@@ -189,6 +203,6 @@ class LoginController extends Controller
                 return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ', compact('verify'));
             }
         }
-        return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ');
+        return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ1');
     }
 }

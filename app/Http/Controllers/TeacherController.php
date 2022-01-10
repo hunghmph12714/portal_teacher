@@ -34,7 +34,7 @@ class TeacherController extends Controller
                 foreach ($listStr as $v) {
                     if ($v !== end($listStr))  $name .= substr($v, 0, 1);
                 }
-                $model->name = $name .    substr($model->phone, -3);
+                $model->referral_code = $name .    substr($model->phone, -3);
 
                 $model->system_teacher = $request->system_teacher;
                 $model->first_password = 'vee123';
