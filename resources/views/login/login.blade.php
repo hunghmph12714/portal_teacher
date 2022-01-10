@@ -143,12 +143,13 @@
                 <div class="form-group mb-3">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      <span class="input-group-text"><i class="fa fa-mobile" aria-hidden="true"></i>
+</span>
                     </div>
-                    <input  class="form-control" placeholder="Email" name="email" type="email">
+                    <input  class="form-control" placeholder="Số điện thoại..." name="phone" >
                   </div>
                 </div>
-                 @error('email')
+                 @error('phone')
                    <p class="text-danger"> {{ $message }}</p>
                  @enderror
                 <div class="form-group">

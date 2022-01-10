@@ -136,51 +136,33 @@
               </div>
             
 
-     <form @if ($verify==0)
-           action="loginZalo"
-           @else
-              action="loginZaloOTP"
-
-           @endif
-       method="post">
-          @csrf
-        <div class="input-group mb-3">
+           <form 
+              action=""
+            method="post">
+           @csrf
+            <div class="input-group mb-3">
           <input type="number" class="form-control" name="phone"
-           @if (!empty($phone))
-              value="{{ $phone }}" 
-          @else
+        
               value="{{ old('phone') }}"
-          @endif placeholder="Số điện thoại..." >
+            placeholder="Số điện thoại..." >
 
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
-            </div>
-            <div>
-            </div>
-          </div>
+             </div>
+           
+           </div>
           </div>
           <div>  
                   @error('phone')
                     <p class="text-danger">{{ $message }}</p>
                 @enderror   
-              <div >
-                    <input placeholder="Mã xác nhận..." class="form-control mb-5" 
-                    @if ($verify==0)
-                        hidden 
-                    @endif 
-                    type="text" name="otp" >
- 
-            </div> 
-               
+            
             </div> 
              <div>
            
                
 
-                  @error('otp')
-                    <p class="text-danger">{{ $message }}</p>
-                @enderror
               </div>
           {!! NoCaptcha :: renderJs () !!}            
               {!! NoCaptcha :: display () !!}

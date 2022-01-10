@@ -27,6 +27,8 @@ Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
 
 Route::get('loginZalo', [LoginController::class, 'formLoginZalo'])->name('login.formZalo');
 Route::post('loginZalo', [LoginController::class, 'LoginZalo']);
+
+Route::get('loginZaloOTP/{phone}', [LoginController::class, 'formOTP'])->name('login.formOTP');
 Route::post('loginZaloOTP', [LoginController::class, 'verifyOTP']);
 
 

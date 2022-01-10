@@ -135,53 +135,54 @@
               <div class="text-center text-muted mb-4">
               </div>
             
-
-     <form action=""       method="post">
+       @if(Session::has('msg'))
+                     <p class="login-box-msg text-danger">{{Session::get('msg')}}</p>
+                    @endif
+       <form action="/loginZaloOTP"  method="post">
           @csrf
-        <div class="input-group mb-3">
-          <input type="number" class="form-control" name="phone"
-          value="{{ $phone }}" placeholder="Số điện thoại..." >
+             <div class="input-group mb-3">
+               <input type="number" class="form-control" name="phone"
+             value="{{ $phone }}" placeholder="Số điện thoại..." >
 
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
-            <div>
-            </div>
-          </div>
+           
+                </div>
           </div>
           <div>  
                   @error('phone')
                     <p class="text-danger">{{ $message }}</p>
                 @enderror   
-              <div >
+                <div >
                     <input placeholder="Mã xác nhận..." class="form-control mb-5" 
                     type="text" name="otp" >
  
-            </div> 
-               
-            </div> 
-             <div>
+                </div> 
+                  
+                </div> 
+                <div>
            
                
 
                   @error('otp')
                     <p class="text-danger">{{ $message }}</p>
-                @enderror
-              </div>
-          {!! NoCaptcha :: renderJs () !!}            
-              {!! NoCaptcha :: display () !!}
-          @error('g-recaptcha-response')
-          <p class="text-danger"> {{ $message }}</p>
+                  @enderror
+                </div>
+                {!! NoCaptcha :: renderJs () !!}            
+                {!! NoCaptcha :: display () !!}
+              @error('g-recaptcha-response')
+                   <p class="text-danger"> {{ $message }}</p>
+              @enderror
 
-          @enderror
-            <div class="row">
-              <div class="col-12">
-                <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+              <div class="row">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+                </div>
+                <!-- /.col -->
               </div>
-              <!-- /.col -->
-            </div>
-      </form>
+        </form>
 
 
 

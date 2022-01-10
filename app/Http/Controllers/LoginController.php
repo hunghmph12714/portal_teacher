@@ -20,21 +20,23 @@ class LoginController extends Controller
     public function postLogin(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:teacher',
+            'phone' => 'required|digits:10|exists:teacher',
             'password' => 'required',
             'g-recaptcha-response' => 'required|captcha'
         ], [
-            'email.required' => 'Vui lòng nhập email',
-            'email.exists' => 'Thông tin tài khoản không đúng',
+            'phone.required' => 'Vui lòng nhập số điện thoại',
+            'phone.exists' => 'Thông tin tài khoản không đúng',
+            'phone.digits' => 'Số điện thoại không hợp lệ',
+
             'password.required' => 'Vui lòng mật khẩu',
             'g-recaptcha-response.required' => "Vui lòng xác minh rằng bạn không phải là rô bốt.",
             'g-recaptcha-response.captcha' => 'Lỗi Captcha! hãy thử lại sau hoặc liên hệ với quản trị viên trang web. ',
 
         ]);
-        $email = $request->email;
+        $phone = $request->phone;
         $password = $request->password;
 
-        $teacher = Teacher::where('email', 'like', $email)->get();
+        $teacher = Teacher::where('phone', 'like', $phone)->get();
         if ($teacher && $teacher[0]->first_password == $request->password  && $teacher[0]->system_teacher == 1) {
             // dd($teacher[0]->system_teacher);
             // con
@@ -45,7 +47,7 @@ class LoginController extends Controller
             return back()->with('message', 'Thông tin tài khoản không đúng hoặc tài khoản chưa được kích hoạt');
         }
 
-        if (Auth::attempt(['email' => $email, 'password' => $password, 'system_teacher' => 1], $remember = true)) {
+        if (Auth::attempt(['phone' => $phone, 'password' => $password, 'system_teacher' => 1], $remember = true)) {
             return redirect(route('teacher.class', ['id' => Auth::user()->id]));
         }
         return back()->with('message', 'Thông tin tài khoản không đúng hoặc tài khoản chưa được kích hoạt');
@@ -73,7 +75,6 @@ class LoginController extends Controller
             ]
         );
         $teacher = Teacher::where('email', 'like', $request->email)->get();
-        // dd($teacher);
         if (!$teacher) {
             return back()->with('msg', 'Tài khoản không đúng hoặc chưa được đăng ký');
         }
@@ -122,14 +123,11 @@ class LoginController extends Controller
 
             if (!isset($request->otp)) {
                 // dd($request->otp);
-                // $sent_at = strtotime($request->sent_at);
+                $sent_at = strtotime(now(7));
                 // Check thời gian cooldown
-                // if ($teacher->send_otp_at) {
-                //     if ($sent_at - strtotime($teacher->send_otp_at) < 150) {
-                //         return back()->with('msg', 'Mã OTP chưa hết hiệu lực');
-                //     }
-                // }
-                //              Gửi otp
+                if ($teacher->send_otp_at) {
+                }
+                //  Gửi otp
 
                 $otp = rand(1000, 9999);
                 $phone = $teacher->phone;
@@ -151,36 +149,46 @@ class LoginController extends Controller
                 // $response->message
                 if ($response->message = "Success") {
                     $teacher->otp = $otp;
-                    // $teacher->sent_at = date('Y-m-d h:i:s', $sent_at);
+                    $teacher->sent_otp_at = now(7);
+                    $teacher->sent_otp_at = date('Y-m-d h:i:s', $sent_at);
                     $teacher->save();
                     // $verify = 1;
                     $phone = $teacher->phone;
-                    return view('login.verify_otp', compact('phone'));
+                    // dd(1);
+                    return redirect(route('login.formOTP', ['phone' => $phone]));
                 }
             }
         } else {
             return back()->with('msg', 'Số điện thoại không có trong hệ thống');
         }
     }
-
+    public function formOtp($phone)
+    {
+        // dd($phone);
+        $phone = $phone;
+        return view('login.verify_otp', compact('phone'));
+    }
     public function verifyOTP(Request $request)
     {
         $request->validate(
             ['otp' => 'required'],
             ['otp.required' => 'Vui lòng nhập mã OTP']
         );
-        dd($request);
         $teacher = Teacher::where('phone', $request->phone)->first();
-        // dd($teacher);
-        if ($teacher->otp == $request->otp && $teacher->phone == $request->phone) {
-            Auth::loginUsingId($teacher->id);
-            // dd(Auth::user());
-            return redirect(route('teacher.class', ['id' => Auth::user()->id]));
-        } else {
+        if (!empty($teacher)) {
+            if ($teacher->otp == $request->otp && $teacher->phone == $request->phone) {
+                $teacher->otp = null;
+                $teacher->send_otp_at = null;
+                $teacher->save();
+                Auth::loginUsingId($teacher->id);
 
-            // dd(2);
-            $verify = 1;
-            return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ', compact('verify'));
+
+                return redirect(route('teacher.class', ['id' => Auth::user()->id]));
+            } else {
+                $verify = 1;
+                return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ', compact('verify'));
+            }
         }
+        return back()->with('msg', 'Mã otp hoặc số điện thoại không hợp lệ');
     }
 }
