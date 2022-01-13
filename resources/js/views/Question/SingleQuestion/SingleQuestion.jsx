@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import './SingleQuestion.scss';
 import Mcq from './Mcq'
 import Fib from './Fib'
+import ComplexQuestion  from './ComplexQuestion';
 import axios from 'axios'
 // import CKEditor from 'ckeditor5-vee-math';
 // var Latex = require('react-latex');
@@ -21,6 +22,14 @@ const SingleQuestion = (props) => {
     const [options, setOptions] = useState([
         {content: '', weight: 0, set: ''},
         {content: '', weight: 0, set: ''},
+    ])
+    const [complex_question, setComplexQuestion] = useState([
+        {content: '', statement: '', options: [{
+            content: '', weight: 0, set: ''    
+            }], },
+        {content: '', statement: '', options: [{
+            content: '', weight: 0, set: ''    
+            }], },
     ])
     const [preview_open, setPreviewOpen] = useState(false)
     function handleOpenPreview(){
@@ -166,7 +175,11 @@ const SingleQuestion = (props) => {
                         <Mcq id={props.id} options={options} setOptions={setOptions} />
                     ): question_type == 'fib' ? (
                         <Fib id={props.id} options={options} setOptions={setOptions} />
-                    ): ''}
+                    ): question_type == 'complex' ? (
+                        <ComplexQuestion
+                        
+                        />
+                    ):''}
                     <hr/>
                     <div style={{marginTop: '20px'}}>
                         <h4 style={{fontSize: '1.1rem', fontWeight: 'bold', marginBottom:'20px'}}>Đáp án | Giải thích</h4>
