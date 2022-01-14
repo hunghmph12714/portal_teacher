@@ -18,18 +18,27 @@ const Mcq = (props) => {
                         e.preventDefault()
                         let opt = [...props.options]
                         opt.splice(index+1, 0 , {content: '', weight: 0})
-                        props.setOptions(opt)
+                        if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                     }
                         
                     } style={{cursor: 'pointer',marginTop: '7px',}}/>
-                    <RemoveCircleOutline key={'remove' + index} style={{marginLeft: '12px', marginTop: '7px',cursor: 'pointer'}}
+                    <RemoveCircleOutline key={'remove' + index} style={!props.type == 'complex' ? {marginLeft: '12px', marginTop: '7px',cursor: 'pointer'}: { marginTop: '7px',cursor: 'pointer'}}
                         onClick={(e) => {
                             e.preventDefault()
                             let opt = [...props.options]
                             if(opt.length > 1){
                                 opt.splice(index, 1)
                             }
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
+                            
                         }}
                     />
                 </Grid>
@@ -57,7 +66,11 @@ const Mcq = (props) => {
                         onChange={ ( event, editor ) => {
                             let opt = [...props.options]
                             opt[index].content = editor.getData()
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         } }
                     />
                 </Grid>
@@ -76,7 +89,11 @@ const Mcq = (props) => {
                         onChange = {event => {
                             let opt = [...props.options]
                             opt[index].weight = (event.target.value >=1 ) ? 1 : event.target.value
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         }}
                     />
                 </Grid>

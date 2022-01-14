@@ -1290,7 +1290,7 @@ class SessionController extends Controller
         $week = ['Chủ nhật','Thứ 2', 'Thứ 3' ,'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'];
         $event = Classes::where('code', $event_code)->first();
         if($event){
-            $sessions = Session::where('class_id', $event->id)->where('center_id', '1')->distinct('content')->orderBy('from')->get();
+            $sessions = Session::where('class_id', $event->id)->orderBy('from')->get();
             $result = [];
             foreach($sessions as $s){
                 $from_0 = date('Y-m-d H:i:0',  strtotime($s->from));
@@ -1308,6 +1308,7 @@ class SessionController extends Controller
                     $result[$date][0] = ['time' => str_replace(':', 'h', $from.'-'.$to), 'name' => $name, 'note'=>$s->note];
                 }
             }
+            
             return view('events/event-table', compact('result'));
         }
     }

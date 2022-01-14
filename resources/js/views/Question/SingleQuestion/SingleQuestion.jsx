@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import './SingleQuestion.scss';
 import Mcq from './Mcq'
 import Fib from './Fib'
+import ComplexQuestion  from './ComplexQuestion';
 import axios from 'axios'
 // import CKEditor from 'ckeditor5-vee-math';
 // var Latex = require('react-latex');
@@ -22,6 +23,18 @@ const SingleQuestion = (props) => {
         {content: '', weight: 0, set: ''},
         {content: '', weight: 0, set: ''},
     ])
+    
+    const [complex_question, setComplexQuestion] = useState([
+        {content: '', statement: '',question_type: '' ,options: [{
+            content: '', weight: 0, set: ''}],
+        },
+        {content: '', statement: '',question_type: '', options: [{
+            content: '', weight: 0, set: ''}],
+        },
+    ])
+    function editComplexQuestion(index){
+
+    }
     const [preview_open, setPreviewOpen] = useState(false)
     function handleOpenPreview(){
         setPreviewOpen(true)
@@ -35,7 +48,8 @@ const SingleQuestion = (props) => {
             content: content,
             statement: statement,
             question_type: question_type,
-            answer: answer, options: options
+            answer: answer, options: options,
+            complex_question: complex_question,
         })
             .then(response => {
                 enqueueSnackbar('Thêm câu hỏi thành công', {variant: 'success'})
@@ -163,10 +177,15 @@ const SingleQuestion = (props) => {
                     <Latex>{content}</Latex> */}
                     <hr/>
                     {question_type == 'mc' ? (
-                        <Mcq id={props.id} options={options} setOptions={setOptions} />
+                        <Mcq id={props.id} options={options} setOptions={setOptions} type="single"/>
                     ): question_type == 'fib' ? (
-                        <Fib id={props.id} options={options} setOptions={setOptions} />
-                    ): ''}
+                        <Fib id={props.id} options={options} setOptions={setOptions} type="single"/>
+                    ): question_type == 'complex' ? (
+                        <ComplexQuestion
+                            questions = {complex_question}
+                            setComplexQuestion = {setComplexQuestion}
+                        />
+                    ):''}
                     <hr/>
                     <div style={{marginTop: '20px'}}>
                         <h4 style={{fontSize: '1.1rem', fontWeight: 'bold', marginBottom:'20px'}}>Đáp án | Giải thích</h4>

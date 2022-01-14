@@ -11,7 +11,7 @@ import vi from "date-fns/locale/vi";
 import axios from 'axios'
 import NumberFormat from 'react-number-format';
 import { useSnackbar } from 'notistack';
-
+import './PreviewQuestion.scss'
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
 import {
@@ -39,14 +39,14 @@ const PreviewQuestion = props => {
             fullWidth 
             maxWidth='md'
             scroll='paper'
-            className='root-edit-budget'
+            className='root-edit-budget preview'
             open={props.open} onClose={props.handleCloseDialog} aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">
                 <h4>Xem trước câu hỏi</h4>
             </DialogTitle>
             <DialogContent>
-                <b>Câu 1: </b>
+                <b>Câu 1: {ReactHtmlParser(props.question.statement)}</b>
                 {ReactHtmlParser(props.question.content)}
                 <RadioGroup aria-label="quiz" name="quiz" style={{marginLeft: '10px'}} 
                     onChange={(event) => setSelected(event.target.value)} value={selected}
