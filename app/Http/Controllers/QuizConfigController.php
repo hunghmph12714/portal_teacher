@@ -11,14 +11,18 @@ use App\Syllabus;
 use App\Objective;
 use App\Chapter;
 use App\QuizConfigTopic;
+
 class QuizConfigController extends Controller
 {
     //
 
-    protected function create(Request $request){
+    protected function create(Request $request)
+    {
+        dd($request->quiz_config);
+
         $rules = ['config' => 'required', 'quiz_config'];
         $this->validate($request, $rules);
-         
+
 
         $qc['title'] = $request->config['title'];
         $qc['description'] = $request->config['description'];
@@ -30,8 +34,8 @@ class QuizConfigController extends Controller
         $objectives = array_column($request->config['objectives'], 'value');
         $qc->objectives()->sync($objectives);
         //Add topics 
-        foreach($request->quiz_config as $domain){
-            foreach($domain['quiz_topic'] as $k => $qt){
+        foreach ($request->quiz_config as $domain) {
+            foreach ($domain['quiz_topic'] as $k => $qt) {
                 $input['quiz_config_id'] = $qc->id;
                 $input['topic_id'] =   $qt['topic']['value'];
                 $input['quantity'] = $qt['quantity'];
@@ -43,11 +47,13 @@ class QuizConfigController extends Controller
             }
         }
     }
-    protected function get(){
+    protected function get()
+    {
         $qc = QuizConfig::with('topics')->with('objectives')->orderBy('id', 'DESC')->get();
         return response()->json($qc);
     }
-    protected function getId(Request $request){
+    protected function getId(Request $request)
+    {
         $rules = ['id' => 'required'];
         $this->validate($request, $rules);
 
@@ -55,37 +61,38 @@ class QuizConfigController extends Controller
 
         $quiz_topics = QuizConfigTopic::where('quiz_config_id', $qc->id)->get();
         $quiz_configs = [];
-        foreach($quiz_topics as $qt){
+        foreach ($quiz_topics as $qt) {
             $topic = Topic::find($qt->topic_id);
             $subject = Subject::find($topic->subject_id);
             $chapter = Chapter::find($subject->chapter_id);
             $syllabus = Syllabus::find($chapter->syllabus_id);
 
-            if(array_key_exists($syllabus->title, $quiz_configs)){
+            if (array_key_exists($syllabus->title, $quiz_configs)) {
                 $quiz_configs[$syllabus->title]['sum_q'] += $qt->quantity;
-                $quiz_configs[$syllabus->title]['sum_score'] += $qt->score*$qt->quantity;
+                $quiz_configs[$syllabus->title]['sum_score'] += $qt->score * $qt->quantity;
 
                 $quiz_configs[$syllabus->title]['quiz_topic'][] = [
                     'topic' => ['label' => $topic->title, 'value' => $topic->id],
-                    'level' => $qt->question_level, 'question_type' => $qt->question_type, 
+                    'level' => $qt->question_level, 'question_type' => $qt->question_type,
                     'score' => $qt->score, 'quantity' => $qt->quantity, 'id' => $qt->id
                 ];
-            }else{
+            } else {
                 $quiz_configs[$syllabus->title] = [
-                    
-                        'domain' => $syllabus->subject,
-                        'syllabus' => ['label' => $syllabus->title, 'value' => $syllabus->id],
-                        'sum_q' => $qt->quantity,
-                        'sum_score' => $qt->quantity * $qt->score,
-                        'quiz_topic' => [
-                            ['topic' => ['label' => $topic->title, 'value' => $topic->id],
-                            'level' => $qt->question_level, 'question_type' => $qt->question_type, 
-                            'score' => $qt->score, 'quantity' => $qt->quantity , 'id' => $qt->id]
-                        
+
+                    'domain' => $syllabus->subject,
+                    'syllabus' => ['label' => $syllabus->title, 'value' => $syllabus->id],
+                    'sum_q' => $qt->quantity,
+                    'sum_score' => $qt->quantity * $qt->score,
+                    'quiz_topic' => [
+                        [
+                            'topic' => ['label' => $topic->title, 'value' => $topic->id],
+                            'level' => $qt->question_level, 'question_type' => $qt->question_type,
+                            'score' => $qt->score, 'quantity' => $qt->quantity, 'id' => $qt->id
+                        ]
+
                     ]
                 ];
             }
-            
         }
         return response()->json(['qc' => $qc, 'qt' => array_values($quiz_configs)]);
     }
