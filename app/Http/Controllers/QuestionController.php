@@ -91,7 +91,7 @@ class QuestionController extends Controller
 
         return response()->json();
 
-        //SAVE FOR LATER BASE64 -> BOBaaa
+        //SAVE FOR LATER BASE64 -> BOBaaad
         // $image_parts = explode(";base64,", $request->content); 
 
         // $image_type_aux = explode("image/", $image_parts[3]); 
