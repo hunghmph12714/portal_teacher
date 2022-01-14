@@ -30,7 +30,12 @@ class QuestionController extends Controller
         $q['domain'] = $request->config['domain']['value'];
         $q['hint'] = ($request->answer) ? $request->answer : '';
         $q['grade'] = $request->config['grade']['value'];
+        if($request->question_type == 'complex'){
+            $q['complex'] = 'main';
+        }
         $question = Question::create($q);
+        $topics = array_column($request->config['topics'], 'value');
+        $obj = array_column($request->config['objectives'], 'value');
 
         //Add options
         switch ($request->question_type) {
@@ -43,7 +48,35 @@ class QuestionController extends Controller
                 }
                 # code...
                 break;
-
+            case 'complex':
+                foreach ($request->complex_question as $cq){
+                    $q['question_level'] = $request->config['level']['value'];
+                    $q['question_type'] = $cq['question_type'];
+                    $q['statement'] = $cq['statement'];
+                    $q['content'] = $cq['content'];
+                    $q['domain'] = $request->config['domain']['value'];
+                    $q['grade'] = $request->config['grade']['value'];
+                    $q['complex'] = 'sub';
+                    $q['ref_question_id'] = $question->id;
+                    $sub_question = Question::create($q);
+                    switch ($cq['question_type']) {
+                        case 'fib':
+                        case 'mc':
+                            foreach($cq['options'] as $option){
+                                $o = Option::create($option);
+                                $o->question_id = $sub_question->id;
+                                $o->save();
+                            }
+                            # code...
+                            break;
+                        default:
+                            break;
+                    }
+                    // Add topic - question
+                    $sub_question->topics()->sync($topics);
+                    //Add objective
+                    $sub_question->objectives()->sync($obj);
+                }
             default:
                 # code...
                 break;
@@ -52,10 +85,8 @@ class QuestionController extends Controller
 
 
         // Add topic - question
-        $topics = array_column($request->config['topics'], 'value');
         $question->topics()->sync($topics);
         //Add objective
-        $obj = array_column($request->config['objectives'], 'value');
         $question->objectives()->sync($obj);
 
         return response()->json();
