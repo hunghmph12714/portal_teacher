@@ -532,8 +532,8 @@ class TransactionController extends Controller
                 
                 for ($i= intval(date('m', strtotime($from_d))); $i <= intval(date('m', strtotime($to_d))) ; $i++) { 
                     # code...
-                    $from = date('Y-m-01 00:00:00', strtotime('2021-'.$i.'-01'));
-                    $to = date('Y-m-t 59:59:59', strtotime('2021-'.$i.'-01'));
+                    $from = date('Y-m-01 00:00:00', strtotime('2022-'.$i.'-01'));
+                    $to = date('Y-m-t 59:59:59', strtotime('2022-'.$i.'-01'));
                     $arr = [0,0,0,0,0,0];
                     $hach_toan = date('d/m/Y');
                     $chung_tu = date('d/m/Y');
