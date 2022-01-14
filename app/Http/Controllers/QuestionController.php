@@ -96,7 +96,7 @@ class QuestionController extends Controller
 
         // $image_type_aux = explode("image/", $image_parts[3]); 
 
-        // $image_type = $image_type_aux[1]; 
+        // $image_type = $image_type_aux[1]; s
 
         // $image_base64 = base64_decode($image_parts[1]); 
         //
