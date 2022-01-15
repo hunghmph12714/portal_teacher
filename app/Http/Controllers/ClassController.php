@@ -425,14 +425,15 @@ class ClassController extends Controller
     }
     protected function getAllClass($center_id, $course_id)
     {
-        $center_operator = ($center_id == '-1') ? '!=' : '=';
-        $center_value = ($center_id == '-1') ? NULL : $center_id;
-        $course_operator = ($course_id == '-1') ? '!=' : '=';
-        $course_value = ($course_id == '-1') ? NULL : $course_id;
+        // $center_operator = ($center_id == '-1') ? '!=' : '=';
+        // $center_value = ($center_id == '-1') ? NULL : $center_id;
+        // $course_operator = ($course_id == '-1') ? '!=' : '=';
+        // $course_value = ($course_id == '-1') ? NULL : $course_id;
 
         $wp_year = auth()->user()->wp_year;
 
-        $result = Classes::where('center_id', $center_operator, $center_value)->where('course_id', $course_operator, $course_value)->where('classes.year', $wp_year)->select(
+        // $result = Classes::where('center_id', $center_operator, $center_value)->where('course_id', $course_operator, $course_value)->where('classes.year', $wp_year)->select(
+        $result = Classes::where('classes.year', $wp_year)->select(
                 'classes.id as id',
                 'classes.name as name',
                 'classes.code as code',

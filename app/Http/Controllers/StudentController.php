@@ -1481,7 +1481,7 @@ class StudentController extends Controller
                 $result['location'] = $location['label'];
             }
         }
-        $result['ck_content'] = $this->vn_to_str( $student->fullname )."_".$result['student']['dob']."_".$result['parent']['phone'];
+        $result['ck_content'] = $this->vn_to_str( $student->fullname )." ".$result['parent']['phone'];
         if($total_amount != 0){
             $t['debit'] = Account::Where('level_2', '131')->first()->id;
             $t['credit'] = Account::Where('level_2', '3387')->first()->id;
@@ -1764,7 +1764,7 @@ class StudentController extends Controller
         $str = preg_replace("/($uni)/i", $nonUnicode, $str);
          
         }
-        $str = str_replace(' ','_',$str);
+        // $str = str_replace(' ','_',$str);
          
         return $str;
          

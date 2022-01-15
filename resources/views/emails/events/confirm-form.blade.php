@@ -85,7 +85,7 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
             Nhà 5, ngõ 3 Phạm Tuấn Tài, Dịch Vọng Hậu, Cầu Giấy, Hà Nội 
           </li>
           <li>
-            Nhà 2, ngõ 44 Đỗ Quang, Trung Hòa, Cầu Giấy, Hà Nội   
+            Nhà 17, ngõ 26 Đỗ Quang, Trung Hòa, Cầu Giấy, Hà Nội   
           </li>
           
         </ul>
