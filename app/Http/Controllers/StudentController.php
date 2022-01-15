@@ -817,8 +817,7 @@ class StudentController extends Controller
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
                 $password = 'Boc24038';
-                $d = ['
-                result' => $result];
+                $d = ['result' => $result];
                 //Send Email
                 //Send Zns
                 $body = [
