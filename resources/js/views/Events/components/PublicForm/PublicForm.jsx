@@ -454,19 +454,23 @@ class PublicForm extends React.Component{
               products[i].active = false
               //Trừ lệ phí thi
               total_fee -= p.fee
-              loop1:
-                for( let u = 0 ; u < this.state.classes.length; u++){
-                loop2:
-                  for( let v = 0 ; v < p.classes.length; v++){
-                  if(p.classes[v].value == this.state.classes[u].value && this.state.classes[u].applied){                    
-                    if(this.state.classes[u].applied == p.id){
-                      discount_fee -= p.fee/100*p.percentage
-                      tmp_classes[u].applied = false;
-                    }                    
-                    break loop1;
-                  }
-                }
+              if(discount_fee>0){
+                discount_fee -= p.fee/100*p.percentage
+
               }
+              // loop1:
+              //   for( let u = 0 ; u < this.state.classes.length; u++){
+              //   loop2:
+              //     for( let v = 0 ; v < p.classes.length; v++){
+              //     if(p.classes[v].value == this.state.classes[u].value ){                    
+              //       if(this.state.classes[u].applied == p.id){
+              //         discount_fee -= p.fee/100*p.percentage
+              //         tmp_classes[u].applied = false;
+              //       }                    
+              //       break loop1;
+              //     }
+              //   }
+              // }
             } 
             else{
               for(let j = 0 ; j < products.length; j++){
@@ -483,7 +487,7 @@ class PublicForm extends React.Component{
                 for( let u = 0 ; u < this.state.classes.length; u++){
                 loop2:
                   for( let v = 0 ; v < p.classes.length; v++){
-                  if(p.classes[v].value == this.state.classes[u].value  && !this.state.classes[u].applied){
+                  if(p.classes[v].value == this.state.classes[u].value ){
                     discount_fee += p.fee/100*p.percentage
                     tmp_classes[u].applied = p.id;
                     break loop1;
