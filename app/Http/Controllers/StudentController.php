@@ -1494,7 +1494,7 @@ class StudentController extends Controller
             $created_transaction = Transaction::create($t);
             $created_transaction->tags()->syncWithoutDetaching([7]);
             $created_transaction->sessions()->syncWithoutDetaching($product_ids);
-            // return response()->json('Đăng ký thành công, vui lòng kiểm tra hòm thư đến', 200);
+            // return response()->json('Đăngd ký thành công, vui lòng kiểm tra hòm thư đến', 200);
         }
         else{
             return response()->json('Đã đăng ký, vui lòng kiểm tra hòm thư đến.', 402);
