@@ -837,8 +837,8 @@ class StudentController extends Controller
                 $response = $client->request('POST', $zns_api, [
                     \GuzzleHttp\RequestOptions::JSON => $body
                 ]);
-                echo $response->getbody();
-                try{
+                // echo $response->getbody();
+               
                     $backup = Mail::getSwiftMailer();
                     // Setup your outlook mailer
                     $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
@@ -862,7 +862,7 @@ class StudentController extends Controller
 
                     // Restore your original mailer
                     Mail::setSwiftMailer($backup);
-                }
+                    try{}
                 catch(\Exception $e){
                     // Get error here
                     return response()->json(418);
