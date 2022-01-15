@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateStudentSessionObjective extends Migration
+class UpdateLmsQuizzes extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class UpdateStudentSessionObjective extends Migration
      */
     public function up()
     {
-        Schema::table('student_session', function (Blueprint $table) {
-            //
-            $table->json('objectives')->nullable();
+        Schema::table('lms_quizzes', function (Blueprint $table) {
+            $table->dateTime('available_date')->nullable()->change();
         });
     }
 
@@ -26,7 +25,7 @@ class UpdateStudentSessionObjective extends Migration
      */
     public function down()
     {
-        Schema::table('student_session', function (Blueprint $table) {
+        Schema::table('lms_quizzes', function (Blueprint $table) {
             //
         });
     }

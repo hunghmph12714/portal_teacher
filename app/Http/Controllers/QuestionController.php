@@ -30,7 +30,7 @@ class QuestionController extends Controller
         $q['domain'] = $request->config['domain']['value'];
         $q['hint'] = ($request->answer) ? $request->answer : '';
         $q['grade'] = $request->config['grade']['value'];
-        if($request->question_type == 'complex'){
+        if ($request->question_type == 'complex') {
             $q['complex'] = 'main';
         }
         $question = Question::create($q);
@@ -49,7 +49,7 @@ class QuestionController extends Controller
                 # code...
                 break;
             case 'complex':
-                foreach ($request->complex_question as $cq){
+                foreach ($request->complex_question as $cq) {
                     $q['question_level'] = $request->config['level']['value'];
                     $q['question_type'] = $cq['question_type'];
                     $q['statement'] = $cq['statement'];
@@ -62,7 +62,7 @@ class QuestionController extends Controller
                     switch ($cq['question_type']) {
                         case 'fib':
                         case 'mc':
-                            foreach($cq['options'] as $option){
+                            foreach ($cq['options'] as $option) {
                                 $o = Option::create($option);
                                 $o->question_id = $sub_question->id;
                                 $o->save();

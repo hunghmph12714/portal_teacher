@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class TopicQuestion extends Pivot
 {
     //
-    public $table = 'topic_question';
-    protected $fillable = ['question_id','topic_id','type'];
-    
+    public $table = 'lms_topic_question';
+    protected $fillable = ['question_id', 'topic_id', 'type'];
 }
