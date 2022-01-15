@@ -1466,6 +1466,7 @@ class StudentController extends Controller
         }
 
         $result['student']['name'] = $student->fullname;
+        $result['student']['id'] = $student->id;
         $result['student']['dob'] = date('d/m/Y', strtotime($student->dob));
         $result['student']['school'] = $student->school;
         $result['parent']['name'] = $parent->fullname;
@@ -1509,16 +1510,19 @@ class StudentController extends Controller
         $product_str = implode(', ', array_column($request->products, 'content'));
         if (strlen($product_str) > 10)
             $product_str = substr($product_str, 0, 25) . '...';
+        $product_count = sizeof(array_column($request->products, 'content'));
         $body = [
             'phone' => '+84'.ltrim($result['parent']['phone'], '0'),
-            'template_id' => '201874',
+            'template_id' => '219155',
             'template_data' => [
                 'student_name' => $result['student']['name'],
+                'student_id' => 'HS'.$result['student']['id'],
                 'event_name' => $result['event']['name'],
                 'date' => date('d/m/Y', strtotime($result['event']['open_date'])),
                 'dob' => $result['student']['dob'],
-                'products' => $product_str,
-                'fee' => $result['total_fee']
+                'products' => $product_count.' bài',
+                'fee' => $result['total_fee'],
+                'created_at' => date('d/m/Y'),
             ],
         ];
         $client = new Client();

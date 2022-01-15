@@ -18,7 +18,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { useSnackbar } from 'notistack';
 const domain_options = [
     {value: 'Toán', label: 'Toán'}, {value: 'Tiếng Việt', label: 'Tiếng Việt/ Văn học'},
-    {value: 'Anh', label: 'Tiếng Anh'}, {value: 'Lý', label: 'Lý'},
+    {value: 'Tiếgn Anh', label: 'Tiếng Anh'}, {value: 'Lý', label: 'Lý'},
     {value: 'Hoá', label: 'Hoá'},
 ]
 const grade_options  = [

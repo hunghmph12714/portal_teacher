@@ -423,7 +423,7 @@ class Documents extends React.Component{
                                         <option aria-label="None" value="" />
                                         <option value={'Toán'}>Toán</option>
                                         <option value={'Tiếng Việt'}>Tiếng Việt/Văn</option>
-                                        <option value={'Anh'}>Tiếng Anh</option>
+                                        <option value={'Tiếng Anh'}>Tiếng Anh</option>
                                         <option value={'Lý'}>Lý</option>
                                         <option value={'Hoá'}>Hoá</option>
                                     </Select>
