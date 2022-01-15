@@ -27,9 +27,9 @@
 @endsection
 @section('content')
 <p>
-Kính gửi phụ huynh con <b>{{$result['student_name']}}</b>,<br/><br/>
-Cảm ơn quý phụ huynh đã tin tưởng và lựa chọn chúng tôi trong kỳ thi thử cho con. VietElite xác nhận quý phụ huynh đã thanh toán thành công lệ phí thi thử năm học 2021 cho con.<br/><br/>
-VietElite xin gửi tới quý phụ huynh một số thông tin quan trọng để giúp quý phụ huynh dễ dàng theo dõi các thông tin trước kỳ thi và cách thức tra cứu điểm cho con sau kỳ thi.
+Kính gửi Phụ huynh Học sinh <b>{{$result['student_name']}}</b>,<br/><br/>
+Cảm ơn quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong kỳ khảo sát cho con. VietElite xác nhận quý Qhụ huynh đã thanh toán thành công lệ phí khảo sát năm học 2022.<br/><br/>
+VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng để giúp quý phụ huynh dễ dàng theo dõi các thông tin trước kỳ thi và cách thức tra cứu điểm cho con sau kỳ thi.
 <div class="container">
   <div class="row">
     <div class="col-sm">
@@ -44,19 +44,22 @@ VietElite xin gửi tới quý phụ huynh một số thông tin quan trọng đ
         </ul>
     </div>
     <div class="col-sm">
-        <h3><u>Thông tin tra cứu</u></h3>
+        <h3><u>Thông tin khảo sát Online</u></h3>
         <ul>
           <li>
-            <b> ID tra cứu: </b> {{$result['sbd']}} 
+            <b> Portal Khảo sát Online : </b> <a href="https://portal.vietelite.edu.vn">https://portal.vietelite.edu.vn </a>
           </li>
           <li>
-            <b> Mã cá nhân: </b> {{$result['pass']}} 
+            <b> Tài khoản đăng nhập: </b> {{$result['phone']}} 
           </li>
           <li>
-             Tra cứu thông tin và kết quả thi: <a href="https://thithu.info/tra-cuu">https://thithu.info/tra-cuu</a>
+            <b> Mật khẩu truy cập: </b> {{$result['pass']}} 
+          </li>
+          <li>
+             Nhận xét và kết quả thi: Sẽ được cập nhật trên Portal Khảo sát Online.
           </li>
         </ul>
-    </div>    
+    </div>
   </div>   	
 
 <p>Mọi thắc mắc quý phụ huynh vui lòng liên hệ tới Viet Elite để được hỗ trợ sớm nhất! Email: thithu@vietelite.edu.vn - Điện thoại: 024.730.65565 <br/>
