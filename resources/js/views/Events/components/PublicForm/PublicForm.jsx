@@ -636,6 +636,7 @@ class PublicForm extends React.Component{
               <Grid item md={7} sm={12} className="mon-thi">
                 <FormControl component="fieldset" size="small" fullWidth>
                   <FormLabel className="label-white">Chọn môn thi</FormLabel>
+                  <span>Lưu ý: Thời gian làm bài ONLINE sẽ được tính khi Học sinh mở đề</span>
                   <span>
                   {this.state.products.map( (evt , index)=> {
                       return(

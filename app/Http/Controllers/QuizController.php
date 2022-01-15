@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 use App\Question;
 use App\QuestionObjective;
 use App\QuizConfig;
-<<<<<<< HEAD
-use App\Option;
-use App\StudentSession;
-use App\QuizQuestion;
-=======
 use App\QuizConfigObjective;
 use App\StudentSession;
 use App\TopicQuestion;
@@ -20,7 +15,6 @@ use App\QuizConfigTopic;
 use App\QuizQuestion;
 use DateTime;
 use DateTimeInterface;
->>>>>>> 65504c2e2028eafaf0980503d24c0a625fb3eb7d
 
 class QuizController extends Controller
 {
@@ -34,7 +28,6 @@ class QuizController extends Controller
 
         print_r($qc);
     }
-<<<<<<< HEAD
     public function genQuiz(){
         $question = Question::all();
 
@@ -51,7 +44,6 @@ class QuizController extends Controller
         }
     }
 }
-=======
     protected function configuration(Request $request)
     {
         // $objective_id = $request->objective_id;
@@ -161,4 +153,3 @@ class QuizController extends Controller
         dd($quiz);
     }
 }
->>>>>>> 65504c2e2028eafaf0980503d24c0a625fb3eb7d
