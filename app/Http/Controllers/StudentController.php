@@ -1522,7 +1522,7 @@ class StudentController extends Controller
                 'dob' => $result['student']['dob'],
                 'products' => $product_count.' bài',
                 'fee' => $result['total_fee'],
-                'created_at' => date('d/m/Y'),
+                'created_at' => date('H:i:s d/m/Y'),
             ],
         ];
         $client = new Client();
