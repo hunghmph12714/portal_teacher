@@ -1451,11 +1451,14 @@ class StudentController extends Controller
                     $ss = StudentSession::create($input_ss);
                     // $student->sessions()->attach([$product['id']]);
                     $amount = $product['fee'];
-                    foreach($request->classes as $c){
-                        if($c['applied'] == $product['id']){
-                            $amount -= $product['fee']/100*$product['percentage'];
-                        }
+                    if(sizeof($request->classes) > 0){
+                        $amount -= $product['fee']/100*$product['percentage'];
                     }
+                    // foreach($request->classes as $c){
+                    //     if($c['applied'] == $product['id']){
+                            
+                    //     }
+                    // }
                     $total_amount += $amount;
                     $product_ids[$product['id']] = ['amount' => $amount ];
                     //   
