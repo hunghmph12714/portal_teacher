@@ -531,6 +531,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     });
 
     Route::post('/generate-quiz', 'QuizController@generateQuiz');
+    Route::get('/gen-quiz', 'QuizController@genQuiz');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');

@@ -817,8 +817,7 @@ class StudentController extends Controller
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
                 $password = 'Boc24038';
-                $d = ['
-                result' => $result];
+                $d = ['result' => $result];
                 //Send Email
                 //Send Zns
                 $body = [
@@ -837,8 +836,8 @@ class StudentController extends Controller
                 $response = $client->request('POST', $zns_api, [
                     \GuzzleHttp\RequestOptions::JSON => $body
                 ]);
-                echo $response->getbody();
-                try{
+                // echo $response->getbody();
+               
                     $backup = Mail::getSwiftMailer();
                     // Setup your outlook mailer
                     $transport = new \Swift_SmtpTransport('smtp-mail.outlook.com', 587, 'tls');
@@ -862,7 +861,7 @@ class StudentController extends Controller
 
                     // Restore your original mailer
                     Mail::setSwiftMailer($backup);
-                }
+                    try{}
                 catch(\Exception $e){
                     // Get error here
                     return response()->json(418);
@@ -1452,11 +1451,14 @@ class StudentController extends Controller
                     $ss = StudentSession::create($input_ss);
                     // $student->sessions()->attach([$product['id']]);
                     $amount = $product['fee'];
-                    foreach($request->classes as $c){
-                        if($c['applied'] == $product['id']){
-                            $amount -= $product['fee']/100*$product['percentage'];
-                        }
+                    if(sizeof($request->classes) > 0){
+                        $amount -= $product['fee']/100*$product['percentage'];
                     }
+                    // foreach($request->classes as $c){
+                    //     if($c['applied'] == $product['id']){
+                            
+                    //     }
+                    // }
                     $total_amount += $amount;
                     $product_ids[$product['id']] = ['amount' => $amount ];
                     //   
@@ -1466,6 +1468,7 @@ class StudentController extends Controller
         }
 
         $result['student']['name'] = $student->fullname;
+        $result['student']['id'] = $student->id;
         $result['student']['dob'] = date('d/m/Y', strtotime($student->dob));
         $result['student']['school'] = $student->school;
         $result['parent']['name'] = $parent->fullname;
@@ -1480,7 +1483,7 @@ class StudentController extends Controller
                 $result['location'] = $location['label'];
             }
         }
-        $result['ck_content'] = $this->vn_to_str( $student->fullname )."_".$result['student']['dob']."_".$result['parent']['phone'];
+        $result['ck_content'] = $this->vn_to_str( $student->fullname )." ".$result['parent']['phone'];
         if($total_amount != 0){
             $t['debit'] = Account::Where('level_2', '131')->first()->id;
             $t['credit'] = Account::Where('level_2', '3387')->first()->id;
@@ -1493,7 +1496,7 @@ class StudentController extends Controller
             $created_transaction = Transaction::create($t);
             $created_transaction->tags()->syncWithoutDetaching([7]);
             $created_transaction->sessions()->syncWithoutDetaching($product_ids);
-            // return response()->json('Đăng ký thành công, vui lòng kiểm tra hòm thư đến', 200);
+            // return response()->json('Đăngd ký thành công, vui lòng kiểm tra hòm thư đến', 200);
         }
         else{
             return response()->json('Đã đăng ký, vui lòng kiểm tra hòm thư đến.', 402);
@@ -1509,16 +1512,19 @@ class StudentController extends Controller
         $product_str = implode(', ', array_column($request->products, 'content'));
         if (strlen($product_str) > 10)
             $product_str = substr($product_str, 0, 25) . '...';
+        $product_count = sizeof(array_column($request->products, 'content'));
         $body = [
             'phone' => '+84'.ltrim($result['parent']['phone'], '0'),
-            'template_id' => '201874',
+            'template_id' => '219155',
             'template_data' => [
                 'student_name' => $result['student']['name'],
+                'student_id' => 'HS'.$result['student']['id'],
                 'event_name' => $result['event']['name'],
                 'date' => date('d/m/Y', strtotime($result['event']['open_date'])),
                 'dob' => $result['student']['dob'],
-                'products' => $product_str,
-                'fee' => $result['total_fee']
+                'products' => $product_count.' bài',
+                'fee' => $result['total_fee'],
+                'created_date' => date('H:i:s d/m/Y'),
             ],
         ];
         $client = new Client();
@@ -1760,7 +1766,7 @@ class StudentController extends Controller
         $str = preg_replace("/($uni)/i", $nonUnicode, $str);
          
         }
-        $str = str_replace(' ','_',$str);
+        // $str = str_replace(' ','_',$str);
          
         return $str;
          

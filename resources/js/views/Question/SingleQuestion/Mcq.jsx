@@ -50,6 +50,8 @@ const Mcq = (props) => {
                                 items: [
                                     'bold',
                                     'italic',
+                                    'underline',
+                                    'strikethrough',
                                     'imageUpload',
                                     'mediaEmbed',
                                     'MathType', 'ChemType',

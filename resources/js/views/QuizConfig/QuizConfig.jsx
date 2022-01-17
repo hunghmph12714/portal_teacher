@@ -19,7 +19,7 @@ const question_type_options = [
 ]
 const domain_options = [
     {value: 'Toán', label: 'Toán'}, {value: 'Tiếng Việt', label: 'Tiếng Việt/ Văn học'},
-    {value: 'Anh', label: 'Tiếng Anh'}, {value: 'Lý', label: 'Lý'},
+    {value: 'Tiếng Anh', label: 'Tiếng Anh'}, {value: 'Lý', label: 'Lý'},
     {value: 'Hoá', label: 'Hoá'},
 ]
 const grade_options  = [
