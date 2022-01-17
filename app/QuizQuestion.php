@@ -11,4 +11,8 @@ class QuizQuestion extends Model
     protected $casts = [
         'option_config' => 'array',
     ];
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3e93deab5ab6ba383f3abb86f35d6e67e2c6a16e

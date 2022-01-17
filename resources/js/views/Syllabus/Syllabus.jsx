@@ -14,7 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
+import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
 import axios from 'axios';
 import './Syllabus.scss'
 import { useSnackbar } from 'notistack'

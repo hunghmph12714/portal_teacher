@@ -7,7 +7,7 @@ import axios from 'axios'
 // var Latex = require('react-latex');
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor5lmsvee/build/ckeditor';
+import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
 // import {PreviewQuestion} from '.'
 import { useSnackbar } from 'notistack';
 import {TextField, Button, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
@@ -118,6 +118,7 @@ const SingleQuizConfig = (props) => {
                                     '|',
                                     'bold',
                                     'italic',
+                                    'underline',
                                     'link',
                                     'bulletedList',
                                     'numberedList',
