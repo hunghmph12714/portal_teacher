@@ -28,22 +28,23 @@ class QuizController extends Controller
 
         print_r($qc);
     }
-    public function genQuiz(){
-        $question = Question::all();
+    // public function genQuiz()
+    // {
+    //     $question = Question::all();
 
-        foreach($question as $q){
-            $quiz['question_id'] = $q->id;
-            $quiz['quizz_id'] = 1;
-            $quiz['max_score'] = 1;
-            if($q->question_type == 'mc'){
-                $options = Option::where('question_id', $q->id)->select('id')->get()->toArray();
-                $options = array_column($options, 'id');
-                $quiz['option_config'] = $options;
-            }
-            QuizQuestion::create($quiz);
-        }
-    }
-}
+    //     foreach ($question as $q) {
+    //         $quiz['question_id'] = $q->id;
+    //         $quiz['quizz_id'] = 1;
+    //         $quiz['max_score'] = 1;
+    //         if ($q->question_type == 'mc') {
+    //             $options = Option::where('question_id', $q->id)->select('id')->get()->toArray();
+    //             $options = array_column($options, 'id');
+    //             $quiz['option_config'] = $options;
+    //         }
+    //         QuizQuestion::create($quiz);
+    //     }
+    // }
+
     protected function configuration(Request $request)
     {
         // $objective_id = $request->objective_id;
@@ -99,7 +100,10 @@ class QuizController extends Controller
             if ($subject->toArray() != null) {
                 foreach ($subject as $qt) {
                     $q =  TopicQuestion::where('topic_id', $qt->topic_id)
-                        ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')->get();
+                        ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
+                        ->whereNotIn('complex', ['main'])
+                        ->orWhereNull('complex')
+                        ->get();
                     // dd($q);
                     if ($q->toArray() != null) {
                         if ($qt->quantity <= 1) {
@@ -107,34 +111,39 @@ class QuizController extends Controller
                             $rand = array_rand($q->toArray(), 1);
 
                             if ($q[$rand]->complex == 'sub') {
-                                dd($q[$rand]);
+                                // dd($q[$rand]);
                                 $i = 0;
                                 foreach ($main as $m) {
 
                                     if ($m == $q[$rand]->ref_question_id) {
+                                        // dd($q);
                                         $question_sub = $q->where('rep_question_id', $m)
-                                            ->whereNotIn('id', $sub_id);
+                                            ->whereNotIn('id', $sub_id)->where('complex', 'sub');
+                                        // dd($question_sub);
                                         if ($question_sub != null) {
                                             //nếu tồn tại $question_sub 
+                                            // dd($question_sub);
                                             $i = 1;
                                             $rand_sub = array_rand($question_sub->toArray(), 1);
                                             $q[$rand] = $q[$rand_sub];
-                                            array_push($sub_id, $q[$rand]);
-                                        } else {
-                                            // nếu hết câu hỏi sub sẽ chuyển sang câu hỏi thường
+                                            // dd($q[$rand]);
 
-                                            $i = 0;
+                                            array_push($sub_id, $q[$rand]);
+                                            break;
                                         }
                                         // dd($m);
                                         // // Loại trừ những thằng đã có
-                                        break;
+                                        // break;
                                     }
                                 }
                                 if ($i == 0) {
+                                    // dd($q[$rand]);
+                                    array_push($main, $q[$rand]->ref_question_id);
                                 }
                             }
 
-
+                            // $rand = array_rand($q->toArray(), 1);
+                            // dd($q[$rand], 'm');
 
                             $q_q = [
                                 'question_id' => $q[$rand],
@@ -145,7 +154,8 @@ class QuizController extends Controller
 
                             $model = QuizQuestion::create($q_q);
                             $option_config = $model->option_config;
-                            $o = Option::where('question_id', $q[$item]->id)->get();
+                            // print_r($item);
+                            $o = Option::where('question_id', $q[$rand]->id)->get();
                             foreach ($o as $key => $op) {
                                 $option_config[$key] = $op->id;
                             }

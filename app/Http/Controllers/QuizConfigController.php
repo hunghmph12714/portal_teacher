@@ -18,7 +18,7 @@ class QuizConfigController extends Controller
 
     protected function create(Request $request)
     {
-        dd($request->quiz_config);
+        // dd($request->quiz_config);
 
         $rules = ['config' => 'required', 'quiz_config'];
         $this->validate($request, $rules);
