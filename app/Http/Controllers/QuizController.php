@@ -78,7 +78,8 @@ class QuizController extends Controller
             $subject = $config_topic->where('subject', $do);
             // dd($subject);
             $arr_q = [];
-
+            $main = [];
+            $sub_id = [];
             if ($subject->toArray() != null) {
                 foreach ($subject as $qt) {
                     $q =  TopicQuestion::where('topic_id', $qt->topic_id)
@@ -86,7 +87,39 @@ class QuizController extends Controller
                     // dd($q);
                     if ($q->toArray() != null) {
                         if ($qt->quantity <= 1) {
+
                             $rand = array_rand($q->toArray(), 1);
+
+                            if ($q[$rand]->complex == 'sub') {
+                                dd($q[$rand]);
+                                $i = 0;
+                                foreach ($main as $m) {
+
+                                    if ($m == $q[$rand]->ref_question_id) {
+                                        $question_sub = $q->where('rep_question_id', $m)
+                                            ->whereNotIn('id', $sub_id);
+                                        if ($question_sub != null) {
+                                            //nếu tồn tại $question_sub 
+                                            $i = 1;
+                                            $rand_sub = array_rand($question_sub->toArray(), 1);
+                                            $q[$rand] = $q[$rand_sub];
+                                            array_push($sub_id, $q[$rand]);
+                                        } else {
+                                            // nếu hết câu hỏi sub sẽ chuyển sang câu hỏi thường
+
+                                            $i = 0;
+                                        }
+                                        // dd($m);
+                                        // // Loại trừ những thằng đã có
+                                        break;
+                                    }
+                                }
+                                if ($i == 0) {
+                                }
+                            }
+
+
+
                             $q_q = [
                                 'question_id' => $q[$rand],
                                 'quizz_id' => $quiz->id,
