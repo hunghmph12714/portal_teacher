@@ -353,10 +353,11 @@ class PublicForm extends React.Component{
       axios.post('/event-get-product', {event_id: evt, location_id: loc})
       .then(response => {
         this.setState({products: response.data.map(d => {
+          let dt = new Date(d.from)
+
           let time_formated = format(new Date(d.from), 'dd/MM');
-          let from = format(new Date(d.from), 'HH:mm');
-          let to = format(new Date(d.to), 'HH:mm');
-          time_formated = time_formated + "(" + from + " - "+to+")"
+          
+          time_formated = time_formated + " - " + format(dt.addDays(1), 'dd/MM')
 
           let now = new Date();
           let deadline = new Date(d.from)

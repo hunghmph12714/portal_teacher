@@ -532,6 +532,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
 
     Route::post('/generate-quiz', 'QuizController@generateQuiz');
     Route::get('/gen-quiz', 'QuizController@genQuiz');
+    Route::get('/sub5', 'ClassController@subscribe');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -548,6 +549,7 @@ Route::get('/event-form', function () {
 Route::get('/event-tra-cuu', function () {
     return view('welcome');
 });
+
 Route::post('/event-get-result', 'StudentController@getResult');
 // Route::post('/event-mail', )
 Route::get('/home', 'HomeController@index')->name('home');
