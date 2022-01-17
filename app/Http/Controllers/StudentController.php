@@ -1440,8 +1440,10 @@ class StudentController extends Controller
         }
         $product_ids= [];
         $total_amount = 0;
+        $product_count = 0;
         foreach($request->products as $product){
             if($product['active'] == 1){
+                $product_count++;
                 $check = StudentSession::where('student_id', $student->id)->where('session_id', $product['id'])->first();
                 if(!$check){
                     // add student to event 
@@ -1512,7 +1514,6 @@ class StudentController extends Controller
         $product_str = implode(', ', array_column($request->products, 'content'));
         if (strlen($product_str) > 10)
             $product_str = substr($product_str, 0, 25) . '...';
-        $product_count = sizeof(array_column($request->products, 'content'));
         $body = [
             'phone' => '+84'.ltrim($result['parent']['phone'], '0'),
             'template_id' => '219155',
