@@ -43,7 +43,7 @@ class QuizController extends Controller
             QuizQuestion::create($quiz);
         }
     }
-}
+
     protected function configuration(Request $request)
     {
         // $objective_id = $request->objective_id;
