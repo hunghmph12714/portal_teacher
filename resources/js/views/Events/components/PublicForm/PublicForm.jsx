@@ -354,19 +354,12 @@ class PublicForm extends React.Component{
       .then(response => {
         this.setState({products: response.data.map(d => {
           let dt = new Date(d.from)
-
+          let df = new Date()
+          df.setDate(dt.getDate()+1);
           let time_formated = format(new Date(d.from), 'dd/MM');
           
-          time_formated = time_formated + " - " + format(dt.addDays(1), 'dd/MM')
-
-          let now = new Date();
-          let deadline = new Date(d.from)
-          deadline.setDate(deadline.getDate() - 0)
-          if(now < deadline){
-            return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
-          }else{
-            return {...d, active: false, time_formated: time_formated, className: 'btn-disabled', classes: JSON.parse(d.classes), discount_fee: 0}
-          }
+          time_formated = time_formated + " - " + format(df, 'dd/MM')
+                    return {...d, active: false, time_formated: time_formated, className: '', classes: JSON.parse(d.classes), discount_fee: 0}
           
         })})
       })
