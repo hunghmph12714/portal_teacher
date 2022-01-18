@@ -10,6 +10,36 @@ use App\Topic;
 class SyllabusController extends Controller
 {
     //
+    public function genSyllabus(){
+        // title' => 'required',
+        //     'grade' => 'required',
+        //     'subject' => 'required',
+        //     'public' => 'required',
+        $s = [];
+        $s['title'] = 'Bộ đề Chuyên Ams - Cầu Giấy';
+        $s['grade'] = 5;
+        $s['subject'] = 'Tiếng Anh';
+        $s['public'] = 1;
+        $s['user_id'] = 1;
+        $s = Syllabus::create($s);
+        for ($i=1; $i < 51; $i++) { 
+
+        $c = [];
+        $sj = [];
+        $t = [];
+            # code...
+            $c['syllabus_id'] = $s->id;
+            $c['title'] = 'Câu '.$i;
+            $c = Chapter::create($c);
+            $sj['chapter_id'] = $c->id;
+            $sj['title'] = 'Câu '.$i;
+            $sj = Subject::create($sj);
+            $t['subject_id'] = $sj->id;
+            $t['title'] = 'Câu '.$i;
+            $t = Topic::create($t);
+
+        }
+    }
     public function fetchSyllabus(Request $request){
         $rules = ['domain' => 'required', 'grade' => 'required'];
         $this->validate($request, $rules);
