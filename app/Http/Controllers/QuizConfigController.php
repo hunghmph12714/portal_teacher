@@ -99,16 +99,15 @@ class QuizConfigController extends Controller
     }
 
 
-    public function autoConfig()
+    public function autoConfig($objective_id, $toan, $van, $anh)
     {
-        $objective_id = $_GET['objective'];
+        // $objective_id = $_GET['objective'];
 
 
         $objective = Objective::find($objective_id);
-        $score = 1;
         $data = [
             'title' => 'Cấu hình bộ đề ' . $objective->content,
-            'duration' => 120,
+            'duration' => 180,
             'type' => 'exam',
             'description' => 'mt',
             'grade' => 5
@@ -122,8 +121,8 @@ class QuizConfigController extends Controller
         ]);
 
         //Toán
-        if ($_GET['toan']) {
-            $syllabus_id = $_GET['toan'];
+        if ($toan) {
+            $syllabus_id = $toan;
             $syllabus = Syllabus::find($syllabus_id);
             // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
             // ->get();
@@ -158,8 +157,8 @@ class QuizConfigController extends Controller
 
 
         /// Văn
-        if ($_GET['van']) {
-            $syllabus_id = $_GET['van'];
+        if ($van) {
+            $syllabus_id = $van;
 
             $syllabus = Syllabus::find($syllabus_id);
             // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
@@ -195,8 +194,8 @@ class QuizConfigController extends Controller
 
 
         //Anh
-        if ($_GET['anh']) {
-            $syllabus_id = $_GET['anh'];
+        if ($anh) {
+            $syllabus_id = $anh;
 
             $syllabus = Syllabus::find($syllabus_id);
             // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
@@ -230,6 +229,6 @@ class QuizConfigController extends Controller
             }
         }
 
-        dd($topic, 'Thành công');
+        dd('Thành công');
     }
 }
