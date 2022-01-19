@@ -143,7 +143,7 @@ class QuizConfigController extends Controller
                     'quiz_config_id' => $config->id,
                     'topic_id' => $t->id,
                     'question_level' => 'TH',
-                    'question_type' => 'matrix',
+                    'question_type' => 'mc',
                     'quantity' => 1,
                     'score' => 1,
                     'subject' => 'Toán',
@@ -180,10 +180,10 @@ class QuizConfigController extends Controller
                     'quiz_config_id' => $config->id,
                     'topic_id' => $t->id,
                     'question_level' => 'TH',
-                    'question_type' => 'matrix',
+                    'question_type' => 'mc',
                     'quantity' => 1,
-                    'score' => 1,
-                    'subject' => 'Toán',
+                    'score' => 0.5,
+                    'subject' => 'Tiếng Việt',
 
                 ];
 
@@ -217,10 +217,10 @@ class QuizConfigController extends Controller
                     'quiz_config_id' => $config->id,
                     'topic_id' => $t->id,
                     'question_level' => 'TH',
-                    'question_type' => 'matrix',
+                    'question_type' => 'mc',
                     'quantity' => 1,
                     'score' => 1,
-                    'subject' => 'Toán',
+                    'subject' => 'Anh',
 
                 ];
 

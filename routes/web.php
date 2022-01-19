@@ -347,7 +347,6 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         });
         Route::post('/event-score-report', 'ClassController@getEventScore');
         Route::post('/session/send-reminder', 'StudentController@sendReminder');
-
     });
     //Password Change
     //Import database 
@@ -596,4 +595,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
 Route::get('demo-question', [QuizController::class, 'configuration']);
-Route::get('auto-config', [QuizConfigController::class, 'autoConfig']);
+Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
