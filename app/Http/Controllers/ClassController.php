@@ -24,6 +24,27 @@ use App\UserClass;
 class ClassController extends Controller
 {
     // Phòng học
+    protected function subscribe(){
+        $classes = Classes::where('code', 'LIKE', '%5.%')->where('year', 2021)->get();
+        $event = Classes::where('code', 'KS6D1')->first();
+        foreach($classes as $class){
+            $students = $class->activeStudents;
+            foreach($students as $s){
+                $check = StudentClass::where('student_id', $s->id)->where('class_id', $event->id)->first();
+                if(!$check){
+                    StudentClass::create([
+                        'student_id' => $s->id, 
+                        'class_id' => $event->id,
+                        'status' => 'active',
+                        'entrance_date' => '2022-01-17'
+                    ]);
+                }
+            }
+            
+
+        }
+        
+    }
     protected function getRoom()
     {
         $room = Room::all()->toArray();
