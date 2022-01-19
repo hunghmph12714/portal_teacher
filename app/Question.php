@@ -71,7 +71,7 @@ class Question extends Model
                 foreach ($request->config['topics'] as $tp) {
                     array_push($t, $tp['value']);
                 }
-                $query->WhereIn('lms_topic_question.topic_id', $t);
+                $query->WhereIn('lms_topic_question.topic_id', [$t[0]]);
             }
         }
 
@@ -86,7 +86,7 @@ class Question extends Model
                 foreach ($request->config['objectives'] as $tp) {
                     array_push($o, $tp['value']);
                 }
-                $query->WhereIn('lms_question_objective.objective_id', $o);
+                $query->WhereIn('lms_question_objective.objective_id', [$o[0]]);
             }
         }
 
