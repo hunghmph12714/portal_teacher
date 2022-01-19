@@ -10,6 +10,7 @@ use App\Question;
 use App\Syllabus;
 use App\Objective;
 use App\Chapter;
+use App\QuizConfigObjective;
 use App\QuizConfigTopic;
 
 class QuizConfigController extends Controller
@@ -95,5 +96,140 @@ class QuizConfigController extends Controller
             }
         }
         return response()->json(['qc' => $qc, 'qt' => array_values($quiz_configs)]);
+    }
+
+
+    public function autoConfig()
+    {
+        $objective_id = $_GET['objective'];
+
+
+        $objective = Objective::find($objective_id);
+        $score = 1;
+        $data = [
+            'title' => 'Cấu hình bộ đề ' . $objective->content,
+            'duration' => 120,
+            'type' => 'exam',
+            'description' => 'mt',
+            'grade' => 5
+        ];
+        $config = QuizConfig::create($data);
+        $config_objective = QuizConfigObjective::created([
+            'objective_id' => $objective_id,
+            'quiz_config_id' => $config->id,
+            'weight' => 1,
+
+        ]);
+
+        //Toán
+        if ($_GET['toan']) {
+            $syllabus_id = $_GET['toan'];
+            $syllabus = Syllabus::find($syllabus_id);
+            // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
+            // ->get();
+            $chapter = Chapter::where('syllabus_id', $syllabus->id)->get();
+            $ct = [];
+            foreach ($chapter as $c) {
+                array_push($ct, $c->id);
+            }
+            $subject = Subject::whereIn('chapter_id', $ct)->get();
+            $sj = [];
+            foreach ($subject as $s) {
+                array_push($sj, $s->id);
+            }
+            $topic = Topic::whereIn('subject_id', $sj)->get();
+
+            foreach ($topic as $t) {
+                $data_t = [
+                    'quiz_config_id' => $config->id,
+                    'topic_id' => $t->id,
+                    'question_level' => 'TH',
+                    'question_type' => 'matrix',
+                    'quantity' => 1,
+                    'score' => 1,
+                    'subject' => 'Toán',
+
+                ];
+
+
+                $t_c = QuizConfigTopic::create($data_t);
+            }
+        }
+
+
+        /// Văn
+        if ($_GET['van']) {
+            $syllabus_id = $_GET['van'];
+
+            $syllabus = Syllabus::find($syllabus_id);
+            // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
+            // ->get();
+            $chapter = Chapter::where('syllabus_id', $syllabus->id)->get();
+            $ct = [];
+            foreach ($chapter as $c) {
+                array_push($ct, $c->id);
+            }
+            $subject = Subject::whereIn('chapter_id', $ct)->get();
+            $sj = [];
+            foreach ($subject as $s) {
+                array_push($sj, $s->id);
+            }
+            $topic = Topic::whereIn('subject_id', $sj)->get();
+
+            foreach ($topic as $t) {
+                $data_t = [
+                    'quiz_config_id' => $config->id,
+                    'topic_id' => $t->id,
+                    'question_level' => 'TH',
+                    'question_type' => 'matrix',
+                    'quantity' => 1,
+                    'score' => 1,
+                    'subject' => 'Toán',
+
+                ];
+
+
+                $t_c = QuizConfigTopic::create($data_t);
+            }
+        }
+
+
+        //Anh
+        if ($_GET['anh']) {
+            $syllabus_id = $_GET['anh'];
+
+            $syllabus = Syllabus::find($syllabus_id);
+            // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
+            // ->get();
+            $chapter = Chapter::where('syllabus_id', $syllabus->id)->get();
+            $ct = [];
+            foreach ($chapter as $c) {
+                array_push($ct, $c->id);
+            }
+            $subject = Subject::whereIn('chapter_id', $ct)->get();
+            $sj = [];
+            foreach ($subject as $s) {
+                array_push($sj, $s->id);
+            }
+            $topic = Topic::whereIn('subject_id', $sj)->get();
+
+            foreach ($topic as $t) {
+                $data_t = [
+                    'quiz_config_id' => $config->id,
+                    'topic_id' => $t->id,
+                    'question_level' => 'TH',
+                    'question_type' => 'matrix',
+                    'quantity' => 1,
+                    'score' => 1,
+                    'subject' => 'Toán',
+
+                ];
+
+
+                $t_c = QuizConfigTopic::create($data_t);
+            }
+        }
+
+        dd($topic, 'Thành công');
     }
 }

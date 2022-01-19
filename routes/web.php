@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
 
 Route::get('/', function () {
@@ -591,3 +592,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
 Route::get('demo-question', [QuizController::class, 'configuration']);
+Route::get('auto-config', [QuizConfigController::class, 'autoConfig']);

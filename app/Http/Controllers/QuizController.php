@@ -109,6 +109,7 @@ class QuizController extends Controller
                             ->get();
 
                         if ($main_id == null) {
+
                             $rand = array_rand($q->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
                             array_push($sub_id, $rand);
@@ -129,7 +130,7 @@ class QuizController extends Controller
                             $model->option_config  =  $option_config;
 
                             $model->save();
-                            array_push($arr_q, $q[$rand]);
+                            // array_push($arr_q, $q[$rand]);
                             array_push($arr_q, $q[$rand]);
                         } else {
                             $q_s = $q->whereNotIn('id', $sub_id);
