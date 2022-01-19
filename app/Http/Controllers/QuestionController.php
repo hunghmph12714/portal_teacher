@@ -16,7 +16,7 @@ class QuestionController extends Controller
     //
     protected function create(Request $request)
     {
-        $rules = ['config' => 'required', 'question_type' => 'required', 'content' => 'required'];
+        $rules = ['config' => 'required', 'question_type' => 'required'];
         $this->validate($request, $rules);
         // protected $fillable = ['question_level', 'question_type', 
         // 'statement', 'content', 'complex', 'ref_question_id', 'domain', 
