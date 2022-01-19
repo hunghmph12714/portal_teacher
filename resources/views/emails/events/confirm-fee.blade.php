@@ -32,7 +32,9 @@ Cảm ơn quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
 VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng để giúp quý phụ huynh dễ dàng theo dõi các thông tin trước kỳ thi và cách thức tra cứu điểm cho con sau kỳ thi.
 <div class="container">
   <div class="row">
+  @if(!$result['is_vee'])
     <div class="col-sm">
+        
         <h3><u>Thông tin xác nhận lệ phí</u></h3>
         <ul>
           <li>
@@ -43,6 +45,8 @@ VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng đ
           </li>
         </ul>
     </div>
+  @endif
+    
     <div class="col-sm">
         <h3><u>Thông tin khảo sát Online</u></h3>
         <ul>

@@ -717,6 +717,7 @@ class StudentController extends Controller
         ];
         $this->validate($request, $rules);
 
+        
         if($request->total_amount > 0){
             $account = Account::find($request->account);
             if($account->level_1 == '1111'){
@@ -750,7 +751,11 @@ class StudentController extends Controller
         }
         $total_amount = $request->total_amount;
         foreach($request->students as $student){
+            if(array_key_exists('class_id', $student)){
+                $result['is_vee'] = true;
+            }else $result['is_vee'] = false;
             if($student['debit'] - $student['credit'] > 0){
+                
                 $t['debit'] = $request->account;
                 $t['credit'] = Account::where('level_2', '131')->first()->id;
                 $t['time'] = date('Y-m-t', strtotime($student['entrance_date']));
@@ -767,12 +772,14 @@ class StudentController extends Controller
                 $t['paper_id'] = null;
                 Transaction::create($t);
             }
+
             
         //Change trạng thái xác nhận
             $student_event = StudentClass::where('student_id', $student['id'])->where('class_id', $student['class_id'])->first();
             if($student_event){
                 $student_event->status = 'active';
                 $student_event->save();
+
 
                 $class = Classes::find($student['class_id']);
                 $sessions = Session::where('class_id', $student['class_id'])->get();
@@ -787,24 +794,24 @@ class StudentController extends Controller
             $parent = Parents::find($student['parent_id']);
             if($parent){
                 //Phu huynh chua co password
-                // if(!$parent->password){
-                //     $pass = Str::random(5);
-                //     $parent->password = Hash::make($pass);
-                //     $parent->ftp =$pass;
-                //     $parent->save();
-                // }
-                // //Phu huynh da co password
-                // //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
-                // else{
-                //     if(!$parent->ftp){
-                //         $pass = 'Password đã được phụ huynh đổi';
-                //     }else{
-                //         $pass = $parent->ftp;
-                //     }
-                // }
-                $pass = Str::random(4);
-                $parent->password = Hash::make($pass);
-                $parent->ftp =$pass;
+                if(!$parent->password){
+                    $pass = Str::random(5);
+                    $parent->password = Hash::make($pass);
+                    $parent->ftp =$pass;
+                    $parent->save();
+                }
+                //Phu huynh da co password
+                //Gui email thong bao xac nhan dong tien + thong bao SBD + Ma tra cuu
+                else{
+                    if(!$parent->ftp){
+                        $pass = 'Password đã được phụ huynh đổi';
+                    }else{
+                        $pass = $parent->ftp;
+                    }
+                }
+                // $pass = Str::random(4);
+                // $parent->password = Hash::make($pass);
+                // $parent->ftp =$pass;
                 $parent->save();
                 $result['phone'] = $parent->phone;
                 $result['event_name'] = $class->name;
