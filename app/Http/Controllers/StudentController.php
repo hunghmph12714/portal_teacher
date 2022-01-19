@@ -716,7 +716,7 @@ class StudentController extends Controller
             'description' => 'required',
         ];
         $this->validate($request, $rules);
-
+        $p = null;
         
         if($request->total_amount > 0){
             $account = Account::find($request->account);
