@@ -192,6 +192,8 @@ class QuestionController extends Controller
     {
         // dd($request);
         $questions   = Question::query()
+
+
             ->with('topics')->with('objectives')->with('options')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
             // ->select('topic_id', 'domain', 'question_level', 'grade')
@@ -222,9 +224,9 @@ class QuestionController extends Controller
             ->grade($request)
             ->topics($request)
             ->objectives($request)
-            ->where('active', true)->orderBy('id', 'DESC')
+            ->where('active', true)->orderBy('id', 'DESC')->distinct()
             ->get();
-        
+
         return response()->json($questions);
     }
 }
