@@ -819,7 +819,7 @@ class StudentController extends Controller
                 $result['pass'] = $pass;
                 $result['student_name'] = $student['fullname'];
                 $result['total_fee'] = $t['amount'];
-                $result['receipt_number'] = $p->center_id."".$p->method."".$p->receipt_number;
+                $result['receipt_number'] = ($p) ? $p->center_id."".$p->method."".$p->receipt_number : '';
                 $to_email = $parent->email;
                 $to_name = '';
                 $mail = 'thithu@vietelite.edu.vn';
