@@ -193,7 +193,7 @@ class QuestionController extends Controller
         // dd($request);
         $questions   = Question::query()
 
-            
+
             ->domain($request)
             ->questionLevel($request)
             ->grade($request)
@@ -201,7 +201,7 @@ class QuestionController extends Controller
             ->objectives($request)
             ->with('topics')->with('objectives')->with('options')->where('active', true)->orderBy('id', 'DESC')
             ->get();
-        
+
         return response()->json($questions);
     }
 }
