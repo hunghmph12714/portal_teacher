@@ -220,7 +220,7 @@ class QuizConfigController extends Controller
                     'question_type' => 'mc',
                     'quantity' => 1,
                     'score' => 1,
-                    'subject' => 'Anh',
+                    'subject' => 'Tiếng Anh',
 
                 ];
 
