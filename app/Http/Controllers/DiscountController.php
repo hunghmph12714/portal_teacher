@@ -296,8 +296,6 @@ class DiscountController extends Controller
         // print_r($classes->toArray());
         // echo "</pre>";
         foreach($classes as $class){
-            print_r($class->code);
-            echo "</br>";
             $from = date('Y-m-d', strtotime($from_d));
             $to = date('Y-m-d', strtotime($to_d));
             $sessions = $class->sessions()->whereBetween('date', [$from, $to])->whereNull('percentage')->get(); 
