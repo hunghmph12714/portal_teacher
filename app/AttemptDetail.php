@@ -1,0 +1,13 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class AttemptDetail extends Model
+{
+    //
+    public $table = 'lms_attempt_details';
+    protected $fillable = ['attemp_id', 'question_id', 'fib', 'options', 'essay'];
+    
+}
