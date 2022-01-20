@@ -7,7 +7,7 @@ import axios from 'axios'
 // var Latex = require('react-latex');
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 // import {PreviewQuestion} from '.'
 import { useSnackbar } from 'notistack';
 import {TextField, Button, Grid, Select, FormControl, InputLabel} from '@material-ui/core'
@@ -111,28 +111,28 @@ const SingleQuizConfig = (props) => {
                     <div id="editor-vee"></div>
                     <CKEditor
                         editor={ClassicEditor}
-                        config={{
-                            toolbar: {
-                                items: [
-                                    'heading', 
-                                    '|',
-                                    'bold',
-                                    'italic',
-                                    'underline',
-                                    'link',
-                                    'bulletedList',
-                                    'numberedList',
-                                    'imageUpload',
-                                    'mediaEmbed',
-                                    'insertTable',
-                                    'blockQuote',
-                                    'undo',
-                                    'redo',
-                                    'MathType', 'ChemType',
+                        // config={{
+                        //     toolbar: {
+                        //         items: [
+                        //             'heading', 
+                        //             '|',
+                        //             'bold',
+                        //             'italic',
+                        //             'underline',
+                        //             'link',
+                        //             'bulletedList',
+                        //             'numberedList',
+                        //             'imageUpload',
+                        //             'mediaEmbed',
+                        //             'insertTable',
+                        //             'blockQuote',
+                        //             'undo',
+                        //             'redo',
+                        //             'MathType', 'ChemType',
 
-                                ]
-                            },
-                        }}
+                        //         ]
+                        //     },
+                        // }}
                         data= {content}
                         onReady={editor => {
                             // You can store the "editor" and use when it is needed.

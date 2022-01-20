@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './Mcq.scss'
 import {Grid, TextField} from '@material-ui/core'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Mcq = (props) => {
@@ -36,19 +36,19 @@ const Mcq = (props) => {
                 <Grid item md={8}>
                     <CKEditor
                         editor  ={ClassicEditor}
-                        config={{
-                            toolbar: {
-                                items: [
-                                    'bold',
-                                    'italic',
-                                    'underline',
-                                    'imageUpload',
-                                    'mediaEmbed',
-                                    'MathType', 'ChemType',
+                        // config={{
+                        //     toolbar: {
+                        //         items: [
+                        //             'bold',
+                        //             'italic',
+                        //             'underline',
+                        //             'imageUpload',
+                        //             'mediaEmbed',
+                        //             'MathType', 'ChemType',
 
-                                ]
-                            },
-                        }}
+                        //         ]
+                        //     },
+                        // }}
                         data= {o.content}
                         onReady={editor => {
                             // You can store the "editor" and use when it is needed.

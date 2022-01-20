@@ -14,7 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import axios from 'axios';
 import './Syllabus.scss'
 import { useSnackbar } from 'notistack'
@@ -284,25 +284,25 @@ const Syllabus = (props) => {
                                 </Grid>
                                 <CKEditor
                                     editor={ClassicEditor}
-                                    config={{
-                                        toolbar: {
-                                            items: [
-                                                'heading',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                'imageUpload',
-                                                'mediaEmbed',
-                                                'insertTable',
-                                                'blockQuote',
-                                                'undo',
-                                                'redo'
-                                            ]
-                                        },
-                                        }}
+                                    // config={{
+                                    //     toolbar: {
+                                    //         items: [
+                                    //             'heading',
+                                    //             '|',
+                                    //             'bold',
+                                    //             'italic',
+                                    //             'link',
+                                    //             'bulletedList',
+                                    //             'numberedList',
+                                    //             'imageUpload',
+                                    //             'mediaEmbed',
+                                    //             'insertTable',
+                                    //             'blockQuote',
+                                    //             'undo',
+                                    //             'redo'
+                                    //         ]
+                                    //     },
+                                    //     }}
                                     data= {(syllabus.description) ? syllabus.description : ''}
                                     onReady={editor => {
                                         // You can store the "editor" and use when it is needed.
@@ -451,25 +451,25 @@ const Syllabus = (props) => {
                                                             <div className="topic-description">
                                                                 <CKEditor
                                                                     editor={ClassicEditor}
-                                                                    config={{
-                                                                        toolbar: {
-                                                                            items: [
-                                                                                'heading',
-                                                                                '|',
-                                                                                'bold',
-                                                                                'italic',
-                                                                                'link',
-                                                                                'bulletedList',
-                                                                                'numberedList',
-                                                                                'imageUpload',
-                                                                                'mediaEmbed',
-                                                                                'insertTable',
-                                                                                'blockQuote',
-                                                                                'undo',
-                                                                                'redo',
-                                                                            ]
-                                                                        },
-                                                                    }}
+                                                                    // config={{
+                                                                    //     toolbar: {
+                                                                    //         items: [
+                                                                    //             'heading',
+                                                                    //             '|',
+                                                                    //             'bold',
+                                                                    //             'italic',
+                                                                    //             'link',
+                                                                    //             'bulletedList',
+                                                                    //             'numberedList',
+                                                                    //             'imageUpload',
+                                                                    //             'mediaEmbed',
+                                                                    //             'insertTable',
+                                                                    //             'blockQuote',
+                                                                    //             'undo',
+                                                                    //             'redo',
+                                                                    //         ]
+                                                                    //     },
+                                                                    // }}
                                                                     data= {(t.content) ? t.content : ''}
                                                                     onReady={editor => {
                                                                         // You can store the "editor" and use when it is needed.

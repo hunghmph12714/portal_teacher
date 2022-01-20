@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 // import './Fib.scss'
 import {Grid, TextField} from '@material-ui/core'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Fib = (props) => {

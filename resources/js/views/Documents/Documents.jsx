@@ -26,7 +26,7 @@ import MaterialTable from "material-table";
 import NumberFormat from 'react-number-format';
 import Creatable from 'react-select/creatable';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -589,25 +589,25 @@ class Documents extends React.Component{
                                 <div className="answer">
                                 <CKEditor
                                     editor={ClassicEditor}
-                                    config={{
-                                        toolbar: {
-                                            items: [
-                                                'heading', 'MathType', 'ChemType',
-                                                '|',
-                                                'bold',
-                                                'italic',
-                                                'link',
-                                                'bulletedList',
-                                                'numberedList',
-                                                'imageUpload',
-                                                'mediaEmbed',
-                                                'insertTable',
-                                                'blockQuote',
-                                                'undo',
-                                                'redo'
-                                            ]
-                                        },
-                                    }}
+                                    // config={{
+                                    //     toolbar: {
+                                    //         items: [
+                                    //             'heading', 'MathType', 'ChemType',
+                                    //             '|',
+                                    //             'bold',
+                                    //             'italic',
+                                    //             'link',
+                                    //             'bulletedList',
+                                    //             'numberedList',
+                                    //             'imageUpload',
+                                    //             'mediaEmbed',
+                                    //             'insertTable',
+                                    //             'blockQuote',
+                                    //             'undo',
+                                    //             'redo'
+                                    //         ]
+                                    //     },
+                                    // }}
                                     data= {this.state.answer}
                                     onReady={editor => {
                                         // You can store the "editor" and use when it is needed.
@@ -717,13 +717,13 @@ class Documents extends React.Component{
                                     <h5> Câu hỏi </h5>
                                     <CKEditor
                                         editor={ClassicEditor}
-                                        config={{
-                                            toolbar: {
-                                                items: [
+                                        // config={{
+                                        //     toolbar: {
+                                        //         items: [
                                                     
-                                                ]
-                                            },
-                                        }}
+                                        //         ]
+                                        //     },
+                                        // }}
                                         data= {rowData.question}
                                     />
                                 </Grid>
@@ -732,13 +732,13 @@ class Documents extends React.Component{
                                     
                                     <CKEditor
                                         editor={ClassicEditor}
-                                        config={{
-                                            toolbar: {
-                                                items: [
+                                        // config={{
+                                        //     toolbar: {
+                                        //         items: [
                                                     
-                                                ]
-                                            },
-                                        }}
+                                        //         ]
+                                        //     },
+                                        // }}
                                         data= {rowData.answer}
                                     />
                                 </Grid>

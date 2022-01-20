@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './Mcq.scss'
 import {Grid, TextField} from '@material-ui/core'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor-vee-final/build/ckeditor';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Mcq = (props) => {
@@ -46,18 +46,18 @@ const Mcq = (props) => {
                     <CKEditor
                         editor  ={ClassicEditor}
                         config={{
-                            toolbar: {
-                                items: [
-                                    'bold',
-                                    'italic',
-                                    'underline',
-                                    'strikethrough',
-                                    'imageUpload',
-                                    'mediaEmbed',
-                                    'MathType', 'ChemType',
+                            // toolbar: {
+                            //     items: [
+                            //         'bold',
+                            //         'italic',
+                            //         'underline',
+                            //         'strikethrough',
+                            //         'imageUpload',
+                            //         'mediaEmbed',
+                            //         'MathType', 'ChemType',
 
-                                ]
-                            },
+                            //     ]
+                            // },
                         }}
                         data= {o.content}
                         onReady={editor => {
