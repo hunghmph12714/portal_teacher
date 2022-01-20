@@ -432,7 +432,7 @@ class DiscountController extends Controller
         $from_d = '2021-05-04';
         $to_d = '2022-02-28';
         if($class){
-            $sessions = Session::whereNotNull('id')->update(['percentage' => NULL]);
+            $sessions = Session::where('percentage','-1')->update(['percentage' => NULL]);
             
             $transactions = Transaction::where('discount_id', '-4')->where('class_id', $class_id)->forceDelete();
             $transactions = Transaction::where('discount_id', '-5')->where('class_id', $class_id)->forceDelete();
