@@ -34,8 +34,8 @@ class QuestionController extends Controller
             $q['complex'] = 'main';
         }
         $question = Question::create($q);
-        $topics = array_column($request->config['topics'], 'value');
-        $obj = array_column($request->config['objectives'], 'value');
+        $topics = ($request->config['topics']) ? array_column($request->config['topics'], 'value') : [];
+        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value'): []);
 
         //Add options
         switch ($request->question_type) {
@@ -136,10 +136,11 @@ class QuestionController extends Controller
         $q = $question->update($q);
         //Update topics
         // update topic - question
-        $topics = array_column($request->config['topics'], 'value');
+        $topics = ($request->config['topics']) ? array_column($request->config['topics'], 'value') : [];
+        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value'): []);
+
         $question->topics()->sync($topics);
         // update objective
-        $obj = array_column($request->config['objectives'], 'value');
         $question->objectives()->sync($obj);
 
         //update ooption
