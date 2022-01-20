@@ -113,7 +113,7 @@ class QuizConfigController extends Controller
             'grade' => 5
         ];
         $config = QuizConfig::create($data);
-        $config_objective = QuizConfigObjective::created([
+        $config_objective = QuizConfigObjective::create([
             'objective_id' => $objective_id,
             'quiz_config_id' => $config->id,
             'weight' => 1,
