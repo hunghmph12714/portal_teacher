@@ -141,7 +141,7 @@ class QuizConfigController extends Controller
         $objective = Objective::find($objective_id);
         $data = [
             'title' => 'Cấu hình bộ đề ' . $objective->content,
-            'duration' => 180,
+            'duration' => 160,
             'type' => 'exam',
             'description' => 'mt',
             'grade' => 5

@@ -267,6 +267,8 @@ const Syllabus = (props) => {
                                                 <option value={'Toán'}>Toán </option>
                                                 <option value={'Tiếng Việt'}>Tiếng Việt</option>
                                                 <option value={'Tiếng Anh'}>Tiếng Anh</option>
+                                                <option value={'Lý'}>Vật Lý</option>
+                                                <option value={'Hoá'}>Hoá Học</option>
                                             </Select>
                                         </FormControl>
                                     </Grid>
