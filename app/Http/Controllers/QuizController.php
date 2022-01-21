@@ -51,8 +51,8 @@ class QuizController extends Controller
 
         // $student_session_id = $request->student_session_id;
 
-        $objective_id = 2;
-        $student_session_id = 305;
+        $objective_id = 1;
+        $student_session_id = 290907;
 
 
         // Tìm ra cấu hình
@@ -98,23 +98,25 @@ class QuizController extends Controller
             $main_id = null;
             $sub_id = [];
             if ($tp_cf->toArray() != null) {
-                foreach ($tp_cf as $qt) {
+                foreach ($tp_cf as $key => $qt) {
                     // dd($tp_cf);
-
+                    
                     if ($qt->question_type == 'complex') {
+                        echo "<br>";
+                        echo $qt->id;
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->whereNotIn('complex', ['main'])
-                            // ->orWhereNull('complex')
+                            ->where('complex', 'sub')
                             ->get();
-
+                        echo "<pre>";
+                        print_r($q->toArray());
                         if ($main_id == null) {
 
                             $rand = array_rand($q->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
-                            array_push($sub_id, $rand);
+                            array_push($sub_id, $q[$rand]->id);
                             $q_q = [
-                                'question_id' => $q[$rand],
+                                'question_id' => $q[$rand]->id,
                                 'quizz_id' => $quiz->id,
                                 // 'option_config'
                                 'max_score' =>  $qt->score,
@@ -133,42 +135,47 @@ class QuizController extends Controller
                             // array_push($arr_q, $q[$rand]);
                             array_push($arr_q, $q[$rand]);
                         } else {
-                            $q_s = $q->whereNotIn('id', $sub_id);
+                            
+                            // $q_s = $q->where('ref_question_id', $main_id)->whereNotIn('question_id', $sub_id);
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->get();
                             $rand = array_rand($q_s->toArray(), 1);
-                            array_push($main_id, $q[$rand]->ref_question_id);
-                            array_push($sub_id, $rand);
+                            array_push($sub_id, $q_s[$rand]->id);
+                            echo "<pre>";
+                            print_r($sub_id);
                             $q_q = [
-                                'question_id' => $q[$rand],
+                                'question_id' => $q_s[$rand]->id,
                                 'quizz_id' => $quiz->id,
                                 'max_score' =>  $qt->score,
                             ];
 
                             $model = QuizQuestion::create($q_q);
                             $option_config = $model->option_config;
-                            $o = Option::where('question_id', $q[$rand]->id)->get();
+                            $o = Option::where('question_id', $q_s[$rand]->id)->get();
                             foreach ($o as $key => $op) {
                                 $option_config[$key] = $op->id;
                             }
                             $model->option_config  =  $option_config;
                             $model->save();
-                            array_push($arr_q, $q[$rand]);
-                            array_push($arr_q, $q[$rand]);
+                            array_push($arr_q, $q_s[$rand]);
                         }
                     } else {
                         $main_id == null;
+                        // $sub_id = [];
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->whereNotIn('complex', ['main', 'sub'])
-                            ->orWhereNull('complex')
+                            ->whereNull('complex')
                             ->get();
+                        echo $qt->topic_id;
+                        // echo "<pre>";
+                        // print_r($q->toArray());
                         $rand = array_rand($q->toArray(), 1);
                         $q_q = [
-                            'question_id' => $q[$rand],
+                            'question_id' => $q[$rand]->id,
                             'quizz_id' => $quiz->id,
                             // 'option_config'
                             'max_score' =>  $qt->score,
                         ];
-
+                        // dd($q_q);
                         $model = QuizQuestion::create($q_q);
                         $option_config = $model->option_config;
                         // print_r($item);
