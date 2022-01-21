@@ -93,27 +93,24 @@ class QuizController extends Controller
             // dd($do);
             $tp_cf = '';
             $tp_cf = $config_topic->where('subject', $do);
-            // dd($subject);
+            
             $arr_q = [];
             $main_id = null;
             $sub_id = [];
             if ($tp_cf->toArray() != null) {
                 foreach ($tp_cf as $key => $qt) {
                     // dd($tp_cf);
-                    
+                    echo $qt->subject, '<br/>';
                     if ($qt->question_type == 'complex') {
-                        echo "<br>";
-                        echo $qt->id;
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->where('complex', 'sub')
                             ->get();
-                        echo "<pre>";
-                        print_r($q->toArray());
                         if ($main_id == null) {
-
                             $rand = array_rand($q->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
+                            echo "test";
+                            echo $main_id, '<br/>';
                             array_push($sub_id, $q[$rand]->id);
                             $q_q = [
                                 'question_id' => $q[$rand]->id,
@@ -126,8 +123,8 @@ class QuizController extends Controller
                             $option_config = $model->option_config;
                             // print_r($item);
                             $o = Option::where('question_id', $q[$rand]->id)->get();
-                            foreach ($o as $key => $op) {
-                                $option_config[$key] = $op->id;
+                            foreach ($o as $k => $op) {
+                                $option_config[$k] = $op->id;
                             }
                             $model->option_config  =  $option_config;
 
@@ -151,21 +148,21 @@ class QuizController extends Controller
                             $model = QuizQuestion::create($q_q);
                             $option_config = $model->option_config;
                             $o = Option::where('question_id', $q_s[$rand]->id)->get();
-                            foreach ($o as $key => $op) {
-                                $option_config[$key] = $op->id;
+                            foreach ($o as $k => $op) {
+                                $option_config[$k] = $op->id;
                             }
                             $model->option_config  =  $option_config;
                             $model->save();
                             array_push($arr_q, $q_s[$rand]);
                         }
                     } else {
-                        $main_id == null;
+                        $main_id = null;
                         // $sub_id = [];
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->whereNull('complex')
                             ->get();
-                        echo $qt->topic_id;
+                        
                         // echo "<pre>";
                         // print_r($q->toArray());
                         $rand = array_rand($q->toArray(), 1);
@@ -175,13 +172,15 @@ class QuizController extends Controller
                             // 'option_config'
                             'max_score' =>  $qt->score,
                         ];
+                        echo "<pre>";
+                        print_r($q->toArray());
                         // dd($q_q);
                         $model = QuizQuestion::create($q_q);
                         $option_config = $model->option_config;
                         // print_r($item);
                         $o = Option::where('question_id', $q[$rand]->id)->get();
-                        foreach ($o as $key => $op) {
-                            $option_config[$key] = $op->id;
+                        foreach ($o as $k => $op) {
+                            $option_config[$k] = $op->id;
                         }
                         $model->option_config  =  $option_config;
 
