@@ -16,7 +16,41 @@ use App\QuizConfigTopic;
 class QuizConfigController extends Controller
 {
     //
+    protected function edit(Request $request){
+        $config = QuizConfig::find($request->config['id']);
+        if($config){
+            $config->title = $request->config['title'];
+            $config->grade = $request->config['grade']['value'];
+            $config->duration = $request->config['duration'];
+            $config->description = $request->config['description'];
+            $objectives = array_column($request->config['objectives'], 'value');
+            $config->objectives()->sync($objectives);
+            $config->save();
+            foreach($request->quiz_config as $domain){
+                foreach($domain['quiz_topic'] as $qt){
+                    $qtopic = QuizConfigTopic::find($qt['id']);
+                    if($qtopic){
+                        $qtopic->quantity = $qt['quantity'];
+                        $qtopic->score = $qt['score'];
+                      
+                        if(array_key_exists('value', $qt['question_type'])){
+                            $qtopic->question_type = $qt['question_type']['value'];
+                        }else{
+                            $qtopic->question_type = $qt['question_type'][0]['value'];
+                        }
 
+                        if(array_key_exists('value', $qt['level'])){
+                            $qtopic->question_level = $qt['level']['value'];
+                        }else{
+                            $qtopic->question_level = $qt['level'][0]['value'];
+                        }
+                        $qtopic->topic_id = $qt['topic']['value'];
+                        $qtopic->save();
+                    }
+                }
+            }
+        }
+    }
     protected function create(Request $request)
     {
         // dd($request->quiz_config);

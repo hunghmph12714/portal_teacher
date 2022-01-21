@@ -97,7 +97,8 @@ const QuizConfig = (props) =>{
                         title: cf.title, description: cf.description,
                         duration: cf.duration, 
                         objectives : cf.objectives.map(o =>{ return {label: o.content, value: o.id}}),
-                        grade: grade_options.filter(d => d.value == cf.grade)[0]
+                        grade: grade_options.filter(d => d.value == cf.grade)[0],
+                        
                     })
                     let qt = response.data.qt
                     setQuizConfigs(qt.map((x, key) => {
@@ -111,6 +112,7 @@ const QuizConfig = (props) =>{
                             question_type: question_type_options.filter(q => q.value == y.question_type),
                             level: level_options.filter(q => q.value == y.level),
                             quantity: y.quantity, score: y.score,
+                            id: y.id,
                         }})
                     }}))
                     
@@ -216,7 +218,7 @@ const QuizConfig = (props) =>{
         setQuizConfigs(qc)
     }
     function onSubmit(){
-        axios.post('/quiz-config', {config: config, quiz_config: quiz_configs})
+        axios.post('/quiz-config/edit', {config: config, quiz_config: quiz_configs})
             .then(response => {
                 
             })

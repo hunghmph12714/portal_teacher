@@ -527,6 +527,8 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         return view('welcome');
     });
     Route::post('/quiz-config', 'QuizConfigController@create');
+    Route::post('/quiz-config/edit', 'QuizConfigController@edit');
+
     Route::get('/cau-hinh-cau-hoi', function () {
         return view('welcome');
     });
