@@ -19,7 +19,11 @@ const Fib = (props) => {
                         e.preventDefault()
                         let opt = [...props.options]
                         opt.splice(index+1, 0 , {content: '', weight: 0, set: ''})
-                        props.setOptions(opt)
+                        if(props.type == 'complex'){
+                            props.setComplexOptions(opt, props.index)
+                        }else{
+                            props.setOptions(opt)
+                        }
                     }
                         
                     } style={{cursor: 'pointer', marginTop: '7px',}}/>
@@ -30,7 +34,11 @@ const Fib = (props) => {
                             if(opt.length > 1){
                                 opt.splice(index, 1)
                             }
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         }}
                     />
                 </Grid>
@@ -45,7 +53,11 @@ const Fib = (props) => {
                         onChange = {event => {
                             let opt = [...props.options]
                             opt[index].content = event.target.value
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         }}
                     />
                 </Grid>
@@ -62,7 +74,11 @@ const Fib = (props) => {
                         onChange = {event => {
                             let opt = [...props.options]
                             opt[index].weight = (event.target.value >=1 ) ? 1 : event.target.value
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         }}
                     />
                 </Grid>
@@ -78,7 +94,11 @@ const Fib = (props) => {
                         onChange = {event => {
                             let opt = [...props.options]
                             opt[index].set = event.target.value
-                            props.setOptions(opt)
+                            if(props.type == 'complex'){
+                                props.setComplexOptions(opt, props.index)
+                            }else{
+                                props.setOptions(opt)
+                            }
                         }}
                     />
                 </Grid>

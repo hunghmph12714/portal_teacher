@@ -132,8 +132,6 @@ const ComplexQuestion = (props) => {
                                     // }}
                                     data= {q.content}
                                     onReady={editor => {
-                                        // You can store the "editor" and use when it is needed.
-                                        // console.log( 'Editor is ready to use!', editor );
                                         editor.setData( q.content );
 
                                     }}
@@ -147,7 +145,7 @@ const ComplexQuestion = (props) => {
                                 {q.question_type == 'mc' ? (
                                     <Mcq id={props.id} options={q.options} setComplexOptions={setOptions} type="complex" index={index}/>
                                 ): q.question_type == 'fib' ? (
-                                    <Fib id={props.id} options={q.options} setComplexOptions={setOptions} index={index}/>
+                                    <Fib id={props.id} options={q.options} setComplexOptions={setOptions} type="complex"  index={index}/>
                                 ): q.question_type == 'complex' ? (
                                     ''
                                 ):''}
