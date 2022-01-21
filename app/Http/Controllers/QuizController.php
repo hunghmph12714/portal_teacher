@@ -51,8 +51,8 @@ class QuizController extends Controller
 
         // $student_session_id = $request->student_session_id;
 
-        $objective_id = 1;
-        $student_session_id = 290907;
+        $objective_id = 2;
+        $student_session_id = 305;
 
 
         // Tìm ra cấu hình
@@ -93,10 +93,11 @@ class QuizController extends Controller
             // dd($do);
             $tp_cf = '';
             $tp_cf = $config_topic->where('subject', $do);
-            
+
             $arr_q = [];
             $main_id = null;
             $sub_id = [];
+            $rqi   = [];
             if ($tp_cf->toArray() != null) {
                 foreach ($tp_cf as $key => $qt) {
                     // dd($tp_cf);
@@ -106,7 +107,9 @@ class QuizController extends Controller
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->where('complex', 'sub')
                             ->get();
-                        if ($main_id == null) {
+                        $r =  array_unique(array_column($q, 'ref_question_id'));
+                        array_push($rqi, $r);
+                        if ($main_id == null || in_array($main_id, $rqi) == false) {
                             $rand = array_rand($q->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
                             echo "test";
@@ -132,7 +135,7 @@ class QuizController extends Controller
                             // array_push($arr_q, $q[$rand]);
                             array_push($arr_q, $q[$rand]);
                         } else {
-                            
+
                             // $q_s = $q->where('ref_question_id', $main_id)->whereNotIn('question_id', $sub_id);
                             $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->get();
                             $rand = array_rand($q_s->toArray(), 1);
@@ -162,7 +165,7 @@ class QuizController extends Controller
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->whereNull('complex')
                             ->get();
-                        
+
                         // echo "<pre>";
                         // print_r($q->toArray());
                         $rand = array_rand($q->toArray(), 1);
