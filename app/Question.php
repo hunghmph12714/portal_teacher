@@ -33,7 +33,7 @@ class Question extends Model
         if (!empty($request->config['domain'])) {
 
             if ($request->config['domain']['value']) {
-                dd('%' . $request->config['domain']['value'] . '%');
+                // dd('%' . $request->config['domain']['value'] . '%');
                 $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
             }
         }
@@ -71,7 +71,7 @@ class Question extends Model
                 foreach ($request->config['topics'] as $tp) {
                     array_push($t, $tp['value']);
                 }
-                $query->WhereIn('lms_topic_question.topic_id', [$t[0]]);
+                $query->WhereIn('lms_topics.id', [$t]);
             }
         }
 
@@ -86,7 +86,7 @@ class Question extends Model
                 foreach ($request->config['objectives'] as $tp) {
                     array_push($o, $tp['value']);
                 }
-                $query->WhereIn('lms_question_objective.objective_id', [$o[0]]);
+                $query->WhereIn('objectives.id', [$o]);
             }
         }
 
