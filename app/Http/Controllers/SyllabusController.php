@@ -16,13 +16,13 @@ class SyllabusController extends Controller
         //     'subject' => 'required',
         //     'public' => 'required',
         $s = [];
-        $s['title'] = 'Bộ đề Tiếng Anh Chuyên';
-        $s['grade'] = 9;
-        $s['subject'] = 'Tiếng Anh';
+        $s['title'] = 'Bộ đề Toán Archimedes';
+        $s['grade'] = 5;
+        $s['subject'] = 'Toán';
         $s['public'] = 1;
         $s['user_id'] = 1;
         $s = Syllabus::create($s);
-        for ($i=1; $i < 79; $i++) { 
+        for ($i=1; $i < 51; $i++) { 
 
         $c = [];
         $sj = [];

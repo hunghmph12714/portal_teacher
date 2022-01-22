@@ -52,13 +52,12 @@ class QuizController extends Controller
         // $student_session_id = $request->student_session_id;
 
         $objective_id = 2;
-        $student_session_id = 305;
+        $student_session_id = 290907;
 
 
         // Tìm ra cấu hình
-        $config = QuizConfigObjective::where('objective_id', $objective_id)->first()
+        $config = QuizConfigObjective::where('objective_id', $objective_id)
             ->join('lms_quiz_configs', 'lms_quiz_config_objective.quiz_config_id', 'lms_quiz_configs.id')->first();
-        // dd($config);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->get();
         $list_domain = [];
@@ -107,7 +106,7 @@ class QuizController extends Controller
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->where('complex', 'sub')
                             ->get();
-                        $r =  array_unique(array_column($q, 'ref_question_id'));
+                        $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
                         array_push($rqi, $r);
                         if ($main_id == null || in_array($main_id, $rqi) == false) {
                             $rand = array_rand($q->toArray(), 1);
