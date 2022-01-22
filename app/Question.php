@@ -33,6 +33,7 @@ class Question extends Model
         if (!empty($request->config['domain'])) {
 
             if ($request->config['domain']['value']) {
+                dd('%' . $request->config['domain']['value'] . '%');
                 $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
             }
         }
