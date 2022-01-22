@@ -35,7 +35,7 @@ class QuestionController extends Controller
         }
         $question = Question::create($q);
         $topics = ($request->config['topics']) ? array_column($request->config['topics'], 'value') : [];
-        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value'): []);
+        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value') : []);
 
         //Add options
         switch ($request->question_type) {
@@ -137,7 +137,7 @@ class QuestionController extends Controller
         //Update topics
         // update topic - question
         $topics = ($request->config['topics']) ? array_column($request->config['topics'], 'value') : [];
-        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value'): []);
+        $obj = ($request->config['objectives'] ? array_column($request->config['objectives'], 'value') : []);
 
         $question->topics()->sync($topics);
         // update objective
@@ -192,10 +192,7 @@ class QuestionController extends Controller
     protected function filter(Request $request)
     {
         // dd($request);
-        $questions   = Question::query()
-
-
-            ->with('topics')->with('objectives')->with('options')
+        $questions   = Question::with('topics')->with('objectives')->with('options')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
             // ->select('topic_id', 'domain', 'question_level', 'grade')
             ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
@@ -221,7 +218,7 @@ class QuestionController extends Controller
                 'lms_questions.grade'
             )
             ->domain($request)
-            ->questionLevel($request)
+            // ->questionLevel($request)
             ->grade($request)
             ->topics($request)
             ->objectives($request)

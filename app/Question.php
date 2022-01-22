@@ -37,7 +37,7 @@ class Question extends Model
                 $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
             }
         }
-
+        // dd($query);
         return $query;
     }
 
