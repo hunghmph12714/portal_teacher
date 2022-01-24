@@ -1170,8 +1170,9 @@ class ClassController extends Controller
             $sessions = $event->sessions;
             foreach($sessions as $key => $session){
                 $students = $session->students;
-                $result[] = $session;
-                foreach($students as $student){
+                $result[] = $session->toArray();
+                $result[$key]['students'] = [];
+                foreach($students as $k => $student){
                     //Get class
                     $student->classes = $student->activeClasses()->get()->toArray();
                     $student->dob_format = date('d/m/Y', strtotime($student->dob));
