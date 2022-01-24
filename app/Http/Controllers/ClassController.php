@@ -23,6 +23,9 @@ use App\UserClass;
 use App\Attempt;
 use App\AttemptDetail;
 use App\Quiz;
+use App\Question;
+use App\Option;
+
 class ClassController extends Controller
 {
     // Phòng học
@@ -1268,12 +1271,12 @@ class ClassController extends Controller
                         
                     }            
                     $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
-                    if($attempt_detail){
-                        $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
-                        $result['questions'][$key]['a_option'] = $attempt_detail->options;
-                        $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                    // if($attempt_detail){
+                    //     $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
+                    //     $result['questions'][$key]['a_option'] = $attempt_detail->options;
+                    //     $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
 
-                    }
+                    // }
                 }
                 $result['packages'] = array_values($result['packages']);
                 return response()->json($result);
