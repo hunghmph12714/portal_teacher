@@ -1181,19 +1181,21 @@ class ClassController extends Controller
                     //Chưa làm bài
                     if(!$attempt){
                         $student->result_status = 'Chưa làm bài';
+                        $result[$key]['students'][] = $student;
                     }else{
                         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
                         $student->quiz_id = $attempt->quiz_id;
-                        $student->start_timte = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+                        $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
                         if($attempt_detail->first()){
                             //Có bài làm
                             $student->result_status = 'Đã có bài';
+                            $result[$key]['students'][] = $student;
                             
                         }else{
                             $student->result_status = 'Chưa có bài';
                         }
                     }
-                    $result[$key]['students'][] = $student;
+                    
                 }
             }
         }
