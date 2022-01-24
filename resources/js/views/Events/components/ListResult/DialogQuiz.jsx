@@ -32,13 +32,15 @@ const DialogQuiz = (props) => {
                             let i = qe.replace('<p>', '').replace('</p>', '')
                             return i
                         })
+                    }
                     // }
                     // let local_questions = JSON.parse(window.localStorage.getItem('questions'))
                     // if(local_questions){
                     //     return {...q, a_fib: local_questions[index].a_fib, a_essay: local_questions[index].a_essay, a_option: local_questions[index].a_option, done: local_questions[index].done}
                     // }else
                     // return {...q, a_fib: [], a_option: '', a_essay: '', done: false}
-                    return q}
+                    return q
+                    
                 })
                 setCurrentPackage(response.data.packages[0]['subject'])
                 setQuestions(questions)
