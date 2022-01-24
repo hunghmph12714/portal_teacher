@@ -1170,13 +1170,21 @@ class ClassController extends Controller
                 foreach($students as $student){
                     //Get class
                     $student->classes = $student->activeClasses()->get()->toArray();
+                    $student->dob_format = date('d/m/Y', strtotime($student->dob));
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+                    $parent = Parents::find($student->parent_id);
+                    if($parent){
+                        $student->pname = $parent->fullname;
+                        $student->pphone = $parent->phone;
+                        $student->pemail = $parent->email;
+                    }
                     //Chưa làm bài
                     if(!$attempt){
                         $student->result_status = 'Chưa làm bài';
                     }else{
                         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
                         $student->quiz_id = $attempt->quiz_id;
+                        $student->start_timte = date('d/m/Y H:i:s', strtotime($attempt->start_time));
                         if($attempt_detail->first()){
                             //Có bài làm
                             $student->result_status = 'Đã có bài';

@@ -7,7 +7,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
-
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     Menu,
     MenuItem,
@@ -26,43 +26,9 @@ const baseUrl = window.Laravel.baseUrl
 // });
 const ListResult = (props) => {
     const [sessions, setSessions] = useState([])
+    const [loading, setLoading] = useState(true);
     const [columns, setColumns] = useState([
-        //STT
-        {
-            title: "STT",
-            field: "id",
-            filtering: false,
-            headerStyle: {
-                width: '10px',
-                fontWeight: '600',
-                padding: '0px'
-            },
-            cellStyle: {
-                width: '10px',
-                padding: '0px'
-            },
-            render: rowData => {
-                return (                                
-                    <span key={rowData.tableData.id }> {rowData.tableData.id + 1} </span>                             
-                )
-            },
-            
-            renderGroup: (sname, groupData) => (
-                <Chip variant="outlined" label={sname} size="small" />      
-            )
-        },
-        {
-            title: "ID",
-            field: "sbd",
-            filtering: false,
-            headerStyle: {
-                width: '20px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                width: '20px',
-            },
-        },
+    
         //Học sinh
         {
             title: "Học sinh",
@@ -126,22 +92,38 @@ const ListResult = (props) => {
             cellStyle: {
                 padding: '0px',
             },
-            lookup: {'active': 'Xác nhận', 'waiting': 'Đăng ký'},
+            
               
-        } 
+        },
+        {
+            title: "Bắt đầu",
+            field: "start_time",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+              
+        },
     ])
     useEffect(() => {
     async function fetchJSON () {
         axios.post('/event/result', {event_id: props.class_id})
             .then(response => {
                 setSessions(response.data)
+                setLoading(false)
             })
     }    
     fetchJSON()
   }, [])
   
   return (
-    <>
+      <>
+      {loading ? <LinearProgress /> : (
+        <div className="result-root">
         {sessions.map(s => {
         return(
             <div>
@@ -163,13 +145,13 @@ const ListResult = (props) => {
                         },
                         rowStyle: rowData => {                       
                             if(rowData.result_status == 'Đã có bài'){
-                                return { backgroundColor: '#d4cad5'}
+                                // return { backgroundColor: '#d4cad5'}
                             }
                             if(rowData.result_status == 'Chưa làm bài'){
                                 return { backgroundColor: 'rgb(234, 221, 218)'}
                             }
                             if(rowData.result_status == 'Chưa có bài'){
-                                return { backgroundColor: 'rgb(234, 102, 218)'}
+                                return { backgroundColor: '#d4cad5'}
                             }
                         },
                         filterCellStyle: {
@@ -215,7 +197,11 @@ const ListResult = (props) => {
             </div>
         )   
         })}
-    </>
+    </div>
+    )}
+      </>
+    
+    
   )
 }
 export default ListResult
