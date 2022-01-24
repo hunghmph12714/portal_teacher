@@ -20,7 +20,8 @@ use App\Teacher;
 use App\Center;
 use Illuminate\Http\Request;
 use App\UserClass;
-
+use App\Attempt;
+use App\AttemptDetail;
 class ClassController extends Controller
 {
     // Phòng học
@@ -1154,6 +1155,40 @@ class ClassController extends Controller
             }
         }
         return response()->json(['students' => $result, 'sessions' => $sessions->toArray()]);
+    }
+    protected function getResult(Request $request){
+        $rules = ['event_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $event = Classes::find($request->event_id);
+        $result = [];
+        if($event){
+            $sessions = $event->sessions;
+            foreach($sessions as $key => $session){
+                $students = $session->students;
+                $result[] = $session;
+                foreach($students as $student){
+                    
+                    $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+                    //Chưa làm bài
+                    if(!$attempt){
+                        $student->result_status = 'Chưa làm bài';
+                    }else{
+                        $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
+                        $student->quiz_id = $attempt->quiz_id;
+                        if($attempt_detail->first()){
+                            //Có bài làm
+                            $student->result_status = 'Đã có bài';
+                            
+                        }else{
+                            $student->result_status = 'Chưa có bài';
+                        }
+                    }
+                    $result[$key]['students'][] = $student;
+                }
+            }
+        }
+        return response()->json($result);
     }
     protected function reGenerateFee()
     {

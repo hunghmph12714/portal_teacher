@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { ListSession, ListStudent, ListAttendance, ListScore,Analytics } from '../components';
+import { ListSession, ListStudent, ListAttendance, ListResult, Analytics } from '../components';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 
 import vi from "date-fns/locale/vi";
@@ -97,7 +97,7 @@ class EventDetail extends React.Component{
                     <Tabs value={this.state.value} onChange={this.handleChange} aria-label="simple tabs example" indicatorColor="primary">
                         <Tab label="Môn thi" {...a11yProps(0)} />
                         <Tab label="Đăng ký" {...a11yProps(1)} />
-                        <Tab label="Bảng tổng" {...a11yProps(2)} />
+                        <Tab label="Bài làm" {...a11yProps(2)} />
                         <Tab label="Thống kê" {...a11yProps(3)} />
                         
                     </Tabs>
@@ -118,8 +118,15 @@ class EventDetail extends React.Component{
                 <TabPanel value={this.state.value} index={3}>
                   <Analytics class_id={this.props.match.params.id} class_name={this.state.selected_class.name}/>
                 </TabPanel>
-                <TabPanel value={this.state.value} index={2}>
+                {/* <TabPanel value={this.state.value} index={2}>
                   <ListScore 
+                    class_id={this.props.match.params.id} 
+                    class_name={this.state.selected_class.name}
+                    from = {this.state.from}
+                    to = {this.state.to} />
+                </TabPanel> */}
+                <TabPanel value={this.state.value} index={2}>
+                  <ListResult 
                     class_id={this.props.match.params.id} 
                     class_name={this.state.selected_class.name}
                     from = {this.state.from}
