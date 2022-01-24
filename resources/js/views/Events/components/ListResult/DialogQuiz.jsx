@@ -23,7 +23,25 @@ const DialogQuiz = (props) => {
     useEffect(() => {
         axios.post('/event/attempt', {ss_id: props.ss_id})
             .then(response => {
-                setQuestions(response.data.questions)
+                let questions = response.data.questions.map((q, index) => {
+                    // q.content = q.content.replace('<p></p>', '<br/>').replace('<p>', '').replace('</p>', '')
+                  
+                    if(q.question_type == 'fib'){
+                        q.content = q.content.split('!@#')
+                        q.content = q.content.map(qe => {
+                            let i = qe.replace('<p>', '').replace('</p>', '')
+                            return i
+                        })
+                    // }
+                    // let local_questions = JSON.parse(window.localStorage.getItem('questions'))
+                    // if(local_questions){
+                    //     return {...q, a_fib: local_questions[index].a_fib, a_essay: local_questions[index].a_essay, a_option: local_questions[index].a_option, done: local_questions[index].done}
+                    // }else
+                    // return {...q, a_fib: [], a_option: '', a_essay: '', done: false}
+                    return q}
+                })
+                setCurrentPackage(response.data.packages[0]['subject'])
+                setQuestions(questions)
                 setPackageQuiz(response.data.packages)
                 setQuiz(response.data.quiz)
             })
