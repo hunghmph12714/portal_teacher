@@ -1168,7 +1168,8 @@ class ClassController extends Controller
                 $students = $session->students;
                 $result[] = $session;
                 foreach($students as $student){
-                    
+                    //Get class
+                    $student->classes = $student->activeClasses()->get()->toArray();
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
                     //Chưa làm bài
                     if(!$attempt){
