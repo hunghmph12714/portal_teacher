@@ -553,6 +553,7 @@ Route::post('/check-phone', 'StudentController@checkPhone');
 Route::post('/event/dang-ky', 'StudentController@registerEvent');
 //
 Route::post('/event/result', 'ClassController@getResult');
+Route::post('/event/attempt', 'ClassController@getAttempt');
 
 Route::get('/event-form', function () {
     return view('welcome');

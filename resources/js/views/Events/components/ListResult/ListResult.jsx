@@ -1,7 +1,7 @@
 import React , { useState, useEffect } from 'react'
 import './ListResult.scss'
 import SpreadSheet from '@rowsncolumns/spreadsheet'
-
+import DialogQuiz from './DialogQuiz'
 import { format } from 'date-fns'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -109,6 +109,8 @@ const ListResult = (props) => {
               
         },
     ])
+    const [open, setOpen] = useState(false)
+    const [ss_id, setSsId] = useState('')
     useEffect(() => {
     async function fetchJSON () {
         axios.post('/event/result', {event_id: props.class_id})
@@ -119,7 +121,17 @@ const ListResult = (props) => {
     }    
     fetchJSON()
   }, [])
-  
+  function handleOpenQuizDialog(rowData){
+      if(rowData.result_status == 'Đã có bài'){
+
+        setOpen(true)
+        setSsId(rowData.pivot.id)
+      }
+
+  }
+  function handleCloseDialog(){
+      setOpen(false)
+  }
   return (
       <>
       {loading ? <LinearProgress /> : (
@@ -135,7 +147,7 @@ const ListResult = (props) => {
                     options={{
                         grouping: false,
                         filtering: true,
-                        selection: true,
+                        selection: false,
                         exportButton: true,
                         pageSize: 10,
                         pageSizeOptions: [10, 20, 50],                    
@@ -167,7 +179,7 @@ const ListResult = (props) => {
                                 tooltip: 'Chỉnh sửa',
                                 isFreeAction: false,
                                 text: 'Chỉnh sửa',
-                                // onClick: (event, rowData) => {handleOpenEditDialog(rowData)}
+                                onClick: (event, rowData) => {handleOpenQuizDialog(rowData)}
                             },
                         ]}
                     localization={{
@@ -197,6 +209,11 @@ const ListResult = (props) => {
             </div>
         )   
         })}
+        <DialogQuiz
+            open={open}
+            ss_id = {ss_id}
+            handleCloseDialog = {handleCloseDialog}
+        />
     </div>
     )}
       </>
