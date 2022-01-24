@@ -537,6 +537,11 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/gen-quiz', 'QuizController@genQuiz');
     // Route::get('/sub5', 'ClassController@subscribe');
     Route::get('/genSyllabus', 'SyllabusController@genSyllabus');
+// Route::get('demo-question', [QuizController::class, 'configuration']);
+// Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
+// Route::get('auto-config/{tva}', [QuizConfigController::class, 'autoConfigk9']);
+// Route::get('/quiz-k9', 'QuizController@genQuizNine');
+    Route::get('/check-attempt', 'QuizController@checkAttempt');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -596,5 +601,3 @@ Route::get('/home', 'HomeController@index')->name('home');
 // });
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
-Route::get('demo-question', [QuizController::class, 'configuration']);
-Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
