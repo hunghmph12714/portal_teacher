@@ -8,6 +8,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 import {
     Menu,
     MenuItem,
@@ -175,10 +176,10 @@ const ListResult = (props) => {
                     actions={[                       
                              
                             {
-                                icon: () => <EditOutlinedIcon />,
-                                tooltip: 'Chỉnh sửa',
+                                icon: () => <FindInPageIcon />,
+                                tooltip: 'Xem bài thi',
                                 isFreeAction: false,
-                                text: 'Chỉnh sửa',
+                                text: 'Xem bài thi',
                                 onClick: (event, rowData) => {handleOpenQuizDialog(rowData)}
                             },
                         ]}
