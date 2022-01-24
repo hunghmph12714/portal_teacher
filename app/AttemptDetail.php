@@ -9,5 +9,7 @@ class AttemptDetail extends Model
     //
     public $table = 'lms_attempt_details';
     protected $fillable = ['attemp_id', 'question_id', 'fib', 'options', 'essay'];
-    
+    protected $casts = [
+        'fib' => 'array',
+    ];
 }
