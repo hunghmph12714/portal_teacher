@@ -64,7 +64,7 @@ const DialogQuiz = (props) => {
             })
     }
     return(
-        <Dialog open={props.open} onClose={props.handleCloseDialog}>
+        <Dialog open={props.open} onClose={props.handleCloseDialog} fullScreen>
             <div className='quiz-counter'>
 
                 <h4>Tổng số câu hỏi: {questions.length}</h4>
@@ -92,105 +92,105 @@ const DialogQuiz = (props) => {
                         
                     })}
                 </ul>
-                </div>
+            </div>
 
-                <div className='quiz-content'>
-                <Grid container spacing={2} className='quiz-main-content'>
-                    <Grid item md={10} sm={12} className="quiz-questions">
-                        {questions.map((q, i)=> {
-                            
-                            if(q.domain == current_package){
-                                return(
+            <div className='quiz-content'>
+            <Grid container spacing={2} className='quiz-main-content'>
+                <Grid item md={10} sm={12} className="quiz-questions">
+                    {questions.map((q, i)=> {
+                        
+                        if(q.domain == current_package){
+                            return(
+                                
+                                <div style={{marginBottom: '15px'}}>
                                     
-                                    <div style={{marginBottom: '15px'}}>
-                                        
-                                        <Grid container spacing={2}>
-                                                {q.complex == 'sub' && q.main_content ? (
-                                                    <Grid item md={12} id={'cau-'+i}>
-                                                        <b>{q.main_statement}</b>
-                                                        <div>{ReactHtmlParser(q.main_content)}</div>
+                                    <Grid container spacing={2}>
+                                            {q.complex == 'sub' && q.main_content ? (
+                                                <Grid item md={12} id={'cau-'+i}>
+                                                    <b>{q.main_statement}</b>
+                                                    <div>{ReactHtmlParser(q.main_content)}</div>
 
-                                                    </Grid>
-                                                    
-                                                ): ''}
-                                        
-                                            
-                                            <Grid item md={1} id={'cau-'+i}>
-                                                <b>Câu {q.s_index}.</b>
-                                            </Grid>
-                                            <Grid item md={11}>
-                                                {q.statement}
-                                                {/* <br></br> */}
-                                                {(q.question_type == 'fib') ? (
-                                                    q.content.map((c, index) => {return (
-                                                        <>
-                                                            {ReactHtmlParser(c)}
-                                                            {(index == q.content.length -1) ? '': 
-                                                            <TextField variant="outlined"  
-                                                                // onChange={(e) => onFibChange(e, i, index)}
-                                                                size='small'
-                                                                fullWidth
-                                                                value={q.a_fib[index]}
-                                                            />}
-                                                        </>
-                                                        )})
-                                                ): ReactHtmlParser(q.content)}
-                                                {(q.question_type == 'mc') ? (
-                                                    <div className='options'>
-                                                        {q.options.map((o, oi) => {
-                                                            return(
-                                                                <div className="ckb">
-                                                                    <label>
-                                                                        <input type="radio" 
-                                                                            name={q.id} 
-                                                                            id={o.id}
-                                                                            checked={q.a_option == o.id}
-                                                                            // onChange={(e) => onMcqChange(e, i, o.id)}
-                                                                        />
-                                                                        <div className={q.a_option == o.id ? 'answer active':"answer" }>
-                                                                            <b>{option_label[oi]}.</b> 
-                                                                        </div>
-                                                                        <div className={q.a_option == o.id ? "option-name fadein active":"option-name fadein" } >
-                                                                            {ReactHtmlParser(o.content)}
-                                                                        </div>
-                                                                    </label>
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                ):''}
-                                                {(q.question_type == 'essay') ? (
-                                                    <CKEditor
-                                                        editor={ ClassicEditor }
-                                                        config={{
-                                                            toolbar: {
-                                                                items: [
-                                                                    'imageUpload',    
-                                                                ]
-                                                            },
-                                                            placeholder: '↑ Up ảnh bài làm hoặc đánh máy tại đây.'
-                                                        }}
-                                                        data={q.a_essay}
-                                                        onChange={ ( event, editor ) => {
-                                                            const data = editor.getData();
-                                                            // onEssayChange(data, i)
-                                                        }}
-                                                    />
-                                                ):''}
+                                                </Grid>
                                                 
-                                            </Grid>
+                                            ): ''}
+                                    
+                                        
+                                        <Grid item md={1} id={'cau-'+i}>
+                                            <b>Câu {q.s_index}.</b>
                                         </Grid>
-                                    </div>
-                                )
-                            }
-                            
-                        })}
-                    </Grid>
-                    <Grid item md={2} sm = {12}>
-
-                    </Grid>
+                                        <Grid item md={11}>
+                                            {q.statement}
+                                            {/* <br></br> */}
+                                            {(q.question_type == 'fib') ? (
+                                                q.content.map((c, index) => {return (
+                                                    <>
+                                                        {ReactHtmlParser(c)}
+                                                        {(index == q.content.length -1) ? '': 
+                                                        <TextField variant="outlined"  
+                                                            // onChange={(e) => onFibChange(e, i, index)}
+                                                            size='small'
+                                                            fullWidth
+                                                            value={q.a_fib[index]}
+                                                        />}
+                                                    </>
+                                                    )})
+                                            ): ReactHtmlParser(q.content)}
+                                            {(q.question_type == 'mc') ? (
+                                                <div className='options'>
+                                                    {q.options.map((o, oi) => {
+                                                        return(
+                                                            <div className="ckb">
+                                                                <label>
+                                                                    <input type="radio" 
+                                                                        name={q.id} 
+                                                                        id={o.id}
+                                                                        checked={q.a_option == o.id}
+                                                                        // onChange={(e) => onMcqChange(e, i, o.id)}
+                                                                    />
+                                                                    <div className={q.a_option == o.id ? 'answer active':"answer" }>
+                                                                        <b>{option_label[oi]}.</b> 
+                                                                    </div>
+                                                                    <div className={q.a_option == o.id ? "option-name fadein active":"option-name fadein" } >
+                                                                        {ReactHtmlParser(o.content)}
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            ):''}
+                                            {(q.question_type == 'essay') ? (
+                                                <CKEditor
+                                                    editor={ ClassicEditor }
+                                                    config={{
+                                                        toolbar: {
+                                                            items: [
+                                                                'imageUpload',    
+                                                            ]
+                                                        },
+                                                        placeholder: '↑ Up ảnh bài làm hoặc đánh máy tại đây.'
+                                                    }}
+                                                    data={q.a_essay}
+                                                    onChange={ ( event, editor ) => {
+                                                        const data = editor.getData();
+                                                        // onEssayChange(data, i)
+                                                    }}
+                                                />
+                                            ):''}
+                                            
+                                        </Grid>
+                                    </Grid>
+                                </div>
+                            )
+                        }
+                        
+                    })}
                 </Grid>
-                </div>
+                <Grid item md={2} sm = {12}>
+
+                </Grid>
+            </Grid>
+            </div>
             
             
         </Dialog>
