@@ -1271,12 +1271,16 @@ class ClassController extends Controller
                         
                     }            
                     $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
-                    // if($attempt_detail){
-                    //     $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
-                    //     $result['questions'][$key]['a_option'] = $attempt_detail->options;
-                    //     $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
-
-                    // }
+                    $result['questions'][$key]['a_essay'] = '';
+                    $result['questions'][$key]['a_option'] = '';
+                    $result['questions'][$key]['a_fib'] = '';
+                    $result['questions'][$key]['done'] = true;
+                    if($attempt_detail){
+                        $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
+                        $result['questions'][$key]['a_option'] = $attempt_detail->options;
+                        $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                        $result['questions'][$key]['done'] = true;
+                    }
                 }
                 $result['packages'] = array_values($result['packages']);
                 return response()->json($result);
