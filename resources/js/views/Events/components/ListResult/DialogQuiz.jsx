@@ -190,7 +190,14 @@ const DialogQuiz = (props) => {
                                                         },
                                                         placeholder: '↑ Up ảnh bài làm hoặc đánh máy tại đây.'
                                                     }}
-                                                    data={q.a_essay}
+                                                    onReady={editor => {
+                                                        if(q.a_essay){
+                                                            editor.setData( q.a_essay );
+
+                                                        }
+                
+                                                    }}
+                                                    // data={q.a_essay}
                                                     onChange={ ( event, editor ) => {
                                                         const data = editor.getData();
                                                         // onEssayChange(data, i)
