@@ -20,6 +20,11 @@ use App\Teacher;
 use App\Center;
 use Illuminate\Http\Request;
 use App\UserClass;
+use App\Attempt;
+use App\AttemptDetail;
+use App\Quiz;
+use App\Question;
+use App\Option;
 
 class ClassController extends Controller
 {
@@ -1154,6 +1159,137 @@ class ClassController extends Controller
             }
         }
         return response()->json(['students' => $result, 'sessions' => $sessions->toArray()]);
+    }
+    protected function getResult(Request $request){
+        $rules = ['event_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $event = Classes::find($request->event_id);
+        $result = [];
+        if($event){
+            $sessions = $event->sessions;
+            foreach($sessions as $key => $session){
+                $students = $session->students;
+                $result[] = $session->toArray();
+                $result[$key]['students'] = [];
+                foreach($students as $k => $student){
+                    //Get class
+                    $student->classes = $student->activeClasses()->get()->toArray();
+                    $student->dob_format = date('d/m/Y', strtotime($student->dob));
+                    $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+                    $parent = Parents::find($student->parent_id);
+                    if($parent){
+                        $student->pname = $parent->fullname;
+                        $student->pphone = $parent->phone;
+                        $student->pemail = $parent->email;
+                    }
+                    //Chưa làm bài
+                    if(!$attempt){
+                        $student->result_status = 'Chưa làm bài';
+                        $result[$key]['students'][] = $student;
+                    }else{
+                        $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
+                        $student->quiz_id = $attempt->quiz_id;
+                        $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+                        if($attempt_detail->first()){
+                            //Có bài làm
+                            $student->result_status = 'Đã có bài';
+                            $result[$key]['students'][] = $student;
+                            
+                        }else{
+                            $student->result_status = 'Chưa có bài';
+                        }
+                    }
+                    
+                }
+            }
+        }
+        return response()->json($result);
+    }
+    protected function getAttempt(Request $request){
+        $rules = ['ss_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $ss = StudentSession::find($request->ss_id);
+        if($ss){
+            $attempt = Attempt::where('student_session', $ss->id)->first();
+            if($attempt){
+                $quiz = Quiz::find($attempt->quiz_id);
+            if($quiz){
+                $result = [];
+                $result['quiz'] = $quiz;
+                $result['quiz']['duration'] = $quiz->duration;
+                if(!$result['quiz']['student_session_id'] ){
+                    $result['quiz']['student_session_id'] = $request->ss_id;
+                }
+                $result['questions'] = [];
+                $result['packages'] = [];
+                $questions = $quiz->questions()->get();
+                $once = true;
+                $ref_tmp = -2;
+                foreach($questions as $key => $q){
+                    if(!array_key_exists($q->domain, $result['packages'])){
+                        if($once){
+                            $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
+                            $once = false;
+                        }else{
+                            $result['packages'][$q->domain] = ['active' => false, 'question_number' => 1, 'subject' => $q->domain];
+                        }
+                    }else{
+                        $result['packages'][$q->domain]['question_number']++;
+                    }
+                    $result['questions'][] = $q->toArray();
+                    $result['questions'][$key]['s_index'] = $result['packages'][$q->domain]['question_number'];
+                    // $result['questions'][$key]['options'] = [];
+                    $result['questions'][$key]['content'] = str_replace('<p></p>', '<br/>', $result['questions'][$key]['content']);
+                    if($q->question_type == 'mc'){
+                        foreach($q->pivot['option_config'] as $option_id){
+                            $option = Option::find($option_id);
+                            $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
+                        }
+                    }
+                    if($q->question_type == 'fib'){
+                        for ($i=1; $i < 20 ; $i++) { 
+                            # code...
+                            $str = '{'.$i.'}';
+    
+                            $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
+                            // print_r($result['questions'][$key]['content']);
+                        }
+                    }
+                    
+                    
+                    if($q->complex == 'sub'){
+                        if($ref_tmp != $q->ref_question_id){
+    
+                            $ref_tmp = $q->ref_question_id;
+                            $main = Question::find($q->ref_question_id);
+                            if($main){
+                                $result['questions'][$key]['main_content'] = $main->content;
+                                $result['questions'][$key]['main_statement'] = $main->statement;
+                            }
+                        }
+                        
+                    }            
+                    $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
+                    $result['questions'][$key]['a_essay'] = '';
+                    $result['questions'][$key]['a_option'] = '';
+                    $result['questions'][$key]['a_fib'] = '';
+                    $result['questions'][$key]['done'] = true;
+                    if($attempt_detail){
+                        $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
+                        $result['questions'][$key]['a_option'] = $attempt_detail->options;
+                        $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                        $result['questions'][$key]['done'] = true;
+                    }
+                }
+                $result['packages'] = array_values($result['packages']);
+                return response()->json($result);
+            }
+            }
+            
+
+        }
     }
     protected function reGenerateFee()
     {

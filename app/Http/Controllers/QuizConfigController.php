@@ -132,7 +132,56 @@ class QuizConfigController extends Controller
         }
         return response()->json(['qc' => $qc, 'qt' => array_values($quiz_configs)]);
     }
+    public function autoConfigk9($tva)
+    {
+        // $objective_id = $_GET['objective'];
 
+
+        $data = [
+            'title' => 'Cấu hình bộ đề Ngữ Văn điều kiện',
+            'duration' => 130,
+            'type' => 'exam',
+            'description' => 'mt',
+            'grade' => 9
+        ];
+        $config = QuizConfig::create($data);
+        
+
+        //Toán
+        if ($tva) {
+            $syllabus_id = $tva;
+            $syllabus = Syllabus::find($syllabus_id);
+            // ->join('lms_chapters', 'lms_syllabus.id', 'lms_chapters.syllabus_id')
+            // ->get();
+            $chapter = Chapter::where('syllabus_id', $syllabus->id)->get();
+            $ct = [];
+            foreach ($chapter as $c) {
+                array_push($ct, $c->id);
+            }
+            $subject = Subject::whereIn('chapter_id', $ct)->get();
+            $sj = [];
+            foreach ($subject as $s) {
+                array_push($sj, $s->id);
+            }
+            $topic = Topic::whereIn('subject_id', $sj)->get();
+
+            foreach ($topic as $t) {
+                $data_t = [
+                    'quiz_config_id' => $config->id,
+                    'topic_id' => $t->id,
+                    'question_level' => 'TH',
+                    'question_type' => 'mc',
+                    'quantity' => 1,
+                    'score' => 1,
+                    'subject' => 'Tiếng Việt',
+
+                ];
+
+
+                $t_c = QuizConfigTopic::create($data_t);
+            }
+        }
+    }
 
     public function autoConfig($objective_id, $toan, $van, $anh)
     {

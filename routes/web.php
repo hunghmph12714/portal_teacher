@@ -539,6 +539,11 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/gen-quiz', 'QuizController@genQuiz');
     // Route::get('/sub5', 'ClassController@subscribe');
     Route::get('/genSyllabus', 'SyllabusController@genSyllabus');
+    // Route::get('demo-question', [QuizController::class, 'configuration']);
+    // Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
+    // Route::get('auto-config/{tva}', [QuizConfigController::class, 'autoConfigk9']);
+    // Route::get('/quiz-k9', 'QuizController@genQuizNine');
+    Route::get('/check-attempt', 'QuizController@checkAttempt');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -548,6 +553,9 @@ Route::get('/event-get-location', 'ClassController@getLocationInfo');
 Route::post('/event-get-product', 'SessionController@getProductInfo');
 Route::post('/check-phone', 'StudentController@checkPhone');
 Route::post('/event/dang-ky', 'StudentController@registerEvent');
+//
+Route::post('/event/result', 'ClassController@getResult');
+Route::post('/event/attempt', 'ClassController@getAttempt');
 
 Route::get('/event-form', function () {
     return view('welcome');

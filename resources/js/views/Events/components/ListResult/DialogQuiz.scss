@@ -1,0 +1,154 @@
+html {
+    scroll-behavior: smooth;
+  }
+
+.attempt{
+    margin: auto;
+    width: 600px;
+    .attempt-btn{
+        background: green;
+        color: white;
+        border: 1px solid green;
+    }
+    .attempt-btn:hover{
+        background: white;
+        color: green;
+        border: 1px solid green;
+    }
+}
+.quiz-title{
+    padding-left: 8%;
+    height: 300px;
+    background: green;
+    color: white;
+    z-index: 13;
+    h3{
+        color: white;
+    }
+    .submit-btn{
+        background: white;
+        color: green;
+        border: 1px solid white;
+        border-radius: 12px;
+        padding: 5px 15px;
+        z-index: 1000;
+    }
+    
+}
+   .quiz-counter{
+        max-width: 250px;
+        position: fixed;
+        top: 115px;
+        right: 15px;
+        padding: 0;
+        margin-bottom: 0;
+        text-align: center;
+        border: 1px solid #d3d3d3;
+        border-radius: 8px;
+        background: #fafafa;
+        z-index: 1;
+        transition: all .5s ease;
+        opacity: .9;
+        ul{
+            display: block;
+            float: left;
+            padding: 0 10px;
+            width: 100%;
+            overflow: auto;
+            max-height: 29rem;
+            li{
+                float: left;
+                margin: 5px 0;
+                width: 16.6666%;
+                text-align: center;
+                list-style: none;
+                display: inline-block;
+                position: relative;
+                cursor: pointer;
+                span{
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                    font-size: 12px;
+                    border-radius: 50%;
+                    border: 1px solid #ccc;
+                    margin: 1px;
+                    display: block;
+                }
+                .done{
+                    background: green;
+                    color: white;
+                }
+            }
+        }
+ 
+        .subject-btn{
+            margin-bottom: 15px;
+            
+            background: white;
+            color: green;
+            border: 1px solid green;
+        }
+        .active{
+            background: green;
+            color: white;
+            border: 1px solid green;
+        }
+        .subject-btn:hover{
+            background: green;
+            color: white;
+            border: 1px solid green;
+        }
+        
+    }
+    .quiz-content{
+        div{
+            font-family: 'Times New Roman', Times, serif;
+        }
+        math{
+            display: inline-block !important;
+        }
+        .MuiGrid-spacing-xs-2{
+            width: 100% !important; 
+         }
+         .quiz-main-content{
+            padding: 2% 8% !important;
+            
+            .quiz-questions{
+                background: #fafafa;
+                .options{
+                    display: flex;
+                    flex-wrap: wrap;
+                    .ckb{
+                        flex: 0 0 50%;
+                        max-width: 50%;
+                        display: block;
+                        position: relative;
+                        label{
+                            margin: auto;
+                            display: flex;
+                            display: inline-flex;
+                            align-items: baseline;
+                            width: 100%;
+                            cursor: pointer;
+                            .answer{
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+                .answer{
+                    margin-right: 5px;
+                }
+                .active{
+                    color: green;
+                }
+                
+            }
+        }
+   
+   
+   
+    }
+    
+    

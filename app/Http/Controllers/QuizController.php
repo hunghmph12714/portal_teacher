@@ -13,12 +13,98 @@ use App\TopicQuestion;
 use App\Quiz;
 use App\QuizConfigTopic;
 use App\QuizQuestion;
+use App\Topic;
+use App\Attempt;
+use App\AttemptDetail;
+use App\Student;
+use App\Session;
 use DateTime;
 use DateTimeInterface;
 
 class QuizController extends Controller
 {
     //
+    public function checkAttempt(){
+        $attempt = Attempt::where('start_time', '<','2022-01-23 12:00:00')->get();
+        foreach($attempt as $a){
+            $ad = AttemptDetail::where('attempt_id', $a->id)->first();
+            if(!$ad){
+                $ss = StudentSession::find($a->student_session);
+                if($ss){
+                    $student = Student::find($ss->student_id);
+                    $session = Session::find($ss->session_id);
+                    print_r($session->content. "-");
+                    print_r($student->fullname);
+                    echo "<br/>";
+                }
+            }
+        }
+        // dd($attempt);
+    }
+    public function genQuizNine(){
+        $config = QuizConfig::find(33);
+        $config_topic = QuizConfigTopic::query()
+            ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
+        $quizzes = [
+            'title' => $config->title,
+            'duration' => $config->duration,
+            'quizz_code' => random_int(1000, 9999),
+            'quiz_config_id' => $config->id,
+            'student_session_id' => NULL,
+            'available_date' => date('Y-m-d H:i:s')
+        ];
+        $quiz =   Quiz::create($quizzes);
+        foreach($config_topic as $cf){
+            // $topic = Topic::find($cf->id);
+            echo $cf->topic_id,'<br/>';
+            $topic_question = TopicQuestion::where('topic_id', $cf->topic_id)->first();
+            if($topic_question){
+                $question = Question::find($topic_question->question_id);
+                if($question){
+                    $q_q = [
+                        'question_id' => $question->id,
+                        'quizz_id' => $quiz->id,
+                        'max_score' =>  $cf->score,
+                    ];
+                    // dd($q_q);
+                    $model = QuizQuestion::create($q_q);
+                    $option_config = $model->option_config;
+                    // print_r($item);
+                    $o = Option::where('question_id', $question->id)->get();
+                    foreach ($o as $k => $op) {
+                        $option_config[$k] = $op->id;
+                    }
+                    $model->option_config  =  $option_config;
+                    $model->save();
+                }
+            }
+            
+            // echo $cf->topic_id,"<br/>";
+
+            // $question = Question::find($topic_question->question_id);
+            // if($question){
+            //     $q_q = [
+            //         'question_id' => $question->id,
+            //         'quizz_id' => $quiz->id,
+            //         'max_score' =>  $cf->score,
+            //     ];
+            //     // dd($q_q);
+            //     $model = QuizQuestion::create($q_q);
+            //     $option_config = $model->option_config;
+            //     // print_r($item);
+            //     $o = Option::where('question_id', $question->id)->get();
+            //     foreach ($o as $k => $op) {
+            //         $option_config[$k] = $op->id;
+            //     }
+            //     $model->option_config  =  $option_config;
+            //     $model->save();
+            // }
+            
+            
+        }
+
+        
+    }
     public function generateQuiz(Request $request)
     {
         $rules = [];
