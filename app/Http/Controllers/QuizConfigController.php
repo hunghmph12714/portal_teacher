@@ -145,7 +145,7 @@ class QuizConfigController extends Controller
             'grade' => 9
         ];
         $config = QuizConfig::create($data);
-        
+
 
         //Toán
         if ($tva) {
@@ -177,28 +177,12 @@ class QuizConfigController extends Controller
 
                 ];
 
-            foreach ($topic as $t) {
-                $data_t = [
-                    'quiz_config_id' => $config->id,
-                    'topic_id' => $t->id,
-                    'question_level' => 'TH',
-                    'question_type' => 'mc',
-                    'quantity' => 1,
-                    'score' => 1,
-                    'subject' => 'Tiếng Việt',
-
-                ];
-
 
                 $t_c = QuizConfigTopic::create($data_t);
             }
         }
     }
 
-                $t_c = QuizConfigTopic::create($data_t);
-            }
-        }
-    }
 
     public function autoConfig($objective_id, $toan, $van, $anh)
     {

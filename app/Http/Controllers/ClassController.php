@@ -29,26 +29,24 @@ use App\Option;
 class ClassController extends Controller
 {
     // Phòng học
-    protected function subscribe(){
+    protected function subscribe()
+    {
         $classes = Classes::where('code', 'LIKE', '%5.%')->where('year', 2021)->get();
         $event = Classes::where('code', 'KS6D1')->first();
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $students = $class->activeStudents;
-            foreach($students as $s){
+            foreach ($students as $s) {
                 $check = StudentClass::where('student_id', $s->id)->where('class_id', $event->id)->first();
-                if(!$check){
+                if (!$check) {
                     StudentClass::create([
-                        'student_id' => $s->id, 
+                        'student_id' => $s->id,
                         'class_id' => $event->id,
                         'status' => 'active',
                         'entrance_date' => '2022-01-17'
                     ]);
                 }
             }
-            
-
         }
-        
     }
     protected function getRoom()
     {
@@ -422,22 +420,22 @@ class ClassController extends Controller
         $wp_year = auth()->user()->wp_year;
 
         $result = auth()->user()->classes()->where('center_id', $center_operator, $center_value)->where('course_id', $course_operator, $course_value)->where('classes.year', $wp_year)->where('classes.type', 'class')->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code as code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'classes.cost',
-                'config',
-                'classes.fee as fee',
-                'online_id',
-                'password',
-                'droped_number',
-                'waiting_number'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code as code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'classes.cost',
+            'config',
+            'classes.fee as fee',
+            'online_id',
+            'password',
+            'droped_number',
+            'waiting_number'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
         $classes = $result->toArray();
         foreach ($result as $key => $class) {
             $last_session = $class->sessions->last();
@@ -460,22 +458,22 @@ class ClassController extends Controller
 
         // $result = Classes::where('center_id', $center_operator, $center_value)->where('course_id', $course_operator, $course_value)->where('classes.year', $wp_year)->select(
         $result = Classes::where('classes.year', $wp_year)->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code as code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'classes.cost',
-                'config',
-                'classes.fee as fee',
-                'online_id',
-                'password',
-                'droped_number',
-                'waiting_number'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code as code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'classes.cost',
+            'config',
+            'classes.fee as fee',
+            'online_id',
+            'password',
+            'droped_number',
+            'waiting_number'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
         $classes = $result->toArray();
         foreach ($result as $key => $class) {
             $last_session = $class->sessions->last();
@@ -490,18 +488,18 @@ class ClassController extends Controller
     protected function getClassById($class_id)
     {
         $result = Classes::where('classes.id', $class_id)->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code as code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'classes.cost',
-                'config',
-                'classes.fee as fee'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code as code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'classes.cost',
+            'config',
+            'classes.fee as fee'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first();
         return response()->json($result);
     }
     protected function createClass(Request $request)
@@ -525,19 +523,19 @@ class ClassController extends Controller
         $class = Classes::create($request);
 
         $result = Classes::where('classes.id', $class->id)->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'online_id',
-                'password',
-                'config',
-                'classes.fee as fee'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'online_id',
+            'password',
+            'config',
+            'classes.fee as fee'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
         return response()->json($result);
         // echo date("Y-m-d\TH:i:s\Z", $request->open_date/1000);
     }
@@ -574,20 +572,20 @@ class ClassController extends Controller
             $class->password = $request->password;
             $class->save();
             $result = Classes::where('classes.id', $class->id)->select(
-                    'classes.id as id',
-                    'classes.name as name',
-                    'classes.code',
-                    'center.name as center',
-                    DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                    'student_number',
-                    'open_date',
-                    'classes.active as status',
-                    'online_id',
-                    'password',
-                    'cost',
-                    'config',
-                    'classes.fee as fee'
-                )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
+                'classes.id as id',
+                'classes.name as name',
+                'classes.code',
+                'center.name as center',
+                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                'student_number',
+                'open_date',
+                'classes.active as status',
+                'online_id',
+                'password',
+                'cost',
+                'config',
+                'classes.fee as fee'
+            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
             return response()->json($result);
         }
     }
@@ -645,22 +643,22 @@ class ClassController extends Controller
     {
 
         $result = Classes::where('classes.type', 'event')->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code as code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'config',
-                'classes.fee as fee',
-                'online_id',
-                'password',
-                'droped_number',
-                'waiting_number',
-                'classes.note'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code as code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'config',
+            'classes.fee as fee',
+            'online_id',
+            'password',
+            'droped_number',
+            'waiting_number',
+            'classes.note'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
         $classes = $result->toArray();
         // print_r($classes);
         return response()->json($classes);
@@ -681,19 +679,19 @@ class ClassController extends Controller
         $class = Classes::create($request);
 
         $result = Classes::where('classes.id', $class->id)->select(
-                'classes.id as id',
-                'classes.name as name',
-                'classes.code',
-                'center.name as center',
-                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                'student_number',
-                'open_date',
-                'classes.active as status',
-                'online_id',
-                'password',
-                'config',
-                'classes.fee as fee'
-            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
+            'classes.id as id',
+            'classes.name as name',
+            'classes.code',
+            'center.name as center',
+            DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+            'student_number',
+            'open_date',
+            'classes.active as status',
+            'online_id',
+            'password',
+            'config',
+            'classes.fee as fee'
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
         return response()->json($result);
     }
     protected function editEvent(Request $request)
@@ -713,19 +711,19 @@ class ClassController extends Controller
             $class->note = $request->note;
             $class->save();
             $result = Classes::where('classes.id', $class->id)->select(
-                    'classes.id as id',
-                    'classes.name as name',
-                    'classes.code',
-                    'center.name as center',
-                    DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
-                    'student_number',
-                    'open_date',
-                    'classes.active as status',
-                    'online_id',
-                    'password',
-                    'config',
-                    'classes.fee as fee'
-                )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
+                'classes.id as id',
+                'classes.name as name',
+                'classes.code',
+                'center.name as center',
+                DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),
+                'student_number',
+                'open_date',
+                'classes.active as status',
+                'online_id',
+                'password',
+                'config',
+                'classes.fee as fee'
+            )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
             return response()->json($result);
         }
     }
@@ -1160,135 +1158,132 @@ class ClassController extends Controller
         }
         return response()->json(['students' => $result, 'sessions' => $sessions->toArray()]);
     }
-    protected function getResult(Request $request){
+    protected function getResult(Request $request)
+    {
         $rules = ['event_id' => 'required'];
         $this->validate($request, $rules);
 
         $event = Classes::find($request->event_id);
         $result = [];
-        if($event){
+        if ($event) {
             $sessions = $event->sessions;
-            foreach($sessions as $key => $session){
+            foreach ($sessions as $key => $session) {
                 $students = $session->students;
                 $result[] = $session->toArray();
                 $result[$key]['students'] = [];
-                foreach($students as $k => $student){
+                foreach ($students as $k => $student) {
                     //Get class
                     $student->classes = $student->activeClasses()->get()->toArray();
                     $student->dob_format = date('d/m/Y', strtotime($student->dob));
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
                     $parent = Parents::find($student->parent_id);
-                    if($parent){
+                    if ($parent) {
                         $student->pname = $parent->fullname;
                         $student->pphone = $parent->phone;
                         $student->pemail = $parent->email;
                     }
                     //Chưa làm bài
-                    if(!$attempt){
+                    if (!$attempt) {
                         $student->result_status = 'Chưa làm bài';
                         $result[$key]['students'][] = $student;
-                    }else{
+                    } else {
                         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
                         $student->quiz_id = $attempt->quiz_id;
                         $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
-                        if($attempt_detail->first()){
+                        if ($attempt_detail->first()) {
                             //Có bài làm
                             $student->result_status = 'Đã có bài';
                             $result[$key]['students'][] = $student;
-                            
-                        }else{
+                        } else {
                             $student->result_status = 'Chưa có bài';
                         }
                     }
-                    
                 }
             }
         }
         return response()->json($result);
     }
-    protected function getAttempt(Request $request){
+    protected function getAttempt(Request $request)
+    {
         $rules = ['ss_id' => 'required'];
         $this->validate($request, $rules);
 
         $ss = StudentSession::find($request->ss_id);
-        if($ss){
+        if ($ss) {
             $attempt = Attempt::where('student_session', $ss->id)->first();
-            if($attempt){
+            if ($attempt) {
                 $quiz = Quiz::find($attempt->quiz_id);
-            if($quiz){
-                $result = [];
-                $result['quiz'] = $quiz;
-                $result['quiz']['duration'] = $quiz->duration;
-                if(!$result['quiz']['student_session_id'] ){
-                    $result['quiz']['student_session_id'] = $request->ss_id;
-                }
-                $result['questions'] = [];
-                $result['packages'] = [];
-                $questions = $quiz->questions()->get();
-                $once = true;
-                $ref_tmp = -2;
-                foreach($questions as $key => $q){
-                    if(!array_key_exists($q->domain, $result['packages'])){
-                        if($once){
-                            $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
-                            $once = false;
-                        }else{
-                            $result['packages'][$q->domain] = ['active' => false, 'question_number' => 1, 'subject' => $q->domain];
-                        }
-                    }else{
-                        $result['packages'][$q->domain]['question_number']++;
+                if ($quiz) {
+                    $result = [];
+                    $result['quiz'] = $quiz;
+                    $result['quiz']['duration'] = $quiz->duration;
+                    if (!$result['quiz']['student_session_id']) {
+                        $result['quiz']['student_session_id'] = $request->ss_id;
                     }
-                    $result['questions'][] = $q->toArray();
-                    $result['questions'][$key]['s_index'] = $result['packages'][$q->domain]['question_number'];
-                    // $result['questions'][$key]['options'] = [];
-                    $result['questions'][$key]['content'] = str_replace('<p></p>', '<br/>', $result['questions'][$key]['content']);
-                    if($q->question_type == 'mc'){
-                        foreach($q->pivot['option_config'] as $option_id){
-                            $option = Option::find($option_id);
-                            $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
+                    $result['questions'] = [];
+                    $result['packages'] = [];
+                    $questions = $quiz->questions()->get();
+                    $once = true;
+                    $ref_tmp = -2;
+                    foreach ($questions as $key => $q) {
+                        if (!array_key_exists($q->domain, $result['packages'])) {
+                            if ($once) {
+                                $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
+                                $once = false;
+                            } else {
+                                $result['packages'][$q->domain] = ['active' => false, 'question_number' => 1, 'subject' => $q->domain];
+                            }
+                        } else {
+                            $result['packages'][$q->domain]['question_number']++;
                         }
-                    }
-                    if($q->question_type == 'fib'){
-                        for ($i=1; $i < 20 ; $i++) { 
-                            # code...
-                            $str = '{'.$i.'}';
-    
-                            $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
-                            // print_r($result['questions'][$key]['content']);
-                        }
-                    }
-                    
-                    
-                    if($q->complex == 'sub'){
-                        if($ref_tmp != $q->ref_question_id){
-    
-                            $ref_tmp = $q->ref_question_id;
-                            $main = Question::find($q->ref_question_id);
-                            if($main){
-                                $result['questions'][$key]['main_content'] = $main->content;
-                                $result['questions'][$key]['main_statement'] = $main->statement;
+                        $result['questions'][] = $q->toArray();
+                        $result['questions'][$key]['s_index'] = $result['packages'][$q->domain]['question_number'];
+                        // $result['questions'][$key]['options'] = [];
+                        $result['questions'][$key]['content'] = str_replace('<p></p>', '<br/>', $result['questions'][$key]['content']);
+                        if ($q->question_type == 'mc') {
+                            foreach ($q->pivot['option_config'] as $option_id) {
+                                $option = Option::find($option_id);
+                                $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
                             }
                         }
-                        
-                    }            
-                    $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
-                    $result['questions'][$key]['a_essay'] = '';
-                    $result['questions'][$key]['a_option'] = '';
-                    $result['questions'][$key]['a_fib'] = '';
-                    $result['questions'][$key]['done'] = true;
-                    if($attempt_detail){
-                        $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
-                        $result['questions'][$key]['a_option'] = $attempt_detail->options;
-                        $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
-                        $result['questions'][$key]['done'] = true;
-                    }
-                }
-                $result['packages'] = array_values($result['packages']);
-                return response()->json($result);
-            }
-            }
-            
+                        if ($q->question_type == 'fib') {
+                            for ($i = 1; $i < 20; $i++) {
+                                # code...
+                                $str = '{' . $i . '}';
 
+                                $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
+                                // print_r($result['questions'][$key]['content']);
+                            }
+                        }
+
+
+                        if ($q->complex == 'sub') {
+                            if ($ref_tmp != $q->ref_question_id) {
+
+                                $ref_tmp = $q->ref_question_id;
+                                $main = Question::find($q->ref_question_id);
+                                if ($main) {
+                                    $result['questions'][$key]['main_content'] = $main->content;
+                                    $result['questions'][$key]['main_statement'] = $main->statement;
+                                }
+                            }
+                        }
+                        $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
+                        $result['questions'][$key]['a_essay'] = '';
+                        $result['questions'][$key]['a_option'] = '';
+                        $result['questions'][$key]['a_fib'] = '';
+                        $result['questions'][$key]['done'] = true;
+                        if ($attempt_detail) {
+                            $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
+                            $result['questions'][$key]['a_option'] = $attempt_detail->options;
+                            $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                            $result['questions'][$key]['done'] = true;
+                        }
+                    }
+                    $result['packages'] = array_values($result['packages']);
+                    return response()->json($result);
+                }
+            }
         }
     }
     protected function reGenerateFee()
