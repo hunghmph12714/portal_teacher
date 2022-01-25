@@ -11,8 +11,10 @@
 |s
 */
 
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
+// use Illuminate\Routing\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -598,3 +600,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
 Route::get('demo-question', [QuizController::class, 'configuration']);
 Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
+Route::get('search', [QuestionController::class, 'filter']);
+// Route::get('attempt_id')

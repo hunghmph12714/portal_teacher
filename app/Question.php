@@ -28,68 +28,81 @@ class Question extends Model
     {
         return $this->hasMany('App\Option', 'question_id', 'id');
     }
-    public function scopeDomain($query, $request)
-    {
-        if (!empty($request->config['domain'])) {
 
-            if ($request->config['domain']['value']) {
-                // dd('%' . $request->config['domain']['value'] . '%');
-                $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
+
+
+    public function scopeDomain($query, $arr_domain)
+    {
+        if (!empty($arr_domain)) {
+
+            if ($arr_domain) {
+                // dd('%' . $domain . '%');
+                $query->whereIn('domain',   $arr_domain);
             }
         }
         // dd($query);
         return $query;
     }
 
-    public function scopeQuestionLevel($query, $request)
+    public function scopeQuestionLevel($query, $arr_lever)
     {
-        if (!empty($request->config['level'])) {
-            if ($request->config['level']['value']) {
-                $query->where('question_level', 'like', '%' . $request->config['level']['value'] . '%');
+        if (!empty($arr_lever)) {
+            if ($arr_lever) {
+                $querywhereIn('question_level',   $arr_lever);
             }
         }
         return $query;
     }
-    public function scopeGrade($query, $request)
+    public function scopeGrade($query, $arr_grade)
     {
-        if (!empty($request->config['grade'])) {
-            if ($request->config['grade']['value']) {
-                $query->where('lms_questions.grade',  $request->config['grade']['value']);
-            }
-        }
-
-        return $query;
-    }
-
-    public function scopeTopics($query, $request)
-    {
-        if (!empty($request->config['topics'])) {
-
-
-            if ($request->config['topics']) {
-                $t = [];
-                foreach ($request->config['topics'] as $tp) {
-                    array_push($t, $tp['value']);
-                }
-                $query->WhereIn('lms_topics.id', [$t]);
+        if (!empty($arr_grade)) {
+            if ($arr_grade) {
+                $query->whereIn('grade',  $arr_grade);
             }
         }
 
         return $query;
     }
-    public function scopeObjectives($query, $request)
+    public function scopeQuestion_type($query, $arr_loai)
     {
-
-        if (!empty($request->config['objectives'])) {
-            if ($request->config['objectives']) {
-                $o = [];
-                foreach ($request->config['objectives'] as $tp) {
-                    array_push($o, $tp['value']);
-                }
-                $query->WhereIn('objectives.id', [$o]);
+        if (!empty($arr_loai)) {
+            if ($arr_loai) {
+                $query->whereIn('question_type',  $arr_loai);
             }
         }
 
         return $query;
     }
+
+    // public function scopeTopics($query, $request)
+    // {
+    //     if (!empty($request->config['topics'])) {
+
+
+    //         if ($request->config['topics']) {
+    //             $t = [];
+    //             foreach ($request->config['topics'] as $tp) {
+    //                 array_push($t, $tp['value']);
+    //             }
+    //             $query->WhereIn('lms_topics.id', [$t]);
+    //         }
+    //     }
+
+    //     return $query;
+    // }
+    // public function scopeObjectives($query, $request)
+    // {
+
+    //     if (!empty($request->config['objectives'])) {
+    //         if ($request->config['objectives']) {
+    //             $o = [];
+    //             foreach ($request->config['objectives'] as $tp) {
+    //                 array_push($o, $tp['value']);
+    //             }
+    //             $query->WhereIn('objectives.id', [$o]);
+    //         }
+    //     }
+
+    //     return $query;
+    // }
 }
