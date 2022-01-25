@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Criteria extends Model
 {
-    protected $table = 'lms_criterias';
-    public $filable = ['attempt_id', 'domain', 'content', 'title'];
+    public $table = 'lms_criterias';
+    protected $fillable = ['attempt_id', 'domain', 'content', 'title'];
 }

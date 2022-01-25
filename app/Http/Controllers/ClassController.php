@@ -25,6 +25,7 @@ use App\AttemptDetail;
 use App\Quiz;
 use App\Question;
 use App\Option;
+use App\Criteria;
 
 class ClassController extends Controller
 {
@@ -1217,6 +1218,7 @@ class ClassController extends Controller
                     $result = [];
                     $result['quiz'] = $quiz;
                     $result['quiz']['duration'] = $quiz->duration;
+                    $result['quiz']['attempt_id'] = $attempt->id;
                     if (!$result['quiz']['student_session_id']) {
                         $result['quiz']['student_session_id'] = $request->ss_id;
                     }
@@ -1273,18 +1275,66 @@ class ClassController extends Controller
                         $result['questions'][$key]['a_option'] = '';
                         $result['questions'][$key]['a_fib'] = '';
                         $result['questions'][$key]['done'] = true;
+                        $result['questions'][$key]['score'] = NULL;
+                        $result['questions'][$key]['comment'] = NULL;
                         if ($attempt_detail) {
                             $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
                             $result['questions'][$key]['a_option'] = $attempt_detail->options;
                             $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                            $result['questions'][$key]['score'] = $attempt_detail->score;
+                            $result['questions'][$key]['comment'] = $attempt_detail->comment;
                             $result['questions'][$key]['done'] = true;
+                            $result['questions'][$key]['attempt_detail_id'] = $attempt_detail->id;
                         }
                     }
                     $result['packages'] = array_values($result['packages']);
+                    // Get Comment for domain
+                    $criterias = Criteria::where('attempt_id', $attempt->id)->get();
+                    $result['criterias'] = $criterias->toArray();
+                    //
                     return response()->json($result);
                 }
             }
         }
+    }
+    protected function submitMark(Request $request){
+        $rules = ['questions' => 'required'];
+        $this->validate($request, $rules);
+
+        foreach($request->questions as $q){
+            $ad = AttemptDetail::find($q['attempt_detail_id']);
+            if($ad){
+                $ad->score = $q['score'];
+                $ad->comment = $q['comment'];
+                $ad->save();
+            }
+        }
+        $result = [];
+        foreach($request->criterias as $c){
+            if($c['id'] == -1){
+                $input['title'] = $c['title'];
+                $input['content'] = $c['content'];
+                $input['domain'] = $c['domain'];
+                $input['attempt_id'] = $request->attempt_id;
+                $result[] = Criteria::create($input);
+            }else{
+                $criteria = Criteria::find($c['id']);
+                if($criteria){
+                    $criteria->title = $c['title'];
+                    $criteria->content = $c['content'];
+                    $criteria->save();
+                    $result[] = $criteria;
+                }
+            }
+        }
+        foreach($request->removed_criterias as $rc){
+            $criteria = Criteria::find($rc['id']);
+            if($criteria){
+                $criteria->forceDelete();
+            }
+        }
+        return response()->json($result);
+
     }
     protected function reGenerateFee()
     {

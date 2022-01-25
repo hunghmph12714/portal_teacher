@@ -42,3 +42,4 @@ export { QuizConfig } from './QuizConfig';
 export { default as Objective } from './Objective';
 export { default as QuestionList } from './QuestionList';
 export { default as QuizConfigList } from './QuizConfigList';
+export { default as LmsScoreMark } from './LmsScoreMark';

@@ -21,10 +21,6 @@ import {
   import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 const baseUrl = window.Laravel.baseUrl
 
-// var i = pattern.map(p => {
-//     z = {...z, [7+p] :45, [8+p]:50, [9+p]:45, [11+p]: 45}
-//     return {[7+p] :45, [8+p]:45, [9+p]:45, [11+p]: 45}
-// });
 const ListResult = (props) => {
     const [sessions, setSessions] = useState([])
     const [loading, setLoading] = useState(true);
@@ -124,9 +120,10 @@ const ListResult = (props) => {
   }, [])
   function handleOpenQuizDialog(rowData){
       if(rowData.result_status == 'Đã có bài'){
-
-        setOpen(true)
-        setSsId(rowData.pivot.id)
+        window.open(
+            '/mark/'+rowData.pivot.id,
+            '_blank' // <- This is what makes it open in a new window.
+          );
       }
 
   }
