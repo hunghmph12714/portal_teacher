@@ -1210,12 +1210,18 @@ class ClassController extends Controller
         $this->validate($request, $rules);
 
         $ss = StudentSession::find($request->ss_id);
+        
         if ($ss) {
+            $student = Student::find($ss->student_id);
             $attempt = Attempt::where('student_session', $ss->id)->first();
             if ($attempt) {
                 $quiz = Quiz::find($attempt->quiz_id);
                 if ($quiz) {
                     $result = [];
+                    //Thong tin hocj sinh
+                    $result['student'] = $student->toArray();
+                    $classes = $student->activeClasses()->get()->toArray();
+                    $result['student']['classes'] = implode(',', array_column($classes, 'code'));
                     $result['quiz'] = $quiz;
                     $result['quiz']['duration'] = $quiz->duration;
                     $result['quiz']['attempt_id'] = $attempt->id;

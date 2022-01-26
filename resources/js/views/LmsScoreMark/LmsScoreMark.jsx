@@ -23,6 +23,7 @@ const LmsScoreMark = (props) => {
     const [current_package, setCurrentPackage] = useState('')
     const [criterias, setCriterias] = useState([])
     const [removed_criterias, setRemovedCriterias] = useState([])
+    const [student, setStudent] = useState({})
     useEffect(() => {
         axios.post('/event/attempt', {ss_id: props.match.params.ss_id})
             .then(response => {
@@ -50,6 +51,7 @@ const LmsScoreMark = (props) => {
                 setPackageQuiz(response.data.packages)
                 setQuiz(response.data.quiz)
                 setCriterias(response.data.criterias)
+                setStudent(response.data.student)
             })
     }, [])
 
@@ -109,18 +111,31 @@ const LmsScoreMark = (props) => {
     }
     return(
         <Dialog open={true} fullScreen>
-            <div className='quiz-counter'>
+            <Grid container spacing={2}>
+                <Grid item md={6}>
+                <div className='quiz-counter'>
 
-                <h4>Tổng số câu hỏi: {questions.length}</h4>
-                {packageQuiz.map((pq, index) => {
-                return(
-                    <Button variant='outlined' className={pq.active ? 'subject-btn active' : 'subject-btn'} 
-                        onClick = {() => handlePackageChange(pq.subject)}
-                        fullWidth>{pq.subject} - {pq.question_number} Câu
-                    </Button>
-                    )
-                })}
-            </div>
+                    <h4>Tổng số câu hỏi: {questions.length}</h4>
+                    {packageQuiz.map((pq, index) => {
+                    return(
+                        <Button variant='outlined' className={pq.active ? 'subject-btn active' : 'subject-btn'} 
+                            onClick = {() => handlePackageChange(pq.subject)}
+                            fullWidth>{pq.subject} - {pq.question_number} Câu
+                        </Button>
+                        )
+                    })}
+                </div>
+                </Grid>
+                <Grid item md={6}>
+                    <div className='quiz-student'>
+                        <h5>Họ tên Học sinh: </h5> <span>{student.fullname}</span>
+                        <h5>Ngày sinh: </h5> <span>{student.dob}</span>
+                        <h5>Lớp tại VietElite: </h5> <span>{student.classes}</span>
+                    </div>
+                </Grid>
+
+            </Grid>
+            
 
             <div className='quiz-content'>
             <Grid container spacing={2} className='quiz-main-content'>
