@@ -105,6 +105,20 @@ const ListResult = (props) => {
             
               
         },
+        {
+            title: "Mục tiêu",
+            field: "objectives",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+              
+        },
+
     ])
     const [open, setOpen] = useState(false)
     const [ss_id, setSsId] = useState('')

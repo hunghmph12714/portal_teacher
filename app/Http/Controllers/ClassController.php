@@ -26,7 +26,7 @@ use App\Quiz;
 use App\Question;
 use App\Option;
 use App\Criteria;
-
+use App\Objective;
 class ClassController extends Controller
 {
     // Phòng học
@@ -1174,8 +1174,15 @@ class ClassController extends Controller
                 $result[$key]['students'] = [];
                 foreach ($students as $k => $student) {
                     //Get class
+                    $ss = StudentSession::find($student->pivot['id']);
+                    //Get Objective
+                    $obj_ids = array($ss->objectives);
+                    
+                    $objs = Objective::whereIn('id', $obj_ids)->get();
                     $student->classes = $student->activeClasses()->get()->toArray();
                     $student->dob_format = date('d/m/Y', strtotime($student->dob));
+                    $student->objectives = implode(array_column($objs->toArray(), 'content'));
+
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
                     $parent = Parents::find($student->parent_id);
                     if ($parent) {
@@ -1199,6 +1206,7 @@ class ClassController extends Controller
                             $student->result_status = 'Chưa có bài';
                         }
                     }
+
                 }
             }
         }
