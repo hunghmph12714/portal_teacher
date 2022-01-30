@@ -1,0 +1,30 @@
+#message-dialog{
+    
+    .messages{
+        margin-bottom: 15px;
+    }
+    .message-content{
+        background-color: #f0f2f5;
+        border-radius: 10px;
+        .user_name{
+            font-weight: bold;
+        }
+        .method{
+            font-size: 13px;
+        }
+        .content{
+            margin-bottom: 0px;
+        }
+        .time{
+            font-size: 11px;
+        }
+        .delete{
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .delete:hover{
+            text-decoration: underline;
+        }
+    }
+}

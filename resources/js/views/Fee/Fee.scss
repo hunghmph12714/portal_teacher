@@ -1,0 +1,52 @@
+.root-fee{
+    margin: 15px;
+    padding-top: 5px;
+    background-color: white;
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+    border-radius: 4px;
+    height: 89%;
+    .select-session{
+        margin: 8px !important;
+    }
+    .select-input{
+        z-index: 1000;
+    }
+    hr{
+        margin-bottom: 5px;
+    }
+    .fee{
+        margin-right: 5px;
+    }
+    tr[level="0"]{
+        td:last-child{
+            font-weight: 600 !important;
+        }
+    }
+    
+}
+.select-box-margin{
+    margin-bottom: 15px !important;
+}
+.form-fee{
+    padding: 10px;
+    margin: 7px;
+}
+.form-index{
+    z-index: 998;
+    position: relative; 
+}
+.thu-hoc-phi{
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.MTableToolbar-actions-314:hover{
+    background-color: transparent;
+}
+.receipt-dialog{
+    padding-bottom: 300px;
+}
+
+.MuiDialogContent-root{
+    z-index: 999;
+}

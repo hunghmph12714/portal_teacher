@@ -1,0 +1,20 @@
+#test-dialog{
+    .MuiDialog-paper{
+        overflow-y: visible !important;
+    }
+    .MuiDialogContent-root{
+        overflow-y: visible !important;
+    }
+    
+    .appointments{
+        margin-bottom: 15px;
+        .icon{
+            margin-top: 7px;
+            cursor: pointer;
+        }
+    }
+    .result-upload > div{
+        margin-top: 10px;
+        min-height: 120px;
+    }
+}

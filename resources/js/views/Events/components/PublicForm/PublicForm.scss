@@ -1,0 +1,142 @@
+body{
+    background: transparent;
+    .root-event-detail{
+        // background-image: url("https://dtkt.vietelite.edu.vn/wp-content/uploads/2020/11/1920x780.png");
+        
+        input {
+            background : white;
+        }
+        .MuiStepper-root{
+            padding: 8px !important; 
+        }
+        padding: 10px;
+        margin: 0px !important;
+        width: 100%;
+        .date-time{
+            margin-top: 8px;
+            background:white;
+            .MuiInputBase-root{
+                height: 45px !important;
+                background:white;
+            }
+            input{
+                background: transparent;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .school-select{
+                width: 94vw;
+            }
+            .full-grid{
+                width: 100%;
+            }
+        }
+        .school-select>div{
+            height: 45px !important;
+        }
+        .school-select{
+            margin-top: 7px;
+            z-index: 1000;
+            background: white !important;
+            div{
+                background: white;
+            }
+        }
+        .MuiFormHelperText-root{
+            color: white;
+        }
+        .label-white{
+            color: white;
+            margin-top : 10px;
+        }
+        .check-center{
+            .MuiFormLabel-root{
+                margin-top: 8px;
+                margin-bottom: 0px; 
+            }
+        }
+        .btn-vee{
+            background: white;
+            margin: 5px 10px 5px 0px;
+        }
+        .btn-full{
+            width: 100%;
+        }
+        .btn-product{
+            display: inline-block;
+            background: white;
+            border: 1px solid gray;
+            padding: 4px 20px;
+            font-weight: bold;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.23);
+            p{
+                text-transform: uppercase;
+            }
+        }
+        .btn-product:hover{
+            background: #c9d1bf;
+            cursor: pointer;
+        }
+        .btn-active{
+            background: #8bc34a !important;
+            span{
+                color: white;
+            }
+        }
+        .btn-disabled{
+            span{color: gray}
+            background: whitesmoke;
+        }
+        .btn-disabled:hover{
+            cursor: not-allowed !important;
+            background: whitesmoke;
+            span{color: gray}
+        }
+        // @media (min-width: 768px) {
+        //     .mon-thi{
+        //         position: relative;
+        //         bottom: 55px;
+        //     }
+        // }
+        .fee{
+            color: #8bc34a
+        }
+        .tos{
+            margin-top: 20px;
+            display:block;
+            color:whitesmoke;
+            a{
+                color: yellow;
+            }
+        }
+        .tos-checkbox{
+            margin: 0px;
+        }
+        .btn-submit{
+           
+            background: white;
+            padding: 8px 25px;
+            font-size: 19px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            color: #8bc34a !important;
+            border: 1px solid #8bc34a;
+        }
+        .btn-submit:hover{
+            background: #8bc34a;
+            color: white !important;
+        }
+        .btn-fee{
+            background: white;
+        }
+        .MuiRadio-colorPrimary.Mui-checked{
+            color: white;
+        }
+        .MuiFormControlLabel-label {
+            color: white;
+        }
+    }
+}

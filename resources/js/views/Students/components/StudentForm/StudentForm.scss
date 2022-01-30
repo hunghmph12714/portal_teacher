@@ -1,0 +1,29 @@
+.root-student-cv{
+    background-color: white;
+    h3{
+        padding: 10px 0px 0px 13px;
+    }
+    .student-form{
+        width: 100% !important;
+        margin : 5px 0px 0px 0px !important;
+        background-color: white;
+        .school-select{
+            margin-top: 8px;
+            margin-bottom: 4px;
+            z-index: 1000;
+        }
+        .gender-dob{
+            margin-top: 0px !important;
+        }
+        .relationship-select{
+            margin-top: 8px;
+        }
+    }
+    #btn-save{
+        margin: 0px 12px 12px 12px;
+    }
+    .MuiGrid-root:first-child{
+        margin: 0px;
+    }
+    
+}

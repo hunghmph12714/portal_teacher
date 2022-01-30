@@ -1,0 +1,31 @@
+.upload{
+    div:first-child{
+        min-height: 100px;
+        .MuiGrid-spacing-xs-8{
+            width: 100%;
+            margin: 0px;
+            .MuiGrid-item{
+                padding:0px !important;
+            }
+        }
+        
+    }
+    p{
+        font-size: 14px
+    }
+    
+    button{
+        width: 30px;
+        height: auto;
+    }
+    
+}
+label + .MuiInput-formControl{
+    margin-top: 0px !important;
+}
+.a_document{
+    margin: 0px 10px;
+}
+h5{
+    margin-top: 15px;
+}

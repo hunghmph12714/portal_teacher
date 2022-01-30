@@ -1,0 +1,25 @@
+#account-dialog{
+    .MuiDialog-paper{
+        overflow: visible !important;
+    }
+    .MuiDialogContent-root{
+        overflow: visible !important;
+    }
+    
+    .accounts{
+        margin-bottom: 15px;
+        .icon{
+            margin-top: 7px;
+            cursor: pointer;
+        }
+    }
+    .MuiGridList-root{
+        overflow: visible !important;
+    }
+    .account-tile{
+        .MuiGridListTile-tile{
+            overflow: visible !important;
+        }
+       
+    }
+}

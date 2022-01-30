@@ -1,0 +1,409 @@
+﻿* {
+    font-family: Arial;
+    font-size: 13px !important;
+    outline: none;
+}
+
+body {
+    background-color: #f9f9f9;
+    margin: 0px;
+    padding: 0px;
+}
+
+#qi-banner {
+    background-color: #9f224e;
+    height: 45px;
+    line-height: 45px;
+    min-width: 980px;
+    width: 100%;
+}
+
+    #qi-banner ul {
+        list-style: none;
+        margin: 0px;
+        padding: 0px;
+    }
+
+        #qi-banner ul li img {
+            float: left;
+        }
+
+
+.diaPhuong.maSo31#qi-banner ul li#qi-logo img {
+    float: left;
+    padding-left: 10px;
+    margin-top: 4px;
+    display: block;
+    margin-right: 10px;
+    height: 35px;
+}
+
+#qi-banner #qi-logo {
+    float: left;
+    height: 45px;
+    line-height: 45px;
+    background-color: #901540;
+}
+
+#qi-banner #qi-moet {
+    float: left;
+    height: 45px;
+    line-height: 45px;
+    background-color: #901540;
+    padding-right: 15px;
+}
+
+    #qi-banner #qi-moet span {
+        color: #fff;
+        font-size: 19px !important;
+        font-weight: bold;
+    }
+
+#qi-banner #qi-name-truong {
+    float: left;
+    height: 45px;
+    line-height: 45px;
+}
+
+#qi-banner #qi-software {
+    float: left;
+    margin-left: 25px;
+}
+
+#qi-banner #qi-danh-muc-khac {
+    background-color: #901540;
+    cursor: pointer;
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 1px;
+}
+
+    #qi-banner #qi-danh-muc-khac:hover {
+        background-color: #7e1b3e;
+    }
+
+#qi-banner #qi-truy-cap-nhanh {
+    background-color: #901540;
+    cursor: pointer;
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 1px;
+}
+
+    #qi-banner #qi-truy-cap-nhanh:hover {
+        background-color: #7e1b3e;
+    }
+
+#qi-banner #qi-thong-bao {
+    background-color: #901540;
+    cursor: pointer;
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 1px;
+}
+
+
+
+    #qi-banner #qi-thong-bao:hover {
+        background-color: #7e1b3e;
+    }
+
+#qi-banner #qi-ho-tro {
+    background-color: #901540;
+    cursor: pointer;
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 1px;
+}
+
+    #qi-banner #qi-ho-tro:hover {
+        background-color: #7e1b3e;
+    }
+
+    #qi-banner #qi-ho-tro > span {
+        text-decoration: underline !important;
+    }
+
+#qi-banner #qi-huong-dan {
+    background-color: #901540;
+    cursor: pointer;
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 1px;
+}
+
+    #qi-banner #qi-huong-dan > span {
+        text-decoration: underline !important;
+    }
+
+    #qi-banner #qi-huong-dan:hover {
+        background-color: #7e1b3e;
+    }
+
+        #qi-banner #qi-huong-dan:hover > span {
+            text-decoration: none !important;
+        }
+
+#qi-banner #qi-name-account {
+    float: right;
+    height: 45px;
+    line-height: 45px;
+}
+
+#qi-banner #qi-icon-acount {
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-right: 12px;
+}
+
+#qi-banner #qi-chon-nam {
+    float: right;
+    height: 45px;
+    line-height: 45px;
+    margin-right: 12px;
+}
+
+#qi-banner #qi-image_logo {
+    cursor: pointer;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+}
+
+#qi-banner #qi-image-line-logo {
+    padding-right: 12px;
+    padding-top: 5px;
+}
+
+#qi-banner #qi-span-name-truong {
+    color: #FFFF33;
+    font-family: Arial;
+    font-size: 15px !important;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+#qi-banner #qi-span-name-account {
+    color: #FFF;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 12px;
+}
+
+    #qi-banner #qi-span-name-account > span {
+        color: #FFF;
+    }
+
+    #qi-banner #qi-span-name-account a {
+        color: #FFFF33;
+        font-family: Arial;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: underline;
+        padding: 0 0 0 12px;
+    }
+
+        #qi-banner #qi-span-name-account a:hover {
+            text-decoration: none;
+        }
+
+#qi-banner #qi-image-icon-acount {
+    padding-top: 12px;
+}
+
+#qi-banner .qi-menu-re {
+    display: none;
+    width: 100%;
+}
+
+    #qi-banner .qi-menu-re ul:before {
+        border-bottom: 9px solid rgba(255, 255, 255, 0.98);
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+        content: '';
+        display: inline-block;
+        left: 354px;
+        position: absolute;
+        top: -9px;
+    }
+
+    #qi-banner .qi-menu-re ul {
+        background: #FFFFFF;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+        display: none;
+        padding: 10px 0;
+        position: absolute;
+        top: 48px;
+        width: 382px;
+        z-index: 9999999;
+    }
+
+        #qi-banner .qi-menu-re ul li {
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #e5e5e5;
+            cursor: pointer;
+            line-height: 24px;
+            padding: 5px 0;
+        }
+
+            #qi-banner .qi-menu-re ul li:first-child {
+                background-color: #ffffff;
+            }
+
+                #qi-banner .qi-menu-re ul li:first-child a {
+                    color: #eb4a3f;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+
+                    #qi-banner .qi-menu-re ul li:first-child a:hover {
+                        text-decoration: none;
+                    }
+
+            #qi-banner .qi-menu-re ul li:last-child {
+                border-bottom: none;
+            }
+
+            #qi-banner .qi-menu-re ul li a {
+                color: #666666;
+                font-family: Arial;
+                font-size: 13px;
+                margin-left: 20px;
+                text-decoration: none;
+            }
+
+                #qi-banner .qi-menu-re ul li a:hover {
+                    text-decoration: underline;
+                }
+
+            #qi-banner .qi-menu-re ul li .titleItem {
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+                #qi-banner .qi-menu-re ul li .titleItem:hover {
+                    text-decoration: none;
+                }
+
+#qi-banner ul li {
+    position: relative;
+}
+
+    #qi-banner ul li ul {
+        left: -340px;
+        z-index: 9999;
+    }
+
+.div-content-TCN:before, .div-content-TCNT:after, .clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+
+#qi-banner .div-content-TCN:after {
+    clear: both;
+}
+
+#qi-banner #qi-software .RadComboBox_Bootstrap .rcbInputCell {
+    border: 1px solid;
+    border-color: #ccc !important;
+}
+
+#qi-banner #qi-software .RadComboBox_Bootstrap .rcbArrowCell {
+    border-color: #ccc !important;
+}
+
+#qi-banner #qi-software .rcbInputCellLeft input {
+    height: 26px;
+    padding-left: 30px !important;
+}
+
+
+#qi-banner #qi-software .RadComboBoxDropDown .rcbList > li {
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
+}
+
+#qi-banner #qi-software .RadComboBoxDropDown_Bootstrap .rcbHovered {
+    background-color: #c3dcf8 !important;
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
+}
+
+.RadMenu_Bootstrap {
+    line-height: 32px !important;
+}
+
+.RadMenu .rmLeftImage {
+    height: 22px;
+    margin: 5px 5px 0 -6px !important;
+    width: 22px;
+}
+
+.rmExpandDown:after {
+    margin: 0 -4px 0px 10px !important;
+}
+
+.madal {
+    z-index: 9999;
+}
+
+.RadWindow {
+    z-index: 9999 !important;
+}
+
+.RadMenu_Bootstrap {
+    line-height: 32px !important;
+}
+
+.RadMenu .rmLeftImage {
+    height: 22px;
+    margin: 5px 5px 0 -6px !important;
+    width: 22px;
+}
+
+.RadMenu_Bootstrap .rmRootLink {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
+
+#qi-banner.diaPhuong {
+    background: #9f224e !important;
+}
+
+#qi-banner.diaPhuong33 {
+    background: #028cee !important;
+}
+
+
+#qi-banner.diaPhuong #qi-logo, #qi-banner.diaPhuong #qi-moet, #qi-banner.diaPhuong #qi-huong-dan, #qi-banner.diaPhuong #qi-thong-bao, #qi-banner.diaPhuong #qi-truy-cap-nhanh, #qi-banner.diaPhuong #qi-danh-muc-khac, #qi-banner.diaPhuong #qi-ho-tro {
+    background: #9f224e !important;
+}
+
+#qi-banner.diaPhuong33 #qi-logo, #qi-banner.diaPhuong33 #qi-moet, #qi-banner.diaPhuong33 #qi-huong-dan, #qi-banner.diaPhuong33 #qi-thong-bao, #qi-banner.diaPhuong33 #qi-truy-cap-nhanh, #qi-banner.diaPhuong33 #qi-danh-muc-khac, #qi-banner.diaPhuong33 #qi-ho-tro {
+    background: #028cee !important;
+}
+
+#qi-banner.diaPhuong.maSo31 {
+    background: #9f224e !important;
+}
+
+    #qi-banner.diaPhuong.maSo31 #qi-logo, #qi-banner.diaPhuong.maSo31 #qi-moet, #qi-banner.diaPhuong.maSo31 #qi-huong-dan, #qi-banner.diaPhuong.maSo31 #qi-thong-bao, #qi-banner.diaPhuong.maSo31 #qi-truy-cap-nhanh, #qi-banner.diaPhuong.maSo31 #qi-danh-muc-khac, #qi-banner.diaPhuong.maSo31 #qi-ho-tro {
+        background: #9f224e !important;
+    }
+
+
+#qi-banner.diaPhuong79 {
+    background: #028cee !important;
+}
+    #qi-banner.diaPhuong79 #qi-logo, #qi-banner.diaPhuong79 #qi-moet, #qi-banner.diaPhuong79 #qi-huong-dan, #qi-banner.diaPhuong79 #qi-thong-bao, #qi-banner.diaPhuong79 #qi-truy-cap-nhanh, #qi-banner.diaPhuong79 #qi-danh-muc-khac, #qi-banner.diaPhuong79 #qi-ho-tro {
+        background: #028cee !important;
+    }
+
+

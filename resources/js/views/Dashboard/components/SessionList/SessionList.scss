@@ -1,0 +1,53 @@
+
+.dashboard-select{
+    .MuiGrid-root{
+        z-index: 999;
+    }
+    .MuiPaper-root{
+        overflow: visible;
+    }
+    .center{
+        margin-top: 10px;
+    }
+    .refresh-btn{
+        margin-top: 10px;
+        color: white;
+        border: 1px solid #8bc34a;
+        background-color: #8bc34a;
+    }
+    .refresh-btn:hover{
+        color: #8bc34a;
+        background-color: white;
+        border: 1px solid #8bc34a;
+    }
+    .stats{
+        margin-bottom: 15px;
+        .dashboard-icon{
+            .MuiCardContent-root{
+                padding: 16px 7px !important;
+            }
+        }
+        a{
+            float: right;
+        }
+        .stats_number{
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 0;
+            
+        }
+        span{
+            vertical-align: middle;
+            font-size: 12px;
+        }
+        .MuiCardContent-root{
+            padding-bottom: 16px;
+        }
+        .grid-no-shadow{
+            box-shadow: none !important;
+        }
+        .stats-row-second{
+            margin-top: 10px;
+        }
+    }
+}

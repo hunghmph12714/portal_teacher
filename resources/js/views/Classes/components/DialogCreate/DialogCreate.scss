@@ -1,0 +1,64 @@
+.dialog-class-create{
+    #form-dialog-title{
+        padding-bottom:0px !important; 
+    }
+    .paper{
+        padding: 2px;
+        text-align : center;
+        color: blue;
+        
+    }
+    #btn-save{
+        font-weight: 600;
+    }
+    
+    .divider {
+        margin: 5px 0px !important;
+    }
+    
+    .date-time{
+        margin-top: 8px;
+        margin-bottom: 18px;
+    }
+    .teacher-select{
+        margin-top: 8px;
+        margin-bottom: 5px;
+    }
+    .room-select{
+        margin-top: 8px;
+        margin-bottom: 5px;
+    }
+    .input-time{
+        div{
+            padding-right: 0px;
+        }
+        input{
+            padding-top:10px;
+            padding-bottom: 10px;
+        }
+        width:100%;
+    }
+    .divider-class{
+        margin: 14px 0px !important;
+    }
+    #session{
+        float : right;
+    }
+    
+}
+.date-time {
+    display: inline-flex;
+    width: 100%;
+        .input-date {
+        width: 100%;
+        .MuiInputBase-root {
+            height: 38px;
+        }
+        .MuiOutlinedInput-adornedEnd {
+            padding-right: 0;
+        }
+        .MuiInputAdornment-positionEnd {
+            margin-left: 0;
+        }
+        }
+    }
