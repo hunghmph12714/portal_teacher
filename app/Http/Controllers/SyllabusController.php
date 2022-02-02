@@ -53,15 +53,17 @@ class SyllabusController extends Controller
 
         $result = [];
         $chapters = Chapter::where('syllabus_id', $request->syllabus['value'])->get();
+        $count = 0;
         foreach($chapters as $k => $c){
             $subjects = Subject::where('chapter_id', $c->id)->get();
             $r = [];
             foreach($subjects as $key => $s){
-                $result[$k + $key]['label'] = $s->title;
+                $result[$count]['label'] = $s->title;
                 $topics = Topic::where('subject_id', $s->id)->get();
                 foreach($topics as $j => $t){
-                    $result[$k + $key]['options'][$j] = ['label' => $s->title." - ".$t->title, 'value'=> $t->id ];
+                    $result[$count]['options'][$j] = ['label' => $s->title." - ".$t->title, 'value'=> $t->id ];
                 }
+                $count++;
             }
         }
         return response()->json($result);
