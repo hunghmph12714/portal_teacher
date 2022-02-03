@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Jobs\SendEventNotify;
 use App\Jobs\SendEventReminder;
 use GuzzleHttp\Client;
+use DB;
 
 class StudentController extends Controller
 {
@@ -335,7 +336,8 @@ class StudentController extends Controller
                 'students.gender',
                 'parents.id as pid',
                 'parents.fullname as p_name',
-                'parents.phone as p_phone',
+                DB::raw("CONCAT(parents.phone,'-',parents.ftp) AS p_phone"),
+                // 'parents.phone as p_phone',
                 'parents.email as p_email',
                 'parents.note',
                 'parents.alt_fullname',
