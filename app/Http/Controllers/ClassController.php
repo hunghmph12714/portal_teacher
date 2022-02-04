@@ -1304,6 +1304,8 @@ class ClassController extends Controller
                     // Get Comment for domain
                     $criterias = Criteria::where('attempt_id', $attempt->id)->get();
                     $result['criterias'] = $criterias->toArray();
+                    $result['upload'] = $attempt->upload;
+                    
                     //
                     return response()->json($result);
                 }

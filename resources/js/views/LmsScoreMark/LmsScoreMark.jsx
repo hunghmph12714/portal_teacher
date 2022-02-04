@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import './LmsScoreMark.scss'
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
@@ -11,7 +12,9 @@ import Button from '@material-ui/core/Button';
 import {useSnackbar} from 'notistack';
 import AddIcon from '@material-ui/icons/Add';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DoneIcon from '@material-ui/icons/Done';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import FaceIcon from '@material-ui/icons/Face';
 const option_label = ['A', 'B', 'C', 'D'];
 
 const LmsScoreMark = (props) => {
@@ -24,6 +27,7 @@ const LmsScoreMark = (props) => {
     const [criterias, setCriterias] = useState([])
     const [removed_criterias, setRemovedCriterias] = useState([])
     const [student, setStudent] = useState({})
+    const [upload, setUpload] = useState([])
     useEffect(() => {
         axios.post('/event/attempt', {ss_id: props.match.params.ss_id})
             .then(response => {
@@ -52,6 +56,7 @@ const LmsScoreMark = (props) => {
                 setQuiz(response.data.quiz)
                 setCriterias(response.data.criterias)
                 setStudent(response.data.student)
+                setUpload(response.data.upload)
             })
     }, [])
 
@@ -138,6 +143,23 @@ const LmsScoreMark = (props) => {
             
 
             <div className='quiz-content'>
+            {upload.length > 0 ? (
+                <Grid container spacing={2} className='quiz-main-content'>
+                    <Grid item md={12} sm={12} >
+                        <h3>Bài làm học sinh tải lên</h3>
+                        {upload.map((u, index) => {
+                            return (
+                                <Chip variant="outlined" 
+                                    color="primary" deleteIcon={<DoneIcon />} icon={<FaceIcon />} 
+                                    label={'File '+(index+1)}
+                                    onClick={()=> window.open("https://api.vietelite.edu.vn/" + u, "_blank")}
+                                    style={{marginRight: '5px'}}
+                                />
+                            )
+                        })}
+                    </Grid>
+                </Grid>
+            ):""}
             <Grid container spacing={2} className='quiz-main-content'>
                 <Grid item md={12} sm={12} >
                     {questions.map((q, i)=> {
@@ -264,8 +286,11 @@ const LmsScoreMark = (props) => {
                         }
                         
                     })}
+
                 </Grid>
             </Grid>
+            
+            
             </div>
             <div className='quiz-criteria'>
                 <h4>Tiêu chí đánh giá</h4>
