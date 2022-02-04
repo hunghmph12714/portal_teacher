@@ -143,7 +143,8 @@ const LmsScoreMark = (props) => {
             
 
             <div className='quiz-content'>
-            {upload.length > 0 ? (
+
+            {upload ? (
                 <Grid container spacing={2} className='quiz-main-content'>
                     <Grid item md={12} sm={12} >
                         <h3>Bài làm học sinh tải lên</h3>
