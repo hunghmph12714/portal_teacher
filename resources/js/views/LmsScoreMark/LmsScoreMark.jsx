@@ -242,7 +242,7 @@ const LmsScoreMark = (props) => {
                                                 {q.topics.map(t => {
                                                     return(
                                                         <Chip variant="outlined" 
-                                                            color="primary"
+                                                            color="secondary"
                                                             label={t.title}
                                                             style={{marginRight: '5px'}}
                                                         />
@@ -251,7 +251,7 @@ const LmsScoreMark = (props) => {
                                             </Grid>
                                             <Grid item md={4}>
                                                 <h6>Độ khó</h6>
-                                                {question_level[q.question_level]}
+                                                {question_level[q.question_level]}/4
                                             </Grid>
                                             <Grid item md={2}>
                                                 <h6>Điểm</h6>
