@@ -1241,6 +1241,11 @@ class ClassController extends Controller
                     $once = true;
                     $ref_tmp = -2;
                     foreach ($questions as $key => $q) {
+
+                        // Get topic
+                        $topics = $q->topics;
+                        $q->topics = $topics->toArray();
+                        
                         if (!array_key_exists($q->domain, $result['packages'])) {
                             if ($once) {
                                 $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
