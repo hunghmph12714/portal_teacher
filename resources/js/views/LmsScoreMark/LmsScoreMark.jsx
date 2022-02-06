@@ -9,6 +9,7 @@ import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
 import Button from '@material-ui/core/Button';
+import Rating from '@material-ui/lab/Rating';
 import {useSnackbar} from 'notistack';
 import AddIcon from '@material-ui/icons/Add';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -251,7 +252,7 @@ const LmsScoreMark = (props) => {
                                             </Grid>
                                             <Grid item md={4}>
                                                 <h6>Độ khó</h6>
-                                                {question_level[q.question_level]}/4
+                                                <Rating name="customized-10" defaultValue={question_level[q.question_level]} max={4} readOnly/>
                                             </Grid>
                                             <Grid item md={2}>
                                                 <h6>Điểm</h6>
