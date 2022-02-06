@@ -16,7 +16,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FaceIcon from '@material-ui/icons/Face';
 const option_label = ['A', 'B', 'C', 'D'];
-
+const question_level = {'NB': 1, 'TH': 2, 'VDT': 3, 'VDC': 4}
 const LmsScoreMark = (props) => {
     const {enqueueSnackbar} = useSnackbar();
 
@@ -239,11 +239,19 @@ const LmsScoreMark = (props) => {
                                         <Grid container spacing={3}>
                                             <Grid item md={8}>
                                                 <h6>Kiến thức liên quan</h6>
-                                                
+                                                {q.topics.map(t => {
+                                                    return(
+                                                        <Chip variant="outlined" 
+                                                            color="primary"
+                                                            label={t.title}
+                                                            style={{marginRight: '5px'}}
+                                                        />
+                                                    )
+                                                })}
                                             </Grid>
                                             <Grid item md={4}>
                                                 <h6>Độ khó</h6>
-
+                                                {question_level[q.question_level]}
                                             </Grid>
                                             <Grid item md={2}>
                                                 <h6>Điểm</h6>
