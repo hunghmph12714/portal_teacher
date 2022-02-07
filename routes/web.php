@@ -40,6 +40,29 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/dashboard', function () {
         return view('welcome');
     });
+    Route::get('/events', function () {
+        return view('welcome');
+    });
+
+    Route::get('/event/get', 'ClassController@getEvents');
+    Route::post('/event-gather', 'StudentController@gatherEvent');
+    Route::post('/event/create', 'ClassController@createEvent');
+    Route::post('/event-analytics', 'ClassController@getAnalytics');
+    Route::get('/event-mkt-analytics', 'ClassController@mktAnalytics');
+    Route::post('/event/edit', 'ClassController@editEvent');
+    Route::get('/event/get-class', 'ClassController@getClassName');
+    Route::post('/event/add-product', 'SessionController@addProduct');
+    Route::post('/event/edit-product', 'SessionController@editProduct');
+    Route::post('/event/delete-product', 'SessionController@deleteProduct');
+    Route::post('/event/get-students', 'SessionController@getStudentOfSession');
+    Route::post('/event-student/get', 'StudentController@getStudentEvent');
+    Route::post('/session-students', 'SessionController@getStudentOfProduct');
+    Route::post('/event-upload-score', 'SessionController@uploadEventScore');
+    Route::get('/event/{id}', function () {
+        return view('welcome');
+    });
+    Route::post('/event-score-report', 'ClassController@getEventScore');
+    Route::post('/session/send-reminder', 'StudentController@sendReminder');
     Route::group(['middleware' => ['admin']], function () {
         //USER MANAGEMENT
         Route::get('/settings/user', function () {
@@ -326,29 +349,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         });
         Route::get('/transaction/center', 'ReportController@fillCenter');
         //Events
-        Route::get('/events', function () {
-            return view('welcome');
-        });
-
-        Route::get('/event/get', 'ClassController@getEvents');
-        Route::post('/event-gather', 'StudentController@gatherEvent');
-        Route::post('/event/create', 'ClassController@createEvent');
-        Route::post('/event-analytics', 'ClassController@getAnalytics');
-        Route::get('/event-mkt-analytics', 'ClassController@mktAnalytics');
-        Route::post('/event/edit', 'ClassController@editEvent');
-        Route::get('/event/get-class', 'ClassController@getClassName');
-        Route::post('/event/add-product', 'SessionController@addProduct');
-        Route::post('/event/edit-product', 'SessionController@editProduct');
-        Route::post('/event/delete-product', 'SessionController@deleteProduct');
-        Route::post('/event/get-students', 'SessionController@getStudentOfSession');
-        Route::post('/event-student/get', 'StudentController@getStudentEvent');
-        Route::post('/session-students', 'SessionController@getStudentOfProduct');
-        Route::post('/event-upload-score', 'SessionController@uploadEventScore');
-        Route::get('/event/{id}', function () {
-            return view('welcome');
-        });
-        Route::post('/event-score-report', 'ClassController@getEventScore');
-        Route::post('/session/send-reminder', 'StudentController@sendReminder');
+        
     });
     //Password Change
     //Import database 
@@ -544,6 +545,9 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     // Route::get('auto-config/{tva}', [QuizConfigController::class, 'autoConfigk9']);
     // Route::get('/quiz-k9', 'QuizController@genQuizNine');
     Route::get('/check-attempt', 'QuizController@checkAttempt');
+    Route::get('/mark/{id}', function(){
+        return view('welcome');
+    });
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -556,6 +560,7 @@ Route::post('/event/dang-ky', 'StudentController@registerEvent');
 //
 Route::post('/event/result', 'ClassController@getResult');
 Route::post('/event/attempt', 'ClassController@getAttempt');
+Route::post('/event/mark', 'ClassController@submitMark');
 
 Route::get('/event-form', function () {
     return view('welcome');

@@ -33,7 +33,7 @@ import {
   Events, EventDetail, PublicForm, PublicResult,
   Users,Budget, BudgetStats, CashBook,
   Misa, Syllabus, ListSyllabus,
-  Question, Objective, QuestionList, QuizConfig,QuizConfigList
+  Question, Objective, QuestionList, QuizConfig,QuizConfigList, LmsScoreMark
 } from './views';
 
 const Routes = (props) => {
@@ -367,8 +367,11 @@ const Routes = (props) => {
         layout = {MainLayout}
         path = "/cau-hinh-cau-hoi"  
       />
-      
-      
+      <ProtectedRouteWithLayout
+        component = {LmsScoreMark}
+        layout = {MainLayout}
+        path = "/mark/:ss_id"  
+      />
       {/* <ProtectedRouteWithLayout
         component = {}
       /> */}

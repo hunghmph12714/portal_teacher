@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import './DialogQuiz.scss'
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';

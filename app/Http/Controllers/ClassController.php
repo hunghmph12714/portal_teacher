@@ -25,7 +25,8 @@ use App\AttemptDetail;
 use App\Quiz;
 use App\Question;
 use App\Option;
-
+use App\Criteria;
+use App\Objective;
 class ClassController extends Controller
 {
     // Phòng học
@@ -1173,8 +1174,14 @@ class ClassController extends Controller
                 $result[$key]['students'] = [];
                 foreach ($students as $k => $student) {
                     //Get class
+                    $ss = StudentSession::find($student->pivot['id']);
+                    //Get Objective
+                    $obj_ids = array($ss->objectives);
+                    $objs = Objective::whereIn('id', $obj_ids)->get();
                     $student->classes = $student->activeClasses()->get()->toArray();
                     $student->dob_format = date('d/m/Y', strtotime($student->dob));
+                    $student->objectives = implode(array_column($objs->toArray(), 'content'));
+
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
                     $parent = Parents::find($student->parent_id);
                     if ($parent) {
@@ -1198,6 +1205,7 @@ class ClassController extends Controller
                             $student->result_status = 'Chưa có bài';
                         }
                     }
+
                 }
             }
         }
@@ -1209,14 +1217,21 @@ class ClassController extends Controller
         $this->validate($request, $rules);
 
         $ss = StudentSession::find($request->ss_id);
+        
         if ($ss) {
+            $student = Student::find($ss->student_id);
             $attempt = Attempt::where('student_session', $ss->id)->first();
             if ($attempt) {
                 $quiz = Quiz::find($attempt->quiz_id);
                 if ($quiz) {
                     $result = [];
+                    //Thong tin hocj sinh
+                    $result['student'] = $student->toArray();
+                    $classes = $student->activeClasses()->get()->toArray();
+                    $result['student']['classes'] = implode(',', array_column($classes, 'code'));
                     $result['quiz'] = $quiz;
                     $result['quiz']['duration'] = $quiz->duration;
+                    $result['quiz']['attempt_id'] = $attempt->id;
                     if (!$result['quiz']['student_session_id']) {
                         $result['quiz']['student_session_id'] = $request->ss_id;
                     }
@@ -1226,6 +1241,11 @@ class ClassController extends Controller
                     $once = true;
                     $ref_tmp = -2;
                     foreach ($questions as $key => $q) {
+
+                        // Get topic
+                        $topics = $q->topics;
+                        $q->topics = $topics->toArray();
+                        
                         if (!array_key_exists($q->domain, $result['packages'])) {
                             if ($once) {
                                 $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
@@ -1273,18 +1293,68 @@ class ClassController extends Controller
                         $result['questions'][$key]['a_option'] = '';
                         $result['questions'][$key]['a_fib'] = '';
                         $result['questions'][$key]['done'] = true;
+                        $result['questions'][$key]['score'] = NULL;
+                        $result['questions'][$key]['comment'] = NULL;
                         if ($attempt_detail) {
                             $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
                             $result['questions'][$key]['a_option'] = $attempt_detail->options;
                             $result['questions'][$key]['a_fib'] = $attempt_detail->fib;
+                            $result['questions'][$key]['score'] = $attempt_detail->score;
+                            $result['questions'][$key]['comment'] = $attempt_detail->comment;
                             $result['questions'][$key]['done'] = true;
+                            $result['questions'][$key]['attempt_detail_id'] = $attempt_detail->id;
                         }
                     }
                     $result['packages'] = array_values($result['packages']);
+                    // Get Comment for domain
+                    $criterias = Criteria::where('attempt_id', $attempt->id)->get();
+                    $result['criterias'] = $criterias->toArray();
+                    $result['upload'] = $attempt->upload;
+                    
+                    //
                     return response()->json($result);
                 }
             }
         }
+    }
+    protected function submitMark(Request $request){
+        $rules = ['questions' => 'required'];
+        $this->validate($request, $rules);
+
+        foreach($request->questions as $q){
+            $ad = AttemptDetail::find($q['attempt_detail_id']);
+            if($ad){
+                $ad->score = $q['score'];
+                $ad->comment = $q['comment'];
+                $ad->save();
+            }
+        }
+        $result = [];
+        foreach($request->criterias as $c){
+            if($c['id'] == -1){
+                $input['title'] = $c['title'];
+                $input['content'] = $c['content'];
+                $input['domain'] = $c['domain'];
+                $input['attempt_id'] = $request->attempt_id;
+                $result[] = Criteria::create($input);
+            }else{
+                $criteria = Criteria::find($c['id']);
+                if($criteria){
+                    $criteria->title = $c['title'];
+                    $criteria->content = $c['content'];
+                    $criteria->save();
+                    $result[] = $criteria;
+                }
+            }
+        }
+        foreach($request->removed_criterias as $rc){
+            $criteria = Criteria::find($rc['id']);
+            if($criteria){
+                $criteria->forceDelete();
+            }
+        }
+        return response()->json($result);
+
     }
     protected function reGenerateFee()
     {

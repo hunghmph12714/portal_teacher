@@ -1,4 +1,6 @@
 ﻿"Hiển thị trên sổ","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Mã đối tượng","Tên đối tượng","Địa chỉ","Nộp vào TK","Mở tại NH","Lý do thu","Diễn giải lý do thu ","Nhân viên thu","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền","Đối tượng","Khoản mục CP","Đơn vị","Đối tượng THCP","Công trình","Đơn đặt hàng","Hợp đồng mua","Hợp đồng bán","Mã thống kê"
+<<<<<<< HEAD
+=======
 0,01-04-2022,01-04-2022,PTNH205935,KH06982,"Lương Nguyễn Phương Linh",,'152171277,VP,34,"Thu học phí Lương Nguyễn Phương Linh",,"Thu học phí 02-2022",1121,131,892500,KH06982,,,,,,,,TC6.5
 0,01-04-2022,01-04-2022,PTNH205935,KH06982,"Lương Nguyễn Phương Linh",,'152171277,VP,34,"Thu học phí Lương Nguyễn Phương Linh",,"Thu học phí 01-2022",1121,131,892500,KH06982,,,,,,,,TC6.5
 0,01-04-2022,01-04-2022,PTNH205936,KH07016,"Lê Ngọc Tuệ Minh",,'152171277,VP,34,"Thu học phí Lê Ngọc Tuệ Minh",,"Thu học phí 02-2022",1121,131,200000,KH07016,,,,,,,,TC6.5
@@ -1265,6 +1267,7 @@
 0,01-20-2022,01-20-2022,PTNH206404,KH07136,"Vũ Anh Minh",,'152171277,VP,34,"Thu học phí Vũ Anh Minh",,"Thu học phí 02-2022",1121,131,548250,KH07136,,,,,,,,A6.1
 0,01-20-2022,01-20-2022,PTNH206404,KH07136,"Vũ Anh Minh",,'152171277,VP,34,"Thu học phí Vũ Anh Minh",,"Thu học phí 01-2022",1121,131,548250,KH07136,,,,,,,,A6.1
 0,01-21-2022,01-21-2022,PTNH206405,KH01922,"Nguyễn Quang Việt",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,180000,KH01922,,,,,,,,KSD1K9
+>>>>>>> 076a1fc969a25ac23505f28d2739255b583b7010
 0,01-21-2022,01-21-2022,PTNH206406,KH06146,"Hoàng Anh Dũng",,'152171277,VP,34,"Thu học phí Hoàng Anh Dũng",,"Thu học phí 02-2022",1121,131,739500,KH06146,,,,,,,,AC7.3
 0,01-21-2022,01-21-2022,PTNH206406,KH06146,"Hoàng Anh Dũng",,'152171277,VP,34,"Thu học phí Hoàng Anh Dũng",,"Thu học phí 01-2022",1121,131,493000,KH06146,,,,,,,,AC7.3
 0,01-21-2022,01-21-2022,PTNH206407,KH06063,"Hoàng Anh Minh",,'152171277,VP,34,"Thu học phí Hoàng Anh Minh",,"Thu học phí 02-2022",1121,131,892500,KH06063,,,,,,,,T9.1
@@ -1273,6 +1276,8 @@
 0,01-21-2022,01-21-2022,PTNH206407,KH06063,"Hoàng Anh Minh",,'152171277,VP,34,"Thu học phí Hoàng Anh Minh",,"Thu học phí 01-2022",1121,131,892500,KH06063,,,,,,,,T9.1
 0,01-21-2022,01-21-2022,PTNH206407,KH06063,"Hoàng Anh Minh",,'152171277,VP,34,"Thu học phí Hoàng Anh Minh",,"Thu học phí 01-2022",1121,131,548250,KH06063,,,,,,,,A9.1
 0,01-21-2022,01-21-2022,PTNH206407,KH06063,"Hoàng Anh Minh",,'152171277,VP,34,"Thu học phí Hoàng Anh Minh",,"Thu học phí 01-2022",1121,131,739500,KH06063,,,,,,,,V9.3
+<<<<<<< HEAD
+=======
 0,01-21-2022,01-21-2022,PTNH206408,KH06793,"Nguyễn Đức Thắng",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,180000,KH06793,,,,,,,,KSD1K9
 0,01-21-2022,01-21-2022,PTNH206409,KH06579,"Phạm Anh Duy",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,140000,KH06579,,,,,,,,KSD1K9
 0,01-21-2022,01-21-2022,PTNH206410,KH05817,"Ngô Việt Hưng",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,100000,KH05817,,,,,,,,KSD1K9
@@ -1289,12 +1294,60 @@
 0,01-21-2022,01-21-2022,PTNH206421,KH01659,"Nguyễn Nam Sơn",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,240000,KH01659,,,,,,,,KSD1K9
 0,01-21-2022,01-21-2022,PTNH206422,KH06513,"Nguyễn Đức Hoàng",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,120000,KH06513,,,,,,,,KSD1K9
 0,01-21-2022,01-21-2022,PTNH206424,KH07422,"Nguyễn Khắc Hiếu",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,360000,KH07422,,,,,,,,KSD1K9
+>>>>>>> 076a1fc969a25ac23505f28d2739255b583b7010
 0,01-22-2022,01-22-2022,PTNH206425,KH03424,"Nguyễn Hùng Long",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 02-2022",1121,131,739500,KH03424,,,,,,,,AC7.1
 0,01-22-2022,01-22-2022,PTNH206425,KH03424,"Nguyễn Hùng Long",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 02-2022",1121,131,892500,KH03424,,,,,,,,TNC7.1
 0,01-22-2022,01-22-2022,PTNH206425,KH03424,"Nguyễn Hùng Long",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 01-2022",1121,131,739500,KH03424,,,,,,,,AC7.1
 0,01-22-2022,01-22-2022,PTNH206425,KH03424,"Nguyễn Hùng Long",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 01-2022",1121,131,892500,KH03424,,,,,,,,TNC7.1
 0,01-22-2022,01-22-2022,PTNH206425,KH03425,"Nguyễn Hùng Cường",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 02-2022",1121,131,1360000,KH03425,,,,,,,,TC9.1
 0,01-22-2022,01-22-2022,PTNH206425,KH03425,"Nguyễn Hùng Cường",,'152171277,VP,34,"Thu học phí Nguyễn Hùng Cường,Nguyễn Hùng Long",,"Thu học phí 01-2022",1121,131,1020000,KH03425,,,,,,,,TC9.1
+<<<<<<< HEAD
+0,01-22-2022,01-22-2022,PTNH206432,KH05632,"Nguyễn Đình Bình",,'152171277,VP,34,"Thu học phí Nguyễn Đình Bình",,"Thu học phí 02-2022",1121,131,548250,KH05632,,,,,,,,A9.1
+0,01-22-2022,01-22-2022,PTNH206432,KH05632,"Nguyễn Đình Bình",,'152171277,VP,34,"Thu học phí Nguyễn Đình Bình",,"Thu học phí 01-2022",1121,131,548250,KH05632,,,,,,,,A9.1
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 02-2022",1121,131,892500,KH04748,,,,,,,,TNC7.7
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 02-2022",1121,131,731000,KH04748,,,,,,,,V7.3
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 02-2022",1121,131,739500,KH04748,,,,,,,,AC7.1
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 01-2022",1121,131,892500,KH04748,,,,,,,,TNC7.7
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 01-2022",1121,131,548250,KH04748,,,,,,,,V7.3
+0,01-24-2022,01-24-2022,PTNH206443,KH04748,"Nguyễn Xuân Mai",,'152171277,VP,34,"Thu học phí Nguyễn Xuân Mai",,"Thu học phí 01-2022",1121,131,739500,KH04748,,,,,,,,AC7.1
+0,01-24-2022,01-24-2022,PTNH206444,KH05405,"Nguyễn Minh Anh",,'015704060030799,VIB,34,"Thu học phí Nguyễn Minh Anh",,"Thu học phí 02-2022",1124,131,892500,KH05405,,,,,,,,AC8.1
+0,01-24-2022,01-24-2022,PTNH206444,KH05405,"Nguyễn Minh Anh",,'015704060030799,VIB,34,"Thu học phí Nguyễn Minh Anh",,"Thu học phí 01-2022",1124,131,892500,KH05405,,,,,,,,AC8.1
+0,01-24-2022,01-24-2022,PTNH206445,KH02323,"Nguyễn Phúc Hưng",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 02-2022",1124,131,548250,KH02323,,,,,,,,A7.1
+0,01-24-2022,01-24-2022,PTNH206445,KH02323,"Nguyễn Phúc Hưng",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 02-2022",1124,131,892500,KH02323,,,,,,,,TC7.5
+0,01-24-2022,01-24-2022,PTNH206445,KH02323,"Nguyễn Phúc Hưng",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 01-2022",1124,131,365500,KH02323,,,,,,,,A7.1
+0,01-24-2022,01-24-2022,PTNH206445,KH02323,"Nguyễn Phúc Hưng",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 01-2022",1124,131,709750,KH02323,,,,,,,,TC7.5
+0,01-24-2022,01-24-2022,PTNH206445,KH03935,"Nguyễn Hương Giang",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 02-2022",1124,131,892500,KH03935,,,,,,,,T12.1
+0,01-24-2022,01-24-2022,PTNH206445,KH03935,"Nguyễn Hương Giang",,'015704060030799,VIB,34,"Thu học phí Nguyễn Hương Giang,Nguyễn Phúc Hưng",,"Thu học phí 01-2022",1124,131,595000,KH03935,,,,,,,,T12.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04744,"Vũ Quốc Huy",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 02-2022",1121,131,885900,KH04744,,,,,,,,T12.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04744,"Vũ Quốc Huy",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 01-2022",1121,131,892500,KH04744,,,,,,,,T12.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04744,"Vũ Quốc Huy",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 12-2021",1121,131,100,KH04744,,,,,,,,T12.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04746,"Vũ Thảo Linh",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 02-2022",1121,131,892500,KH04746,,,,,,,,TNC8.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04746,"Vũ Thảo Linh",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 02-2022",1121,131,548250,KH04746,,,,,,,,A8.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04746,"Vũ Thảo Linh",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 01-2022",1121,131,892500,KH04746,,,,,,,,TNC8.1
+0,01-25-2022,01-25-2022,PTNH206446,KH04746,"Vũ Thảo Linh",,'152171277,VP,34,"Thu học phí Vũ Thảo Linh,Vũ Quốc Huy",,"Thu học phí 01-2022",1121,131,548250,KH04746,,,,,,,,A8.1
+0,01-25-2022,01-25-2022,PTNH206447,KH04324,"Đào Duy Khánh",,'152171277,VP,34,"Thu học phí Đào Duy Khánh",,"Thu học phí 02-2022",1121,131,739500,KH04324,,,,,,,,AC7.3
+0,01-25-2022,01-25-2022,PTNH206447,KH04324,"Đào Duy Khánh",,'152171277,VP,34,"Thu học phí Đào Duy Khánh",,"Thu học phí 01-2022",1121,131,493000,KH04324,,,,,,,,AC7.3
+0,01-25-2022,01-25-2022,PTNH206448,KH07244,"Hà Ngọc Anh",,'152171277,VP,34,"Thu học phí Hà Ngọc Anh",,"Thu học phí 02-2022",1121,131,892500,KH07244,,,,,,,,HC8.1
+0,01-25-2022,01-25-2022,PTNH206448,KH07244,"Hà Ngọc Anh",,'152171277,VP,34,"Thu học phí Hà Ngọc Anh",,"Thu học phí 01-2022",1121,131,892500,KH07244,,,,,,,,HC8.1
+0,01-25-2022,01-25-2022,PTNH206449,KH07360,"Hoàng Thị Minh Huyền",,'152171277,VP,34,"Thu học phí Hoàng Thị Minh Huyền",,"Thu học phí 01-2022",1121,131,200000,KH07360,,,,,,,,AC6.1
+0,01-25-2022,01-25-2022,PTNH206450,KH06113,"Nguyễn Đức Minh",,'152171277,VP,34,"Thu học phí Nguyễn Đức Minh",,"Thu học phí 02-2022",1121,131,857500,KH06113,,,,,,,,TC6.1
+0,01-25-2022,01-25-2022,PTNH206450,KH06113,"Nguyễn Đức Minh",,'152171277,VP,34,"Thu học phí Nguyễn Đức Minh",,"Thu học phí 01-2022",1121,131,892500,KH06113,,,,,,,,TC6.1
+0,01-25-2022,01-25-2022,PTNH206451,KH03487,"Nguyễn Trần Quỳnh Anh",,'152171277,VP,34,"Thu học phí Nguyễn Trần Quỳnh Anh",,"Thu học phí 02-2022",1121,131,892500,KH03487,,,,,,,,TC7.3
+0,01-25-2022,01-25-2022,PTNH206451,KH03487,"Nguyễn Trần Quỳnh Anh",,'152171277,VP,34,"Thu học phí Nguyễn Trần Quỳnh Anh",,"Thu học phí 01-2022",1121,131,892500,KH03487,,,,,,,,TC7.3
+0,01-25-2022,01-25-2022,PTNH206452,KH06627,"Lưu Minh Châu",,'152171277,VP,34,"Thu học phí Lưu Minh Châu",,"Thu học phí 02-2022",1121,131,892500,KH06627,,,,,,,,AC8.1
+0,01-25-2022,01-25-2022,PTNH206452,KH06627,"Lưu Minh Châu",,'152171277,VP,34,"Thu học phí Lưu Minh Châu",,"Thu học phí 01-2022",1121,131,892500,KH06627,,,,,,,,AC8.1
+0,01-25-2022,01-25-2022,PTNH206453,KH04671,"Nguyễn Lê Bảo",,'152171277,VP,34,"Thu học phí Nguyễn Lê Bảo",,"Thu học phí 01-2022",1121,131,400000,KH04671,,,,,,,,TC7.3
+0,01-25-2022,01-25-2022,PTNH206454,KH01069,"Lục Nam Khánh",,'152171277,VP,34,"Thu học phí Lục Nam Khánh",,"Thu học phí 02-2022",1121,131,1020000,KH01069,,,,,,,,TC9.3
+0,01-25-2022,01-25-2022,PTNH206454,KH01069,"Lục Nam Khánh",,'152171277,VP,34,"Thu học phí Lục Nam Khánh",,"Thu học phí 01-2022",1121,131,200000,KH01069,,,,,,,,KSD1K9
+0,01-25-2022,01-25-2022,PTNH206454,KH01069,"Lục Nam Khánh",,'152171277,VP,34,"Thu học phí Lục Nam Khánh",,"Thu học phí 01-2022",1121,131,1020000,KH01069,,,,,,,,TC9.3
+0,01-25-2022,01-25-2022,PTNH206455,KH04608,"Nguyễn Khôi Nguyên",,'152171277,VP,34,"Thu học phí Nguyễn Khôi Nguyên",,"Thu học phí 02-2022",1121,131,892500,KH04608,,,,,,,,TC7.3
+0,01-25-2022,01-25-2022,PTNH206455,KH04608,"Nguyễn Khôi Nguyên",,'152171277,VP,34,"Thu học phí Nguyễn Khôi Nguyên",,"Thu học phí 01-2022",1121,131,892500,KH04608,,,,,,,,TC7.3
+0,01-25-2022,01-25-2022,PTNH206456,KH06842,"Nghiêm Vi Anh",,'015704060030799,VIB,34,"Thu học phí Nghiêm Vi Anh",,"Thu học phí 02-2022",1124,131,892500,KH06842,,,,,,,,TNC7.1
+0,01-25-2022,01-25-2022,PTNH206456,KH06842,"Nghiêm Vi Anh",,'015704060030799,VIB,34,"Thu học phí Nghiêm Vi Anh",,"Thu học phí 01-2022",1124,131,892500,KH06842,,,,,,,,TNC7.1
+0,01-25-2022,01-25-2022,PTNH206457,KH05937,"Nguyễn Đức Kiên",,'152171277,VP,34,"Thu học phí Nguyễn Đức Kiên",,"Thu học phí 02-2022",1121,131,1360000,KH05937,,,,,,,,TC8.3
+0,01-25-2022,01-25-2022,PTNH206457,KH05937,"Nguyễn Đức Kiên",,'152171277,VP,34,"Thu học phí Nguyễn Đức Kiên",,"Thu học phí 01-2022",1121,131,1020000,KH05937,,,,,,,,TC8.3
+0,01-25-2022,01-25-2022,PTNH206458,KH01359,"Nguyễn Hải An",,'152171277,VP,34,"Thu học phí Nguyễn Hải An",,"Thu học phí 02-2022",1121,131,892500,KH01359,,,,,,,,AC8.3
+=======
 0,01-21-2022,01-21-2022,PTNH206426,KH03042,"Nguyễn Mỹ Hạnh",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,180000,KH03042,,,,,,,,KSD1K9
 0,01-21-2022,01-21-2022,PTNH206428,KH04436,"Đỗ Thanh Phúc",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,100000,KH04436,,,,,,,,KSD1K9
 0,01-22-2022,01-22-2022,PTNH206429,KH07429,"Đặng Lưu Bảo Châu",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,160000,KH07429,,,,,,,,KSD1K9
@@ -1305,3 +1358,4 @@
 0,01-21-2022,01-21-2022,PTNH206433,KH02877,"Trần Bình Minh",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,100000,KH02877,,,,,,,,KSD1K9
 0,01-22-2022,01-22-2022,PTNH206434,KH07077,"Lê Hồng Phúc",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,100000,KH07077,,,,,,,,KSD1K9
 0,01-22-2022,01-22-2022,PTNH206435,KH07424,"Lê Ngọc Lan Chi",,'152171277,VP,34,"Lệ phí Khảo sát Đợt 1 khối 9",,"Lệ phí Khảo sát Đợt 1 khối 9",1121,131,120000,KH07424,,,,,,,,KSD1K9
+>>>>>>> 076a1fc969a25ac23505f28d2739255b583b7010
