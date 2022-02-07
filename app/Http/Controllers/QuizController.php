@@ -186,7 +186,7 @@ class QuizController extends Controller
             if ($tp_cf->toArray() != null) {
                 foreach ($tp_cf as $key => $qt) {
                     // dd($tp_cf);
-                    echo $qt->subject, '<br/>';
+                    // echo $qt->subject, '<br/>';
                     if ($qt->question_type == 'complex') {
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
@@ -199,8 +199,8 @@ class QuizController extends Controller
                         if ($main_id == null || in_array($main_id, $rqi) == false) {
                             $rand = array_rand($q->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
-                            echo "test";
-                            echo $main_id, '<br/>';
+                            // echo "test";
+                            // echo $main_id, '<br/>';
                             array_push($sub_id, $q[$rand]->id);
                             $q_q = [
                                 'question_id' => $q[$rand]->id,
@@ -253,7 +253,7 @@ class QuizController extends Controller
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
                             ->whereNull('complex')->where('objective_id', $objective_id)
                             ->get();
-                        dd($q);
+                        // dd($q);
                         // echo "<pre>";
                         // print_r($q->toArray());
                         $rand = array_rand($q->toArray(), 1);
@@ -263,8 +263,8 @@ class QuizController extends Controller
                             // 'option_config'
                             'max_score' =>  $qt->score,
                         ];
-                        echo "<pre>";
-                        print_r($q->toArray());
+                        // echo "<pre>";
+                        // print_r($q->toArray());
                         // dd($q_q);
                         $model = QuizQuestion::create($q_q);
                         $option_config = $model->option_config;
