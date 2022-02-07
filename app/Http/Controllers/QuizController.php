@@ -24,16 +24,17 @@ use DateTimeInterface;
 class QuizController extends Controller
 {
     //
-    public function checkAttempt(){
-        $attempt = Attempt::where('start_time', '<','2022-01-23 12:00:00')->get();
-        foreach($attempt as $a){
+    public function checkAttempt()
+    {
+        $attempt = Attempt::where('start_time', '<', '2022-01-23 12:00:00')->get();
+        foreach ($attempt as $a) {
             $ad = AttemptDetail::where('attempt_id', $a->id)->first();
-            if(!$ad){
+            if (!$ad) {
                 $ss = StudentSession::find($a->student_session);
-                if($ss){
+                if ($ss) {
                     $student = Student::find($ss->student_id);
                     $session = Session::find($ss->session_id);
-                    print_r($session->content. "-");
+                    print_r($session->content . "-");
                     print_r($student->fullname);
                     echo "<br/>";
                 }
@@ -41,7 +42,8 @@ class QuizController extends Controller
         }
         // dd($attempt);
     }
-    public function genQuizNine(){
+    public function genQuizNine()
+    {
         $config = QuizConfig::find(33);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
@@ -54,13 +56,13 @@ class QuizController extends Controller
             'available_date' => date('Y-m-d H:i:s')
         ];
         $quiz =   Quiz::create($quizzes);
-        foreach($config_topic as $cf){
+        foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
-            echo $cf->topic_id,'<br/>';
+            echo $cf->topic_id, '<br/>';
             $topic_question = TopicQuestion::where('topic_id', $cf->topic_id)->first();
-            if($topic_question){
+            if ($topic_question) {
                 $question = Question::find($topic_question->question_id);
-                if($question){
+                if ($question) {
                     $q_q = [
                         'question_id' => $question->id,
                         'quizz_id' => $quiz->id,
@@ -78,7 +80,7 @@ class QuizController extends Controller
                     $model->save();
                 }
             }
-            
+
             // echo $cf->topic_id,"<br/>";
 
             // $question = Question::find($topic_question->question_id);
@@ -99,11 +101,9 @@ class QuizController extends Controller
             //     $model->option_config  =  $option_config;
             //     $model->save();
             // }
-            
-            
-        }
 
-        
+
+        }
     }
     public function generateQuiz(Request $request)
     {
@@ -138,7 +138,7 @@ class QuizController extends Controller
         // $student_session_id = $request->student_session_id;
 
         $objective_id = 2;
-        $student_session_id = 290907;
+        $student_session_id = 305;
 
 
         // Tìm ra cấu hình
@@ -163,7 +163,7 @@ class QuizController extends Controller
         }
         $student_session = StudentSession::find($student_session_id)
             ->join('sessions', 'student_session.session_id', 'sessions.id')->first();
-        // dd($student_session->frmm);
+        // dd($student_session->from);
         $quizzes = [
             'title' => $config->title,
             'duration' => $config->duration,
@@ -189,8 +189,10 @@ class QuizController extends Controller
                     echo $qt->subject, '<br/>';
                     if ($qt->question_type == 'complex') {
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
+                            ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
+
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('complex', 'sub')
+                            ->where('complex', 'sub')->where('objective_id', $objective_id)
                             ->get();
                         $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
                         array_push($rqi, $r);
@@ -247,10 +249,11 @@ class QuizController extends Controller
                         $main_id = null;
                         // $sub_id = [];
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
+                            ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->whereNull('complex')
+                            ->whereNull('complex')->where('objective_id', $objective_id)
                             ->get();
-
+                        dd($q);
                         // echo "<pre>";
                         // print_r($q->toArray());
                         $rand = array_rand($q->toArray(), 1);

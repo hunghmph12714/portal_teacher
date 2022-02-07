@@ -40,7 +40,7 @@ class Question extends Model
                 $query->whereIn('domain',   $arr_domain);
             }
         }
-        // dd($query);
+        // dd($query);fkl
         return $query;
     }
 
@@ -48,7 +48,7 @@ class Question extends Model
     {
         if (!empty($arr_lever)) {
             if ($arr_lever) {
-                $querywhereIn('question_level',   $arr_lever);
+                $query->whereIn('question_level',   $arr_lever);
             }
         }
         return $query;
