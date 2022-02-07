@@ -286,4 +286,13 @@ class QuizController extends Controller
         dd($questions, $quiz);
         // dd($quiz);
     }
+
+
+
+    public function correction($request)
+    {
+
+        $attempt = Attempt::find($request->id);
+        $filename = $item->storeAs('public/lms', $item->getClientOriginalName());
+    }
 }

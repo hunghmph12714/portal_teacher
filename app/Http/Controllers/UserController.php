@@ -6,33 +6,37 @@ use Illuminate\Http\Request;
 use Auth;
 use Hash;
 use App\User;
+
 class UserController extends Controller
 {
     //
-    protected function createTa(){
-        $ta = ['vietha131298@gmail.com','lvd28102001@gmail.com','hoangtuannghiahn@gmail.com','tungdohp98@gmail.com','hathu070401@gmail.com','maintt240@gmail.com','minh1998yc@gmail.com','lycandylee4@gmail.com','linhseo2000@gmail.com','nguyenhue2112000@gmail.com','hongngo1404@gmail.com','tdnam1807@gmail.com','phungdieulinh198@gmail.com','linhnguyencp129@gmail.com','dothachthao26598@gmail.com','nguyenthingochnue@gmail.com','dangquynh230299@gmai.com','nguyenthengocphuong@gmail.com','thanhhanghnuek68@gmail.com','tranthiphuongthao1601@gmail.com','nguyenkhanhly18112000@gmail.com'];
-        $name = ['Nguyễn Việt Hà','Lê Việt Đức',
-        'Hoàng Tuấn Nghĩa',
-        'Đỗ Trung Tùng',
-        'Trần Thị Thu Hà',
-        'Nguyễn Thị Thanh Mai',
-        'Trần Tân Minh',
-        'Đoàn Thị Khánh Ly',
-        'Đàm Huyền Linh',
-        'Nguyễn Thị Huế',
-        'Ngô Thị Ánh Hồng',
-        'Trịnh Đức Nam',
-        'Phùng Diệu Linh',
-        'Nguyễn Thị Diệp Linh',
-        'Đỗ Thạch Thảo',
-        'Nguyễn Thị Ngọc',
-        'Đặng Thị Quỳnh',
-        'Nguyễn Thế Ngọc Phượng',
-        'Nguyễn Thị Thanh Hằng',
-        'Trần Thị Phương Thảo',
-        'Nguyễn Thị Khánh Ly'];
+    protected function createTa()
+    {
+        $ta = ['vietha131298@gmail.com', 'lvd28102001@gmail.com', 'hoangtuannghiahn@gmail.com', 'tungdohp98@gmail.com', 'hathu070401@gmail.com', 'maintt240@gmail.com', 'minh1998yc@gmail.com', 'lycandylee4@gmail.com', 'linhseo2000@gmail.com', 'nguyenhue2112000@gmail.com', 'hongngo1404@gmail.com', 'tdnam1807@gmail.com', 'phungdieulinh198@gmail.com', 'linhnguyencp129@gmail.com', 'dothachthao26598@gmail.com', 'nguyenthingochnue@gmail.com', 'dangquynh230299@gmai.com', 'nguyenthengocphuong@gmail.com', 'thanhhanghnuek68@gmail.com', 'tranthiphuongthao1601@gmail.com', 'nguyenkhanhly18112000@gmail.com'];
+        $name = [
+            'Nguyễn Việt Hà', 'Lê Việt Đức',
+            'Hoàng Tuấn Nghĩa',
+            'Đỗ Trung Tùng',
+            'Trần Thị Thu Hà',
+            'Nguyễn Thị Thanh Mai',
+            'Trần Tân Minh',
+            'Đoàn Thị Khánh Ly',
+            'Đàm Huyền Linh',
+            'Nguyễn Thị Huế',
+            'Ngô Thị Ánh Hồng',
+            'Trịnh Đức Nam',
+            'Phùng Diệu Linh',
+            'Nguyễn Thị Diệp Linh',
+            'Đỗ Thạch Thảo',
+            'Nguyễn Thị Ngọc',
+            'Đặng Thị Quỳnh',
+            'Nguyễn Thế Ngọc Phượng',
+            'Nguyễn Thị Thanh Hằng',
+            'Trần Thị Phương Thảo',
+            'Nguyễn Thị Khánh Ly'
+        ];
 
-        foreach($ta as $key => $t){
+        foreach ($ta as $key => $t) {
             $input['email'] = $t;
             $input['password'] = Hash::make('12345Bay');
 
@@ -42,15 +46,14 @@ class UserController extends Controller
             $input['name'] = $name[$key];
             User::create($input);
         }
-
-
     }
-    protected function checkAuth(){
-        if(Auth::check()){
+    protected function checkAuth()
+    {
+        if (Auth::check()) {
             $user = auth()->user();
             $permissions = $user->getAllPermissions();
             $rules = [];
-            foreach($permissions as $p){
+            foreach ($permissions as $p) {
                 $rules[] = [
                     'action' => $p->name,
                     'subject' => $p->subject
@@ -63,10 +66,10 @@ class UserController extends Controller
                 'ability' => $user->ability(),
                 'rules' => $rules
             ]);
-        }
-        else return response()->json(['auth' => false]);
+        } else return response()->json(['auth' => false]);
     }
-    function createUser(){
+    function createUser()
+    {
         $input['email'] = 'admin@vee.edu.vn';
         $input['password'] = Hash::make('abc123');
         $input['name'] = 'admin';
@@ -74,13 +77,15 @@ class UserController extends Controller
         User::create($input);
         return 'true';
     }
-    protected function getUser(){
+    protected function getUser()
+    {
         $user = auth()->user();
         return response()->json($user);
     }
-    protected function updateAvatar(Request $request){
+    protected function updateAvatar(Request $request)
+    {
         $rules = [
-            "croppedImage" => ['required', 'image','mimes:jpeg,png,jpg,gif', 'max:4096']
+            "croppedImage" => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
         ];
         $messages = [
             "required" => "Vui lòng tải ảnh",
@@ -91,26 +96,27 @@ class UserController extends Controller
         $this->validate($request, $rules, $messages);
 
         $user = auth()->user();
-        if(strpos($user->avatar, "/public/images/avatars") !== false){
-            $old_avatar_file = ($user->avatar)?explode('/', $user->avatar)[4]:"";
+        if (strpos($user->avatar, "/public/images/avatars") !== false) {
+            $old_avatar_file = ($user->avatar) ? explode('/', $user->avatar)[4] : "";
             // print_r($old_avatar_file);
-            if(\File::exists(public_path()."/images/avatars/".$old_avatar_file)){
-                \File::delete(public_path()."/images/avatars/".$old_avatar_file);
+            if (\File::exists(public_path() . "/images/avatars/" . $old_avatar_file)) {
+                \File::delete(public_path() . "/images/avatars/" . $old_avatar_file);
             }
         }
 
-        if($request->has('croppedImage')){
+        if ($request->has('croppedImage')) {
             $avatar = $request->file('croppedImage');
-            $name = $user->id."_".time();
-            $avatar->move(public_path()."/images/avatars/", $name.".jpeg");
-            $user->avatar = "/public/images/avatars/".$name.".jpeg";
+            $name = $user->id . "_" . time();
+            $avatar->move(public_path() . "/images/avatars/", $name . ".jpeg");
+            $user->avatar = "/public/images/avatars/" . $name . ".jpeg";
             $user->save();
         }
         return response()->json($user);
     }
-    protected function updateProfile(Request $request){
+    protected function updateProfile(Request $request)
+    {
         $user = auth()->user();
-        if($user){
+        if ($user) {
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->email = $request->email;
@@ -118,16 +124,17 @@ class UserController extends Controller
             $user->address = $request->address;
             $user->gender = $request->gender;
             $user->dob = $request->dob;
-            $jsDateTS = strtotime($request->dob. " +1 days");
+            $jsDateTS = strtotime($request->dob . " +1 days");
             if ($jsDateTS !== false)
-                $user->dob =  date('Y-m-d', $jsDateTS );
+                $user->dob =  date('Y-m-d', $jsDateTS);
             else
                 $user->dob = null;
             $user->save();
             return response()->json($user);
         }
     }
-    protected function updatePassword(Request $request){
+    protected function updatePassword(Request $request)
+    {
         $rules = [
             'current_password' => 'required',
             'password' => 'required|same:password',
@@ -136,49 +143,50 @@ class UserController extends Controller
         $this->validate($request, $rules);
         $user = auth()->user();
         $current_password = $user->password;
-        if(Hash::check($request->current_password, $current_password))
-        {
+        if (Hash::check($request->current_password, $current_password)) {
             $user->password = Hash::make($request->password);
             $user->save();
             return response()->json('ok', 200);
-        }
-        else
-        {
+        } else {
             return response()->json('Sai mật khẩu', 400);
         }
     }
-    protected function createNewTa($email){
+    protected function createNewTa($email)
+    {
         $input['email'] = $email;
         $input['password'] = Hash::make('12345Bay');
 
 
         $input['first_name'] = 'Trợ';
         $input['last_name'] = 'Giảng';
-        $input['name'] ='';
+        $input['name'] = '';
         User::create($input);
         return response()->json('ok');
     }
-    protected function getYear(){
+    protected function getYear()
+    {
         $user = auth()->user()->wp_year;
         return response()->json($user);
     }
-    protected function changeYear(Request $request){
+    protected function changeYear(Request $request)
+    {
         $rules = ['year' => 'required'];
         $this->validate($request, $rules);
-        
+
         $user = auth()->user();
         $user->wp_year = $request->year;
         $user->save();
         return response()->json('ok');
     }
-    protected function PermissionClass(Request $request){
+    protected function PermissionClass(Request $request)
+    {
         $rules = ['user_id' => 'required'];
         $this->validate($request, $rules);
 
         $class_ids = $request->selectedClasses ? array_column($request->selectedClasses, 'value') : [];
         print_r($request->user_id);
         $user = User::find($request->user_id);
-        if($user){
+        if ($user) {
             $user->classes()->sync($class_ids);
         }
     }
