@@ -292,18 +292,23 @@ class QuizController extends Controller
 
     public function correction(Request $request)
     {
-
+        // dd($request->correction_upload);
         if ($request->has('correction_upload')) {
-            $attempt = Attempt::find($request->id);
-            if ($attempt->correction_upload != null) {
-                Storage::delete($attempt->correction_upload);
+            $attempt = Attempt::find($request->attempt_id);
+            // dd($attempt);
+            if($attempt){
+                if ($attempt->correction_upload != null) {
+                    Storage::delete($attempt->correction_upload);
+                }
+                $file = $request->correction_upload;
+                $ext = $request->correction_upload->extension();
+                // dd(public_path('lms'));
+                
+                $file->move(public_path('lms'), $attempt->id . '.'. $ext);
+                $url = 'public/lms/' . $attempt->id . '.'.  $ext;
+                $attempt->correction_upload = $url;
+                $attempt->save();
             }
-            $file = $request->correction_upload;
-            $ext = $request->correction_upload->extension();
-            $file->move(public_path('lms'), $request->id .  $ext);
-            $url = 'public/lms/' . $request->id .  $ext;
-            $attempt->correction_upload = $url;
-            $attempt->save();
         }
     }
 }

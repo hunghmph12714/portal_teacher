@@ -1211,8 +1211,7 @@ class ClassController extends Controller
         }
         return response()->json($result);
     }
-    protected function getAttempt(Request $request)
-    {
+    protected function getAttempt(Request $request){
         $rules = ['ss_id' => 'required'];
         $this->validate($request, $rules);
 
@@ -1232,6 +1231,7 @@ class ClassController extends Controller
                     $result['quiz'] = $quiz;
                     $result['quiz']['duration'] = $quiz->duration;
                     $result['quiz']['attempt_id'] = $attempt->id;
+                    $result['quiz']['correction_upload'] = $attempt->correction_upload;
                     if (!$result['quiz']['student_session_id']) {
                         $result['quiz']['student_session_id'] = $request->ss_id;
                     }
