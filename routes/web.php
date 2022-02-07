@@ -349,7 +349,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         });
         Route::get('/transaction/center', 'ReportController@fillCenter');
         //Events
-        
+
     });
     //Password Change
     //Import database 
@@ -545,7 +545,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     // Route::get('auto-config/{tva}', [QuizConfigController::class, 'autoConfigk9']);
     // Route::get('/quiz-k9', 'QuizController@genQuizNine');
     Route::get('/check-attempt', 'QuizController@checkAttempt');
-    Route::get('/mark/{id}', function(){
+    Route::get('/mark/{id}', function () {
         return view('welcome');
     });
 });
@@ -611,6 +611,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 // });
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
-
+Route::post('attempt/upload-correction', [QuizController::class, 'correction']);
 
 Route::get('search', [QuestionController::class, 'filter']);

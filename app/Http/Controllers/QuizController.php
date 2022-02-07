@@ -20,6 +20,7 @@ use App\Student;
 use App\Session;
 use DateTime;
 use DateTimeInterface;
+use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
@@ -289,10 +290,20 @@ class QuizController extends Controller
 
 
 
-    public function correction($request)
+    public function correction(Request $request)
     {
 
-        $attempt = Attempt::find($request->id);
-        $filename = $item->storeAs('public/lms', $item->getClientOriginalName());
+        if ($request->has('correction_upload')) {
+            $attempt = Attempt::find($request->id);
+            if ($attempt->correction_upload != null) {
+                Storage::delete($attempt->correction_upload);
+            }
+            $file = $request->correction_upload;
+            $ext = $request->correction_upload->extension();
+            $file->move(public_path('lms'), $request->id .  $ext);
+            $url = 'public/lms/' . $request->id .  $ext;
+            $attempt->correction_upload = $url;
+            $attempt->save();
+        }
     }
 }
