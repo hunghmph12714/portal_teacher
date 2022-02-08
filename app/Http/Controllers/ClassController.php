@@ -1203,8 +1203,7 @@ class ClassController extends Controller
                             $result[$key]['students'][] = $student;
                         } else {
                             $student->result_status = 'Chưa có bài';
-                            // $result[$key]['students'][] = $student;
-
+                            $result[$key]['students'][] = $student;
                         }
                     }
 
