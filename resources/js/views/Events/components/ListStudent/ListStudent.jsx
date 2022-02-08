@@ -52,12 +52,10 @@ const ListStudent = (props) => {
             field: "id",
             filtering: false,
             headerStyle: {
-                width: '10px',
                 fontWeight: '600',
                 padding: '0px'
             },
             cellStyle: {
-                width: '10px',
                 padding: '0px'
             },
             render: rowData => {
@@ -82,6 +80,7 @@ const ListStudent = (props) => {
                 width: '20px',
             },
         },
+        
         //Học sinh
         {
             title: "Học sinh",
@@ -98,9 +97,7 @@ const ListStudent = (props) => {
                 <Typography variant="body2" component="p">                                    
                     <b>{rowData.fullname}</b>
                     <br /> {rowData.dob_format}
-                    <br /> {
-                        rowData.classes.map(c => {return (<Chip variant="outlined" label={c.code} size="small" className="classes"/>)})
-                    }  
+                    
 
                 </Typography>)
             },
@@ -108,6 +105,26 @@ const ListStudent = (props) => {
             renderGroup: (sname, groupData) => (
                 <Chip variant="outlined" label={sname} size="small" />      
             )
+        },
+        {
+            title: "Lớp học",
+            field: "classes",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            render: rowData => {
+                return (                                
+                    <>
+                    {
+                        rowData.classes.map(c => {return (<Chip variant="outlined" label={c.code} size="small" className="classes"/>)})
+                    } 
+                    </>    
+                )
+            },
         },
         //Phụ huynh
         {
@@ -210,7 +227,7 @@ const ListStudent = (props) => {
             cellStyle: {
                 padding: '0px',
             },
-            lookup: {'active': 'Xác nhận', 'waiting': 'Đăng ký'},
+            lookup: {'active': 'Xác nhận', 'waiting': 'Đăng ký', 'deactive': 'Chưa Đăng ký'},
               
         } 
     ])
@@ -327,7 +344,7 @@ const ListStudent = (props) => {
                     selection: true,
                     exportButton: true,
                     pageSize: 20,
-                    pageSizeOptions: [20, 50, 100],                    
+                    pageSizeOptions: [20, 100, 300],                    
                     rowStyle: rowData => {
                         return {padding: '0px',}                         
                         
@@ -339,13 +356,16 @@ const ListStudent = (props) => {
                         if(rowData.status == 'waiting'){
                             return { backgroundColor: 'rgb(234, 221, 218)'}
                         }
+                        if(rowData.status == 'deactive'){
+                            return { backgroundColor: '#FFFF9F'}
+                        }
                     },
                     filterCellStyle: {
                         paddingLeft: '0px'
                     },
                     exportCsv: (c, d) => {
-                        const cols = ['ID','Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','SĐT 2','Email 2','Ngày nhập học','Ngày nghỉ','Trạng thái'];
-                        const data = d.map(dt => [dt.student_id, dt.fullname,dt.dob_format ,dt.pname, dt.pphone,dt.pemail,dt.alt_phone, dt.alt_email, dt.entrance_date_format, dt.drop_date_format, dt.status]);
+                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','SĐT 2','Email 2','Ngày nhập học','Ngày nghỉ','Trạng thái'];
+                        const data = d.map(dt => [ dt.fullname, dt.classes.map(c => c.code).toString() ,dt.dob_format ,dt.pname, dt.pphone,dt.pemail,dt.alt_phone, dt.alt_email, dt.entrance_date_format, dt.drop_date_format, dt.status]);
                         const builder = new CsvBuilder('DSHS lớp '+ class_name + '.csv');
                         builder
                         .setDelimeter(',')
