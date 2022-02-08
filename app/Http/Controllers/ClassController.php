@@ -1297,6 +1297,7 @@ class ClassController extends Controller
                         $result['questions'][$key]['done'] = true;
                         $result['questions'][$key]['score'] = NULL;
                         $result['questions'][$key]['comment'] = NULL;
+                        $result['questions'][$key]['attempt_detail_id'] = NULL;
                         if ($attempt_detail) {
                             $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
                             $result['questions'][$key]['a_option'] = $attempt_detail->options;
