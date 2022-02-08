@@ -331,35 +331,20 @@ class QuizController extends Controller
         // dd($request->correction_upload);
         if ($request->has('correction_upload')) {
             $attempt = Attempt::find($request->attempt_id);
-<<<<<<< HEAD
-            if (!$attempt) {
-                return back();
-            }
-            if ($attempt->correction_upload != null) {
-                Storage::delete($attempt->correction_upload);
-            }
-            $file = $request->correction_upload;
-            $ext = $request->correction_upload->extension();
-            $file->move(public_path('lms'), $attempt->id . '.' .  $ext);
-            $url = 'public/lms/' . $attempt->id . '.' .  $ext;
-            $attempt->correction_upload = $url;
-            $attempt->save();
-=======
             // dd($attempt);
-            if($attempt){
+            if ($attempt) {
                 if ($attempt->correction_upload != null) {
                     Storage::delete($attempt->correction_upload);
                 }
                 $file = $request->correction_upload;
                 $ext = $request->correction_upload->extension();
                 // dd(public_path('lms'));
-                
-                $file->move(public_path('lms'), $attempt->id . '.'. $ext);
-                $url = 'public/lms/' . $attempt->id . '.'.  $ext;
+
+                $file->move(public_path('lms'), $attempt->id . '.' . $ext);
+                $url = 'public/lms/' . $attempt->id . '.' .  $ext;
                 $attempt->correction_upload = $url;
                 $attempt->save();
             }
->>>>>>> fe7daf17074d4cbaa3dd9687f8063aaebc428f14
         }
     }
 }
