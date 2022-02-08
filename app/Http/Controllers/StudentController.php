@@ -336,8 +336,8 @@ class StudentController extends Controller
                 'students.gender',
                 'parents.id as pid',
                 'parents.fullname as p_name',
-                DB::raw("CONCAT(parents.phone,'-',parents.ftp) AS p_phone"),
-                // 'parents.phone as p_phone',
+                // DB::raw("CONCAT(parents.phone,'-',parents.ftp) AS p_phone"),
+                'parents.phone as p_phone',
                 'parents.email as p_email',
                 'parents.note',
                 'parents.alt_fullname',
@@ -434,6 +434,15 @@ class StudentController extends Controller
             $result['data'] = $students->toArray();
         } else {
             foreach ($request->filter as $filter) {
+                if ($filter['column']['field'] == 'classes'){
+                    $classes = Classes::where('code', $filter['value'])->where('year', auth()->user()->wp_year)->first();
+                    // print_r($classes->toArray());
+                    $students = $classes->activeStudents;
+                    // print_r($students->toArray());
+
+                    $result['data'] = $students->toArray();
+                    break;
+                }
                 $students = $class->studentsOffset($request->per_page, $offset);
                 $result['page'] = $request->page;
 
@@ -453,6 +462,7 @@ class StudentController extends Controller
                     }
                     $result['data'] = $students->toArray();
                 }
+                
                 $result['total'] = count($result['data']);
                 // $students = $students->get();
             }
@@ -497,6 +507,19 @@ class StudentController extends Controller
             $result['data'][$key]['sessions_arr'] = $sessions;
             $result['data'][$key]['sessions'] = $sessions_content;
             $result['data'][$key]['sessions_str'] =  implode(',', $sessions_content);
+
+            foreach ($request->filter as $filter) {
+                if ($filter['column']['field'] == 'classes'){
+                    $sc = StudentClass::where('student_id', $student->id)->where('class_id', $class_id)->first();
+                    if($sc){
+                        $result['data'][$key]['detail'] = $sc->toArray();
+                    }else{
+                        $result['data'][$key]['detail']['status'] = 'deactive';
+                        $result['data'][$key]['detail']['entrance_date'] = '1970-01-01';
+                    }
+                }
+            }
+            
         }
         return response()->json($result);
     }

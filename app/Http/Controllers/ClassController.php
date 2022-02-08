@@ -1203,6 +1203,8 @@ class ClassController extends Controller
                             $result[$key]['students'][] = $student;
                         } else {
                             $student->result_status = 'Chưa có bài';
+                            // $result[$key]['students'][] = $student;
+
                         }
                     }
 
@@ -1211,8 +1213,7 @@ class ClassController extends Controller
         }
         return response()->json($result);
     }
-    protected function getAttempt(Request $request)
-    {
+    protected function getAttempt(Request $request){
         $rules = ['ss_id' => 'required'];
         $this->validate($request, $rules);
 
@@ -1232,6 +1233,7 @@ class ClassController extends Controller
                     $result['quiz'] = $quiz;
                     $result['quiz']['duration'] = $quiz->duration;
                     $result['quiz']['attempt_id'] = $attempt->id;
+                    $result['quiz']['correction_upload'] = $attempt->correction_upload;
                     if (!$result['quiz']['student_session_id']) {
                         $result['quiz']['student_session_id'] = $request->ss_id;
                     }
@@ -1295,6 +1297,7 @@ class ClassController extends Controller
                         $result['questions'][$key]['done'] = true;
                         $result['questions'][$key]['score'] = NULL;
                         $result['questions'][$key]['comment'] = NULL;
+                        $result['questions'][$key]['attempt_detail_id'] = NULL;
                         if ($attempt_detail) {
                             $result['questions'][$key]['a_essay'] = $attempt_detail->essay;
                             $result['questions'][$key]['a_option'] = $attempt_detail->options;

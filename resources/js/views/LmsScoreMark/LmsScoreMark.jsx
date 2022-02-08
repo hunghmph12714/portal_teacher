@@ -16,6 +16,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DoneIcon from '@material-ui/icons/Done';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FaceIcon from '@material-ui/icons/Face';
+import {DropzoneArea} from 'material-ui-dropzone'
+
 const option_label = ['A', 'B', 'C', 'D'];
 const question_level = {'NB': 1, 'TH': 2, 'VDT': 3, 'VDC': 4}
 const LmsScoreMark = (props) => {
@@ -60,7 +62,20 @@ const LmsScoreMark = (props) => {
                 setUpload(response.data.upload)
             })
     }, [])
+    function handleCorrectionUpload(files){
+        let fd = new FormData()
+        fd.append('correction_upload', files[0], files[0].name)
+        
+        fd.append('attempt_id', quiz.attempt_id)
 
+        axios.post('/attempt/upload-correction', fd)
+            .then(response => {
+                
+            })
+            .catch(err => [
+                console.log(err)
+            ])
+    }
     function addCriteria(){
         setCriterias([...criterias, {content: '', title: '', domain: current_package, id: -1}])
     }
@@ -302,72 +317,108 @@ const LmsScoreMark = (props) => {
             
             
             </div>
-            <div className='quiz-criteria'>
-                <h4>Tiêu chí đánh giá</h4>
-                <div
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        addCriteria()
-                        // if(confirm('Xoá bài '+ t.title +' ?') ) deleteTopic(index, s_index, t_index)
-                    }}
-                    className = 'criteria-add-btn'
-                >
-                    <AddIcon />
-                    <span>Thêm tiêu chí</span>
-                </div>
+            <Grid container spacing={2}>
+                <Grid item md={7}>
+                    <div className='quiz-criteria'>
+                    <h4>Tiêu chí đánh giá</h4>
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                addCriteria()
+                                // if(confirm('Xoá bài '+ t.title +' ?') ) deleteTopic(index, s_index, t_index)
+                            }}
+                            className = 'criteria-add-btn'
+                        >
+                            <AddIcon />
+                            <span>Thêm tiêu chí</span>
+                        </div>
 
-                {
-                    criterias.map((c, index )=> {
-                        if(c.domain == current_package){
-                            return(
-                                <div className='criteria-root'>
-                                    <Grid item md={12}>
-                                        <div style={{marginRight: '20px'}} className="criteria-title">
-                                            {/* <span style={{marginRight: '10px'}}> <b>Tiêu chí {t_index + 1}:</b> </span> */}
-                                            <TextField 
-                                                className="title"
-                                                label="Tên tiêu chí"
-                                                variant="outlined"
-                                                size="small"
-                                                name="title"
-                                                value={c.title}
-                                                onChange={event => onTitleCriteriaChange(event, index)}
+                        {
+                            criterias.map((c, index )=> {
+                                if(c.domain == current_package){
+                                    return(
+                                        <div className='criteria-root'>
+                                            <Grid item md={12}>
+                                                <div style={{marginRight: '20px'}} className="criteria-title">
+                                                    {/* <span style={{marginRight: '10px'}}> <b>Tiêu chí {t_index + 1}:</b> </span> */}
+                                                    <TextField 
+                                                        className="title"
+                                                        label="Tên tiêu chí"
+                                                        variant="outlined"
+                                                        size="small"
+                                                        name="title"
+                                                        value={c.title}
+                                                        onChange={event => onTitleCriteriaChange(event, index)}
+                                                        
+                                                    />
+                                                    <div
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            if(confirm('Xoá tiêu chí '+ c.title +' ?') ) deleteCriteria(index)
+                                                        }}
+                                                        className = 'criteria-remove'
+                                                    >
+                                                        <DeleteForeverIcon />
+                                                        <span>Xoá tiêu chí</span>
+                                                    </div>
+                                                    
+                                                </div>
                                                 
-                                            />
-                                            <div
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    if(confirm('Xoá tiêu chí '+ c.title +' ?') ) deleteCriteria(index)
-                                                }}
-                                                className = 'criteria-remove'
-                                            >
-                                                <DeleteForeverIcon />
-                                                <span>Xoá tiêu chí</span>
+                                            </Grid>
+                                            <div className="criteria-description">
+                                            <   TextField 
+                                                    label="Nội dung tiêu chí"
+                                                    variant="outlined"
+                                                    size="small"
+                                                    fullWidth
+                                                    value={c.content}
+                                                    onChange={event => onContentCriteriaChange(index, event.target.value)}
+                                                    
+                                                />
                                             </div>
-                                            
-                                        </div>
                                         
-                                    </Grid>
-                                    <div className="criteria-description">
-                                    <   TextField 
-                                            label="Nội dung tiêu chí"
-                                            variant="outlined"
-                                            size="small"
-                                            fullWidth
-                                            value={c.content}
-                                            onChange={event => onContentCriteriaChange(index, event.target.value)}
-                                            
-                                        />
-                                    </div>
-                                
-                                </div>
-                            )
+                                        </div>
+                                    )
+                                }
+                            })
                         }
-                    })
-                }
-                <Button className='submit-btn' variant="outlined" onClick={e => handleSubmit(e)}>Lưu Đánh Giá</Button>
+                        <Button className='submit-btn' variant="outlined" onClick={e => handleSubmit(e)}>Lưu Đánh Giá</Button>
 
-            </div>
+                    </div>
+                </Grid>
+                <Grid item md={5}>
+
+                    <div className="upload quiz-criteria" id="upload-div">
+                        <h4>Tổng điểm : 
+                            {questions.filter(q => q.domain == current_package).reduce((sum, b) => sum + parseFloat(b.score || 0) , 0)
+                                }
+                        
+                        </h4>
+                        <h4>Tải lên bài chữa</h4>
+                        <Chip variant="outlined" 
+                            color="primary" deleteIcon={<DoneIcon />} icon={<FaceIcon />} 
+                            label={'Bài chữa đã tải lên'}
+                            onClick={()=> window.open(  '/'+quiz.correction_upload, "_blank")}
+                            style={{marginRight: '5px'}}
+                        />
+                        <DropzoneArea
+                            onChange={(files) => {handleCorrectionUpload(files)}}
+                            acceptedFiles = {['application/pdf']}
+                            filesLimit = {1}
+                            showPreviews={true}
+                            previewText="Xem trước"
+                            showPreviewsInDropzone={false}
+                            previewGridProps={{container: {spacing: 1}, item: {md: 3, xs: 12}}}
+                            showAlerts={['error']}
+                            onPreviewClick={(event) => console.log(event)}
+                            maxFileSize = {10000000}
+                            dropzoneText = "Kéo thả bài chữa (Chấp nhận: PDF)"
+                        />
+                    </div>
+                </Grid>
+
+            </Grid>
+            
         </Dialog>
     )
 }

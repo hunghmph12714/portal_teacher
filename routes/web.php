@@ -518,6 +518,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     });
     Route::post('/question/deactive', 'QuestionController@deactive');
     Route::post('/questions', 'QuestionController@get');
+    Route::post('/attempt/upload-correction', [QuizController::class, 'correction']);
 
     //Quizz Config
     Route::get('/quiz-config', function () {
@@ -611,6 +612,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 // });
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
-Route::post('attempt/upload-correction', [QuizController::class, 'correction']);
 
 Route::get('search', [QuestionController::class, 'filter']);
