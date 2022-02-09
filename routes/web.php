@@ -614,3 +614,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
 
 Route::get('search', [QuestionController::class, 'filter']);
+Route::get('tong-diem', [QuizController::class, 'sumScore']);

@@ -349,4 +349,40 @@ class QuizController extends Controller
             }
         }
     }
+    public function sumScore(Request $request)
+    {
+        // $attempt_id = $request->attempt_id;
+        $attempt_id = 96;
+
+
+        //hàm dùng chung
+        function select(array $array, $column)
+        {
+            $a = [];
+            foreach ($array as $ss) {
+                array_push($a, $ss[$column]);
+            }
+            return $a;
+        }
+
+        $attempt = Attempt::find($attempt_id);
+        if (!$attempt) {
+            return back();
+        }
+        $attempt_detail = AttemptDetail::where('attempt_id', $attempt_id)
+            ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')->distinct()->get();
+        // dd($attempt_detail);
+
+        $arr_domain =   array_unique(select($attempt_detail->toArray(), 'domain'));
+        $i = 1;
+        $data = [];
+        foreach ($arr_domain as $d) {
+            $a = $attempt_detail->where('domain', $d)->sum('score');
+            $data = $data + ['score_domain_' . $i => $a];
+            $i++;
+        }
+        // dd($data);
+        $attempt->fill($data)->save();
+        dd('Thành công');
+    }
 }

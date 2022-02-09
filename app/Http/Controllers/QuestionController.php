@@ -316,7 +316,6 @@ class QuestionController extends Controller
         // dd($request);
         $questions   = Question::with('topics')->with('objectives')->with('options')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
-            // ->select('topic_id', 'domain', 'question_level', 'grade')
             ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
             ->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
             ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
