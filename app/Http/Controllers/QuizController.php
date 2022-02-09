@@ -187,6 +187,8 @@ class QuizController extends Controller
         ];
 
         $quiz =   Quiz::create($quizzes);
+
+
         //tìm ra học sinh và các câu hỏi đã thi
         {
             $student_id = StudentSession::find($student_session_id)->student_id;

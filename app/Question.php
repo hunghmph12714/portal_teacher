@@ -37,7 +37,7 @@ class Question extends Model
 
             if ($arr_domain) {
                 // dd('%' . $domain . '%');
-                $query->whereIn('domain',   $arr_domain);
+                $query->whereIn('domain', 'like',   $arr_domain);
             }
         }
         // dd($query);fkl
@@ -48,7 +48,7 @@ class Question extends Model
     {
         if (!empty($arr_lever)) {
             if ($arr_lever) {
-                $query->whereIn('question_level',   $arr_lever);
+                $query->whereIn('question_level', 'like',   $arr_lever);
             }
         }
         return $query;
@@ -67,7 +67,7 @@ class Question extends Model
     {
         if (!empty($arr_loai)) {
             if ($arr_loai) {
-                $query->whereIn('question_type',  $arr_loai);
+                $query->whereIn('question_type', 'like',  $arr_loai);
             }
         }
 
