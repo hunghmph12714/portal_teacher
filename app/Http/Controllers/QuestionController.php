@@ -276,7 +276,7 @@ class QuestionController extends Controller
             $arr_grade = '';
         }
 
-        dd($arr_lever);
+        // dd($arr_lever);
 
 
 
@@ -301,8 +301,7 @@ class QuestionController extends Controller
 
 
 
-        $questions   = Question::with('topics')->with('objectives')->with('options')
-
+        $questions   = Question::query()
             ->domain($arr_domain)
             ->questionLevel($arr_lever)
             ->question_type($arr_type)
