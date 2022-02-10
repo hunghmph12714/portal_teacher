@@ -53,30 +53,30 @@ const ListResult = (props) => {
                 <Chip variant="outlined" label={sname} size="small" />      
             )
         },
-        //Phụ huynh
-        {
-            title: "Phụ huynh",
-            field: "pname",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '3px 0px',
-            },
-            render: rowData => 
-                (                              
-                <Typography variant="body2" component="p">
-                    <b>{rowData.pname}</b> 
-                    {/* <br/><a target="_blank" href={"https://vietelite.3cx.vn:5001/webclient/#/call?phone=" + rowData.pphone} > {rowData.pphone} </a>  */}
-                    <br/>{rowData.pphone}
-                    <br/>{rowData.pemail}
-                </Typography>                              
-                ),
-            renderGroup: (pname, groupData) => (
-                <Chip variant="outlined" label={pname} size="small" />       
-            )
-        },
+        // //Phụ huynh
+        // {
+        //     title: "Phụ huynh",
+        //     field: "pname",
+        //     headerStyle: {
+        //         padding: '0px',
+        //         fontWeight: '600',
+        //     },
+        //     cellStyle: {
+        //         padding: '3px 0px',
+        //     },
+        //     render: rowData => 
+        //         (                              
+        //         <Typography variant="body2" component="p">
+        //             <b>{rowData.pname}</b> 
+        //             {/* <br/><a target="_blank" href={"https://vietelite.3cx.vn:5001/webclient/#/call?phone=" + rowData.pphone} > {rowData.pphone} </a>  */}
+        //             <br/>{rowData.pphone}
+        //             <br/>{rowData.pemail}
+        //         </Typography>                              
+        //         ),
+        //     renderGroup: (pname, groupData) => (
+        //         <Chip variant="outlined" label={pname} size="small" />       
+        //     )
+        // },
         
         //Trạng thái
         {
@@ -108,6 +108,45 @@ const ListResult = (props) => {
         {
             title: "Mục tiêu",
             field: "objectives",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+              
+        },
+        {
+            title: "Điểm môn 1",
+            field: "score_domain_1",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+              
+        },
+        {
+            title: "Điểm môn 2",
+            field: "score_domain_2",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+              
+        },
+        {
+            title: "Điểm môn 3",
+            field: "score_domain_3",
             headerStyle: {
                 padding: '0px',
                 fontWeight: '600',
