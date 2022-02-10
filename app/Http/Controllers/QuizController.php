@@ -349,20 +349,21 @@ class QuizController extends Controller
             }
         }
     }
-    public function sumScore(Request $request){
+    public function select(array $array, $column)
+    {
+        $a = [];
+        foreach ($array as $ss) {
+            array_push($a, $ss[$column]);
+        }
+        return $a;
+    }
+    public function sumScore($attempt_id){
         // $attempt_id = $request->attempt_id;
-        $attempt_id = 96;
+        // $attempt_id = 96;
 
 
         //hàm dùng chung
-        function select(array $array, $column)
-        {
-            $a = [];
-            foreach ($array as $ss) {
-                array_push($a, $ss[$column]);
-            }
-            return $a;
-        }
+        
 
         $attempt = Attempt::find($attempt_id);
         if (!$attempt) {
@@ -372,7 +373,7 @@ class QuizController extends Controller
             ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')->distinct()->get();
         // dd($attempt_detail);
 
-        $arr_domain =   array_unique(select($attempt_detail->toArray(), 'domain'));
+        $arr_domain =   array_unique($this->select($attempt_detail->toArray(), 'domain'));
         $i = 1;
         $data = [];
         foreach ($arr_domain as $d) {
@@ -382,14 +383,26 @@ class QuizController extends Controller
         }
         // dd($data);
         $attempt->fill($data)->save();
-        dd('Thành công');
+        return $attempt;
+        // dd('Thành công');
+    }
+    public function sumScores(){
+        $attempts = Attempt::get();
+        foreach($attempts as $attempt){
+            //Check attempt detail;
+            $check_ad = AttemptDetail::where('attempt_id', $attempt->id)->first();
+            if($check_ad){
+                $a = $this->sumScore($attempt->id);
+                print_r("<pre>");
+                print_r($a->toArray());
+            }
+        }
     }
     public function markMc(Request $request){
-        $fibs = Question::where('question_type', 'mc')->get(  );
+        $fibs = Question::where('question_type', 'mc')->where('grade', '9')->get(  );
         foreach($fibs as $fib){
             $ad = AttemptDetail::where('question_id', $fib->id)->get();
             foreach($ad as $a){
-                
                 if($a->options){
                     $option = Option::find($a->options);
                     if($option->weight > 0){

@@ -1197,13 +1197,18 @@ class ClassController extends Controller
                         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
                         $student->quiz_id = $attempt->quiz_id;
                         $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+                        
+                        $student->score_domain_1 = $attempt->score_domain_1;
+                        $student->score_domain_2 = $attempt->score_domain_2;
+                        $student->score_domain_3 = $attempt->score_domain_3;
+
                         if ($attempt_detail->first()) {
                             //Có bài làm
                             $student->result_status = 'Đã có bài';
                             $result[$key]['students'][] = $student;
                         } else {
                             $student->result_status = 'Chưa có bài';
-                            $result[$key]['students'][] = $student;
+                            // $result[$key]['students'][] = $student;
                         }
                     }
 
