@@ -350,6 +350,9 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/transaction/center', 'ReportController@fillCenter');
         //Events
 
+
+        // check complete
+        Route::get('check-complete/{quiz_id}', 'AttemptDetailController@checkComplete');
     });
     //Password Change
     //Import database 
