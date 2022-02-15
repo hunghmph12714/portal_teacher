@@ -350,6 +350,9 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/transaction/center', 'ReportController@fillCenter');
         //Events
 
+
+        // check complete
+        Route::get('check-complete/{quiz_id}', 'AttemptDetailController@checkComplete');
     });
     //Password Change
     //Import database 
@@ -562,7 +565,9 @@ Route::post('/event/dang-ky', 'StudentController@registerEvent');
 Route::post('/event/result', 'ClassController@getResult');
 Route::post('/event/attempt', 'ClassController@getAttempt');
 Route::post('/event/mark', 'ClassController@submitMark');
-
+Route::get('/events/attempt-null', 'QuizController@attemptNull');
+Route::get('/events/mark-mc', 'QuizController@markMc');
+Route::get('/events/sum-score', 'QuizController@sumScores');
 Route::get('/event-form', function () {
     return view('welcome');
 });
