@@ -1197,7 +1197,7 @@ class ClassController extends Controller
                         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
                         $student->quiz_id = $attempt->quiz_id;
                         $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
-                        
+
                         $student->score_domain_1 = $attempt->score_domain_1;
                         $student->score_domain_2 = $attempt->score_domain_2;
                         $student->score_domain_3 = $attempt->score_domain_3;
@@ -1327,15 +1327,17 @@ class ClassController extends Controller
     protected function submitMark(Request $request){
         $rules = ['questions' => 'required'];
         $this->validate($request, $rules);
-
+        $attempt_id = 0;
         foreach($request->questions as $q){
             $ad = AttemptDetail::find($q['attempt_detail_id']);
             if($ad){
+                $attempt_id = $ad->attempt_id;
                 $ad->score = $q['score'];
                 $ad->comment = $q['comment'];
                 $ad->save();
             }
         }
+        $this->sumScore($attempt_id);
         $result = [];
         foreach($request->criterias as $c){
             if($c['id'] == -1){
@@ -1362,6 +1364,43 @@ class ClassController extends Controller
         }
         return response()->json($result);
 
+    }
+    public function select(array $array, $column)
+    {
+        $a = [];
+        foreach ($array as $ss) {
+            array_push($a, $ss[$column]);
+        }
+        return $a;
+    }
+    public function sumScore($attempt_id){
+        // $attempt_id = $request->attempt_id;
+        // $attempt_id = 96;
+
+
+        //hàm dùng chung
+        
+
+        $attempt = Attempt::find($attempt_id);
+        if (!$attempt) {
+            return back();
+        }
+        $attempt_detail = AttemptDetail::where('attempt_id', $attempt_id)
+            ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')->distinct()->get();
+        // dd($attempt_detail);
+
+        $arr_domain =   array_unique($this->select($attempt_detail->toArray(), 'domain'));
+        $i = 1;
+        $data = [];
+        foreach ($arr_domain as $d) {
+            $a = $attempt_detail->where('domain', $d)->sum('score');
+            $data = $data + ['score_domain_' . $i => $a];
+            $i++;
+        }
+        // dd($data);
+        $attempt->fill($data)->save();
+        return $attempt;
+        // dd('Thành công');
     }
     protected function reGenerateFee()
     {

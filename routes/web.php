@@ -562,6 +562,7 @@ Route::post('/event/dang-ky', 'StudentController@registerEvent');
 Route::post('/event/result', 'ClassController@getResult');
 Route::post('/event/attempt', 'ClassController@getAttempt');
 Route::post('/event/mark', 'ClassController@submitMark');
+Route::get('/events/attempt-null', 'QuizController@attemptNull');
 Route::get('/events/mark-mc', 'QuizController@markMc');
 Route::get('/events/sum-score', 'QuizController@sumScores');
 Route::get('/event-form', function () {

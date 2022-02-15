@@ -19,12 +19,64 @@ use App\AttemptDetail;
 use App\Student;
 use App\Session;
 use DateTime;
+use App\Classes;
+use App\Objective;
+
 use DateTimeInterface;
 use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
     //
+    public function attemptNull(){
+        $event = Classes::find(401);
+        $result = [];
+        $session = Session::find(18631);
+        $quiz = Quiz::where('quizz_code',$session->teacher_note)->first();
+
+        $students = $session->students;
+        // $result[] = $session->toArray();
+        // $result[$key]['students'] = [];
+        $questions = $quiz->questions;
+
+        
+        foreach ($students as $k => $student) {
+            //Get class
+            $ss = StudentSession::find($student->pivot['id']);
+            $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+            
+                     
+            if ($attempt) {
+                $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
+                $student->quiz_id = $attempt->quiz_id;
+                $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+                
+                if (!$attempt_detail->first()) {
+                    //Có bài làm
+                    foreach($questions as $question){
+                        $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
+                        
+                        $input['attempt_id'] = $attempt->id;
+                        $input['question_id'] = $question->id;
+                        // $input['updated_at'] = '2000-01-01 09:37:17';
+                        $input['fib'] = $rnd_attempt['fib'];
+                        $input['essay'] = '';
+                        $input['options'] = $rnd_attempt['options'];
+                        $input['score'] = $rnd_attempt['score'];
+                        $input['comment'] = $rnd_attempt['comment'];
+
+                        echo "<pre>";
+                        print_r($input);
+                        AttemptDetail::create($input);
+                    }   
+                    
+                }
+            } 
+
+        }
+        dd($result);    
+        // return response()->json($result);
+    }
     public function checkAttempt()
     {
         $attempt = Attempt::where('start_time', '<', '2022-01-23 12:00:00')->get();
@@ -399,15 +451,15 @@ class QuizController extends Controller
         }
     }
     public function markMc(Request $request){
-        $fibs = Question::where('question_type', 'mc')->where('grade', '9')->get(  );
+        $fibs = Question::where('question_type', 'mc')->where('domain', 'Tiếng Việt')->where('grade', '5')->get();
         foreach($fibs as $fib){
             $ad = AttemptDetail::where('question_id', $fib->id)->get();
             foreach($ad as $a){
                 if($a->options){
                     $option = Option::find($a->options);
                     if($option->weight > 0){
-                        $a->score = 1;
-                        echo $option->content. "<br/>";
+                        $a->score = 0.5;
+                        // echo $option->content. "<br/>";
                         $a->save();
                     }else{
                         $a->score = 0;
