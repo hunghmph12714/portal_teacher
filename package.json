@@ -112,6 +112,7 @@
         "reducer": "^0.19.2",
         "reducers": "^3.0.0-alpha",
         "redux-devtools-extension": "^2.13.8",
-        "redux-thunk": "^2.3.0"
+        "redux-thunk": "^2.3.0",
+        "yarn": "^1.22.17"
     }
 }

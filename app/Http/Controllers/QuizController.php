@@ -353,8 +353,6 @@ class QuizController extends Controller
     {
         // $attempt_id = $request->attempt_id;
         $attempt_id = 96;
-
-
         //hàm dùng chung
         function select(array $array, $column)
         {
