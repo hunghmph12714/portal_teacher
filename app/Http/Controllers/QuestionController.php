@@ -200,10 +200,7 @@ class QuestionController extends Controller
         if (!empty($_GET['domain'])) {
 
             $arr_domain = [];
-
             $arr_domain = explode('||', $_GET['domain']);
-            // $str_sql_domain = implode($arr_domain);
-            // dd($str_sql_domain);
         } else {
             $arr_domain = '';
         }
@@ -223,7 +220,6 @@ class QuestionController extends Controller
         } else {
             $arr_type = '';
         }
-
         if (!empty($_GET['grade'])) {
 
             $arr_grade = [];
@@ -268,7 +264,7 @@ class QuestionController extends Controller
                 'active',
                 'title',
                 'topic_id',
-            )->groupBy('id')
+            )->groupBy('id')->orderBy('id', 'DESC')
             ->domain($arr_domain)
             ->questionLevel($arr_lever)
             ->question_type($arr_type)
@@ -277,47 +273,6 @@ class QuestionController extends Controller
             ->topic($arr_topic)
             ->distinct()
             ->get();
-        dd($questions->toArray());
-
-        dd($questions->toArray());
-        return response()->json($questions);
-    }
-
-    protected function filter1(Request $request)
-    {;
-        // dd($request);
-        $questions   = Question::with('topics')->with('objectives')->with('options')
-            ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
-            ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
-            ->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
-            ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
-            ->select(
-                'lms_questions.id as id',
-                'title',
-                'topic_id',
-                'lms_question_objective.question_id',
-                'lms_question_objective.objective_id',
-                'question_level',
-                'question_type',
-                'statement',
-                'lms_questions.content',
-                'complex',
-                'domain',
-                'public',
-                'hint',
-                'active',
-                // 'objectives.content',
-                'user_id',
-                'lms_questions.grade'
-            )
-            ->domain($request)
-            // ->questionLevel($request)
-            ->grade($request)
-            ->topics($request)
-            ->objectives($request)
-            ->where('active', true)->orderBy('id', 'DESC')->distinct()
-            ->get();
-
         return response()->json($questions);
     }
 }
