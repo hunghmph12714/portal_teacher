@@ -195,42 +195,7 @@ class QuestionController extends Controller
 
     protected function filter(Request $request)
     {
-        // dd($request);
-        // try {
-        //     $conn = new  PDO("mysql:host=localhost;dbname=db_backup_1;charset=utf8", "root", "");
-        // } catch (PDOException $e) {
-        //     echo "lỗi";
-        // }
-
-        // $str_sql_domain = '';
-        // if (!empty($_GET['domain'])) {
-
-        //     $arr_sql_domain = [];
-
-        //     $arr_domain = explode('||', $_GET['domain']);
-        //     // $domain = $_GET['domain'];
-        //     foreach ($arr_domain as $d) {
-        //         array_push($arr_sql_domain, " and lms_questions.domain='" . $d . "'");
-        //     }
-        //     $str_sql_domain = implode($arr_sql_domain);
-        // } else {
-        //     $str_sql_domain = '';
-        // }
-        // dd($str_sql_domain);
-        // if (!empty($_GET['grade'])) {
-        //     $sql = '';
-        //     $arr_sql_grade = [];
-
-        //     $arr_grade = explode('||', $_GET['grade']);
-        //     // $grade = $_GET['grade'];
-        //     foreach ($arr_grade as $d) {
-        //         array_push($arr_sql_grade, " and lms_questions.grade='" . $d . "'");
-        //     }
-        //     $str_sql_grade = implode($arr_sql_grade);
-        //     dd($str_sql_grade);
-        // } else {
-        //     $arr_grade = '';
-        // }
+        // dd($_GET);
 
         if (!empty($_GET['domain'])) {
 
@@ -242,14 +207,11 @@ class QuestionController extends Controller
         } else {
             $arr_domain = '';
         }
-
+        // dd($arr_domain);
         if (!empty($_GET['lever'])) {
 
             $arr_lever = [];
-
             $arr_lever = explode('||', $_GET['lever']);
-            // $str_sql_lever = implode($arr_lever);
-            // dd($str_sql_lever);
         } else {
             $arr_lever = '';
         }
@@ -257,10 +219,7 @@ class QuestionController extends Controller
         if (!empty($_GET['type'])) {
 
             $arr_type = [];
-
             $arr_type = explode('||', $_GET['type']);
-            // $str_sql_type = implode($arr_type);
-            // dd($str_sql_type);
         } else {
             $arr_type = '';
         }
@@ -270,49 +229,62 @@ class QuestionController extends Controller
             $arr_grade = [];
 
             $arr_grade = explode('||', $_GET['grade']);
-            // $str_sql_grade = implode($arr_grade);
-            // dd($str_sql_grade);
         } else {
             $arr_grade = '';
         }
 
-        // dd($arr_lever);
+        if (!empty($_GET['objective'])) {
 
+            $arr_objective = [];
 
+            $arr_objective = explode('||', $_GET['objective']);
+        } else {
+            $arr_objective = '';
+        }
+        if (!empty($_GET['topic'])) {
 
-        // $a = "  select * from lms_questions join lms_topic_question on lms_questions.id =lms_topic_question.question_id 
-        // join lms_topics on lms_topic_question.topic_id=lms_topics.id 
-        // join lms_question_objective on lms_questions.id = lms_question_objective.question_id 
-        // join objectives on lms_question_objective.objective_id=objectives.id 
-        // where active=1" . $str_sql_grade;
-        // // $str_sql_domain = '';
-        // // dd($a);
+            $arr_topic = [];
 
-        // $q = $conn->query($a);
-
-        // $arr_q = [];
-        // foreach ($q as $item) {
-        //     // dd($item);
-        //     array_push($arr_q, $item);
-        // }
-        // dd($arr_q);
-
-
-
-
-
-        $questions   = Question::query()
+            $arr_topic = explode('||', $_GET['topic']);
+        } else {
+            $arr_topic = '';
+        }
+        $questions   = Question::query()->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
+            ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
+            ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
+            ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
+            ->select(
+                'lms_questions.id as id',
+                'lms_questions.grade',
+                'objective_id',
+                'question_level',
+                'question_type',
+                'statement',
+                'lms_questions.content',
+                'complex',
+                'domain',
+                'public',
+                'hint',
+                'active',
+                'title',
+                'topic_id',
+            )->groupBy('id')
             ->domain($arr_domain)
             ->questionLevel($arr_lever)
             ->question_type($arr_type)
-            ->grade($arr_grade)->distinct()
+            ->grade($arr_grade)
+            ->objective($arr_objective)
+            ->topic($arr_topic)
+            ->distinct()
             ->get();
-        dd($questions);
+        dd($questions->toArray());
+
+        dd($questions->toArray());
         return response()->json($questions);
     }
 
     protected function filter1(Request $request)
-    {
+    {;
         // dd($request);
         $questions   = Question::with('topics')->with('objectives')->with('options')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')

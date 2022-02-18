@@ -257,6 +257,7 @@ class QuizController extends Controller
                             array_push($sub_id, $q_s[$rand]->id);
                             // echo "<pre>";
                             print_r($sub_id);
+                            dd(1);
                             $o = Option::where('question_id', $q_s[$rand]->id)->get();
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
@@ -288,7 +289,7 @@ class QuizController extends Controller
                         echo "<pre>";
 
                         print_r($at_n_questtion);
-
+                        dd(1);
                         $rand = array_rand($at_n_questtion, 1);
                         // dd($at_n_questtion, 1);
                         // dd
