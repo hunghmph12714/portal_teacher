@@ -29,21 +29,16 @@ class Question extends Model
         return $this->hasMany('App\Option', 'question_id', 'id');
     }
 
-
-
     public function scopeDomain($query, $arr_domain)
     {
         if (!empty($arr_domain)) {
 
             if ($arr_domain) {
-                // dd('%' . $domain . '%');
                 $query->whereIn('domain',    $arr_domain);
             }
         }
-        // dd($query);fkl
         return $query;
     }
-
     public function scopeQuestionLevel($query, $arr_lever)
     {
         if (!empty($arr_lever)) {
@@ -57,10 +52,9 @@ class Question extends Model
     {
         if (!empty($arr_grade)) {
             if ($arr_grade) {
-                $query->whereIn('grade',  $arr_grade);
+                $query->whereIn('lms_questions.grade',  $arr_grade);
             }
         }
-
         return $query;
     }
     public function scopeQuestion_type($query, $arr_loai)
@@ -70,39 +64,25 @@ class Question extends Model
                 $query->whereIn('question_type',   $arr_loai);
             }
         }
+        return $query;
+    }
+    public function scopeObjective($query, $arr_objective)
+    {
+        if (!empty($arr_objective)) {
+            if ($arr_objective) {
+                $query->whereIn('objective_id',   $arr_objective);
+            }
+        }
+        return $query;
+    }
+    public function scopeTopic($query, $arr_topic)
+    {
+        if (!empty($arr_topic)) {
+            if ($arr_topic) {
+                $query->whereIn('topic_id',   $arr_topic);
+            }
+        }
 
         return $query;
     }
-
-    // public function scopeTopics($query, $request)
-    // {
-    //     if (!empty($request->config['topics'])) {
-
-
-    //         if ($request->config['topics']) {
-    //             $t = [];
-    //             foreach ($request->config['topics'] as $tp) {
-    //                 array_push($t, $tp['value']);
-    //             }
-    //             $query->WhereIn('lms_topics.id', [$t]);
-    //         }
-    //     }
-
-    //     return $query;
-    // }
-    // public function scopeObjectives($query, $request)
-    // {
-
-    //     if (!empty($request->config['objectives'])) {
-    //         if ($request->config['objectives']) {
-    //             $o = [];
-    //             foreach ($request->config['objectives'] as $tp) {
-    //                 array_push($o, $tp['value']);
-    //             }
-    //             $query->WhereIn('objectives.id', [$o]);
-    //         }
-    //     }
-
-    //     return $query;
-    // }
 }
