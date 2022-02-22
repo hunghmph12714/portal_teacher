@@ -352,6 +352,9 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/transaction/center', 'ReportController@fillCenter');
         //Events
 
+
+        // check complete
+        Route::get('check-complete/{quiz_id}', 'AttemptDetailController@checkComplete');
     });
     //Password Change
     //Import database 
@@ -521,6 +524,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/question/deactive', 'QuestionController@deactive');
     Route::post('/questions', 'QuestionController@get');
     Route::post('/attempt/upload-correction', [QuizController::class, 'correction']);
+    Route::post('/check-quiz', 'QuizController@checkQuiz');
 
     //Quizz Config
     Route::get('/quiz-config', function () {

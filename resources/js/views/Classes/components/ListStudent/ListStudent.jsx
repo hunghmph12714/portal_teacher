@@ -9,6 +9,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import DialogCreate from './DialogCreate'
 import DialogTransfer from './DialogTransfer'
 import DialogDropout from './DialogDropout'
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
     Menu,
@@ -233,6 +234,13 @@ const ListStudent = (props) => {
                                         handleDeleteStudent(rowData)}
                                     }>
                                     <DeleteForeverIcon fontSize='inherit' />
+                                    </IconButton>
+                                </Tooltip>     
+                                <Tooltip title="Truy cập portal" arrow>
+                                    <IconButton onClick={() => {
+                                         window.open('/login-portal-admin/'+rowData.parent_id)
+                                    }}>
+                                    <AssignmentIndIcon fontSize='inherit' />
                                     </IconButton>
                                 </Tooltip>     
                                 {

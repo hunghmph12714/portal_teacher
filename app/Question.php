@@ -29,12 +29,17 @@ class Question extends Model
         return $this->hasMany('App\Option', 'question_id', 'id');
     }
 
+<<<<<<< HEAD
 
 
     public function scopeDomain($query, $request)
+=======
+    public function scopeDomain($query, $arr_domain)
+>>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
     {
         if (!empty($request->config['domain'])) {
 
+<<<<<<< HEAD
             if ($request->config['domain']['value']) {
                 $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
             }
@@ -44,6 +49,15 @@ class Question extends Model
     }
 
     public function scopeQuestionLevel($query, $request)
+=======
+            if ($arr_domain) {
+                $query->whereIn('domain',    $arr_domain);
+            }
+        }
+        return $query;
+    }
+    public function scopeQuestionLevel($query, $arr_lever)
+>>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
     {
         if (!empty($request->config['level'])) {
             if ($request->config['level']['value']) {
@@ -54,12 +68,17 @@ class Question extends Model
     }
     public function scopeGrade($query, $request)
     {
+<<<<<<< HEAD
         if (!empty($request->config['grade'])) {
             if ($request->config['grade']['value']) {
                 $query->where('lms_questions.grade',  $request->config['grade']['value']);
+=======
+        if (!empty($arr_grade)) {
+            if ($arr_grade) {
+                $query->whereIn('lms_questions.grade',  $arr_grade);
+>>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
             }
         }
-
         return $query;
     }
 
@@ -76,9 +95,9 @@ class Question extends Model
                 $query->WhereIn('lms_topic_question.topic_id', [$t[0]]);
             }
         }
-
         return $query;
     }
+<<<<<<< HEAD
     public function scopeObjectives($query, $request)
     {
 
@@ -95,3 +114,25 @@ class Question extends Model
         return $query;
     }
 }
+=======
+    public function scopeObjective($query, $arr_objective)
+    {
+        if (!empty($arr_objective)) {
+            if ($arr_objective) {
+                $query->whereIn('objective_id',   $arr_objective);
+            }
+        }
+        return $query;
+    }
+    public function scopeTopic($query, $arr_topic)
+    {
+        if (!empty($arr_topic)) {
+            if ($arr_topic) {
+                $query->whereIn('topic_id',   $arr_topic);
+            }
+        }
+
+        return $query;
+    }
+}
+>>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
