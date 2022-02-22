@@ -29,38 +29,48 @@ class QuizController extends Controller
 {
     //
     public function attemptNull(){
-        $event = Classes::find(401);
+        // $event = Classes::find(401);
         $result = [];
-        $session = Session::find(18631);
-        $quiz = Quiz::where('quizz_code',$session->teacher_note)->first();
+        // $session = Session::find('18629');
+        // $quiz = Quiz::where('quizz_code',$session->teacher_note)->first();
+        $quiz = Quiz::find(120);
 
-        $students = $session->students;
+        // $students = $session->students;
         // $result[] = $session->toArray();
         // $result[$key]['students'] = [];
         $questions = $quiz->questions;
-
-        
-        foreach ($students as $k => $student) {
+        // print_r($students->toArray());
+        $a = 0;
+        // foreach ($students as $k => $student) {
             //Get class
-            $ss = StudentSession::find($student->pivot['id']);
-            $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+            // $ss = StudentSession::find($student->pivot['id']);
+            // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+            $attempt = Attempt::find(206);
+            // echo "<pre>";
+            // print_r($attempt->toArray());
             
-                     
+
             if ($attempt) {
+                $a++;
                 $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)->get();
-                $student->quiz_id = $attempt->quiz_id;
-                $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+                // echo "<pre>";
+                // print_r($attempt->toArray());
+                // $student->quiz_id = $attempt->quiz_id;
+                // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
                 
                 if (!$attempt_detail->first()) {
+                    // echo "<pre>";
+                    // print_r($student->toArray());
                     //Có bài làm
                     foreach($questions as $question){
+
                         $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
                         
                         $input['attempt_id'] = $attempt->id;
                         $input['question_id'] = $question->id;
-                        // $input['updated_at'] = '2000-01-01 09:37:17';
+                        $input['updated_at'] = '2000-01-01 09:37:17';
                         $input['fib'] = $rnd_attempt['fib'];
-                        $input['essay'] = '';
+                        $input['essay'] = $rnd_attempt['essay'];
                         $input['options'] = $rnd_attempt['options'];
                         $input['score'] = $rnd_attempt['score'];
                         $input['comment'] = $rnd_attempt['comment'];
@@ -72,10 +82,22 @@ class QuizController extends Controller
                     
                 }
             } 
+            
 
-        }
-        dd($result);    
+        // }
+        echo $a;
+        // dd($result);    
         // return response()->json($result);
+    }
+    public function checkSs(){
+        $attempts = Attempt::all();
+        foreach($attempts as $at){
+            $ss = StudentSession::find($at->student_session);
+            if(!$ss && $at->student_session){
+                echo "<pre>";
+                print_r($at->toArray());
+            }
+        }
     }
     public function checkAttempt()
     {
@@ -184,15 +206,15 @@ class QuizController extends Controller
         }
     }
 
-    protected function configuration(Request $request)
+  protected function configuration(Request $request)
     {
 
-        // $objective_id = $request->objective_id;
+        $objective_id = $request->objective_id;
 
-        // $student_session_id = $request->student_session_id;
+        $student_session_id = $request->student_session_id;
 
-        $objective_id = 2;
-        $student_session_id = 291284;
+        // $objective_id = 1;
+        // $student_session_id = 36020;
 
         //hàm dùng chung
         function select(array $array, $column)
@@ -203,26 +225,23 @@ class QuizController extends Controller
             }
             return $a;
         }
-
         // Tìm ra cấu hình
         $config = QuizConfigObjective::where('objective_id', $objective_id)
             ->join('lms_quiz_configs', 'lms_quiz_config_objective.quiz_config_id', 'lms_quiz_configs.id')->first();
         $config_topic = QuizConfigTopic::query()
-            ->where('quiz_config_id', $config->id)->get();
+            ->where(
+                'quiz_config_id',
+                $config->id
+            )->get();
         $list_domain = [];
         foreach ($config_topic as $d) {
             array_push($list_domain, $d->subject);
         }
         $domain =  array_flip(array_flip($list_domain));
-        // dd($domain);
-
         $questions = array_flip($list_domain);
         // dd($questions);
         $tp_qt = TopicQuestion::query()
             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id');
-        // dd($toan);
-
-
         foreach ($questions as $key => $item) {
             $questions[$key] = [];
         }
@@ -240,13 +259,12 @@ class QuizController extends Controller
 
         $quiz =   Quiz::create($quizzes);
 
-
+        // dd($quiz);
         //tìm ra học sinh và các câu hỏi đã thi
         {
             $student_id = StudentSession::find($student_session_id)->student_id;
             $student_session = StudentSession::where('student_id', $student_id)->get()->toArray();
             $arr_student_session_id = select($student_session, 'id');
-
             $attempts = Attempt::whereIn('student_session', $arr_student_session_id)->get()->toArray();
             $arr_attempt_id = select($attempts, 'id');
             // các câu hỏi mà học sinh đó đã thi
@@ -257,10 +275,11 @@ class QuizController extends Controller
             // $a = select($attempt_detail->whereNotNull('ref_question_id')->toArray(), 'ref_question_id');
             // dd($a);
             // dd(array_unique($a));
+            // dd($attempt_question);
         }
         foreach ($domain as $do) {
             // dd($do);
-            $tp_cf = '';
+            $tp_cf = [];
             $tp_cf = $config_topic->where('subject', $do);
 
             $arr_q = [];
@@ -275,7 +294,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('complex', 'sub')->where('objective_id', $objective_id)
+                            ->where('complex', 'sub')->where('objective_id', $objective_id)->where('active', 1)->where('created_at','>','2022-02-10 10:25:10')
                             ->get();
                         $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
                         array_push($rqi, $r);
@@ -285,50 +304,48 @@ class QuizController extends Controller
                             //Mảng chưa id các câu hỏi main  có câu sub thi
                             $attempt_detail_main = $attempt_detail->whereNotNull('ref_question_id')->toArray();
                             $main_exam_id = array_unique(select($attempt_detail_main, 'ref_question_id'));
-
                             $rand = array_rand($q->whereNotIn('ref_question_id', $main_exam_id)->toArray(), 1);
                             $main_id = $q[$rand]->ref_question_id;
-                            // echo "test";
-                            // echo $main_id, '<br/>';
                             array_push($sub_id, $q[$rand]->id);
-                            $q_q = [
-                                'question_id' => $q[$rand]->id,
-                                'quizz_id' => $quiz->id,
-                                // 'option_config'
-                                'max_score' =>  $qt->score,
-                            ];
-
-                            $model = QuizQuestion::create($q_q);
-                            $option_config = $model->option_config;
-                            // print_r($item);
                             $o = Option::where('question_id', $q[$rand]->id)->get();
+                            $option_config = [];
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
                             }
-                            $model->option_config  =  $option_config;
-
-                            $model->save();
-                            // array_push($arr_q, $q[$rand]);
-                            array_push($arr_q, $q[$rand]);
-                        } else {
-
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->get();
-                            $rand = array_rand($q_s->toArray(), 1);
-                            array_push($sub_id, $q_s[$rand]->id);
-                            echo "<pre>";
-                            print_r($sub_id);
+                            // $model->option_config  =  $option_config;
                             $q_q = [
-                                'question_id' => $q_s[$rand]->id,
+                                'question_id' => $q[$rand]->id,
                                 'quizz_id' => $quiz->id,
+                                'option_config' => $option_config,
                                 'max_score' =>  $qt->score,
                             ];
 
                             $model = QuizQuestion::create($q_q);
                             $option_config = $model->option_config;
+
+                            array_push($arr_q, $q[$rand]);
+                        } else {
+
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('created_at','>','2022-02-10 10:25:10')->get();
+                            $rand = array_rand($q_s->toArray(), 1);
+                            array_push($sub_id, $q_s[$rand]->id);
+                            // echo "<pre>";
+                            print_r($sub_id);
+                            // dd(1);
                             $o = Option::where('question_id', $q_s[$rand]->id)->get();
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
                             }
+                            $q_q = [
+                                'question_id' => $q_s[$rand]->id,
+                                'quizz_id' => $quiz->id,
+                                'max_score' =>  $qt->score,
+                                'option_config' => $option_config,
+
+                            ];
+                            $model = QuizQuestion::create($q_q);
+                            $option_config = $model->option_config;
+
                             $model->option_config  =  $option_config;
                             $model->save();
                             array_push($arr_q, $q_s[$rand]);
@@ -338,35 +355,45 @@ class QuizController extends Controller
                         // $sub_id = [];
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
-                            ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->whereNull('complex')->where('objective_id', $objective_id)
+                            ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')->where('active', 1)
+                            ->whereNull('complex')->where('objective_id', $objective_id)->where('created_at','>','2022-02-10 10:25:10')
                             ->get();
                         $q_id = select($q->toArray(), 'id');
-
-
-                        // cát lấy mảng các câu hỏi chưa thi để random
+                        
                         $at_n_questtion = array_diff($q_id, $attempt_question);
+                          if ($at_n_questtion == null) {
+                            continue;
+                        }
+                        // echo "<pre>";
+
+                        // print_r($at_n_questtion);
+                        // dd(1);
                         $rand = array_rand($at_n_questtion, 1);
+                        // dd($at_n_questtion, 1);
+                        // dd
+                        // print_r($qt->topic_id);
+
+
+
+                        $o = Option::where('question_id', $at_n_questtion[$rand])->get();
+                        $option_config = [];
+                        foreach ($o as $k => $op) {
+                            $option_config[$k] = $op->id;
+                        }
                         $q_q = [
                             'question_id' =>
                             $at_n_questtion[$rand],
                             'quizz_id' => $quiz->id,
-                            // 'option_config'
+                            'option_config' => $option_config,
                             'max_score' =>  $qt->score,
                         ];
                         $model = QuizQuestion::create($q_q);
-                        $option_config = $model->option_config;
-
-                        $o = Option::where('question_id', $at_n_questtion[$rand])->get();
-
-                        foreach ($o as $k => $op) {
-                            $option_config[$k] = $op->id;
-                        }
 
 
-                        $model->option_config  =  $option_config;
+                        // dd($model);
+                        // $model->option_config  =  $option_config;
 
-                        $model->save();
+                        // $model->save();
                         array_push($arr_q, $q[$rand]);
                     }
                 }
@@ -374,7 +401,7 @@ class QuizController extends Controller
             $questions[$do] = $arr_q;
         }
 
-        dd($questions, $quiz);
+        // dd($questions, $quiz);
         // dd($quiz);
     }
 
@@ -410,33 +437,35 @@ class QuizController extends Controller
         return $a;
     }
     public function sumScore($attempt_id){
-        // $attempt_id = $request->attempt_id;
-        // $attempt_id = 96;
-
-
-        //hàm dùng chung
-        
-
+        function select1(array $array, $column)
+        {
+            $a = [];
+            foreach ($array as $ss) {
+                array_push($a, $ss[$column]);
+            }
+            return $a;
+        }
         $attempt = Attempt::find($attempt_id);
         if (!$attempt) {
             return back();
         }
         $attempt_detail = AttemptDetail::where('attempt_id', $attempt_id)
             ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')->distinct()->get();
-        // dd($attempt_detail);
-
-        $arr_domain =   array_unique($this->select($attempt_detail->toArray(), 'domain'));
+        $arr_domain =   array_unique(select1($attempt_detail->toArray(), 'domain'));
         $i = 1;
         $data = [];
         foreach ($arr_domain as $d) {
-            $a = $attempt_detail->where('domain', $d)->sum('score');
-            $data = $data + ['score_domain_' . $i => $a];
+            $a = null;
+            $a = $attempt_detail->where('domain', $d);
+            $b = select1($a->toArray(), 'score');
+            $sum = array_sum($b);
+            $data = $data + ['score_domain_' . $i => $sum];
             $i++;
         }
         // dd($data);
         $attempt->fill($data)->save();
+        // dd('hung');
         return $attempt;
-        // dd('Thành công');
     }
     public function sumScores(){
         $attempts = Attempt::get();

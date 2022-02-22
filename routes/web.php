@@ -43,7 +43,16 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/events', function () {
         return view('welcome');
     });
-
+    //OBJECTIVES MANAGEMENT
+    Route::get('/muc-tieu', function () {
+        return view('welcome');
+    });
+    Route::post('/objective/get', 'ObjectiveController@getObjective');
+    Route::post('/objective/edit', 'ObjectiveController@editObjective');
+    Route::post('/objective/delete', 'ObjectiveController@deleteObjective');
+    Route::post('/objective/create', 'ObjectiveController@addObjective');
+    Route::post('/objective/fetch-by-grade', 'ObjectiveController@getByGrade');
+    //Event MANAGEMENT
     Route::get('/event/get', 'ClassController@getEvents');
     Route::post('/event-gather', 'StudentController@gatherEvent');
     Route::post('/event/create', 'ClassController@createEvent');
@@ -61,6 +70,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/event/{id}', function () {
         return view('welcome');
     });
+    Route::get('/events/check-ss', 'QuizController@checkSs');
     Route::post('/event-score-report', 'ClassController@getEventScore');
     Route::post('/session/send-reminder', 'StudentController@sendReminder');
     Route::group(['middleware' => ['admin']], function () {
@@ -163,15 +173,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         });
-        //OBJECTIVES MANAGEMENT
-        Route::get('/muc-tieu', function () {
-            return view('welcome');
-        });
-        Route::post('/objective/get', 'ObjectiveController@getObjective');
-        Route::post('/objective/edit', 'ObjectiveController@editObjective');
-        Route::post('/objective/delete', 'ObjectiveController@deleteObjective');
-        Route::post('/objective/create', 'ObjectiveController@addObjective');
-        Route::post('/objective/fetch-by-grade', 'ObjectiveController@getByGrade');
+        
 
         Route::get('/get-center', 'CenterController@index');
         Route::post('/step/get', 'AdminSettingController@getStep');
