@@ -3,7 +3,7 @@ import './Objective.scss'
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
-
+import FindReplaceIcon from '@material-ui/icons/FindReplace';
 import {
     Grid,
     Menu,
@@ -157,6 +157,16 @@ class Objective extends React.Component{
                 console.log('delete Center bug: ' + err)
             })
     }
+    handleOpenQuiz = (rowData) => {
+        console.log(rowData)
+        axios.post('/check-quiz', {obj_id : rowData.id})
+            .then(response => {
+                
+            })
+            .catch(err => {
+
+            })
+    }
     onChange = e => {
         this.setState({
             [e.target.name] : e.target.value
@@ -176,6 +186,17 @@ class Objective extends React.Component{
                         grouping: true,
                         pageSize: 10,
                     }}
+                    actions= {[
+                        {
+                            icon: () => <FindReplaceIcon />,
+                            tooltip: 'Xem random đề',
+                            isFreeAction: false,
+                            text: 'Xem random đề',
+                            onClick: (event, rowData) => {
+                                this.handleOpenQuiz(rowData)
+                            },
+                        },
+                    ]}
                     editable={{
                         onRowAdd: newData => this.addNewObjective(newData) ,
                         onRowUpdate: (newData, oldData) => this.editObjective(oldData, newData),

@@ -522,6 +522,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/question/deactive', 'QuestionController@deactive');
     Route::post('/questions', 'QuestionController@get');
     Route::post('/attempt/upload-correction', [QuizController::class, 'correction']);
+    Route::post('/check-quiz', 'QuizController@checkQuiz');
 
     //Quizz Config
     Route::get('/quiz-config', function () {
