@@ -764,10 +764,10 @@ class DiscountController extends Controller
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                     $trans['time'] = date('Y-m-t', strtotime('2022-03-31'));
                     $trans['student_id'] = $student->id;
-                    $trans['amount'] = $total_amount_2;
+                    $trans['amount'] = $total_amount_3;
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
-                    $tr->sessions()->syncWithoutDetaching($sessions_2);
+                    $tr->sessions()->syncWithoutDetaching($sessions_3);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
                 if($total_amount_4 > 0){
@@ -779,10 +779,10 @@ class DiscountController extends Controller
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                     $trans['time'] = date('Y-m-t', strtotime('2022-04-30'));
                     $trans['student_id'] = $student->id;
-                    $trans['amount'] = $total_amount_2;
+                    $trans['amount'] = $total_amount_4;
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
-                    $tr->sessions()->syncWithoutDetaching($sessions_2);
+                    $tr->sessions()->syncWithoutDetaching($sessions_4);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
                 if($total_amount_5 > 0){
@@ -794,10 +794,10 @@ class DiscountController extends Controller
                     $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
                     $trans['time'] = date('Y-m-t', strtotime('2022-05-31'));
                     $trans['student_id'] = $student->id;
-                    $trans['amount'] = $total_amount_2;
+                    $trans['amount'] = $total_amount_5;
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
-                    $tr->sessions()->syncWithoutDetaching($sessions_2);
+                    $tr->sessions()->syncWithoutDetaching($sessions_5);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
             }

@@ -230,7 +230,7 @@ class QuizController extends Controller
             //Get class
             // $ss = StudentSession::find($student->pivot['id']);
             // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
-            $attempt = Attempt::find(206);
+            $attempt = Attempt::find(291);
             // echo "<pre>";
             // print_r($attempt->toArray());
             

@@ -29,27 +29,10 @@ class Question extends Model
         return $this->hasMany('App\Option', 'question_id', 'id');
     }
 
-<<<<<<< HEAD
-
-
-    public function scopeDomain($query, $request)
-=======
-    public function scopeDomain($query, $arr_domain)
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
+ public function scopeDomain($query, $arr_domain)
     {
-        if (!empty($request->config['domain'])) {
+        if (!empty($arr_domain)) {
 
-<<<<<<< HEAD
-            if ($request->config['domain']['value']) {
-                $query->where('domain', 'like', '%' . $request->config['domain']['value'] . '%');
-            }
-        }
-
-        return $query;
-    }
-
-    public function scopeQuestionLevel($query, $request)
-=======
             if ($arr_domain) {
                 $query->whereIn('domain',    $arr_domain);
             }
@@ -57,64 +40,32 @@ class Question extends Model
         return $query;
     }
     public function scopeQuestionLevel($query, $arr_lever)
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
     {
-        if (!empty($request->config['level'])) {
-            if ($request->config['level']['value']) {
-                $query->where('question_level', 'like', '%' . $request->config['level']['value'] . '%');
+        if (!empty($arr_lever)) {
+            if ($arr_lever) {
+                $query->whereIn('question_level',  $arr_lever);
             }
         }
         return $query;
     }
-    public function scopeGrade($query, $request)
+    public function scopeGrade($query, $arr_grade)
     {
-<<<<<<< HEAD
-        if (!empty($request->config['grade'])) {
-            if ($request->config['grade']['value']) {
-                $query->where('lms_questions.grade',  $request->config['grade']['value']);
-=======
         if (!empty($arr_grade)) {
             if ($arr_grade) {
                 $query->whereIn('lms_questions.grade',  $arr_grade);
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
             }
         }
         return $query;
     }
-
-    public function scopeTopics($query, $request)
+    public function scopeQuestion_type($query, $arr_loai)
     {
-        if (!empty($request->config['topics'])) {
-
-
-            if ($request->config['topics']) {
-                $t = [];
-                foreach ($request->config['topics'] as $tp) {
-                    array_push($t, $tp['value']);
-                }
-                $query->WhereIn('lms_topic_question.topic_id', [$t[0]]);
+        if (!empty($arr_loai)) {
+            if ($arr_loai) {
+                $query->whereIn('question_type',   $arr_loai);
             }
         }
         return $query;
     }
-<<<<<<< HEAD
-    public function scopeObjectives($query, $request)
-    {
-
-        if (!empty($request->config['objectives'])) {
-            if ($request->config['objectives']) {
-                $o = [];
-                foreach ($request->config['objectives'] as $tp) {
-                    array_push($o, $tp['value']);
-                }
-                $query->WhereIn('lms_question_objective.objective_id', [$o[0]]);
-            }
-        }
-
-        return $query;
-    }
-}
-=======
     public function scopeObjective($query, $arr_objective)
     {
         if (!empty($arr_objective)) {
@@ -135,4 +86,3 @@ class Question extends Model
         return $query;
     }
 }
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd

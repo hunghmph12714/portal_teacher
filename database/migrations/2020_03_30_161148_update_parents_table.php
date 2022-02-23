@@ -18,6 +18,7 @@ class UpdateParentsTable extends Migration
             $table->string('alt_fullname')->nullable();
             $table->string('alt_email')->nullable();
             $table->string('alt_phone')->nullable();
+            $table->string('master_password')->nullable();
          });
     }
 

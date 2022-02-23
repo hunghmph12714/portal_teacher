@@ -14,6 +14,7 @@
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ParentController;
 // use Illuminate\Routing\Route;
 
 Route::get('/', function () {
@@ -623,3 +624,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('search', [QuestionController::class, 'filter']);
 Route::get('tong-diem', [QuizController::class, 'sumScore']);
+Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);

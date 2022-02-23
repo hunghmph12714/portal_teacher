@@ -195,68 +195,108 @@ class QuestionController extends Controller
 
     protected function filter(Request $request)
     {
-<<<<<<< HEAD
-         $questions   = Question::with('topics')->with('objectives')->with('options')
-=======
-        // dd($_GET);
 
-        if (!empty($_GET['domain'])) {
 
-            $arr_domain = [];
-            $arr_domain = explode('||', $_GET['domain']);
+
+        // dd($arr_topic);
+        function select(array $array, $column)
+        {
+            $a = [];
+            foreach ($array as $ss) {
+                array_push($a, $ss[$column]);
+            }
+            return $a;
+        }
+        if ($request->config['domain']) {
+            $arr_domain = [$request->config['domain']['value']];
         } else {
             $arr_domain = '';
         }
-        // dd($arr_domain);
-        if (!empty($_GET['lever'])) {
-
-            $arr_lever = [];
-            $arr_lever = explode('||', $_GET['lever']);
-        } else {
-            $arr_lever = '';
-        }
-
-        if (!empty($_GET['type'])) {
-
-            $arr_type = [];
-            $arr_type = explode('||', $_GET['type']);
-        } else {
-            $arr_type = '';
-        }
-        if (!empty($_GET['grade'])) {
-
-            $arr_grade = [];
-
-            $arr_grade = explode('||', $_GET['grade']);
+        if ($request->config['grade']) {
+            $arr_grade = [$request->config['grade']['value']];
         } else {
             $arr_grade = '';
         }
-
-        if (!empty($_GET['objective'])) {
-
-            $arr_objective = [];
-
-            $arr_objective = explode('||', $_GET['objective']);
+        if ($request->config['level']) {
+            $arr_level = [$request->config['level']['value']];
+        } else {
+            $arr_level = '';
+        }
+        if ($request->config['objectives']) {
+            $arr_objective = select($request->config['objectives'], 'value');
         } else {
             $arr_objective = '';
         }
-        if (!empty($_GET['topic'])) {
-
-            $arr_topic = [];
-
-            $arr_topic = explode('||', $_GET['topic']);
+        if ($request->config['topics']) {
+            $arr_topic = select($request->config['topics'], 'value');
         } else {
             $arr_topic = '';
         }
-        $questions   = Question::query()->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
-            ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
+        // $arr_type = [$request->config['type']['value']];
+        // $arr_objective = select($request->config['objectives'], 'value');
+        // $arr_topic = select($request->config['topics'], 'value');
+
+
+        // dd($arr_objective);
+
+        // if (!empty($_GET['domain'])) {
+
+        //     $arr_domain = [];
+        //     $arr_domain = explode('||', $_GET['domain']);
+        // } else {
+        //     $arr_domain = '';
+        // }
+        // if (!empty($_GET['level'])) {
+
+        //     $arr_level = [];
+        //     $arr_level = explode('||', $_GET['level']);
+        // } else {
+        //     $arr_level = '';
+        // }
+
+        // if (!empty($_GET['type'])) {
+
+        //     $arr_type = [];
+        //     $arr_type = explode('||', $_GET['type']);
+        // } else {
+        //     $arr_type = '';
+        // }
+        // if (!empty($_GET['grade'])) {
+
+        //     $arr_grade = [];
+
+        //     $arr_grade = explode('||', $_GET['grade']);
+        // } else {
+        //     $arr_grade = '';
+        // }
+
+        // if (!empty($_GET['objective'])) {
+
+        //     $arr_objective = [];
+
+        //     $arr_objective = explode('||', $_GET['objective']);
+        // } else {
+        //     $arr_objective = '';
+        // }
+        // if (!empty($_GET['topic'])) {
+
+        //     $arr_topic = [];
+
+        //     $arr_topic = explode('||', $_GET['topic']);
+        // } else {
+        //     $arr_topic = '';
+        // }
+        $questions   = Question::with('topics')->with('objectives')->with('options')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
             ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
+            ->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
+            ->join('objectives', 'lms_question_objective.objective_id', '=', 'objectives.id')
             ->select(
                 'lms_questions.id as id',
-                'lms_questions.grade',
-                'objective_id',
+                'title',
+                'topic_id',
+                'lms_question_objective.question_id',
+                'lms_question_objective.objective_id',
                 'question_level',
                 'question_type',
                 'statement',
@@ -266,29 +306,18 @@ class QuestionController extends Controller
                 'public',
                 'hint',
                 'active',
-<<<<<<< HEAD
                 // 'objectives.content',
                 'user_id',
                 'lms_questions.grade'
-            )
-            ->domain($request)
-            // ->questionLevel($request)
-            ->grade($request)
-            ->topics($request)
-            ->objectives($request)
-            ->where('active', true)->orderBy('id', 'DESC')->distinct()->groupBy('id')
-=======
-                'title',
-                'topic_id',
             )->groupBy('id')->orderBy('id', 'DESC')
             ->domain($arr_domain)
-            ->questionLevel($arr_lever)
-            ->question_type($arr_type)
+            // ->questionLevel($arr_lever)
+            // ->question_type($arr_type)
             ->grade($arr_grade)
             ->objective($arr_objective)
             ->topic($arr_topic)
             ->distinct()
->>>>>>> 62a5a3320a50865995bdcf0084470d1f33d012bd
+
             ->get();
         return response()->json($questions);
     }
