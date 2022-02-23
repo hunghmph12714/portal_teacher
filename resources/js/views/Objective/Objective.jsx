@@ -4,6 +4,7 @@ import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import FindReplaceIcon from '@material-ui/icons/FindReplace';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     Grid,
     Menu,
@@ -89,7 +90,7 @@ class Objective extends React.Component{
             c: 10000,
             quiz_code: null,
             open: false,
-
+            loading: false
         }
     }
     
@@ -164,12 +165,14 @@ class Objective extends React.Component{
             })
     }
     handleOpenQuiz = (rowData) => {
-        console.log(rowData)
+        // console.log(rowData)
+        this.setState({loading: true})
         axios.post('/check-quiz', {obj_id : rowData.id})
             .then(response => {
                 this.setState({
                     quiz_code: response.data,
                     open: true,
+                    loading: false,
                 })
             })
             .catch(err => {
@@ -184,8 +187,10 @@ class Objective extends React.Component{
     render(){
         document.title = 'Mục tiêu khảo sát'
         return(
+            
             <div className="root-setting-objective">
                 <ReactNotification />
+                {this.state.loading ? <LinearProgress /> : ''}
                 <MaterialTable
                     title="Mục tiêu học tập"
                     columns={this.state.columns}
