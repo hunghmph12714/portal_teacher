@@ -111,24 +111,22 @@ class QuizController extends Controller
                             // echo "test";
                             // echo $main_id, '<br/>';
                             array_push($sub_id, $q[$rand]->id);
-                            $q_q = [
-                                'question_id' => $q[$rand]->id,
-                                'quizz_id' => $quiz->id,
-                                // 'option_config'
-                                'max_score' =>  $qt->score,
-                            ];
-
-                            $model = QuizQuestion::create($q_q);
-                            $option_config = $model->option_config;
-                            // print_r($item);
+                            
+                            $option_config = [];
                             $o = Option::where('question_id', $q[$rand]->id)->get();
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
                             }
-                            $model->option_config  =  $option_config;
 
-                            $model->save();
-                            // array_push($arr_q, $q[$rand]);
+                            $q_q = [
+                                $q[$rand]->id => [
+                                    'quizz_id' => $quiz->id,
+                                    'max_score' =>  $qt->score,
+                                    'option_config' => $option_config,
+                                ]
+                            ];
+                            $quiz->questions()->attach($q_q);
+                            
                             array_push($arr_q, $q[$rand]);
                         } else {
 
@@ -143,14 +141,20 @@ class QuizController extends Controller
                                 'max_score' =>  $qt->score,
                             ];
 
-                            $model = QuizQuestion::create($q_q);
-                            $option_config = $model->option_config;
-                            $o = Option::where('question_id', $q_s[$rand]->id)->get();
+                            $option_config = [];
+                            $o = Option::where('question_id', $q[$rand]->id)->get();
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
                             }
-                            $model->option_config  =  $option_config;
-                            $model->save();
+
+                            $q_q = [
+                                $q[$rand]->id => [
+                                    'quizz_id' => $quiz->id,
+                                    'max_score' =>  $qt->score,
+                                    'option_config' => $option_config,
+                                ]
+                            ];
+                            $quiz->questions()->attach($q_q);
                             array_push($arr_q, $q_s[$rand]);
                         }
                     } else {
@@ -169,26 +173,21 @@ class QuizController extends Controller
                         // $rand = array_rand($at_n_questtion, 1);
                         $rand = array_rand($q->toArray(), 1);
 
-                        $q_q = [
-                            'question_id' =>
-                            $q[$rand],
-                            'quizz_id' => $quiz->id,
-                            // 'option_config'
-                            'max_score' =>  $qt->score,
-                        ];
-                        $model = QuizQuestion::create($q_q);
-                        $option_config = $model->option_config;
+                        $option_config = [];
+                            $o = Option::where('question_id', $q[$rand]->id)->get();
+                            foreach ($o as $k => $op) {
+                                $option_config[$k] = $op->id;
+                            }
 
-                        $o = Option::where('question_id', $q[$rand])->get();
-
-                        foreach ($o as $k => $op) {
-                            $option_config[$k] = $op->id;
-                        }
-
-
-                        $model->option_config  =  $option_config;
-
-                        $model->save();
+                            $q_q = [
+                                $q[$rand]->id => [
+                                    'quizz_id' => $quiz->id,
+                                    'max_score' =>  $qt->score,
+                                    'option_config' => $option_config,
+                                ]
+                            ];
+                        $quiz->questions()->attach($q_q);
+                        // $model->save();
                         array_push($arr_q, $q[$rand]);
                     }
                 }
@@ -199,6 +198,90 @@ class QuizController extends Controller
         // dd($questions, $quiz);
         // dd($quiz);
         return $random_quiz_code;
+    }
+    public function getCheckQuiz(Request $request){
+
+        $rules = ['quiz_code' => 'required'];
+        $this->validate($request, $rules);
+
+        // $ss = StudentSession::find($request->ss_id);
+        
+        $quiz = Quiz::where('quizz_code', $request->quiz_code)->first();
+        if ($quiz) {
+            $result = [];
+            //Thong tin hocj sinh
+            // $result['student'] = $student->toArray();
+            // $classes = $student->activeClasses()->get()->toArray();
+            // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
+            $result['quiz'] = $quiz;
+            $result['quiz']['duration'] = $quiz->duration;
+            
+            $result['questions'] = [];
+            $result['packages'] = [];
+            $questions = $quiz->questions()->get();
+            $once = true;
+            $ref_tmp = -2;
+            foreach ($questions as $key => $q) {
+
+                // Get topic
+                $topics = $q->topics;
+                $q->topics = $topics->toArray();
+                
+                if (!array_key_exists($q->domain, $result['packages'])) {
+                    if ($once) {
+                        $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
+                        $once = false;
+                    } else {
+                        $result['packages'][$q->domain] = ['active' => false, 'question_number' => 1, 'subject' => $q->domain];
+                    }
+                } else {
+                    $result['packages'][$q->domain]['question_number']++;
+                }
+                $result['questions'][] = $q->toArray();
+                $result['questions'][$key]['s_index'] = $result['packages'][$q->domain]['question_number'];
+                // $result['questions'][$key]['options'] = [];
+                $result['questions'][$key]['content'] = str_replace('<p></p>', '<br/>', $result['questions'][$key]['content']);
+                if ($q->question_type == 'mc') {
+                    foreach ($q->pivot['option_config'] as $option_id) {
+                        $option = Option::find($option_id);
+                        $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
+                    }
+                }
+                if ($q->question_type == 'fib') {
+                    for ($i = 1; $i < 20; $i++) {
+                        # code...
+                        $str = '{' . $i . '}';
+
+                        $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
+                        // print_r($result['questions'][$key]['content']);
+                    }
+                }
+
+
+                if ($q->complex == 'sub') {
+                    if ($ref_tmp != $q->ref_question_id) {
+
+                        $ref_tmp = $q->ref_question_id;
+                        $main = Question::find($q->ref_question_id);
+                        if ($main) {
+                            $result['questions'][$key]['main_content'] = $main->content;
+                            $result['questions'][$key]['main_statement'] = $main->statement;
+                        }
+                    }
+                }
+                // $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
+                
+            }
+            $result['packages'] = array_values($result['packages']);
+            // Get Comment for domain
+            // $criterias = Criteria::where('attempt_id', $attempt->id)->get();
+            // $result['criterias'] = $criterias->toArray();
+            // $result['upload'] = $attempt->upload;
+            
+            //
+            return response()->json($result);
+        }
+    
     }
     public function attemptNull()
     {

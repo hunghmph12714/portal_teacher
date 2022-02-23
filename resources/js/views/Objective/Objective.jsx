@@ -29,6 +29,7 @@ import Icofont from "react-icofont";
 import NumberFormat from 'react-number-format';
 import { TwitterPicker } from 'react-color';
 import { withSnackbar } from 'notistack';
+import ReviewQuiz from './ReviewQuiz';
 import axios from 'axios'
 
 const baseUrl = window.Laravel.baseUrl;
@@ -86,11 +87,16 @@ class Objective extends React.Component{
             ],
             data: [],
             c: 10000,
+            quiz_code: null,
+            open: false,
+
         }
     }
     
     
-
+    handleCloseQuiz = () => {
+        this.setState({open: false})
+    }
     getObjective = () =>{
         axios.post(window.Laravel.baseUrl + "/objective/get", {type: -1})
             .then(response => {
@@ -161,7 +167,10 @@ class Objective extends React.Component{
         console.log(rowData)
         axios.post('/check-quiz', {obj_id : rowData.id})
             .then(response => {
-                
+                this.setState({
+                    quiz_code: response.data,
+                    open: true,
+                })
             })
             .catch(err => {
 
@@ -231,7 +240,11 @@ class Objective extends React.Component{
                         }
                     }}
                 />
-                
+                <ReviewQuiz
+                    quiz_code={this.state.quiz_code}
+                    open={this.state.open}
+                    handleCloseQuiz = {this.handleCloseQuiz}
+                />
             </div>
         );
     }

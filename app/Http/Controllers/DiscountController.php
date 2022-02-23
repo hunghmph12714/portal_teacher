@@ -430,7 +430,7 @@ class DiscountController extends Controller
     protected function generateDiscountClass($class_id){
         $class = Classes::find($class_id);
         $from_d = '2021-05-04';
-        $to_d = '2022-02-28';
+        $to_d = '2022-05-31';
         if($class){
             $sessions = Session::where('percentage','-1')->update(['percentage' => NULL]);
             
@@ -535,47 +535,65 @@ class DiscountController extends Controller
                 $sessions_1 = [];
                 $total_amount_2 = 0;
                 $sessions_2 = [];
+                $total_amount_3 = 0;
+                $sessions_3 = [];
+                $total_amount_4 = 0;
+                $sessions_4 = [];
+                $total_amount_5 = 0;
+                $sessions_5 = [];
                 foreach($transactions as $transaction){
-                    switch (date('m', strtotime($transaction['time']))) {
-                        case '05':
+                    switch (date('m-Y', strtotime($transaction['time']))) {
+                        case '05-2021':
                             $total_amount += $transaction['amount'];
                             $sessions[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '06':
+                        case '06-2021':
                             $total_amount_6 += $transaction['amount'];
                             $sessions_6[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '07':
+                        case '07-2021':
                             $total_amount_7 += $transaction['amount'];
                             $sessions_7[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '08':
+                        case '08-2021':
                             $total_amount_8 += $transaction['amount'];
                             $sessions_8[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '09':
+                        case '09-2021':
                             $total_amount_9 += $transaction['amount'];
                             $sessions_9[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '10':
+                        case '10-2021':
                             $total_amount_10 += $transaction['amount'];
                             $sessions_10[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '11':
+                        case '11-2021':
                             $total_amount_11 += $transaction['amount'];
                             $sessions_11[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '12':
+                        case '12-2021':
                             $total_amount_12 += $transaction['amount'];
                             $sessions_12[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '01':
+                        case '01-2022':
                             $total_amount_1 += $transaction['amount'];
                             $sessions_1[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
-                        case '02':
+                        case '02-2022':
                             $total_amount_2 += $transaction['amount'];
                             $sessions_2[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
+                        case '03-2022':
+                            $total_amount_3 += $transaction['amount'];
+                            $sessions_3[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
+                        case '04-2022':
+                            $total_amount_4 += $transaction['amount'];
+                            $sessions_4[$transaction['session_id']] = ['amount' => $transaction['amount']];
+                            break;
+                        case '05-2022':
+                            $total_amount_5 += $transaction['amount'];
+                            $sessions_5[$transaction['session_id']] = ['amount' => $transaction['amount']];
                             break;
                         default:
                             # code...
@@ -735,6 +753,51 @@ class DiscountController extends Controller
                     $trans['discount_id'] = '-5';
                     $tr = Transaction::create($trans);
                     $tr->sessions()->syncWithoutDetaching($sessions_2);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_3 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2022-03-31'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_3;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_3);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_4 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2022-04-30'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_4;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_4);
+                    $tr->tags()->syncWithoutDetaching([9]);
+                }
+                if($total_amount_5 > 0){
+                    $trans['debit'] = Account::Where('level_2', '3387')->first()->id;
+                    $trans['credit'] = Account::Where('level_2', '131')->first()->id;
+                    $trans['class_id'] = $class->id;
+                    $trans['center_id'] = $class->center_id;
+                    $trans['user'] = auth()->user()->id;
+                    $trans['content'] = 'Miễn giảm học phí ONLINE -15%';
+                    $trans['time'] = date('Y-m-t', strtotime('2022-05-31'));
+                    $trans['student_id'] = $student->id;
+                    $trans['amount'] = $total_amount_5;
+                    $trans['discount_id'] = '-5';
+                    $tr = Transaction::create($trans);
+                    $tr->sessions()->syncWithoutDetaching($sessions_5);
                     $tr->tags()->syncWithoutDetaching([9]);
                 }
             }
