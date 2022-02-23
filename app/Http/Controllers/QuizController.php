@@ -171,8 +171,11 @@ class QuizController extends Controller
                         // cát lấy mảng các câu hỏi chưa thi để random
                         // $at_n_questtion = array_diff($q_id, $attempt_question);
                         // $rand = array_rand($at_n_questtion, 1);
-                        $rand = array_rand($q->toArray(), 1);
-
+                        if(sizeof($q->toArray()) != 0){
+                            $rand = array_rand($q->toArray(), 1);
+                        }else{
+                            continue;
+                        }
                         $option_config = [];
                             $o = Option::where('question_id', $q[$rand]->id)->get();
                             foreach ($o as $k => $op) {

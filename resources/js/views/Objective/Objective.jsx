@@ -182,8 +182,7 @@ class Objective extends React.Component{
         })
     }
     render(){
-        document.title = 'Mục tiêu học tập'
-
+        document.title = 'Mục tiêu khảo sát'
         return(
             <div className="root-setting-objective">
                 <ReactNotification />
