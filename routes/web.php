@@ -15,7 +15,7 @@ use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
-use App\Http\Controllers\ParentController;
+// use App\Http\Controllers\ParentController;
 // use Illuminate\Routing\Route;
 
 Route::get('/', function () {

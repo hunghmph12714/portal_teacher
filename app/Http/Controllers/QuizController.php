@@ -25,10 +25,10 @@ use Illuminate\Support\Facades\Storage;
 class QuizController extends Controller
 {
     //
-    public function checkQuiz()
+    public function checkQuiz(Request $request)
     {
 
-        $objective_id = 2;
+        $objective_id = $request->obj_id;
         // $student_session_id = 291284;
 
         //hàm dùng chung
@@ -330,14 +330,15 @@ class QuizController extends Controller
                     AttemptDetail::create($input);
                 }
             }
-        }
+        
 
 
-        // }
-        echo $a;
+        
+        // echo $a;
         // dd($result);    
         // return response()->json($result);
     }
+    
     public function checkSs()
     {
         $attempts = Attempt::all();
