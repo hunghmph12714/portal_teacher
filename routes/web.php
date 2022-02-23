@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
@@ -567,6 +568,8 @@ Route::post('/check-phone', 'StudentController@checkPhone');
 Route::post('/event/dang-ky', 'StudentController@registerEvent');
 //
 Route::post('/event/result', 'ClassController@getResult');
+
+Route::post('/event/show-check-quiz', 'QuizController@getCheckQuiz');
 Route::post('/event/attempt', 'ClassController@getAttempt');
 Route::post('/event/mark', 'ClassController@submitMark');
 Route::get('/events/attempt-null', 'QuizController@attemptNull');
