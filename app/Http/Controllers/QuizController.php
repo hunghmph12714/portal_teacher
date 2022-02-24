@@ -92,6 +92,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
+                            ->where('active', 1)->where('created_at', '>', '2022-02-10 10:25:10')
                             ->where('complex', 'sub')->where('objective_id', $objective_id)
                             ->get();
                         $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
@@ -144,7 +145,7 @@ class QuizController extends Controller
                                 $option_config[$k] = $op->id;
                             }
 
-                            $q_q = [
+                            $q_q = [ 
                                 $q[$rand]->id => [
                                     'quizz_id' => $quiz->id,
                                     'max_score' =>  $qt->score,
@@ -160,6 +161,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
+                            ->where('active', 1)->where('created_at', '>', '2022-02-10 10:25:10')
                             ->whereNull('complex')->where('objective_id', $objective_id)
                             ->get();
                         // $q_id = select($q->toArray(), 'id');
