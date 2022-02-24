@@ -287,6 +287,7 @@ class QuestionController extends Controller
         //     $arr_topic = '';
         // }
         $questions   = Question::with('topics')->with('objectives')->with('options')
+            ->where('lms_questions.active','1')
             ->join('lms_topic_question', 'lms_questions.id', '=', 'lms_topic_question.question_id')
             ->join('lms_topics', 'lms_topic_question.topic_id', '=', 'lms_topics.id')
             ->join('lms_question_objective', 'lms_questions.id', '=', 'lms_question_objective.question_id')
