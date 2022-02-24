@@ -53,7 +53,7 @@ class QuizConfigController extends Controller
                     }
                     //Create new QT
                     else{
-                        $input['quiz_config_id'] = $qc->id;
+                        $input['quiz_config_id'] = $config->id;
                         $input['topic_id'] =   $qt['topic']['value'];
                         $input['quantity'] = $qt['quantity'];
                         $input['question_level'] = $qt['level']['value'];
