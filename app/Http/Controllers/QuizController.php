@@ -75,9 +75,6 @@ class QuizController extends Controller
         ];
 
         $quiz =   Quiz::create($quizzes);
-
-
-
         foreach ($domain as $do) {
             // dd($do);
             $tp_cf = '';
@@ -130,7 +127,7 @@ class QuizController extends Controller
                             array_push($arr_q, $q[$rand]);
                         } else {
 
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('created_at', '>', '2022-02-10 10:25:10')->get();
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('created_at', '>', '2022-02-10 10:25:10')->get();
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
                             echo "<pre>";

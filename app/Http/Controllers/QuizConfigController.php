@@ -29,24 +29,38 @@ class QuizConfigController extends Controller
             $config->save();
             foreach ($request->quiz_config as $domain) {
                 foreach ($domain['quiz_topic'] as $qt) {
-                    $qtopic = QuizConfigTopic::find($qt['id']);
-                    if ($qtopic) {
-                        $qtopic->quantity = $qt['quantity'];
-                        $qtopic->score = $qt['score'];
+                    //Check id exsit
+                    if(array_key_exists('id', $qt)){
+                        $qtopic = QuizConfigTopic::find($qt['id']);
+                        if ($qtopic) {
+                            $qtopic->quantity = $qt['quantity'];
+                            $qtopic->score = $qt['score'];
 
-                        if (array_key_exists('value', $qt['question_type'])) {
-                            $qtopic->question_type = $qt['question_type']['value'];
-                        } else {
-                            $qtopic->question_type = $qt['question_type'][0]['value'];
-                        }
+                            if (array_key_exists('value', $qt['question_type'])) {
+                                $qtopic->question_type = $qt['question_type']['value'];
+                            } else {
+                                $qtopic->question_type = $qt['question_type'][0]['value'];
+                            }
 
-                        if (array_key_exists('value', $qt['level'])) {
-                            $qtopic->question_level = $qt['level']['value'];
-                        } else {
-                            $qtopic->question_level = $qt['level'][0]['value'];
+                            if (array_key_exists('value', $qt['level'])) {
+                                $qtopic->question_level = $qt['level']['value'];
+                            } else {
+                                $qtopic->question_level = $qt['level'][0]['value'];
+                            }
+                            $qtopic->topic_id = $qt['topic']['value'];
+                            $qtopic->save();
                         }
-                        $qtopic->topic_id = $qt['topic']['value'];
-                        $qtopic->save();
+                    }
+                    //Create new QT
+                    else{
+                        $input['quiz_config_id'] = $qc->id;
+                        $input['topic_id'] =   $qt['topic']['value'];
+                        $input['quantity'] = $qt['quantity'];
+                        $input['question_level'] = $qt['level']['value'];
+                        $input['question_type'] = $qt['question_type']['value'];
+                        $input['score'] = $qt['score'];
+                        $input['subject'] = $domain['domain']['value'];
+                        QuizConfigTopic::create($input);
                     }
                 }
             }
