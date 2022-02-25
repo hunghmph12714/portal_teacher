@@ -95,9 +95,9 @@ class QuizController extends Controller
                             ->where('active', 1)->where('lms_questions.created_at', '>', '2022-02-10 10:25:10')
                             ->where('complex', 'sub')->where('objective_id', $objective_id)
                             ->get();
-                        $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
-                        array_push($rqi, $r);
-
+                        $rqi =  array_unique(array_column($q->toArray(), 'ref_question_id'));
+                        // array_push($rqi, $r);
+                        // $rqi = $r;
                         if ($main_id == null || in_array($main_id, $rqi) == false) {
 
                             //Mảng chưa id các câu hỏi main  có câu sub thi
@@ -131,22 +131,18 @@ class QuizController extends Controller
                             $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('created_at', '>', '2022-02-10 10:25:10')->get();
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
-                            echo "<pre>";
-                            print_r($sub_id);
-                            $q_q = [
-                                'question_id' => $q_s[$rand]->id,
-                                'quizz_id' => $quiz->id,
-                                'max_score' =>  $qt->score,
-                            ];
+                            // echo "<pre>";
+                            // print_r($sub_id);
+                            // echo "selected: ".$q_s[$rand]->id;
 
                             $option_config = [];
-                            $o = Option::where('question_id', $q[$rand]->id)->get();
+                            $o = Option::where('question_id', $q_s[$rand]->id)->get();
                             foreach ($o as $k => $op) {
                                 $option_config[$k] = $op->id;
                             }
 
                             $q_q = [ 
-                                $q[$rand]->id => [
+                                $q_s[$rand]->id => [
                                     'quizz_id' => $quiz->id,
                                     'max_score' =>  $qt->score,
                                     'option_config' => $option_config,
