@@ -21,6 +21,7 @@ use App\Session;
 use DateTime;
 use DateTimeInterface;
 use Illuminate\Support\Facades\Storage;
+use Mail;
 
 class QuizController extends Controller
 {
@@ -109,7 +110,7 @@ class QuizController extends Controller
                             // echo "test";
                             // echo $main_id, '<br/>';
                             array_push($sub_id, $q[$rand]->id);
-                            
+
                             $option_config = [];
                             $o = Option::where('question_id', $q[$rand]->id)->get();
                             foreach ($o as $k => $op) {
@@ -124,7 +125,7 @@ class QuizController extends Controller
                                 ]
                             ];
                             $quiz->questions()->attach($q_q);
-                            
+
                             array_push($arr_q, $q[$rand]);
                         } else {
 
@@ -141,7 +142,7 @@ class QuizController extends Controller
                                 $option_config[$k] = $op->id;
                             }
 
-                            $q_q = [ 
+                            $q_q = [
                                 $q_s[$rand]->id => [
                                     'quizz_id' => $quiz->id,
                                     'max_score' =>  $qt->score,
@@ -166,24 +167,24 @@ class QuizController extends Controller
                         // cát lấy mảng các câu hỏi chưa thi để random
                         // $at_n_questtion = array_diff($q_id, $attempt_question);
                         // $rand = array_rand($at_n_questtion, 1);
-                        if(sizeof($q->toArray()) != 0){
+                        if (sizeof($q->toArray()) != 0) {
                             $rand = array_rand($q->toArray(), 1);
-                        }else{
+                        } else {
                             continue;
                         }
                         $option_config = [];
-                            $o = Option::where('question_id', $q[$rand]->id)->get();
-                            foreach ($o as $k => $op) {
-                                $option_config[$k] = $op->id;
-                            }
+                        $o = Option::where('question_id', $q[$rand]->id)->get();
+                        foreach ($o as $k => $op) {
+                            $option_config[$k] = $op->id;
+                        }
 
-                            $q_q = [
-                                $q[$rand]->id => [
-                                    'quizz_id' => $quiz->id,
-                                    'max_score' =>  $qt->score,
-                                    'option_config' => $option_config,
-                                ]
-                            ];
+                        $q_q = [
+                            $q[$rand]->id => [
+                                'quizz_id' => $quiz->id,
+                                'max_score' =>  $qt->score,
+                                'option_config' => $option_config,
+                            ]
+                        ];
                         $quiz->questions()->attach($q_q);
                         // $model->save();
                         array_push($arr_q, $q[$rand]);
@@ -197,13 +198,14 @@ class QuizController extends Controller
         // dd($quiz);
         return $random_quiz_code;
     }
-    public function getCheckQuiz(Request $request){
+    public function getCheckQuiz(Request $request)
+    {
 
         $rules = ['quiz_code' => 'required'];
         $this->validate($request, $rules);
 
         // $ss = StudentSession::find($request->ss_id);
-        
+
         $quiz = Quiz::where('quizz_code', $request->quiz_code)->first();
         if ($quiz) {
             $result = [];
@@ -213,7 +215,7 @@ class QuizController extends Controller
             // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
             $result['quiz'] = $quiz;
             $result['quiz']['duration'] = $quiz->duration;
-            
+
             $result['questions'] = [];
             $result['packages'] = [];
             $questions = $quiz->questions()->get();
@@ -224,7 +226,7 @@ class QuizController extends Controller
                 // Get topic
                 $topics = $q->topics;
                 $q->topics = $topics->toArray();
-                
+
                 if (!array_key_exists($q->domain, $result['packages'])) {
                     if ($once) {
                         $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
@@ -268,18 +270,17 @@ class QuizController extends Controller
                     }
                 }
                 // $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
-                
+
             }
             $result['packages'] = array_values($result['packages']);
             // Get Comment for domain
             // $criterias = Criteria::where('attempt_id', $attempt->id)->get();
             // $result['criterias'] = $criterias->toArray();
             // $result['upload'] = $attempt->upload;
-            
+
             //
             return response()->json($result);
         }
-    
     }
     public function attemptNull()
     {
@@ -296,47 +297,47 @@ class QuizController extends Controller
         // print_r($students->toArray());
         $a = 0;
         // foreach ($students as $k => $student) {
-            //Get class
-            // $ss = StudentSession::find($student->pivot['id']);
-            // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
-            $attempt = Attempt::find(291);
+        //Get class
+        // $ss = StudentSession::find($student->pivot['id']);
+        // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+        $attempt = Attempt::find(291);
 
+        // echo "<pre>";
+        // print_r($attempt->toArray());
+        // $student->quiz_id = $attempt->quiz_id;
+        // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+
+        if (!$attempt_detail->first()) {
             // echo "<pre>";
-            // print_r($attempt->toArray());
-            // $student->quiz_id = $attempt->quiz_id;
-            // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
+            // print_r($student->toArray());
+            //Có bài làm
+            foreach ($questions as $question) {
 
-            if (!$attempt_detail->first()) {
-                // echo "<pre>";
-                // print_r($student->toArray());
-                //Có bài làm
-                foreach ($questions as $question) {
+                $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
 
-                    $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
+                $input['attempt_id'] = $attempt->id;
+                $input['question_id'] = $question->id;
+                $input['updated_at'] = '2000-01-01 09:37:17';
+                $input['fib'] = $rnd_attempt['fib'];
+                $input['essay'] = $rnd_attempt['essay'];
+                $input['options'] = $rnd_attempt['options'];
+                $input['score'] = $rnd_attempt['score'];
+                $input['comment'] = $rnd_attempt['comment'];
 
-                    $input['attempt_id'] = $attempt->id;
-                    $input['question_id'] = $question->id;
-                    $input['updated_at'] = '2000-01-01 09:37:17';
-                    $input['fib'] = $rnd_attempt['fib'];
-                    $input['essay'] = $rnd_attempt['essay'];
-                    $input['options'] = $rnd_attempt['options'];
-                    $input['score'] = $rnd_attempt['score'];
-                    $input['comment'] = $rnd_attempt['comment'];
-
-                    echo "<pre>";
-                    print_r($input);
-                    AttemptDetail::create($input);
-                }
+                echo "<pre>";
+                print_r($input);
+                AttemptDetail::create($input);
             }
-        
+        }
 
 
-        
+
+
         // echo $a;
         // dd($result);    
         // return response()->json($result);
     }
-    
+
     public function checkSs()
     {
         $attempts = Attempt::all();
@@ -763,6 +764,71 @@ class QuizController extends Controller
         }
         // dd($fibs->toArray());
     }
+
+
+    public function sendMailFinish($student_session_id)
+    {
+        $student = StudentSession::where('student_session.id', $student_session_id)
+            ->join('students', 'student_session.student_id', 'students.id')
+            ->select(
+                'students.id as id',
+                'students.fullname as student_name',
+                'parents.email as email',
+                'start_time',
+                'finish_time',
+                'quizz_code',
+                'parents.phone as phone',
+                'content as objective'
+            )
+            ->join('parents', 'students.parent_id', 'parents.id')
+            ->join('lms_attempts', 'student_session.id', 'lms_attempts.student_session')
+            ->join('lms_quizzes', 'lms_attempts.quiz_id', '.lms_quizzes.id')
+            ->join('lms_quiz_config_objective', 'lms_quizzes.quiz_config_id', 'lms_quiz_config_objective.quiz_config_id')
+            ->join('objectives', 'lms_quiz_config_objective.objective_id', 'objectives.id')
+            ->groupBy('id')
+            // ->get();
+            ->first();
+
+        $data = [
+            'student_name' => $student->student_name,
+            'email' => $student->email,
+            'start_time' => $student->start_time,
+            'finish_time' => $student->finish_time,
+            'quizz_code' => $student->quizz_code,
+            'objective' => $student->objective
+        ];
+        $email = $student->email;
+        Mail::send('emails.events.mail-finish',  $data,  function ($message) use ($email) {
+            // dd($email);
+            $message->from('info@vietelite.edu.vn', 'VietElite');
+            // $message->to($email, 'VietElite');
+            $message->to('manhhung1762001@gmail.com', 'VietElite');
+            $message->subject('Xác nhận thông tin bài thi ');
+        });
+        // Gửi mail cho công ty
+        Mail::send('emails.events.mail-finish',  $data,  function ($message) use ($email) {
+            // dd($email);
+            $message->from('info@vietelite.edu.vn', 'VietElite');
+            $message->to('c8db4ca6.vietelite.edu.vn@apac.teams.ms', 'VietElite');
+            $message->subject('Xác nhận thông tin bài thi ');
+        });
+        dd('Gửi được rồi');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // public function sumScore()
     // {
     //     // $attempt_id = $request->attempt_id;

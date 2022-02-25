@@ -175,7 +175,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
             Route::post('/status/edit', 'AdminSettingController@editStatus');
             Route::post('/status/delete', 'AdminSettingController@deleteStatus');
         });
-        
+
 
         Route::get('/get-center', 'CenterController@index');
         Route::post('/step/get', 'AdminSettingController@getStep');
@@ -628,3 +628,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('search', [QuestionController::class, 'filter']);
 Route::get('tong-diem', [QuizController::class, 'sumScore']);
 Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
+Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);

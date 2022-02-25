@@ -29,7 +29,7 @@ class Question extends Model
         return $this->hasMany('App\Option', 'question_id', 'id');
     }
 
- public function scopeDomain($query, $arr_domain)
+    public function scopeDomain($query, $arr_domain)
     {
         if (!empty($arr_domain)) {
 
