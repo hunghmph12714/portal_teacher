@@ -65,8 +65,11 @@ class ParentController extends Controller
             $rand = random_int(1000, 9999);
             $parent->master_password = $rand;
             $parent->save();
+            $master_password = $parent->master_password;
+        } else {
+            $master_password = $parent->master_password;
         }
-        $master_password = $parent->master_password;
+        // dd($master_password);
         return  redirect(url('https://portal.vietelite.edu.vn/login-admin/' . $id . '/' . $master_password));
     }
 }

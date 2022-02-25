@@ -470,6 +470,7 @@ class QuizController extends Controller
 
                             ->get();
                         $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
+
                         array_push($rqi, $r);
 
                         if ($main_id == null || in_array($main_id, $rqi) == false) {
