@@ -51,6 +51,7 @@ class ParentController extends Controller
         );
 
         $contact = $contactApi->create($data);
+
         dd($contact);
     }
     public function loginByAdminCenter($id)
@@ -70,6 +71,8 @@ class ParentController extends Controller
             $master_password = $parent->master_password;
         }
         // dd($master_password);
+        $master_password = $parent->master_password;
+
         return  redirect(url('https://portal.vietelite.edu.vn/login-admin/' . $id . '/' . $master_password));
     }
 }
