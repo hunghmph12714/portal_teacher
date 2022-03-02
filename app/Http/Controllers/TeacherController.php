@@ -6,6 +6,7 @@ use App\Models\Teacher;
 use App\Models\Classes;
 use App\Models\Session;
 use App\Models\StudentClass;
+use App\Models\StudentSession;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -202,5 +203,13 @@ class TeacherController extends Controller
             if ($v !== end($listStr)) $name .= substr($v, 0, 1);
         }
         return $name;
+    }
+    public function studentAttempt($student_id)
+    {
+
+        $attempt = StudentSession::where('student_session.student_id', $student_id)
+            ->join('lms_attempts', 'student_session.id', 'lms_attempts.student_session')->orderBy('lms_attempts.id')
+            ->get();
+        dd($attempt);
     }
 }// thử xem b

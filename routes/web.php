@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttemptController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TeacherController;
@@ -50,7 +51,10 @@ Route::get('teacher/updatePassword/{id}', [TeacherController::class, 'updatePass
 Route::post('teacher/updatePassword/{id}', [TeacherController::class, 'updatePassword']);
 
 Route::get('demo', [TeacherController::class, 'formatName']);
-
+Route::prefix('student')->group(function () {
+    Route::get('attempt/{student_id}', [TeacherController::class, 'studentAttempt'])->name('student.attempt');
+    Route::get('attempt-detail/{attempt_id}', [AttemptController::class, 'getAttempt'])->name('student.attempt-detail');
+});
 
 Route::get('/', function () {
     return view('home');

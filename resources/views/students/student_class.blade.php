@@ -8,6 +8,7 @@
     <thead class="thead-inverse">
         <tr>
             <th>STT</th>
+           <th>Xem bài kiểm tra</th>
             <th>Name</th>
             <th>Avata</th>
             <th>Sdt</th>
@@ -16,8 +17,16 @@
         <tbody>
             
             @foreach ($students as $item)
-            <tr>
+            <tr>            
                 <td scope="row">{{ $loop->iteration }}</td>
+
+                <td>
+  
+            <a class="nav-link nav-link-icon" href="{{ route('student.attempt', ['student_id'=>$item->id]) }}" target="_blank" data-toggle="tooltip" data-original-title="Xem bài kiểm tra của học sinh">
+<i class="ni ni-collection"></i>
+              </a>
+
+                </td>
                 <td>{{ $item->fullname }}</td>
                    <td><img src="{{ isset( $item->fullname ) }}" alt="Lỗi ảnh rồi"></td>
 
