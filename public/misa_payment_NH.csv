@@ -1,3 +1,12 @@
 ﻿"Hiển thị trên sổ","Phương thức thanh toán","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Tài khoản chi","Mở tại NH","Nội dung thanh toán","Diễn giải nội dung thanh toán","Mã đối tượng","Tên đối tượng","Địa chỉ","Tài khoản nhận","Tên NH nhận","Người lĩnh tiền","Số CMND","Ngày cấp CMND","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
-0,0,01-21-2022,01-21-2022,PC200214,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",1368,1121,450000000
-0,0,01-25-2022,01-25-2022,PC200226,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",1368,1121,250000000
+0,0,01-07-2022,01-07-2022,PC300320,'015704060030799,VIB,43,"Chi phí thuê máy chủ +Thu phí dịch vụ SMS",,,,,,,,,,,"Chi phí thuê máy chủ VPS tháng 12/2021 cho hội sở",6422-Khac,1124,754289
+0,0,01-07-2022,01-07-2022,PC300320,'015704060030799,VIB,43,"Chi phí thuê máy chủ +Thu phí dịch vụ SMS",,,,,,,,,,,"Thu phí dịch vụ SMS Banking tháng 01/2022",6422-Khac,1124,11000
+0,0,01-12-2022,01-12-2022,PC300322,'015704060030799,VIB,43,"Chuyển tiền nội bộ từ VIB PTT về tài khoản TCB( Hội sở)",,,,,,,,,,,"Chuyển tiền nội bộ từ VIB PTT về tài khoản TCB( Hội sở)",1368,1124,200000000
+0,0,01-14-2022,01-14-2022,PC300323,'015704060030799,VIB,43,"Thu phí thường niên IDC ngày 06/01/2022",,,,,,,,,,,"Thu phí thường niên IDC ngày 06/01/2022",6422-Khac,1124,25000
+0,0,01-15-2022,01-15-2022,PC300324,'26856688,ACB,43,"Thanh toán tiền điện thoại hotline",,,,,,,,,,,"Thanh toán tiền điện thoại hotline",6422-CPĐT,1123,284761
+0,0,01-18-2022,01-18-2022,PC300327,'015704060030799,VIB,43,"Thanh toán hóa đơn airtable hộ cho hội sở",,,,,,,,,,,"Thanh toán hóa đơn airtable hộ cho hội sở",6422-Khac,1124,562009
+0,0,01-21-2022,01-21-2022,PC300328,'015704060030799,VIB,43,"Chuyển tiền nội bộ từ VIB PTT về tài khoản ACB( Hội sở)",,,,,,,,,,,"Chuyển tiền nội bộ từ VIB PTT về tài khoản ACB( Hội sở)",1368,1124,450000000
+0,0,01-25-2022,01-25-2022,PC300331,'015704060030799,VIB,43,"Chuyển tiền nội bộ từ VIB PTT về tài khoản TCB( Hội sở)",,,,,,,,,,,"Chuyển tiền nội bộ từ VIB PTT về tài khoản TCB( Hội sở)",1368,1124,60000000
+0,0,02-07-2022,02-07-2022,PC300332,'015704060030799,VIB,43,"Thanh toán tiền phí dịch vụ cho hội sở",,,,,,,,,,,"Thanh toán tiền phí dịch vụ cho hội sở",6422-Khac,1124,746544
+0,0,02-09-2022,02-09-2022,PC300334,'015704060030799,VIB,43,"Thu phí dịch vụ SMS Banking",,,,,,,,,,,"Thu phí dịch vụ SMS Banking",6422-Khac,1124,11000
+0,0,02-16-2022,02-16-2022,PC300337,'015704060030799,VIB,43,"Thanh toán hóa đơn airtable hộ cho hội sở",,,,,,,,,,,"Thanh toán hóa đơn airtable hộ cho hội sở",6422-Khac,1124,562627
