@@ -27,6 +27,7 @@ use App\Question;
 use App\Option;
 use App\Criteria;
 use App\Objective;
+
 class ClassController extends Controller
 {
     // Phòng học
@@ -1211,18 +1212,18 @@ class ClassController extends Controller
                             // $result[$key]['students'][] = $student;
                         }
                     }
-
                 }
             }
         }
         return response()->json($result);
     }
-    protected function getAttempt(Request $request){
+    protected function getAttempt(Request $request)
+    {
         $rules = ['ss_id' => 'required'];
         $this->validate($request, $rules);
 
         $ss = StudentSession::find($request->ss_id);
-        
+
         if ($ss) {
             $student = Student::find($ss->student_id);
             $attempt = Attempt::where('student_session', $ss->id)->first();
@@ -1251,7 +1252,7 @@ class ClassController extends Controller
                         // Get topic
                         $topics = $q->topics;
                         $q->topics = $topics->toArray();
-                        
+
                         if (!array_key_exists($q->domain, $result['packages'])) {
                             if ($once) {
                                 $result['packages'][$q->domain] = ['active' => true, 'question_number' => 1, 'subject' => $q->domain];
@@ -1317,20 +1318,21 @@ class ClassController extends Controller
                     $criterias = Criteria::where('attempt_id', $attempt->id)->get();
                     $result['criterias'] = $criterias->toArray();
                     $result['upload'] = $attempt->upload;
-                    
+
                     //
                     return response()->json($result);
                 }
             }
         }
     }
-    protected function submitMark(Request $request){
+    protected function submitMark(Request $request)
+    {
         $rules = ['questions' => 'required'];
         $this->validate($request, $rules);
         $attempt_id = 0;
-        foreach($request->questions as $q){
+        foreach ($request->questions as $q) {
             $ad = AttemptDetail::find($q['attempt_detail_id']);
-            if($ad){
+            if ($ad) {
                 $attempt_id = $ad->attempt_id;
                 $ad->score = $q['score'];
                 $ad->comment = $q['comment'];
@@ -1339,16 +1341,16 @@ class ClassController extends Controller
         }
         $this->sumScore($attempt_id);
         $result = [];
-        foreach($request->criterias as $c){
-            if($c['id'] == -1){
+        foreach ($request->criterias as $c) {
+            if ($c['id'] == -1) {
                 $input['title'] = $c['title'];
                 $input['content'] = $c['content'];
                 $input['domain'] = $c['domain'];
                 $input['attempt_id'] = $request->attempt_id;
                 $result[] = Criteria::create($input);
-            }else{
+            } else {
                 $criteria = Criteria::find($c['id']);
-                if($criteria){
+                if ($criteria) {
                     $criteria->title = $c['title'];
                     $criteria->content = $c['content'];
                     $criteria->save();
@@ -1356,14 +1358,13 @@ class ClassController extends Controller
                 }
             }
         }
-        foreach($request->removed_criterias as $rc){
+        foreach ($request->removed_criterias as $rc) {
             $criteria = Criteria::find($rc['id']);
-            if($criteria){
+            if ($criteria) {
                 $criteria->forceDelete();
             }
         }
         return response()->json($result);
-
     }
     public function select(array $array, $column)
     {
@@ -1373,13 +1374,14 @@ class ClassController extends Controller
         }
         return $a;
     }
-    public function sumScore($attempt_id){
+    public function sumScore($attempt_id)
+    {
         // $attempt_id = $request->attempt_id;
         // $attempt_id = 96;
 
 
         //hàm dùng chung
-        
+
 
         $attempt = Attempt::find($attempt_id);
         if (!$attempt) {

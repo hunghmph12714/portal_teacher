@@ -15,6 +15,8 @@ use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\StudentController;
+
 // use App\Http\Controllers\ParentController;
 // use Illuminate\Routing\Route;
 
@@ -629,3 +631,5 @@ Route::get('search', [QuestionController::class, 'filter']);
 Route::get('tong-diem', [QuizController::class, 'sumScore']);
 Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
 Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
+
+Route::get('export-student', [StudentController::class, 'exportStudent']);
