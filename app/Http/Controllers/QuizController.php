@@ -300,35 +300,41 @@ class QuizController extends Controller
         //Get class
         // $ss = StudentSession::find($student->pivot['id']);
         // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
-        $attempt = Attempt::find(291);
-
+        $attempts = Attempt::where('quiz_id', $quiz->id)->get();
+        foreach($attempts as $at){
+            $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
+            if (!$attempt_detail->first()) {
+                // echo "<pre>";
+                // print_r($student->toArray());
+                //Có bài làm
+                foreach ($questions as $question) {
+    
+                    $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
+    
+                    $input['attempt_id'] = $at->id;
+                    $input['question_id'] = $question->id;
+                    $input['updated_at'] = '2000-01-01 09:37:17';
+                    $input['fib'] = $rnd_attempt['fib'];
+                    $input['essay'] = $rnd_attempt['essay'];
+                    $input['options'] = $rnd_attempt['options'];
+                    $input['score'] = $rnd_attempt['score'];
+                    $input['comment'] = $rnd_attempt['comment'];
+    
+                    echo "<pre>";
+                    print_r($input);
+                    AttemptDetail::create($input);
+                }
+            }
+        }
+        // $attempt = Attempt::find(167);
+        // echo "<pre>";
+        // print_r($attempt_detail);
         // echo "<pre>";
         // print_r($attempt->toArray());
         // $student->quiz_id = $attempt->quiz_id;
         // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
 
-        if (!$attempt_detail->first()) {
-            // echo "<pre>";
-            // print_r($student->toArray());
-            //Có bài làm
-            foreach ($questions as $question) {
-
-                $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
-
-                $input['attempt_id'] = $attempt->id;
-                $input['question_id'] = $question->id;
-                $input['updated_at'] = '2000-01-01 09:37:17';
-                $input['fib'] = $rnd_attempt['fib'];
-                $input['essay'] = $rnd_attempt['essay'];
-                $input['options'] = $rnd_attempt['options'];
-                $input['score'] = $rnd_attempt['score'];
-                $input['comment'] = $rnd_attempt['comment'];
-
-                echo "<pre>";
-                print_r($input);
-                AttemptDetail::create($input);
-            }
-        }
+        
 
 
 
@@ -744,14 +750,18 @@ class QuizController extends Controller
     }
     public function markMc(Request $request)
     {
-        $fibs = Question::where('question_type', 'mc')->where('domain', 'Tiếng Việt')->where('grade', '5')->get();
+        $fibs = Question::where('question_type', 'mc')->where('domain', 'Tiếng Việt')->where('grade', '5')->where('created_at', '>', '2022-02-10 10:25:10')->get();
         foreach ($fibs as $fib) {
             $ad = AttemptDetail::where('question_id', $fib->id)->get();
             foreach ($ad as $a) {
                 if ($a->options) {
                     $option = Option::find($a->options);
                     if ($option->weight > 0) {
-                        $a->score = 0.5;
+                        if($fib->domain == 'Tiếng Việt'){
+                            $a->score = 0.5;
+                        }else{
+                            $a->score = 1;
+                        }
                         // echo $option->content. "<br/>";
                         $a->save();
                     } else {
