@@ -5,56 +5,85 @@ namespace App\Http\Controllers;
 use App\Models\Attempt;
 use App\Models\AttemptDetail;
 use App\Models\Criteria;
+use App\Models\Option as ModelsOption;
 use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\QuizQuestion;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use PhpOption\Option;
+use App\Models\Option;
+use Str;
 
 class AttemptController extends Controller
 {
-    protected function getAttempt1($attempt_id)
-    {
-        $attempt = Attempt::find($attempt_id);
-        if ($attempt) {
+    // protected function getAttempt1($attempt_id)
+    // {
+    //     $attempt = Attempt::find($attempt_id);
+    //     if ($attempt) {
 
 
-            $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)
-                ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')
+    //         $attempt_detail = AttemptDetail::where('attempt_id', $attempt->id)
+    //             ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')
 
-                ->get();
-            dd($attempt_detail);
+    //             ->get();
+    //         dd($attempt_detail);
 
-            return view('attempts.attempt-detail', compact('attempt_detail'));
-        }
-    }
+    //         return view('attempts.attempt-detail', compact('attempt_detail'));
+    //     }
+    // }
     protected function getAttempt($attempt_id)
     {
-
-        $attempt = Attempt::where('id', $attempt_id)->first();
+        if (!empty($_GET['domain'])) {
+            $domain = $_GET['domain'];
+        }
+        $attempt = Attempt::where('id', $attempt_id)
+            // ->join('student_session', 'lms_attempts.student_session', 'student_session.id')
+            // ->join('students', 'student_session.student_id', 'students.id')
+            ->first();
+        // dd($attempt);
         if ($attempt) {
             $quiz = Quiz::find($attempt->quiz_id);
+            // dd($quiz->questions()->get());
             if ($quiz) {
                 $result = [];
                 //Thong tin hocj sinh
-                // $result['student'] = $student->toArray();
-                // $classes = $student->activeClasses()->get()->toArray();
-                // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
+                // $result['student'] = $attempt->fullname;
+                // // $classes = $attempt->activeClasses()->get()->toArray();
+                // // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
                 // $result['quiz'] = $quiz;
                 // $result['quiz']['duration'] = $quiz->duration;
                 // $result['quiz']['attempt_id'] = $attempt->id;
+                // $result['quiz']['start_time'] = $attempt->start_time;
+                // $result['quiz']['finish_time'] = $attempt->finish_time;
+
                 // $result['quiz']['correction_upload'] = $attempt->correction_upload;
                 // if (!$result['quiz']['student_session_id']) {
                 //     $result['quiz']['student_session_id'] = $request->ss_id;
                 // }
                 $result['questions'] = [];
                 $result['packages'] = [];
-                $questions = $quiz->questions()->get();
+                $arr_domain = array_unique(array_column($quiz->questions()->get()->toArray(), 'domain'));
+                $result['domain'] = $arr_domain;
+
+                // dd($arr_domain);
+                if (!empty($domain)) {
+                    $questions = $quiz->questions()->where('domain', $domain)->get();
+                } else {
+                    $questions = $quiz->questions()->get();
+                }
+                // $qt=Q
+                // dd($questions);
                 $once = true;
                 $ref_tmp = -2;
                 foreach ($questions as $key => $q) {
-                    echo '<pre> ';
-                    print_r($q->pivot['option_config']);
+                    // echo '<pre> ';
+                    // print_r($q->pivot['option_config']);
+                    // $quiz_question = QuizQuestion::where('quizz_id', $quiz->id)->where('question_id', $q->id)->first();
+                    // if ($quiz_question) {
+                    //     echo "<pre>";
+                    //     print_r($quiz_question->option_config);
+                    // }
+
                     // Get topic
                     $topics = $q->topics;
                     $q->topics = $topics->toArray();
@@ -75,7 +104,7 @@ class AttemptController extends Controller
                     $result['questions'][$key]['content'] = str_replace('<p></p>', '<br/>', $result['questions'][$key]['content']);
                     if ($q->question_type == 'mc') {
                         foreach ($q->pivot['option_config'] as $option_id) {
-                            $option = Option::find($option_id);
+                            $option = ModelsOption::find($option_id);
                             $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
                         }
                     }
@@ -84,7 +113,9 @@ class AttemptController extends Controller
                             # code...
                             $str = '{' . $i . '}';
 
+                            // $result['questions'][$key]['content'] = str_replace($str, '<input type="text" value=' . '>', $result['questions'][$key]['content']);
                             $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
+
                             // print_r($result['questions'][$key]['content']);
                         }
                     }
@@ -126,8 +157,11 @@ class AttemptController extends Controller
                 $result['upload'] = $attempt->upload;
 
                 //
-                dd($result);
-                return response()->json($result);
+                // dd($result['questions']);
+
+                // dd(array_column($result['questions'], 'co'));
+                // str_word_count()
+                return view('attempts.attempt-detail', compact('result'));
             }
         }
     }

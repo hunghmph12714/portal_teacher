@@ -9,5 +9,5 @@ class Option extends Model
 {
     use HasFactory;
     public $table = 'lms_options';
-    protected $fillable = ['question_id', 'content', 'weight', 'set', 'order'];
+    protected $fillable = ['id', 'question_id', 'content', 'weight', 'set', 'order'];
 }

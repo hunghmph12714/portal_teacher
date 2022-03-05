@@ -13,6 +13,7 @@ class Quiz extends Model
     public function questions()
     {
         return $this->belongsToMany('App\Models\Question', 'lms_quizz_question', 'quizz_id', 'question_id')
+            ->using('App\Models\QuizQuestion')
             ->withPivot('option_config', 'max_score')
             ->withTimestamps();
     }

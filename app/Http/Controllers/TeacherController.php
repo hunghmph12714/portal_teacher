@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Models\Classes;
 use App\Models\Session;
+use App\Models\Student;
 use App\Models\StudentClass;
 use App\Models\StudentSession;
 use App\Models\User;
@@ -188,7 +189,7 @@ class TeacherController extends Controller
     {
         $class = Classes::find($class_id);
         $students = StudentClass::where('class_id', $class_id)
-            ->select('student_class.id as id', 'class_id', 'fullname', 'phone', 'student_id')
+            ->select('students.id as id', 'class_id', 'fullname', 'phone', 'class_id')
             ->join('students', 'student_id', 'students.id')
             ->get();
         // dd($students);
@@ -206,10 +207,13 @@ class TeacherController extends Controller
     }
     public function studentAttempt($student_id)
     {
-
-        $attempt = StudentSession::where('student_session.student_id', $student_id)
-            ->join('lms_attempts', 'student_session.id', 'lms_attempts.student_session')->orderBy('lms_attempts.id')
+        $student = Student::find($student_id);
+        $attempts = StudentSession::where('student_session.student_id', $student_id)
+            ->join('lms_attempts', 'student_session.id', 'lms_attempts.student_session')
+            ->select('lms_attempts.id as id', 'title', 'score_domain_1', 'score_domain_2', 'score_domain_3', 'quizz_code', 'finish_time', 'start_time')
+            ->join('lms_quizzes', 'lms_attempts.quiz_id', 'lms_quizzes.id')
             ->get();
-        dd($attempt);
+        // dd($attempts);   
+        return view('attempts.attempt', compact('attempts', 'student'));
     }
 }// thử xem b

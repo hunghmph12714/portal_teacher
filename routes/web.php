@@ -53,7 +53,7 @@ Route::post('teacher/updatePassword/{id}', [TeacherController::class, 'updatePas
 Route::get('demo', [TeacherController::class, 'formatName']);
 Route::prefix('student')->group(function () {
     Route::get('attempt/{student_id}', [TeacherController::class, 'studentAttempt'])->name('student.attempt');
-    Route::get('attempt-detail/{attempt_id}', [AttemptController::class, 'getAttempt'])->name('student.attempt-detail');
+    Route::get('attempt-detail/{attempt_id}', [AttemptController::class, 'getAttempt'])->name('student.attempt_detail');
 });
 
 Route::get('/', function () {
