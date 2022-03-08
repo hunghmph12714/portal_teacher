@@ -49,7 +49,9 @@
 
                         <form action="" method="get">
                             @foreach ($result['domain'] as $d)
-                            <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}">
+                            {{-- <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}"> --}}
+                            <button type="submit" name="domain" value="{{ $d['domain'] }}" class="btn btn-primary">{{
+                                $d['domain'] ." - ".$d['question_number']." câu" }}</button>
                             @endforeach
                         </form>
                     </td>
@@ -62,34 +64,55 @@
                             @endif</b>
                         @if (!empty($item['main_content']))
                         {!! $item['main_content'] !!}
-                        @endif</td>
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td class="px-3" scope="row">
 
 
-                        Câu {{ $loop->iteration }} : {!! str_replace('!@#','<input type="text" value="hùng"
-                            disabled'. '>' ,$item['content']) !!} {{-- $item['a_fib'] --}} <br>
-                        @if (!empty($item['options']))
-                        <div>
-                            @foreach ($item['options'] as $o)
-                            {{-- <input type="radio" disabled id=""> {!! $o['content'] !!} --}}
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" disabled name="{{ $o['id'] }}" id=""
-                                        value="checkedValue" @if ($o['id']==$item['a_option']) checked @endif>
-                                    {!! $o['content'] !!}
-                                </label>
+                        Câu {{ $loop->iteration }} :
+
+                        {{-- @foreach ($item['a_fib'] as $key=>$f)
+                        {!! str_replace('{'. $key+1 .'}','<input type="text" value="'.$f.'" disabled'. '>'
+                            ,$item['content']) !!} @endforeach <br> --}}
+
+                        {!! $item['content'] !!}
+
+                        {{-- @for ($i = 1; $i < $result['int'] ; $i++) @if ($item['a_fib'][$i]!=null) {!!
+                            str_replace('{'. $i .'}','<input type="text" value="'.$item['a_fib'][$i].'" disabled'. '>'
+                            ,$item['content']) !!} <br>
+                            @else
+                            {!!
+                            str_replace('{'. $i .'}','<input type="text" value="" disabled'. '>' ,$item['content']) !!}
+                                <br>
+                            @endif
+
+                            @endfor --}}
+
+
+                            @if (!empty($item['options']))
+                            <div>
+                                @foreach ($item['options'] as $o)
+                                {{-- <input type="radio" disabled id=""> {!! $o['content'] !!} --}}
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" disabled name="{{ $o['id'] }}"
+                                            id="" value="checkedValue" @if ($o['id']==$item['a_option']) checked @endif>
+                                        {!! $o['content'] !!}
+                                    </label>
+                                </div>
+                                @endforeach
                             </div>
-                            @endforeach
-                        </div>
-                        @endif
+                            @endif
 
-                        @if ($item['a_essay']!='')
+                            @if ($item['a_essay']!='')
 
-                        <textarea disabled name="" id="" cols="80" rows="5"> {{ $item['a_essay'] }}</textarea>
-
-                        @endif
+                            {{-- <textarea disabled name="" id="" cols="80" rows="5"> </textarea> --}}
+                            <div class="form-control bg-secondary border border-success" style="--bs-bg-opacity: .1">
+                                {!! $item['a_essay'] !!}
+                            </div>
+                            @endif
 
                     </td>
                     <td class="bg-success p-2" style="--bs-bg-opacity: .3;">
@@ -113,6 +136,34 @@
                     </td>
                 </tr>
                 @endforeach
+
+
+
+                <tr>
+                    <td>
+
+                        <h5>TIêu chí đánh giá</h5>
+
+
+                        <div>
+                            @foreach ($result['criterias'] as $c)
+                            <div style="border-radius: 8px;
+                                        margin-bottom: 10px;
+                                        padding: 15px;
+                                        border: 1px solid green;">
+                                <div style="" class="mb-3">
+                                    <input type="text" value="{{ $c['title'] }}" disabled
+                                        style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+                                </div>
+                                {{-- <input type="text" value="{{ $c['content'] }}"> --}}
+                                <textarea disabled
+                                    style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
+                                    name="" id="" cols="30" rows="3">{{ $c['content'] }}</textarea>
+                            </div>
+                            @endforeach
+                        </div>
+                    </td>
+                </tr>
 
             </tbody>
         </table>

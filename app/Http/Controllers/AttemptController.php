@@ -36,9 +36,9 @@ class AttemptController extends Controller
         if (!empty($_GET['domain'])) {
             $domain = $_GET['domain'];
         }
-        $attempt = Attempt::where('id', $attempt_id)
-            // ->join('student_session', 'lms_attempts.student_session', 'student_session.id')
-            // ->join('students', 'student_session.student_id', 'students.id')
+        $attempt = Attempt::where('lms_attempts.id', $attempt_id)
+            ->join('student_session', 'lms_attempts.student_session', 'student_session.id')
+            ->join('students', 'student_session.student_id', 'students.id')
             ->first();
         // dd($attempt);
         if ($attempt) {
@@ -48,28 +48,37 @@ class AttemptController extends Controller
                 $result = [];
                 //Thong tin hocj sinh
                 // $result['student'] = $attempt->fullname;
-                // // $classes = $attempt->activeClasses()->get()->toArray();
-                // // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
-                // $result['quiz'] = $quiz;
+                // // // $classes = $attempt->activeClasses()->get()->toArray();
+                // // // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
+                // // $result['quiz'] = $quiz;
                 // $result['quiz']['duration'] = $quiz->duration;
                 // $result['quiz']['attempt_id'] = $attempt->id;
                 // $result['quiz']['start_time'] = $attempt->start_time;
                 // $result['quiz']['finish_time'] = $attempt->finish_time;
 
-                // $result['quiz']['correction_upload'] = $attempt->correction_upload;
+                $result['quiz']['correction_upload'] = $attempt->correction_upload;
                 // if (!$result['quiz']['student_session_id']) {
                 //     $result['quiz']['student_session_id'] = $request->ss_id;
                 // }
                 $result['questions'] = [];
                 $result['packages'] = [];
                 $arr_domain = array_unique(array_column($quiz->questions()->get()->toArray(), 'domain'));
-                $result['domain'] = $arr_domain;
+                $result['domain'] = [];
 
                 // dd($arr_domain);
                 if (!empty($domain)) {
                     $questions = $quiz->questions()->where('domain', $domain)->get();
                 } else {
                     $questions = $quiz->questions()->get();
+                }
+                foreach ($arr_domain as $d) {
+                    $a = [];
+                    $q_number =  $quiz->questions()->where('domain', $d)->count();
+                    $a = [
+                        'domain' => $d,
+                        'question_number' => $q_number
+                    ];
+                    array_push($result['domain'], $a);
                 }
                 // $qt=Q
                 // dd($questions);
@@ -108,19 +117,18 @@ class AttemptController extends Controller
                             $result['questions'][$key]['options'][] = ['id' => $option->id, 'content' => $option->content];
                         }
                     }
-                    if ($q->question_type == 'fib') {
-                        for ($i = 1; $i < 20; $i++) {
-                            # code...
-                            $str = '{' . $i . '}';
+                    // if ($q->question_type == 'fib') {
+                    //     for ($i = 1; $i < 20; $i++) {
+                    //         # code...
+                    //         $str = '{' . $i . '}';
 
-                            // $result['questions'][$key]['content'] = str_replace($str, '<input type="text" value=' . '>', $result['questions'][$key]['content']);
-                            $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
+                    //         // $result['questions'][$key]['content'] = str_replace($str, '<input type="text" value=' . '>', $result['questions'][$key]['content']);
+                    //         $result['questions'][$key]['content'] = str_replace($str, '!@#', $result['questions'][$key]['content']);
 
-                            // print_r($result['questions'][$key]['content']);
-                        }
-                    }
+                    //         // print_r($result['questions'][$key]['content']);
+                    //     }
+                    // }
 
-                    // dd($result['questions'][$key]['content']);
                     if ($q->complex == 'sub') {
                         if ($ref_tmp != $q->ref_question_id) {
 
@@ -132,10 +140,10 @@ class AttemptController extends Controller
                             }
                         }
                     }
-                    $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt->id)->first();
+                    $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt_id)->first();
                     $result['questions'][$key]['a_essay'] = '';
                     $result['questions'][$key]['a_option'] = '';
-                    $result['questions'][$key]['a_fib'] = '';
+                    $result['questions'][$key]['a_fib'] = [];
                     $result['questions'][$key]['done'] = true;
                     $result['questions'][$key]['score'] = NULL;
                     $result['questions'][$key]['comment'] = NULL;
@@ -149,15 +157,42 @@ class AttemptController extends Controller
                         $result['questions'][$key]['done'] = true;
                         $result['questions'][$key]['attempt_detail_id'] = $attempt_detail->id;
                     }
+                    if ($q->question_type == 'fib') {
+                        // dd($result['questions'][$key]);
+                        foreach ($result['questions'][$key]['a_fib'] as $index => $f) {
+                            // echo '<br>';
+                            $index = $index + 1;
+                            // print_r($result['questions'][$key]['a_fib']);
+                            $str = '{' . $index . '}';
+
+                            $result['questions'][$key]['content'] = str_replace($str, '<input class="form-control border-success" disabled type="text" value="' .  $f . '" >', $result['questions'][$key]['content']);
+                        }
+                        for ($i = 1; $i < 20; $i++) {
+                            # code...
+                            $str = '{' . $i . '}';
+
+                            // $result['questions'][$key]['content'] = str_replace($str, '<input type="text" value=' . '>', $result['questions'][$key]['content']);
+                            $result['questions'][$key]['content'] = str_replace($str, '<input class="form-control border-danger" disabled type="text" value= "">', $result['questions'][$key]['content']);
+
+                            // dd($result['questions'][$key]['content']);
+                        }
+                    }
                 }
                 $result['packages'] = array_values($result['packages']);
                 // Get Comment for domain
-                $criterias = Criteria::where('attempt_id', $attempt->id)->get();
+                if (!empty($domain)) {
+                    $criterias = Criteria::where('attempt_id', $attempt_id)->where('domain', $domain)->get();
+                } else {
+                    $criterias = Criteria::where('attempt_id', $attempt_id)->get();
+                }
                 $result['criterias'] = $criterias->toArray();
                 $result['upload'] = $attempt->upload;
+                $result['int'] = 20;
+
+
 
                 //
-                // dd($result['questions']);
+                // dd($result);
 
                 // dd(array_column($result['questions'], 'co'));
                 // str_word_count()
