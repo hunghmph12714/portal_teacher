@@ -40,21 +40,21 @@ class AttemptController extends Controller
             ->join('student_session', 'lms_attempts.student_session', 'student_session.id')
             ->join('students', 'student_session.student_id', 'students.id')
             ->first();
-        // dd($attempt);
+        // dd($attempt-);
         if ($attempt) {
             $quiz = Quiz::find($attempt->quiz_id);
             // dd($quiz->questions()->get());
             if ($quiz) {
                 $result = [];
                 //Thong tin hocj sinh
-                // $result['student'] = $attempt->fullname;
-                // // // $classes = $attempt->activeClasses()->get()->toArray();
-                // // // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
-                // // $result['quiz'] = $quiz;
-                // $result['quiz']['duration'] = $quiz->duration;
-                // $result['quiz']['attempt_id'] = $attempt->id;
-                // $result['quiz']['start_time'] = $attempt->start_time;
-                // $result['quiz']['finish_time'] = $attempt->finish_time;
+                $result['student'] = $attempt->fullname;
+                // // $classes = $attempt->activeClasses()->get()->toArray();
+                // // $result['student']['classes'] = implode(',', array_column($classes, 'code'));
+                // $result['quiz'] = $quiz;
+                $result['quiz']['duration'] = $quiz->duration;
+                $result['quiz']['attempt_id'] = $attempt->id;
+                $result['quiz']['start_time'] = $attempt->start_time;
+                $result['quiz']['finish_time'] = $attempt->finish_time;
 
                 $result['quiz']['correction_upload'] = $attempt->correction_upload;
                 // if (!$result['quiz']['student_session_id']) {
@@ -71,14 +71,20 @@ class AttemptController extends Controller
                 } else {
                     $questions = $quiz->questions()->get();
                 }
+                $j = 1;
                 foreach ($arr_domain as $d) {
                     $a = [];
                     $q_number =  $quiz->questions()->where('domain', $d)->count();
+                    $score = $attempt->toArray();
+                    // dd($score, $j);
                     $a = [
                         'domain' => $d,
-                        'question_number' => $q_number
+                        'question_number' => $q_number,
+                        'score' => $score['score_domain_' . $j]
+
                     ];
                     array_push($result['domain'], $a);
+                    $j++;
                 }
                 // $qt=Q
                 // dd($questions);
@@ -140,6 +146,7 @@ class AttemptController extends Controller
                             }
                         }
                     }
+                    $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt_id)->first();
                     $attempt_detail = AttemptDetail::where('question_id', $q->id)->where('attempt_id', $attempt_id)->first();
                     $result['questions'][$key]['a_essay'] = '';
                     $result['questions'][$key]['a_option'] = '';

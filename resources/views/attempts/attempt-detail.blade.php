@@ -47,11 +47,17 @@
                     <td class="col-3">Môn thi
 
 
-                        <form action="" method="get">
+                        <form action="" method="get" class="d-flex">
                             @foreach ($result['domain'] as $d)
                             {{-- <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}"> --}}
-                            <button type="submit" name="domain" value="{{ $d['domain'] }}" class="btn btn-primary">{{
-                                $d['domain'] ." - ".$d['question_number']." câu" }}</button>
+                            <div class=" m-1 " style="">
+                                <button type="submit" name="domain" value="{{ $d['domain'] }}"
+                                    class="btn btn-primary">{{
+                                    $d['domain'] ." - ".$d['question_number']." câu" }}</button><br>
+                                <div>
+                                    <p class="border border-success rounded m-2 p-2">Điểm: <b>{{ $d['score'] }}</b></p>
+                                </div>
+                            </div>
                             @endforeach
                         </form>
                     </td>

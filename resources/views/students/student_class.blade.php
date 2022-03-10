@@ -23,8 +23,7 @@
             <td>
 
                 <a class="nav-link nav-link-icon" href="{{ route('student.attempt', ['student_id'=>$item->id]) }}"
-                    target="_blank" data-toggle="tooltip" data-original-title="Xem bài kiểm tra của học sinh "
-                    width='10px'>
+                    data-toggle="tooltip" data-original-title="Xem bài kiểm tra của học sinh " width='10px'>
                     <i class="ni ni-collection"></i>
                 </a>
 

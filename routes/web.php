@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('login', [LoginController::class, 'loginForm'])->name('login.form');
+Route::get('login', [LoginController::class, 'loginForm'])->middleware('login')->name('login.form');
 Route::get('forgotPassword', [LoginController::class, 'forgotPasswordForm'])->name('login.forgotPassword');
 Route::post('forgotPassword', [LoginController::class, 'forgotPasswordSend']);
 
 
-Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
+Route::post('login', [LoginController::class, 'postLogin'])->middleware('login')->name('login.post');
 
 Route::get('loginZalo', [LoginController::class, 'formLoginZalo'])->name('login.formZalo');
 Route::post('loginZalo', [LoginController::class, 'LoginZalo']);
@@ -57,7 +57,7 @@ Route::prefix('student')->group(function () {
 });
 
 Route::get('/', function () {
-    return view('home');
+    return redirect(route('teacher.class', ['id' => Auth::user()->id]));
 })->name('home');
 Route::any('logout', function () {
     Auth::logout();
