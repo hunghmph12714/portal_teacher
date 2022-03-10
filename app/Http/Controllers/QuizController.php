@@ -404,7 +404,7 @@ class QuizController extends Controller
                     $q_q = [
                         $question->id => [
                             'quizz_id' => $quiz->id,
-                            'max_score' =>  $qt->score,
+                            'max_score' =>  $topic_question->score,
                             'option_config' => $option_config,
                         ]
                     ];
