@@ -391,7 +391,7 @@ class QuizController extends Controller
         foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
-            $topic_question = TopicQuestion::where('topic_id', $cf->topic_id)->first();
+            $topic_question = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-03-01')->first();
             if ($topic_question) {
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
