@@ -395,21 +395,20 @@ class QuizController extends Controller
             if ($topic_question) {
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
-                    $q_q = [
-                        'question_id' => $question->id,
-                        'quizz_id' => $quiz->id,
-                        'max_score' =>  $cf->score,
-                    ];
-                    // dd($q_q);
-                    $model = QuizQuestion::create($q_q);
-                    $option_config = $model->option_config;
-                    // print_r($item);
+                    $option_config = [];
                     $o = Option::where('question_id', $question->id)->get();
                     foreach ($o as $k => $op) {
                         $option_config[$k] = $op->id;
                     }
-                    $model->option_config  =  $option_config;
-                    $model->save();
+
+                    $q_q = [
+                        $question->id => [
+                            'quizz_id' => $quiz->id,
+                            'max_score' =>  $qt->score,
+                            'option_config' => $option_config,
+                        ]
+                    ];
+                    $quiz->questions()->attach($q_q);
                 }
             }
 
