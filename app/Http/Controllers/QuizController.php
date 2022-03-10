@@ -376,13 +376,13 @@ class QuizController extends Controller
     }
     public function genQuizNine()
     {
-        $config = QuizConfig::find(33);
+        $config = QuizConfig::find(15);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
         $quizzes = [
             'title' => $config->title,
             'duration' => $config->duration,
-            'quizz_code' => random_int(1000, 9999),
+            'quizz_code' => random_int(1000, 999999),
             'quiz_config_id' => $config->id,
             'student_session_id' => NULL,
             'available_date' => date('Y-m-d H:i:s')

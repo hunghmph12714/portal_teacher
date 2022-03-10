@@ -28,7 +28,7 @@
 @section('content')
 <p>
 Kính gửi phụ huynh con <b>{{$student_name}}</b>,<br/><br/>
-Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong kỳ thi thử cho con. 
+Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong kỳ khảo sát cho con. 
 <div class="container">
   <div class="row">
     <div class="col-sm">
@@ -41,21 +41,17 @@ Cảm ơn Quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
             <th class="tg-1wig">Thời gian bắt đầu</th>
             <th class="tg-1wig">Thời gian kết thúc</th>
             <th class="tg-1wig">Mã đề</th>
-            {{-- <th class="tg-1wig">Phòng thi</th> --}}
         </tr>
         </thead>
         <tbody>
 
-            {{-- @foreach($result['product'] as $product) --}}
             <tr>
               <td>{{$student_name}}  </td>
               <td>{{ $objective }}</td>
               <td>{{$start_time}}  </td>
               <td>{{$finish_time}}  </td>
-              <td>{{$quizz_code}} </td>
-              {{-- <td>{{$product['room']}}  </td> --}}
-            {{-- </tr> --}}
-            {{-- @endforeach --}}
+              <td>{{$quizz_code}} </td> </tr>
+              
           
         </tbody>
       </table>

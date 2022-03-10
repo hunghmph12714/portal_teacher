@@ -554,7 +554,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('demo-question', [QuizController::class, 'configuration']);
     // Route::get('auto-config/{objective_id}/{toan}/{van}/{anh}', [QuizConfigController::class, 'autoConfig']);
     // Route::get('auto-config/{tva}', [QuizConfigController::class, 'autoConfigk9']);
-    // Route::get('/quiz-k9', 'QuizController@genQuizNine');
+    Route::get('/quiz-k9', 'QuizController@genQuizNine');
     Route::get('/check-attempt', 'QuizController@checkAttempt');
     Route::get('/mark/{id}', function () {
         return view('welcome');
