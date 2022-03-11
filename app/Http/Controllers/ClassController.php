@@ -1620,4 +1620,40 @@ class ClassController extends Controller
         // $sc = StudentClass::Where('class_id', $request->class_id)->where('student_id', $request->id)->
         StudentClass::find($request->sc_id)->forceDelete();
     }
+
+
+
+
+
+
+    public function autoRegister()
+    {
+
+
+        $classes = Classes::where('code', 'like', '%9.%')->where('year', 2021)->get();
+        $arr_student_id = [];
+        foreach ($classes as $c) {
+            $d =  $c->activeStudents()->get();
+            // echo '<pre>';
+            // print_r($d->toArray());
+            // // array_push($arr_student, $d->toArray());
+
+            foreach ($d  as $s) {
+
+                if (in_array($s->id, $arr_student_id) == false) {
+                    $data = [
+                        'student_id' => $s->id,
+                        'class_id' => 405,
+                        'entrance_date' => '2022-03-12',
+                        'status' => 'active'
+                    ];
+                    $a = StudentClass::create($data);
+
+                    array_push($arr_student_id, $s->id);
+                }
+            }
+            // $arr_student = $arr_student + $d->toArray();
+        }
+        dd($arr_student_id);
+    }
 }

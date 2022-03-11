@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
@@ -633,3 +634,4 @@ Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCen
 Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
 Route::get('export-student', [StudentController::class, 'exportStudent']);
+Route::get('auto-register', [ClassController::class, 'autoRegister']);
