@@ -16,7 +16,13 @@
 
 </head>
 
+
 <body>
+    <style>
+        .quiz-content img {
+            max-width: 600px !important;
+        }
+    </style>
     <div class="container">
         <table class="table border">
 
@@ -115,7 +121,8 @@
                             @if ($item['a_essay']!='')
 
                             {{-- <textarea disabled name="" id="" cols="80" rows="5"> </textarea> --}}
-                            <div class="form-control bg-secondary border border-success" style="--bs-bg-opacity: .1">
+                            <div class="form-control bg-secondary border border-success quiz-content "
+                                style="--bs-bg-opacity: .1">
                                 {!! $item['a_essay'] !!}
                             </div>
                             @endif
@@ -124,7 +131,7 @@
                     <td class="bg-success p-2" style="--bs-bg-opacity: .3;">
 
                         <div class="row m-0">
-                            <div class="col-2 bg-warning " style="height: 100px; --bs-bg-opacity: .5;">
+                            <div class="col-2 bg-warning " style="min-height: 100px; --bs-bg-opacity: .5;">
                                 <h5 style="text-align: center" class=" p-1">Điểm</h5>
 
 
