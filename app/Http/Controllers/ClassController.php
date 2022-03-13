@@ -1650,7 +1650,7 @@ class ClassController extends Controller
                     if (in_array($s->id, $arr_student_id) == false) {
                         $parent = Parents::find($s->parent_id);
                         if($parent){
-                            $result[] = [$s->fullname, $s->dob, $parent->fullname, $parent->phone, $parent->email, $c->code, date('m/d/Y', strtotime($s->created_at))];
+                            $result[] = [$s->fullname, $s->dob, $parent->fullname, $parent->phone, $parent->email, $c->code, date('d/m/Y', strtotime($s->created_at))];
                         }else{
                             $result[] = [$s->fullname, $s->dob, '', '','', $c->code, $s->created_at];
     
