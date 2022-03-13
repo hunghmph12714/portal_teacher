@@ -376,7 +376,7 @@ class QuizController extends Controller
     }
     public function genQuizNine()
     {
-        $config = QuizConfig::find(15);
+        $config = QuizConfig::find(31);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
         $quizzes = [
@@ -388,13 +388,19 @@ class QuizController extends Controller
             'available_date' => date('Y-m-d H:i:s')
         ];
         $quiz =   Quiz::create($quizzes);
+        $existed = [];
         foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
-            $topic_question = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-03-01')->first();
-            if ($topic_question) {
+            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-03-01')->get();
+            foreach($topic_questions as $topic_question){
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
+                    print_r($question->id);
+                    echo "=";
+                    if($question->question_type == 'main' || in_array($question->id, $existed) || $question->active != 1) continue;
+                    array_push($existed, $question->id);
+                    print_r($topic_question->toArray());    
                     $option_config = [];
                     $o = Option::where('question_id', $question->id)->get();
                     foreach ($o as $k => $op) {
@@ -404,11 +410,15 @@ class QuizController extends Controller
                     $q_q = [
                         $question->id => [
                             'quizz_id' => $quiz->id,
-                            'max_score' =>  $topic_question->score,
+                            'max_score' =>  $cf->score,
                             'option_config' => $option_config,
                         ]
                     ];
                     $quiz->questions()->attach($q_q);
+
+                    break;
+                }else{
+                    continue;
                 }
             }
 

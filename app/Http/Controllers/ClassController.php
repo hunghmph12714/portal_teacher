@@ -1177,11 +1177,20 @@ class ClassController extends Controller
                     //Get class
                     $ss = StudentSession::find($student->pivot['id']);
                     //Get Objective
-                    $obj_ids = array($ss->objectives);
-                    $objs = Objective::whereIn('id', $obj_ids)->get();
+                    if(!empty($ss->objectes)){
+                        $obj_ids = array($ss->objectives);
+                        $objs = Objective::whereIn('id', $obj_ids)->get();
+                        $student->objectives = implode(array_column($objs->toArray(), 'content'));
+
+                    }else {
+                        $objs = [];
+                        $student->objectives = [];
+
+                    }
+                    
+
                     $student->classes = $student->activeClasses()->get()->toArray();
                     $student->dob_format = date('d/m/Y', strtotime($student->dob));
-                    $student->objectives = implode(array_column($objs->toArray(), 'content'));
 
                     $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
                     $parent = Parents::find($student->parent_id);
