@@ -1629,26 +1629,58 @@ class ClassController extends Controller
         // $sc = StudentClass::Where('class_id', $request->class_id)->where('student_id', $request->id)->
         StudentClass::find($request->sc_id)->forceDelete();
     }
+    public function studentPtt(){
+        $file = fopen(public_path() . "/student_ptt.csv", "w");
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        $first_line = [
+            'Họ tên', 'Ngày sinh','Họ tên PH', 'Số điện thoại', 'Email', 'Lớp Vee', 'Ngày gia nhập'
+        ];
+        fputcsv($file, $first_line);
+        $arr_student_id = [];
+        $result = [];
+        $i = 2;
+        while($i < 10) { 
+            # code...
+            // echo $i;
+            $classes = Classes::where('code', 'like', '%.%'.$i)->where('year', 2021)->get();
+        
+            foreach ($classes as $c) {
+                $d =  $c->activeStudents()->get();
+                foreach ($d  as $s) {
+                    if (in_array($s->id, $arr_student_id) == false) {
+                        $parent = Parents::find($s->parent_id);
+                        if($parent){
+                            $result[] = [$s->fullname, $s->dob, $parent->fullname, $parent->phone, $parent->email, $c->code, date('m/d/Y', strtotime($s->created_at))];
+                        }else{
+                            $result[] = [$s->fullname, $s->dob, '', '','', $c->code, $s->created_at];
+    
+                        }
+                        array_push($arr_student_id, $s->id);
+                    }else{
+                        foreach($result as $key => $r){
+                            if($r[0] == $s->fullname && $r[1] == $s->dob){
+                                $result[$key][5] = $result[$key][5]. ','. $c->code;
+                            }
+                        }
+                    }
+                }
+                // $arr_student = $arr_student + $d->toArray();
+            }
+            $i+=2;
+        }
+        foreach($result as $r){
+            fputcsv($file, $r);
+        }
+        return response('/public/student_ptt.csv');
 
-
-
-
-
-
+    }
     public function autoRegister()
     {
-
-
         $classes = Classes::where('code', 'like', '%9.%')->where('year', 2021)->get();
         $arr_student_id = [];
         foreach ($classes as $c) {
             $d =  $c->activeStudents()->get();
-            // echo '<pre>';
-            // print_r($d->toArray());
-            // // array_push($arr_student, $d->toArray());
-
             foreach ($d  as $s) {
-
                 if (in_array($s->id, $arr_student_id) == false) {
                     $data = [
                         'student_id' => $s->id,
@@ -1665,4 +1697,5 @@ class ClassController extends Controller
         }
         dd($arr_student_id);
     }
+
 }
