@@ -91,6 +91,7 @@ const SingleQuestion = (props) => {
         if(props.question.content){
             setContent(props.question.content)
             setStatement(props.question.statement)
+            setAnswer(props.question.hint)
             if(props.question.options.length == 0){
                 setOptions([{content: '', weight: 0, set: ''},])
             }else{
@@ -217,6 +218,7 @@ const SingleQuestion = (props) => {
                             onReady={editor => {
                                 // You can store the "editor" and use when it is needed.
                                 // console.log( 'Editor is ready to use!', editor );
+                                editor.setData( answer );
                             }}
                             onChange={ ( event, editor ) => {
                                 setAnswer(editor.getData())

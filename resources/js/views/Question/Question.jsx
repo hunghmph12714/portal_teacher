@@ -88,6 +88,7 @@ const Question = (props) =>{
                     statement: response.data.statement,
                     question_type: response.data.question_type,
                     options: response.data.options,
+                    hint: response.data.hint
                 }]
                 setQuestions(q)
                 setConfig(c)

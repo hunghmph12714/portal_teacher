@@ -135,6 +135,7 @@ class QuestionController extends Controller
         $q['domain'] = $request->config['domain']['value'];
         $q['hint'] = ($request->answer) ? $request->answer : '';
         $q['grade'] = $request->config['grade']['value'];
+        // $q['answer'] = $request->answer;
         $q = $question->update($q);
         //Update topics
         // update topic - question
