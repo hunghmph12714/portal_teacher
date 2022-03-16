@@ -636,3 +636,4 @@ Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFi
 Route::get('export-student', [StudentController::class, 'exportStudent']);
 Route::get('auto-register', [ClassController::class, 'autoRegister']);
 Route::get('student-ptt', 'ClassController@studentPtt');
+Route::get('entrance-lose','EntranceController@EntranceLose');

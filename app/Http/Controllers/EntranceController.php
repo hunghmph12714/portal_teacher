@@ -25,6 +25,34 @@ use Illuminate\Http\Request;
 class EntranceController extends Controller
 {
     //
+    protected function EntranceLose(){
+        $file = fopen(public_path() . "/student_ptt.csv", "w");
+        fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        $first_line = [
+            'Họ tên', 'Ngày sinh','Họ tên PH', 'Số điện thoại', 'Email', 'Ngày tiếp nhận', 'Ngày kiểm tra', 'Kết quả', 'Note', 'Khoá học ĐK', 'Cơ sở'
+        ];
+        fputcsv($file, $first_line);
+        
+        $entrances = Entrance::whereIn('status_id', [3,4,6,8,10])
+            ->select('students.fullname as studentname', 'students.dob', 'parents.fullname', 'parents.phone', 'parents.email', 'entrances.created_at',
+                'entrances.test_time', 'test_score', 'steps.name as step', 'entrances.note', 'courses.name as course', 'center.code', 
+            )
+            ->leftJoin('students', 'entrances.student_id', 'students.id')
+            ->leftJoin('center', 'entrances.center_id', 'center.id')
+            ->leftJoin('courses', 'entrances.course_id', 'courses.id')
+            ->leftJoin('parents', 'students.parent_id', 'parents.id')
+            ->leftJoin('steps', 'entrances.step_id', 'steps.id')
+            ->get();
+        foreach($entrances->toArray() as $e ){
+            fputcsv($file, array_values($e));
+            echo "<pre>";
+            print_r(array_values($e));
+        }
+        return response('/public/student_ptt.csv');
+
+        //        echo "<pre>";
+        // print_r($entrances->toArray());
+    }
     protected function handleCreateEntrance($student_id, $center_id, $course_id, $test_time, $note, $medium_id){
         // protected $fillable = ['student_id','course_id','center_id','test_time',
         // 'test_answers','test_score','test_note','note','priority','step_id','step_updated_at','status_id'];
