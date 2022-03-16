@@ -35,8 +35,7 @@ class EntranceController extends Controller
         
         $entrances = Entrance::whereIn('status_id', [3,4,6,8,10])
             ->select('students.fullname as studentname', 'students.dob', 'parents.fullname', 'parents.phone', 'parents.email', 'entrances.created_at',
-                'entrances.test_time', 'test_score', 'steps.name as step', 'entrances.note', 'courses.name as course', 'center.code', 
-            )
+                'entrances.test_time', 'test_score', 'steps.name as step', 'entrances.note', 'courses.name as course', 'center.code')
             ->leftJoin('students', 'entrances.student_id', 'students.id')
             ->leftJoin('center', 'entrances.center_id', 'center.id')
             ->leftJoin('courses', 'entrances.course_id', 'courses.id')
