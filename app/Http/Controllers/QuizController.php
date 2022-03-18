@@ -26,6 +26,47 @@ use Mail;
 class QuizController extends Controller
 {
     //
+    public function checkQuestionDeleted(){
+        // $ad = AttemptDetail::where('attempt_id', 1090)->get();
+        // foreach($ad as $a){
+        //     $question = Question::find($a->question_id);
+        //     if(! $question){
+        //         echo $a->question_id.",";
+        //     }
+        // }
+        $row = 1;
+        if (($handle = fopen("public/lms_questions.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $num = count($data);
+                // echo "<p> $num fields in line $row: <br /></p>\n";
+                $row++;
+                $q = Question::find($data[0]);
+                if(!$q && is_numeric($data[0])){
+                    // echo $data[0];
+                    // echo "<br>";
+                    $input['id'] = $data[0];
+                    $input['question_level'] = $data[1];
+                    $input['question_type'] = $data[2];
+                    $input['statement'] = $data[3];
+                    $input['content'] = substr($data[4], 0, 500);
+                    $input['complex'] = $data[5];
+                    $input['ref_question_id'] = $data[6];
+                    $input['public'] = $data[7];
+                    $input['hint'] = $data[8];
+                    $input['created_at'] = $data[9];
+                    $input['updated_at'] = $data[10];
+                    $input['domain'] = $data[11];
+                    $input['grade'] = $data[12];
+                    $input['active'] = $data[13];
+
+                    Question::create($input);
+                    // echo "<pre>";
+                    // print_r($input);
+                }
+            }
+            fclose($handle);
+        }
+    }
     public function checkQuiz(Request $request)
     {
 
@@ -93,7 +134,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('active', 1)->where('lms_questions.created_at', '>', '2022-02-10 10:25:10')
+                            ->where('active', 1)->where('lms_questions.id', '>', 1979)->where('lms_questions.created_at', '>', '2022-03-01 10:25:10')
                             ->where('complex', 'sub')->where('objective_id', $objective_id)
                             ->get();
                         $rqi =  array_unique(array_column($q->toArray(), 'ref_question_id'));
@@ -129,7 +170,7 @@ class QuizController extends Controller
                             array_push($arr_q, $q[$rand]);
                         } else {
 
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('created_at', '>', '2022-03-10 10:25:10')->get();
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-10 10:25:10')->get();
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
                             // echo "<pre>";
@@ -158,7 +199,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('active', 1)->where('lms_questions.created_at', '>', '2022-02-10 10:25:10')
+                            ->where('active', 1)->where('lms_questions.id', '>', 1979)->where('lms_questions.created_at', '>', '2022-02-10 10:25:10')
                             ->whereNull('complex')->where('objective_id', $objective_id)
                             ->get();
                         // $q_id = select($q->toArray(), 'id');
@@ -392,7 +433,7 @@ class QuizController extends Controller
         foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
-            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-03-01')->get();
+            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
             foreach($topic_questions as $topic_question){
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
@@ -558,7 +599,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('complex', 'sub')->where('objective_id', $objective_id)->where('active', 1)->where('created_at', '>', '2022-03-10 10:25:10')
+                            ->where('complex', 'sub')->where('objective_id', $objective_id)->where('active', 1)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-10 10:25:10')
 
                             ->get();
                         $r =  array_unique(array_column($q->toArray(), 'ref_question_id'));
@@ -592,7 +633,7 @@ class QuizController extends Controller
                             array_push($arr_q, $q[$rand]);
                         } else {
 
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('created_at', '>', '2022-03-10 10:25:10')->get();
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-10 10:25:10')->get();
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
                             // echo "<pre>";
@@ -620,7 +661,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')->where('active', 1)
-                            ->whereNull('complex')->where('objective_id', $objective_id)->where('created_at', '>', '2022-03-10 10:25:10')
+                            ->whereNull('complex')->where('objective_id', $objective_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01 10:25:10')
                             ->get();
                         $q_id = select($q->toArray(), 'id');
 

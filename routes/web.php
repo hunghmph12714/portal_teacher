@@ -547,7 +547,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/cau-hinh-cau-hoi', function () {
         return view('welcome');
     });
-
+    Route::get('/check-question-deleted', 'QuizController@checkQuestionDeleted');
     Route::post('/generate-quiz', 'QuizController@generateQuiz');
     Route::get('/gen-quiz', 'QuizController@genQuiz');
     // Route::get('/sub5', 'ClassController@subscribe');
@@ -628,12 +628,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::post('/tra-cuu', 'GuestController@traCuu');
 // Route::get('/import-tra-cuu', 'GuestController@importtc');
 
-Route::get('search', [QuestionController::class, 'filter']);
-Route::get('tong-diem', [QuizController::class, 'sumScore']);
-Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
-Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
+// Route::get('search', [QuestionController::class, 'filter']);
+// Route::get('tong-diem', [QuizController::class, 'sumScore']);
+// Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
+// Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
-Route::get('export-student', [StudentController::class, 'exportStudent']);
-Route::get('auto-register', [ClassController::class, 'autoRegister']);
-Route::get('student-ptt', 'ClassController@studentPtt');
-Route::get('entrance-lose','EntranceController@EntranceLose');
+// Route::get('export-student', [StudentController::class, 'exportStudent']);
+// Route::get('auto-register', [ClassController::class, 'autoRegister']);
+// Route::get('student-ptt', 'ClassController@studentPtt');
+// Route::get('entrance-lose','EntranceController@EntranceLose');

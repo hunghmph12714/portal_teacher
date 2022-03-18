@@ -1176,8 +1176,13 @@ class ClassController extends Controller
                 foreach ($students as $k => $student) {
                     //Get class
                     $ss = StudentSession::find($student->pivot['id']);
+                    // $obj_ids = array($ss->objectives);
+                    //     $objs = Objective::whereIn('id', $obj_ids)->get();
+                    //     $student->objectives = implode(array_column($objs->toArray(), 'content'));
+
                     //Get Objective
-                    if(!empty($ss->objectes)){
+                    // echo $ss->objec
+                    if(!empty($ss->objectives) ){
                         $obj_ids = array($ss->objectives);
                         $objs = Objective::whereIn('id', $obj_ids)->get();
                         $student->objectives = implode(array_column($objs->toArray(), 'content'));

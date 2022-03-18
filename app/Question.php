@@ -9,6 +9,7 @@ class Question extends Model
     //
     public $table = 'lms_questions';
     protected $fillable = [
+        'id',
         'question_level', 'question_type',
         'statement', 'content', 'complex', 'ref_question_id', 'domain',
         'public', 'hint', 'grade', 'active'
