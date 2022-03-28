@@ -17,170 +17,203 @@
 </head>
 
 
-<body>
+<body class="position-relative">
     <style>
         .quiz-content img {
             max-width: 600px !important;
         }
     </style>
-    <div class="container">
-        <table class="table border">
+    <script src="//cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
+    <form action="" method="POST">
+        @csrf
+        <div class="container">
+            <table class="table border">
 
-            <tbody class="">
-                <tr class="row-8">
-                    <td scope="row" class="col-5">
+                <tbody class="">
+                    <tr class="row-8">
+                        <td scope="row" class="col-5">
 
-                        <div class="row ">
-                            <div class="col border border border-warning border-3">
-                                {{-- <h5>Họ Tên</h5> --}}
-                                <h5>
-                                    @if (!empty( $result['student'] ))
-                                    {{ $result['student'] }}
-                                    @endif
+                            <div class="row ">
+                                <div class="col border border border-warning border-3">
+                                    {{-- <h5>Họ Tên</h5> --}}
+                                    <h5>
+                                        @if (!empty( $result['student'] ))
+                                        {{ $result['student'] }}
+                                        @endif
 
-                                </h5>
+                                    </h5>
 
-                            </div>
-                            <div class=" col">
+                                </div>
+                                <div class=" col">
 
-                                {{-- <p>Thời gian bắt đầu: {{ $result['quiz']['start_time'] }}</p>
-                                <p>Thời gian kết thúc: {{ $result['quiz']['finish_time'] }}</p> --}}
+                                    <p>Thời gian bắt đầu: {{ $result['quiz']['start_time'] }}</p>
+                                    <p>Thời gian kết thúc: {{ $result['quiz']['finish_time'] }}</p>
 
-                            </div>
-                        </div>
-
-                    </td>
-                    <td class="col-3">Môn thi
-
-
-                        <form action="" method="get" class="d-flex">
-                            @foreach ($result['domain'] as $d)
-                            {{-- <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}"> --}}
-                            <div class=" m-1 " style="">
-                                <button type="submit" name="domain" value="{{ $d['domain'] }}"
-                                    class="btn btn-primary">{{
-                                    $d['domain'] ." - ".$d['question_number']." câu" }}</button><br>
-                                <div>
-                                    <p class="border border-success rounded m-2 p-2">Điểm: <b>{{ $d['score'] }}</b></p>
                                 </div>
                             </div>
-                            @endforeach
-                        </form>
-                    </td>
-                </tr>
 
-                @foreach ($result['questions'] as $item)
-                <tr>
-                    <td><b>@if (!empty($item['main_statement']))
-                            {{ $item['main_statement'] }}
-                            @endif</b>
-                        @if (!empty($item['main_content']))
-                        {!! $item['main_content'] !!}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <td class="px-3" scope="row">
+                        </td>
+                        <td class="col-3">Môn thi
 
 
-                        Câu {{ $loop->iteration }} :
-
-                        {{-- @foreach ($item['a_fib'] as $key=>$f)
-                        {!! str_replace('{'. $key+1 .'}','<input type="text" value="'.$f.'" disabled'. '>'
-                            ,$item['content']) !!} @endforeach <br> --}}
-
-                        {!! $item['content'] !!}
-
-                        {{-- @for ($i = 1; $i < $result['int'] ; $i++) @if ($item['a_fib'][$i]!=null) {!!
-                            str_replace('{'. $i .'}','<input type="text" value="'.$item['a_fib'][$i].'" disabled'. '>'
-                            ,$item['content']) !!} <br>
-                            @else
-                            {!!
-                            str_replace('{'. $i .'}','<input type="text" value="" disabled'. '>' ,$item['content']) !!}
-                                <br>
-                            @endif
-
-                            @endfor --}}
-
-
-                            @if (!empty($item['options']))
-                            <div>
-                                @foreach ($item['options'] as $o)
-                                {{-- <input type="radio" disabled id=""> {!! $o['content'] !!} --}}
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" disabled name="{{ $o['id'] }}"
-                                            id="" value="checkedValue" @if ($o['id']==$item['a_option']) checked @endif>
-                                        {!! $o['content'] !!}
-                                    </label>
+                            <form action="" method="get" class="d-flex">
+                                @foreach ($result['domain'] as $d)
+                                {{-- <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}">
+                                --}}
+                                <div class=" m-1 " style="">
+                                    <button type="submit" name="domain" value="{{ $d['domain'] }}"
+                                        class="btn btn-primary">{{
+                                        $d['domain'] ." - ".$d['question_number']." câu" }}</button><br>
+                                    <div>
+                                        <p class="border border-success rounded m-2 p-2">Điểm: <b>{{ $d['score'] }}</b>
+                                        </p>
+                                    </div>
                                 </div>
                                 @endforeach
-                            </div>
+                            </form>
+                        </td>
+                    </tr>
+
+                    @foreach ($result['questions'] as $item)
+                    <tr>
+                        <td><b>@if (!empty($item['main_statement']))
+                                {{ $item['main_statement'] }}
+                                @endif</b>
+                            @if (!empty($item['main_content']))
+                            {!! $item['main_content'] !!}
                             @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-3" scope="row">
 
-                            @if ($item['a_essay']!='')
 
-                            {{-- <textarea disabled name="" id="" cols="80" rows="5"> </textarea> --}}
-                            <div class="form-control bg-secondary border border-success quiz-content "
-                                style="--bs-bg-opacity: .1">
-                                {!! $item['a_essay'] !!}
+                            Câu {{ $loop->iteration }} :
+
+                            {{-- @foreach ($item['a_fib'] as $key=>$f)
+                            {!! str_replace('{'. $key+1 .'}','<input type="text" value="'.$f.'" disabled'. '>'
+                                ,$item['content']) !!} @endforeach <br> --}}
+
+                            {!! $item['content'] !!}
+
+                            {{-- @for ($i = 1; $i < $result['int'] ; $i++) @if ($item['a_fib'][$i]!=null) {!!
+                                str_replace('{'. $i .'}','<input type="text" value="'.$item['a_fib'][$i].'"
+                                disabled'. '>' ,$item['content']) !!} <br>
+                                @else
+                                {!!
+                                str_replace('{'. $i .'}','<input type="text" value="" disabled'. '>' ,$item['content'])
+                                    !!} <br>
+                                @endif
+
+                                @endfor --}}
+
+
+                                @if (!empty($item['options']))
+                                <div>
+                                    @foreach ($item['options'] as $o)
+                                    {{-- <input type="radio" disabled id=""> {!! $o['content'] !!} --}}
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" disabled name="{{ $o['id'] }}"
+                                                id="" value="checkedValue" @if ($o['id']==$item['a_option']) checked
+                                                @endif>
+                                            {!! $o['content'] !!}
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @endif
+
+                                @if ($item['a_essay']!='')
+
+                                {{-- <textarea disabled name="" id="" cols="80" rows="5"> </textarea> --}}
+                                <div class="form-control bg-secondary border border-success quiz-content "
+                                    style="--bs-bg-opacity: .1">
+                                    {!! $item['a_essay'] !!}
+                                </div>
+                                @endif
+
+                        </td>
+                        <td class="bg-success p-2" style="--bs-bg-opacity: .3;">
+
+                            <div class="row m-0">
+                                <div class="col-3 bg-warning " style="max-height: 100px; --bs-bg-opacity: .5;">
+                                    <h5 style="text-align: center" class=" p-1">Điểm</h5>
+
+                                    <div class="form-group">
+                                        {{-- <label for="">Điểm</label> --}}
+                                        <input value="{{ $item['score'] }}" step="0.25" type="number" min="0"
+                                            name="score[{{ $item['attempt_detail_id'] }}]" class="form-control" name=""
+                                            id="" aria-describedby="helpId" placeholder="">
+                                        {{-- <small id="helpId" class="form-text text-muted">Help text</small> --}}
+                                    </div>
+                                    {{-- <p style="text-align: center; font-size: 20px;">{{ $item['score'] }}</p> --}}
+
+
+                                </div>
+                                <div class="col">
+                                    <h5 style="text-align: center" class=" p-1">Nhận xét</h5>
+                                    {{-- {!! $item['comment'] !!} --}}
+                                    <textarea id="{{ $item['id'] }}" name="comment[{{ $item['attempt_detail_id'] }}]"
+                                        cols="30" rows="10">{!! $item['comment'] !!}</textarea>
+                                    <script>
+                                        CKEDITOR.replace('{{ $item['id'] }}')
+                                    </script>
+                                </div>
                             </div>
-                            @endif
-
-                    </td>
-                    <td class="bg-success p-2" style="--bs-bg-opacity: .3;">
-
-                        <div class="row m-0">
-                            <div class="col-2 bg-warning " style="min-height: 100px; --bs-bg-opacity: .5;">
-                                <h5 style="text-align: center" class=" p-1">Điểm</h5>
 
 
-                                <p style="text-align: center; font-size: 20px;">{{ $item['score'] }}</p>
-
-
-                            </div>
-                            <div class="col">
-                                <h5 style="text-align: center" class=" p-1">Nhận xét</h5>
-                                {!! $item['comment'] !!}
-                            </div>
-                        </div>
-
-
-                    </td>
-                </tr>
-                @endforeach
+                        </td>
+                    </tr>
+                    @endforeach
 
 
 
-                <tr>
-                    <td>
+                    <tr>
+                        <td>
 
-                        <h5>TIêu chí đánh giá</h5>
+                            <h5>TIêu chí đánh giá</h5>
 
 
-                        <div>
-                            @foreach ($result['criterias'] as $c)
-                            <div style="border-radius: 8px;
+                            <div>
+                                @foreach ($result['criterias'] as $c)
+                                <div style="border-radius: 8px;
                                         margin-bottom: 10px;
                                         padding: 15px;
                                         border: 1px solid green;">
-                                <div style="" class="mb-3">
-                                    <input type="text" value="{{ $c['title'] }}" disabled
-                                        style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+                                    <div style="" class="mb-3">
+                                        <input type="text" value="{{ $c['title'] }}" disabled
+                                            name="criteria_title[{{ $c['id'] }}]"
+                                            style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+                                    </div>
+                                    {{-- <input type="text" value="{{ $c['content'] }}"> --}}
+                                    <textarea disabled
+                                        style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
+                                        name="criteria_content[{{ $c['id'] }}]" id="" cols="30"
+                                        rows="3">{{ $c['content'] }}</textarea>
                                 </div>
-                                {{-- <input type="text" value="{{ $c['content'] }}"> --}}
-                                <textarea disabled
-                                    style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
-                                    name="" id="" cols="30" rows="3">{{ $c['content'] }}</textarea>
+                                @endforeach
                             </div>
-                            @endforeach
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
 
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex right-0  fixed-bottom position-absolute bottom-0 end-0 " width="100px">
+            <button class="btn btn-success form-control " width="100px" type="submit">Lưu Đánh Giá</button>
+        </div>
+
+    </form>
+
+
+
+    <script src="//cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
+    {{-- <script type="text/javascript">
+        CKEDITOR.replace('nx');
+  CKEDITOR.replace('.nhanxet');
+
+    </script> --}}
 </body>
 
 </html>

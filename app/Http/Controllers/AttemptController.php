@@ -194,17 +194,34 @@ class AttemptController extends Controller
                 }
                 $result['criterias'] = $criterias->toArray();
                 $result['upload'] = $attempt->upload;
-                $result['int'] = 20;
+                // $result['int'] = 20;
 
 
 
                 //
-                // dd($result);
+                // dd($result); 
 
                 // dd(array_column($result['questions'], 'co'));
                 // str_word_count()
                 return view('attempts.attempt-detail', compact('result'));
             }
         }
+    }
+    public function editAttempt($attempt_id,Request $request)
+    {
+    //     dd($request);
+        $comment=$request->comment;
+        foreach($request->score as $key=>$score){
+            $attempt_detail=AttemptDetail::find($key);
+            $attempt_detail->score=$score;
+        if($comment[$key])  {  
+            $attempt_detail->comment=$comment[$key];
+        }  
+        $attempt_detail->save();            
+        }
+        // return redirect(route('student.attempt_detail',['attempt_id'=>$attempt_id]));
+                return redirect(back());
+
+       
     }
 }
