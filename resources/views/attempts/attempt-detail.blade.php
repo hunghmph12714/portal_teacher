@@ -60,7 +60,7 @@
                                 @foreach ($result['domain'] as $d)
                                 {{-- <input name="domain" id="" class="btn btn-primary" type="submit" value="{{ $d }}">
                                 --}}
-                                <div class=" m-1 " style="">
+                                <div class="m-1" style="">
                                     <button type="submit" name="domain" value="{{ $d['domain'] }}"
                                         class="btn btn-primary">{{
                                         $d['domain'] ." - ".$d['question_number']." câu" }}</button><br>
@@ -174,25 +174,28 @@
 
                             <h5>TIêu chí đánh giá</h5>
 
+                            <button type="button" onclick="add()">Thêm đánh giá</button>
 
-                            <div>
+                            <div id="danh-gia">
                                 @foreach ($result['criterias'] as $c)
                                 <div style="border-radius: 8px;
                                         margin-bottom: 10px;
                                         padding: 15px;
                                         border: 1px solid green;">
                                     <div style="" class="mb-3">
-                                        <input type="text" value="{{ $c['title'] }}" disabled
+                                        <input type="text" value="{{ $c['title'] }}"
                                             name="criteria_title[{{ $c['id'] }}]"
                                             style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
                                     </div>
                                     {{-- <input type="text" value="{{ $c['content'] }}"> --}}
-                                    <textarea disabled
+                                    <textarea
                                         style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
                                         name="criteria_content[{{ $c['id'] }}]" id="" cols="30"
                                         rows="3">{{ $c['content'] }}</textarea>
                                 </div>
                                 @endforeach
+
+
                             </div>
                         </td>
                     </tr>
@@ -200,12 +203,32 @@
                 </tbody>
             </table>
         </div>
-        <div class="d-flex right-0  fixed-bottom position-absolute bottom-0 end-0 " width="100px">
-            <button class="btn btn-success form-control " width="100px" type="submit">Lưu Đánh Giá</button>
+        <div class="d-flex right-0  " width="100px">
+            <button class="btn btn-success form-control kn plg " width="100px" type="submit">Lưu Đánh Giá</button>
         </div>
 
     </form>
+    <div id="add-danh-gia"
+        style="border-radius: 8px; margin-bottom: 10px; padding: 15px; border: 1px solid green; display: none">
+        <div style="" class="mb-3">
+            <input type="text" value="" disabled name="criteria_title[]"
+                style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+        </div>
+        {{-- <input type="text" value="{{ $c['content'] }}"> --}}
+        <textarea disabled
+            style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
+            name="criteria_content[]" id="" cols="30" rows="3"></textarea>
+    </div>
+    <script>
+        function add(){
+        danhgia=document.getElementById('danh-gia');
+        adddanhgia=document.getElementById('add-danh-gia');
+        adddanhgia.style='display:block'
+        danhgia.innerHTML+=adddanhgia.innerHTML
+        adddanhgia.style='display:none'
+   }
 
+    </script>
 
 
     <script src="//cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>

@@ -209,18 +209,22 @@ class AttemptController extends Controller
     }
     public function editAttempt($attempt_id,Request $request)
     {
-    //     dd($request);
+        dd($request);
         $comment=$request->comment;
         foreach($request->score as $key=>$score){
             $attempt_detail=AttemptDetail::find($key);
             $attempt_detail->score=$score;
-        if($comment[$key])  {  
-            $attempt_detail->comment=$comment[$key];
-        }  
+            if($comment[$key])  {  
+                $attempt_detail->comment=$comment[$key];
+            }  
         $attempt_detail->save();            
         }
-        // return redirect(route('student.attempt_detail',['attempt_id'=>$attempt_id]));
-                return redirect(back());
+
+
+
+
+        return redirect(route('student.attempt_detail',['attempt_id'=>$attempt_id]));
+                // return redirect(back());
 
        
     }
