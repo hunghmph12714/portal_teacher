@@ -428,6 +428,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/get-class', 'StudentController@getClass');
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     Route::get('/student/remove/{id}', 'StudentController@removeStudent');
+    Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');
     // Route::get('/student/import', 'StudentController@importStudent');
     //MISA
     Route::get('/misa', function () {

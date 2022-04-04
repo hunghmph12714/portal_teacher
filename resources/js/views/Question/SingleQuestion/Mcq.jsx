@@ -1,12 +1,18 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import './Mcq.scss'
 import {Grid, TextField} from '@material-ui/core'
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
+import { Editor } from '@tinymce/tinymce-react';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Mcq = (props) => {
-    
+    const editorRef = useRef(null);
+    const log = () => {
+        if (editorRef.current) {
+        console.log(editorRef.current.getContent());
+        }
+    };
     return(
         <div style={{marginTop: '15px'}}>
             <h4 style={{fontSize: '1.1rem', fontWeight: 'bold'}}>Các phương án lựa chọn</h4>
@@ -43,7 +49,7 @@ const Mcq = (props) => {
                     />
                 </Grid>
                 <Grid item md={8}>
-                    <CKEditor
+                    {/* <CKEditor
                         editor  ={ClassicEditor}
                         config={{
                             // toolbar: {
@@ -74,6 +80,24 @@ const Mcq = (props) => {
                                 props.setOptions(opt)
                             }
                         } }
+                    /> */}
+                    <Editor
+                        onInit={(evt, editor) => editorRef.current = editor}
+                        initialValue={o.content}
+                        init={{
+                        height: 500,
+                        menubar: false,
+                        plugins: [
+                            'advlist autolink lists link image charmap print preview anchor',
+                            'searchreplace visualblocks code fullscreen',
+                            'insertdatetime media table paste code help wordcount image imagetools'
+                        ],
+                        toolbar: 'undo redo image | formatselect | ' +
+                        'bold italic backcolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help',
+                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                        }}
                     />
                 </Grid>
                 <Grid item md={3}>

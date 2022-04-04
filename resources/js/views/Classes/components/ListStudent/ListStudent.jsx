@@ -9,6 +9,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import DialogCreate from './DialogCreate'
 import DialogTransfer from './DialogTransfer'
 import DialogDropout from './DialogDropout'
+import DialogTeams from './DialogTeams'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
@@ -44,6 +45,7 @@ const ListStudent = (props) => {
     const[ openUpload, setOpenUpload ] = useState(false);
     const[ openStatus, setOpenStatus] = useState(false);
     const [ openDropout, setOpenDropout ] = useState(false);
+    const [ openTeams, setOpenTeams ] = useState(false);
 
     // const[ ]
     useEffect(() => {
@@ -64,6 +66,14 @@ const ListStudent = (props) => {
         }
         fetchdata()
     }, [reload])
+    function handleOpenTeams(rows){
+        setSelectedData(rows)
+        setOpenTeams(true)
+    }
+    function handleCloseTeams(){
+        setOpenTeams(false)
+        setSelectedData([])
+    }
     function openStatusDialog(rows){
         setOpenStatus(true)
         setSelectedData(rows)
@@ -236,9 +246,10 @@ const ListStudent = (props) => {
                                     <DeleteForeverIcon fontSize='inherit' />
                                     </IconButton>
                                 </Tooltip>     
-                                <Tooltip title="Truy cập portal" arrow>
+                                <Tooltip title="Tài khoản Teams" arrow>
                                     <IconButton onClick={() => {
-                                         window.open('/login-portal-admin/'+rowData.parent_id)
+                                        handleOpenTeams(rowData)
+                                        //  window.open('/login-portal-admin/'+rowData.parent_id)
                                     }}>
                                     <AssignmentIndIcon fontSize='inherit' />
                                     </IconButton>
@@ -440,6 +451,11 @@ const ListStudent = (props) => {
                 handleClose = {handleCloseUpload}
                 id = {selected_data.id}
                 avatar = {selected_data.avatar}
+            />
+            <DialogTeams
+                open = {openTeams}
+                handleClose = {handleCloseTeams}
+                selected_data = {selected_data}
             />
         </div>
     )

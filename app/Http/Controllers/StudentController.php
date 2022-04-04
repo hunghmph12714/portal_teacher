@@ -135,6 +135,17 @@ class StudentController extends Controller
 
         $t = Transaction::where('student_id', $id)->forceDelete();
     }
+    protected function saveSgdId(Request $request){
+        $rules = ['id' => 'required', 'sgd_id' => 'required', 'ms_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student = Student::find($request->id);
+        if($student){
+            $student->ms_id = $request->ms_id;
+            $student->sgd_id = $request->sgd_id;
+            $student->save();
+        }
+    }
     protected function uploadAvatar(Request $request)
     {
         $rules = [

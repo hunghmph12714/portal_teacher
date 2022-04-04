@@ -50,6 +50,7 @@
     <!-- <script src="/public/js/ckeditor5-build-classic/build/ckeditor.js"></script> -->
 
     <script type="text/javascript" src="{{ asset('public/js/app.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('public/js/tinymce/tinymce.min.js') }}"></script>
     <script>
         
     </script>
