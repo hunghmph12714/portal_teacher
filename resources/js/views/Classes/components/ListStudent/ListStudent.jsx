@@ -11,6 +11,7 @@ import DialogTransfer from './DialogTransfer'
 import DialogDropout from './DialogDropout'
 import DialogTeams from './DialogTeams'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
     Menu,
@@ -73,6 +74,7 @@ const ListStudent = (props) => {
     function handleCloseTeams(){
         setOpenTeams(false)
         setSelectedData([])
+        setReload(!reload)
     }
     function openStatusDialog(rows){
         setOpenStatus(true)
@@ -251,7 +253,8 @@ const ListStudent = (props) => {
                                         handleOpenTeams(rowData)
                                         //  window.open('/login-portal-admin/'+rowData.parent_id)
                                     }}>
-                                    <AssignmentIndIcon fontSize='inherit' />
+                                    {rowData.sgd_id ? <AssignmentIndOutlinedIcon /> :  <AssignmentIndIcon fontSize='inherit' />}
+                                   
                                     </IconButton>
                                 </Tooltip>     
                                 {

@@ -9,20 +9,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { withSnackbar } from 'notistack';
-import { StudentProfile } from '../../../Students/components'
-const baseUrl = window.Laravel.baseUrl
-const initState = {
-    sgd_id: ''
-}
+import { useSnackbar } from 'notistack';
+
 const config = {
     headers: { Accept: 'application/json',
-        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6IlBOOHlvNnBic1NQZDZ2YV82dm9VREw0WF96MlFtLTFNdnJKeWc2MHIxdWciLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjQ5MDY0NDE4LCJuYmYiOjE2NDkwNjQ0MTgsImV4cCI6MTY0OTA2OTcyMiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhUQUFBQUdHNDJkdGxVMUZUTjdxS2RKSDcwM2c0Z2VJMm9zby9CaE0xZjlvZmxhdlE9IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJWaWV0RWxpdGUgTWFpbiBBcHAiLCJhcHBpZCI6IjBmZWZlNWM0LWVjYjQtNDA1NC1hMDJlLTMyNGEzNzIxOTI4NCIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiVHLhuqduIiwiZ2l2ZW5fbmFtZSI6IlRow6BuaCIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjE0LjI0OC44Mi4xMTEiLCJuYW1lIjoiVHLhuqduIFRy4buLbmggQsOsbmggVGjDoG5oIChIUy5LVENOKSIsIm9pZCI6ImYxZTk3YzlhLTc4ODUtNDliYi04Mzg0LWU3MzA4ZjA4NDI2NCIsInBsYXRmIjoiNSIsInB1aWQiOiIxMDAzMjAwMDQwRjczRjBCIiwicmgiOiIwLkFWWUFKMHlKcEVCRWxFV1NSYVlOdVF5UFh3TUFBQUFBQUFBQXdBQUFBQUFBQUFCV0FJZy4iLCJzY3AiOiJEaXJlY3RvcnkuUmVhZC5BbGwgRGlyZWN0b3J5LlJlYWRXcml0ZS5BbGwgZW1haWwgTWFpbC5SZWFkIHByb2ZpbGUgVXNlci5SZWFkIFVzZXIuUmVhZC5BbGwgVXNlci5SZWFkV3JpdGUuQWxsIG9wZW5pZCIsInN1YiI6InI3U0w2bFBOMy1kcC1ORlJrNW5SU2NrMVFKYVdZYUFZcERkRE5xMjJZeG8iLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiQVMiLCJ0aWQiOiJhNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYiLCJ1bmlxdWVfbmFtZSI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1cG4iOiJ0aGFuaHR0YkB2aWV0ZWxpdGUuZWR1LnZuIiwidXRpIjoiY0x5M2tqSXhuMEdoMHNVMmJxVV9BQSIsInZlciI6IjEuMCIsIndpZHMiOlsiNjJlOTAzOTQtNjlmNS00MjM3LTkxOTAtMDEyMTc3MTQ1ZTEwIiwiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19zdCI6eyJzdWIiOiJHZy1YWjRqQTN0SVNranVKYzA2TTROYzhJbThFUTdKTHRRcTFQLW1HcThvIn0sInhtc190Y2R0IjoxNDgwNzA0MzkzfQ.AY5djP58MtglQFZuim3NALV3D1V1P84qO21JmcGMq2OVMsjwWRwQJAOCfcJkBS6YyUA14QvvxYvKzBARhJWqYOMIkmncfpfT6I1Tm7r_bAMysPSa_XyusIkFiiKPxY49JvUr9jCZNK_Vfz4W9n6OqU1JTcwPpUHKxZYuus1JuHhLPLPOuunwSDe3WPL23nbNZHOaoaGTG1OnfNeKkgXqS8DPCy0ZoDeV1L7bhLi6Lfd2Qh9YO-cpmsC2bZJJsoKcd3zf1fvf_4M8QtJUBB0r17SdL4i-I9W0_hTdvJNRHFrphDpRrL_SeCDPl9jRc34WxpTE0oTtmxeh-B638nN0Bg' }
+        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6InZ1dGVmemZ4RGotSWV0UVpzSjRmaVF4UUxSNlMxakF6VFltcDFuNEVmQmsiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjQ5MDc3NjIxLCJuYmYiOjE2NDkwNzc2MjEsImV4cCI6MTY0OTA4MTY1NiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZS2hwc2R5NjJKM2hRRzNRaXFjUDdiS1BSQy9LWmx2WjhFbURaMU5mM2F6NVpyNEEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlZpZXRFbGl0ZSBNYWluIEFwcCIsImFwcGlkIjoiMGZlZmU1YzQtZWNiNC00MDU0LWEwMmUtMzI0YTM3MjE5Mjg0IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJUcuG6p24iLCJnaXZlbl9uYW1lIjoiVGjDoG5oIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTQuMjQ4LjgyLjExMSIsIm5hbWUiOiJUcuG6p24gVHLhu4tuaCBCw6xuaCBUaMOgbmggKEhTLktUQ04pIiwib2lkIjoiZjFlOTdjOWEtNzg4NS00OWJiLTgzODQtZTczMDhmMDg0MjY0IiwicGxhdGYiOiI1IiwicHVpZCI6IjEwMDMyMDAwNDBGNzNGMEIiLCJyaCI6IjAuQVZZQUoweUpwRUJFbEVXU1JhWU51UXlQWHdNQUFBQUFBQUFBd0FBQUFBQUFBQUJXQUlnLiIsInNjcCI6IkRpcmVjdG9yeS5SZWFkLkFsbCBEaXJlY3RvcnkuUmVhZFdyaXRlLkFsbCBlbWFpbCBNYWlsLlJlYWQgcHJvZmlsZSBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRXcml0ZS5BbGwgb3BlbmlkIiwic3ViIjoicjdTTDZsUE4zLWRwLU5GUms1blJTY2sxUUphV1lhQVlwRGRETnEyMll4byIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6ImE0ODk0YzI3LTQ0NDAtNDU5NC05MjQ1LWE2MGRiOTBjOGY1ZiIsInVuaXF1ZV9uYW1lIjoidGhhbmh0dGJAdmlldGVsaXRlLmVkdS52biIsInVwbiI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1dGkiOiJxWFVGVS10SHFrU01wd1E5alVXMkFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IkdnLVhaNGpBM3RJU2tqdUpjMDZNNE5jOEltOEVRN0pMdFFxMVAtbUdxOG8ifSwieG1zX3RjZHQiOjE0ODA3MDQzOTN9.XAyI95ALiziEzEnhF-DhSZLnxq9OKK60MpCLge7vE3F5kP2xMP9CZOUUkv51XEwIm6cuLZJkuEmronbcMZcc55oodfbp1ZwHmhQkZTeC5OcUQIyDkbPBl8wfp2NqMr3iw9E1PFucfRsgGae-Oe-BA8lZuzvRialWPT4YmhfwLXnJ-SnkrzXTYc7izD0nm1a-JCFGbIgAXBf_kOimQIn2YcUsOtF9rU8Tse_TzWd0Dit7qKXuSst2qgzcM89NYm0Ri5slgNOX1Iv6MZjXeQSe0T3nFynxiHRkEka-FOCb_ouy9RkFl_bzsGLq1qleqpeKAp3aNyWzM2KW0EssMw-_vw' }
 };
 const DialogTeams = (props) => {
     const [sgd_id, setSgdId] = useState('')
     const [ms_id, setMsId] = useState('')
     const [disable, setDisable] = useState(false)
+    const {enqueueSnackbar} = useSnackbar();
     useEffect(() => {
         if(props.selected_data.sgd_id){
             setSgdId(props.selected_data.sgd_id)
@@ -41,7 +38,7 @@ const DialogTeams = (props) => {
 
     }
     function handleCreateTeams(){
-        console.log(props.selected_data)
+        setDisable(true)
         if(sgd_id){
             let data = {
                 "accountEnabled": true,
@@ -73,7 +70,9 @@ const DialogTeams = (props) => {
                     .then(r => {
                         axios.post('/student/save-sgd-id', {id: props.selected_data.id, sgd_id: sgd_id, ms_id: user_id})
                             .then(response => {
-                                
+                                props.handleClose()
+                                enqueueSnackbar('Tạo tài khoản Teams thành công', {variant: 'success'})
+                                setDisable(false)
                             })
                             .catch(err => {
                                 
@@ -84,7 +83,7 @@ const DialogTeams = (props) => {
                     })
                 })
                 .catch(err => {
-                    console.log(err)
+                    enqueueSnackbar('Token Microsoft đã hết hạn, vui lòng gia hạn', {variant: 'error'})
                 })
         }
         
