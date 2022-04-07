@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react'
 import './Mcq.scss'
 import {Grid, TextField} from '@material-ui/core'
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
-import { Editor } from '@tinymce/tinymce-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from 'ckeditor5-vee-final/build/ckeditor';
+// import { Editor } from '@tinymce/tinymce-react';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 import RemoveCircleOutline from '@material-ui/icons/RemoveCircleOutline';
 const Mcq = (props) => {
@@ -49,7 +49,7 @@ const Mcq = (props) => {
                     />
                 </Grid>
                 <Grid item md={8}>
-                    {/* <CKEditor
+                    <CKEditor
                         editor  ={ClassicEditor}
                         config={{
                             // toolbar: {
@@ -80,8 +80,8 @@ const Mcq = (props) => {
                                 props.setOptions(opt)
                             }
                         } }
-                    /> */}
-                    <Editor
+                    />
+                    {/* <Editor
                         onInit={(evt, editor) => editorRef.current = editor}
                         initialValue={o.content}
                         init={{
@@ -98,7 +98,7 @@ const Mcq = (props) => {
                         'removeformat | help',
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                         }}
-                    />
+                    /> */}
                 </Grid>
                 <Grid item md={3}>
                     <TextField
