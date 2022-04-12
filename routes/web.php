@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Http\Controllers\AttemptDetailController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
@@ -589,6 +590,7 @@ Route::get('/event-tra-cuu', function () {
 Route::post('/event-get-result', 'StudentController@getResult');
 // Route::post('/event-mail', )
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'checkCriteria']);
 // Route::get('/test', function(){
 //     return view('home');
 // });

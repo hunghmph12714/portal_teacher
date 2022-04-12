@@ -26,7 +26,8 @@ use Mail;
 class QuizController extends Controller
 {
     //
-    public function checkQuestionDeleted(){
+    public function checkQuestionDeleted()
+    {
         // $ad = AttemptDetail::where('attempt_id', 1090)->get();
         // foreach($ad as $a){
         //     $question = Question::find($a->question_id);
@@ -41,7 +42,7 @@ class QuizController extends Controller
                 // echo "<p> $num fields in line $row: <br /></p>\n";
                 $row++;
                 $q = Question::find($data[0]);
-                if(!$q && is_numeric($data[0])){
+                if (!$q && is_numeric($data[0])) {
                     // echo $data[0];
                     // echo "<br>";
                     $input['id'] = $data[0];
@@ -342,16 +343,16 @@ class QuizController extends Controller
         // $ss = StudentSession::find($student->pivot['id']);
         // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
         $attempts = Attempt::where('quiz_id', $quiz->id)->get();
-        foreach($attempts as $at){
+        foreach ($attempts as $at) {
             $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
             if (!$attempt_detail->first()) {
                 // echo "<pre>";
                 // print_r($student->toArray());
                 //Có bài làm
                 foreach ($questions as $question) {
-    
+
                     $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
-    
+
                     $input['attempt_id'] = $at->id;
                     $input['question_id'] = $question->id;
                     $input['updated_at'] = '2000-01-01 09:37:17';
@@ -360,7 +361,7 @@ class QuizController extends Controller
                     $input['options'] = $rnd_attempt['options'];
                     $input['score'] = $rnd_attempt['score'];
                     $input['comment'] = $rnd_attempt['comment'];
-    
+
                     echo "<pre>";
                     print_r($input);
                     AttemptDetail::create($input);
@@ -375,7 +376,7 @@ class QuizController extends Controller
         // $student->quiz_id = $attempt->quiz_id;
         // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
 
-        
+
 
 
 
@@ -434,14 +435,14 @@ class QuizController extends Controller
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
             $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
-            foreach($topic_questions as $topic_question){
+            foreach ($topic_questions as $topic_question) {
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
                     print_r($question->id);
                     echo "=";
-                    if($question->question_type == 'main' || in_array($question->id, $existed) || $question->active != 1) continue;
+                    if ($question->question_type == 'main' || in_array($question->id, $existed) || $question->active != 1) continue;
                     array_push($existed, $question->id);
-                    print_r($topic_question->toArray());    
+                    print_r($topic_question->toArray());
                     $option_config = [];
                     $o = Option::where('question_id', $question->id)->get();
                     foreach ($o as $k => $op) {
@@ -458,7 +459,7 @@ class QuizController extends Controller
                     $quiz->questions()->attach($q_q);
 
                     break;
-                }else{
+                } else {
                     continue;
                 }
             }
@@ -807,9 +808,9 @@ class QuizController extends Controller
                 if ($a->options) {
                     $option = Option::find($a->options);
                     if ($option->weight > 0) {
-                        if($fib->domain == 'Tiếng Việt'){
+                        if ($fib->domain == 'Tiếng Việt') {
                             $a->score = 0.5;
-                        }else{
+                        } else {
                             $a->score = 1;
                         }
                         // echo $option->content. "<br/>";
