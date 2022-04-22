@@ -1196,7 +1196,12 @@ class ClassController extends Controller
                     //Get class
                     $ss = StudentSession::find($student->pivot['id']);
                     $sc = StudentClass::where('student_id', $student->id)->where('class_id', $request->event_id)->first();
-                    $student->sbd = $sc->id;
+                    if($sc){
+                        $student->sbd = $sc->id;
+                    }else{
+                        $student->sbd = '';
+
+                    }
                     // $obj_ids = array($ss->objectives);
                     //     $objs = Objective::whereIn('id', $obj_ids)->get();
                     //     $student->objectives = implode(array_column($objs->toArray(), 'content'));

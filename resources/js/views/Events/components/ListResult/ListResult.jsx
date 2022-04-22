@@ -28,6 +28,18 @@ const ListResult = (props) => {
     
         //Học sinh
         {
+            title: "SBD",
+            field: "sbd",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+            
+        },
+        {
             title: "Học sinh",
             field: "fullname",
             headerStyle: {
