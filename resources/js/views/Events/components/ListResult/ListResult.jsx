@@ -49,18 +49,17 @@ const ListResult = (props) => {
             cellStyle: {
                 padding: '0px',
             },
-            render: rowData => {
-                return (                                
-                <Typography variant="body2" component="p">                                    
-                    <b>{rowData.fullname}</b>
-                    <br /> {rowData.dob_format}
-
-                </Typography>)
+        },
+        {
+            title: "Ngày sinh",
+            field: "dob_format",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
             },
-            
-            renderGroup: (sname, groupData) => (
-                <Chip variant="outlined" label={sname} size="small" />      
-            )
+            cellStyle: {
+                padding: '0px',
+            },
         },
         // {
         //     title: "Lớp học",
