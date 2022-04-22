@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Attempt;
 use App\AttemptDetail;
+use App\Criteria;
 use App\QuizQuestion;
 use App\Student;
 use App\StudentSession;
@@ -68,5 +69,54 @@ class AttemptDetailController extends Controller
             dd($students->toArray());
             return response()->json($students->toArray());
         }
+    }
+    public function checkCriteria($attempt_id)
+    {
+        $attempt_details = AttemptDetail::where('attempt_id', $attempt_id)
+            ->join('lms_questions', 'lms_attempt_details.question_id', 'lms_questions.id')->get();
+        if ($attempt_details) {
+            // $attempt_details->attempt_detail;
+            // $attempt_details->load('question');
+            $domain = array_unique(array_column($attempt_details->toArray(), 'domain'));
+            // dd(
+            //     // array_values($attempt_details->toArray())
+            //     $domain
+            // );
+            $alert = [];
+            $criteria = Criteria::where('attempt_id', $attempt_id)->get();
+            foreach ($domain as $d) {
+                $questions_domain =  $attempt_details->where('domain', $d)->whereIn('question_type', ['fib', 'essay']);
+                // dd($questions_domain);
+                $i = 0;
+                $j = 0;
+                foreach ($questions_domain as $q) {
+
+                    if ($q->comment == null || $q->comment == '') {
+                        $j++;
+                    } else {
+                        $i++;
+                    }
+                }
+                if ($i == 0 && $j != 0) {
+                    $alert[$d]['comment'] = 'Chưa nhận xét';
+                } elseif ($i != 0 && $j != 0) {
+                    $alert[$d]['comment'] = 'Chưa nhận xét đủ';
+                } else {
+                    $alert[$d]['comment'] = 'Đã nhận xét đủ';
+                }
+
+                $criteria_domain = $criteria->where('domain', $d);
+                // echo '<pre>';
+                // dd($criteria_domain);
+                if ($criteria_domain->toArray() != []) {
+                    $alert[$d]['criteria'] = 'Đã có đánh giá';
+                } else {
+                    $alert[$d]['criteria'] = 'Chưa có đánh giá';
+                }
+            }
+
+            return response()->json($alert);
+        }
+        return 'chưa có bài';
     }
 }

@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Http\Controllers\AttemptDetailController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
@@ -589,6 +590,7 @@ Route::get('/event-tra-cuu', function () {
 Route::post('/event-get-result', 'StudentController@getResult');
 // Route::post('/event-mail', )
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'checkCriteria']);
 // Route::get('/test', function(){
 //     return view('home');
 // });
@@ -634,7 +636,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
 // Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
-// Route::get('export-student', [StudentController::class, 'exportStudent']);
-// Route::get('auto-register', [ClassController::class, 'autoRegister']);
+Route::get('export-student', [StudentController::class, 'exportStudent']);
+Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('student-ptt', 'ClassController@studentPtt');
 // Route::get('entrance-lose','EntranceController@EntranceLose');
+// Route::get('bnm', 'QuizController@bnm');
+Route::get('/convert-session', 'ClassController@convertSession');

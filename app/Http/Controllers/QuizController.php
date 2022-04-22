@@ -26,7 +26,42 @@ use Mail;
 class QuizController extends Controller
 {
     //
+<<<<<<< HEAD
+    public function bnm(){
+        
+        $at = AttemptDetail::where('attempt_id', 1560)->where('question_id', '<=', 1312)->get();
+
+        foreach($at as $a){
+            $question = Question::find($a->question_id);
+            if($question){
+                $option = Option::find($a->options);
+                if($option->weight > 0){
+                    print_r($option->weight);
+                    $attempt = AttemptDetail::find($a->id);
+                    $attempt->score = 1;
+                    $attempt->save();
+                    // $a->score = 1;
+                    // $a->save;
+                }
+                // $input['quiz_id'] = 1379;
+                // $input['question_id'] = $question->id;
+                // $input['option_config'] = array_column(Option::where('question_id', $question->id)->select('id')->get()->toArray(), 'id');
+                // $input['max_score'] = 1;
+
+                // $quiz = Quiz::find(1379);
+                // $quiz->questions()->attach([$question->id => $input]);
+                // QuizQuestion::create($input);
+                // print_r($input);
+            }
+        }
+        
+
+    }
     public function checkQuestionDeleted(){
+=======
+    public function checkQuestionDeleted()
+    {
+>>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
         // $ad = AttemptDetail::where('attempt_id', 1090)->get();
         // foreach($ad as $a){
         //     $question = Question::find($a->question_id);
@@ -41,7 +76,7 @@ class QuizController extends Controller
                 // echo "<p> $num fields in line $row: <br /></p>\n";
                 $row++;
                 $q = Question::find($data[0]);
-                if(!$q && is_numeric($data[0])){
+                if (!$q && is_numeric($data[0])) {
                     // echo $data[0];
                     // echo "<br>";
                     $input['id'] = $data[0];
@@ -69,7 +104,6 @@ class QuizController extends Controller
     }
     public function checkQuiz(Request $request)
     {
-
         $objective_id = $request->obj_id;
         // $student_session_id = 291284;
 
@@ -134,10 +168,13 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('active', 1)->where('lms_questions.id', '>', 1979)->where('lms_questions.created_at', '>', '2022-03-01 10:25:10')
-                            ->where('complex', 'sub')->where('objective_id', $objective_id)
+                            ->where('active', 1)->where('lms_questions.complex', 'sub')->where('lms_questions.created_at', '>', '2022-03-30 10:25:10')
+                            ->where('objective_id', $objective_id)
                             ->get();
+                        // print_r($q->toArray());
                         $rqi =  array_unique(array_column($q->toArray(), 'ref_question_id'));
+                        // echo "<rqi>";
+                        // print_r($rqi);
                         // array_push($rqi, $r);
                         // $rqi = $r;
                         if ($main_id == null || in_array($main_id, $rqi) == false) {
@@ -145,8 +182,12 @@ class QuizController extends Controller
                             //Mảng chưa id các câu hỏi main  có câu sub thi
                             // $attempt_detail_main = $attempt_detail->whereNotNull('ref_question_id')->toArray();
                             // $main_exam_id = array_unique(select($attempt_detail_main, 'ref_question_id'));
-
-                            $rand = array_rand($q->toArray(), 1);
+                            if (sizeof($q->toArray()) != 0) {
+                                $rand = array_rand($q->toArray(), 1);
+                            } else {
+                                continue;
+                            }
+                            
                             $main_id = $q[$rand]->ref_question_id;
                             // echo "test";
                             // echo $main_id, '<br/>';
@@ -170,7 +211,9 @@ class QuizController extends Controller
                             array_push($arr_q, $q[$rand]);
                         } else {
 
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-10 10:25:10')->get();
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('active', 1)->where('created_at', '>', '2022-03-30 10:25:10')->get();
+                            // echo "<pre>";
+                            // print_r($sub_id);
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
                             // echo "<pre>";
@@ -199,7 +242,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')
-                            ->where('active', 1)->where('lms_questions.id', '>', 1979)->where('lms_questions.created_at', '>', '2022-02-10 10:25:10')
+                            ->where('active', 1)->where('lms_questions.created_at', '>', '2022-03-30 10:25:10')
                             ->whereNull('complex')->where('objective_id', $objective_id)
                             ->get();
                         // $q_id = select($q->toArray(), 'id');
@@ -329,7 +372,7 @@ class QuizController extends Controller
         $result = [];
         // $session = Session::find('18629');
         // $quiz = Quiz::where('quizz_code',$session->teacher_note)->first();
-        $quiz = Quiz::find(120);
+        $quiz = Quiz::find(1347);
 
         // $students = $session->students;
         // $result[] = $session->toArray();
@@ -341,17 +384,23 @@ class QuizController extends Controller
         //Get class
         // $ss = StudentSession::find($student->pivot['id']);
         // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
+<<<<<<< HEAD
+        // $attempts = Attempt::where('quiz_id', $quiz->id)->get();
+        $at = Attempt::find(1541);
+        $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
+=======
         $attempts = Attempt::where('quiz_id', $quiz->id)->get();
-        foreach($attempts as $at){
+        foreach ($attempts as $at) {
             $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
+>>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
             if (!$attempt_detail->first()) {
                 // echo "<pre>";
                 // print_r($student->toArray());
                 //Có bài làm
                 foreach ($questions as $question) {
-    
+
                     $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
-    
+
                     $input['attempt_id'] = $at->id;
                     $input['question_id'] = $question->id;
                     $input['updated_at'] = '2000-01-01 09:37:17';
@@ -360,13 +409,37 @@ class QuizController extends Controller
                     $input['options'] = $rnd_attempt['options'];
                     $input['score'] = $rnd_attempt['score'];
                     $input['comment'] = $rnd_attempt['comment'];
-    
+
                     echo "<pre>";
                     print_r($input);
                     AttemptDetail::create($input);
                 }
             }
-        }
+        // foreach($attempts as $at){
+        //     $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
+        //     if (!$attempt_detail->first()) {
+        //         // echo "<pre>";
+        //         // print_r($student->toArray());
+        //         //Có bài làm
+        //         foreach ($questions as $question) {
+    
+        //             $rnd_attempt = AttemptDetail::where('question_id', $question->id)->whereNotNull('score')->get()->random(1)->toArray()[0];
+    
+        //             $input['attempt_id'] = $at->id;
+        //             $input['question_id'] = $question->id;
+        //             $input['updated_at'] = '2000-01-01 09:37:17';
+        //             $input['fib'] = $rnd_attempt['fib'];
+        //             $input['essay'] = $rnd_attempt['essay'];
+        //             $input['options'] = $rnd_attempt['options'];
+        //             $input['score'] = $rnd_attempt['score'];
+        //             $input['comment'] = $rnd_attempt['comment'];
+    
+        //             echo "<pre>";
+        //             print_r($input);
+        //             AttemptDetail::create($input);
+        //         }
+        //     }
+        // }
         // $attempt = Attempt::find(167);
         // echo "<pre>";
         // print_r($attempt_detail);
@@ -375,7 +448,7 @@ class QuizController extends Controller
         // $student->quiz_id = $attempt->quiz_id;
         // $student->start_time = date('d/m/Y H:i:s', strtotime($attempt->start_time));
 
-        
+
 
 
 
@@ -417,7 +490,7 @@ class QuizController extends Controller
     }
     public function genQuizNine()
     {
-        $config = QuizConfig::find(31);
+        $config = QuizConfig::find(33);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
         $quizzes = [
@@ -433,15 +506,20 @@ class QuizController extends Controller
         foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
-            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
+<<<<<<< HEAD
+            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-04-05')->get();
             foreach($topic_questions as $topic_question){
+=======
+            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
+            foreach ($topic_questions as $topic_question) {
+>>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
                     print_r($question->id);
                     echo "=";
-                    if($question->question_type == 'main' || in_array($question->id, $existed) || $question->active != 1) continue;
+                    if ($question->question_type == 'main' || in_array($question->id, $existed) || $question->active != 1) continue;
                     array_push($existed, $question->id);
-                    print_r($topic_question->toArray());    
+                    print_r($topic_question->toArray());
                     $option_config = [];
                     $o = Option::where('question_id', $question->id)->get();
                     foreach ($o as $k => $op) {
@@ -458,7 +536,7 @@ class QuizController extends Controller
                     $quiz->questions()->attach($q_q);
 
                     break;
-                }else{
+                } else {
                     continue;
                 }
             }
@@ -633,7 +711,7 @@ class QuizController extends Controller
                             array_push($arr_q, $q[$rand]);
                         } else {
 
-                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-10 10:25:10')->get();
+                            $q_s = Question::where('ref_question_id', $main_id)->whereNotIn('id', $sub_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-30 10:25:10')->get();
                             $rand = array_rand($q_s->toArray(), 1);
                             array_push($sub_id, $q_s[$rand]->id);
                             // echo "<pre>";
@@ -661,7 +739,7 @@ class QuizController extends Controller
                         $q =  TopicQuestion::where('topic_id', $qt->topic_id)
                             ->join('lms_question_objective', 'lms_topic_question.question_id', 'lms_question_objective.question_id')
                             ->join('lms_questions', 'lms_topic_question.question_id', 'lms_questions.id')->where('active', 1)
-                            ->whereNull('complex')->where('objective_id', $objective_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01 10:25:10')
+                            ->whereNull('complex')->where('objective_id', $objective_id)->where('created_at', '>', '2022-03-30 10:25:10')
                             ->get();
                         $q_id = select($q->toArray(), 'id');
 
@@ -800,16 +878,16 @@ class QuizController extends Controller
     }
     public function markMc(Request $request)
     {
-        $fibs = Question::where('question_type', 'mc')->where('domain', 'Tiếng Việt')->where('grade', '5')->where('created_at', '>', '2022-03-10 10:25:10')->get();
+        $fibs = Question::where('question_type', 'mc')->where('grade', '5')->where('created_at', '>', '2022-03-29 10:25:10')->get();
         foreach ($fibs as $fib) {
             $ad = AttemptDetail::where('question_id', $fib->id)->get();
             foreach ($ad as $a) {
                 if ($a->options) {
                     $option = Option::find($a->options);
                     if ($option->weight > 0) {
-                        if($fib->domain == 'Tiếng Việt'){
+                        if ($fib->domain == 'Tiếng Việt') {
                             $a->score = 0.5;
-                        }else{
+                        } else {
                             $a->score = 1;
                         }
                         // echo $option->content. "<br/>";

@@ -341,10 +341,71 @@ class GuestController extends Controller
         return redirect('https://vietelite.edu.vn/dangkythanhcong/');
         // return response()->json($request->toArray());
     }
-    public function handleSimplifiedForm(Request $request){
+    // public function handleSimplifiedForm(Request $request){
+    //     $rules = [
+    //         'sname' => 'required',
+    //         'dob' => 'required',
+    //         'pphone' => 'required',
+    //         'pemail' => 'required',
+    //         'g-recaptcha-response' => 'required|captcha'
+    //     ];
+    //     $messages = [
+    //         'g-recaptcha-response.required' => 'Vui lòng xác nhận bạn không phải ROBOT'
+    //     ];
+    //     $this->validate($request, $rules, $messages);
+    //     //Source query
+    //     $query = ['utm_medium' => '', 'utm_source'=>'', 'utm_campaign'=>''];
+    //     $url = parse_url($request->url);
+    //     if(array_key_exists('query',$url)){
+    //         parse_str($url['query'], $query);
+    //     }
+    //     //chuẩn hóa dữ liệu
+    //     $pphone = str_replace('(','', str_replace(')','', str_replace('-','',$request->pphone)));
+    //     $dob = date('Y-m-d', strtotime(str_replace('/','-', $request->dob)));
+
+    //     //Check dữ liệu phụ huynh
+    //     $p = Parents::where('phone', $pphone)->orWhere('alt_phone', $pphone)->first();
+    //     if($p){// Phụ huynh đã tồn tại trong csdl
+    //         //Check học sinh
+    //         $s = Student::where('fullname', $request->sname)->where('dob', $dob)->first();
+    //         if($s){//Đã tồn tại học sinh
+    //             //Tạo mới ghi danh
+    //             $this->createEntrance($s, $request->center, NULL, $request->note, $query);              
+    //         }
+    //         else{
+    //             $student['fullname'] = $request->sname;
+    //             $student['parent_id'] = $p->id;
+    //             $student['dob'] = $dob;
+    //             $student['school'] = $request->school;
+    //             $student['relationship_id'] = $p->relationship_id;
+    //             $student = Student::create($student);
+    //             $this->createEntrance($student, $request->center, NULL, $request->note, $query);
+    //         }
+    //     }else{
+    //         $relationship = Relationship::orderBy('weight', 'asc')->first();          
+    //         $parent['fullname'] = $request->pname;
+    //         $parent['phone'] = $pphone;
+    //         $parent['email'] = $request->pemail;
+    //         $parent['relationship_id'] = $relationship->id;
+    //         $parent = Parents::create($parent);
+
+    //         $student['fullname'] = $request->sname;
+    //         $student['dob'] = $dob;
+    //         $student['school'] = $request->school;
+    //         $student['parent_id'] = $parent->id;
+    //         $student['relationship_id'] = $relationship->id;
+    //         $student = Student::create($student);
+    //         $this->createEntrance($student, $request->center, NULL, $request->note, $query);
+    //     }
+    //     return redirect('https://vietelite.edu.vn/dangkythanhcong/');
+
+    // }
+    public function handleSimplifiedForm(Request $request)
+    {
+        // dd($request);
         $rules = [
-            'sname' => 'required',
-            'dob' => 'required',
+            'pname' => 'required',
+            // 'dob' => 'required',
             'pphone' => 'required',
             'pemail' => 'required',
             'g-recaptcha-response' => 'required|captcha'
@@ -354,50 +415,48 @@ class GuestController extends Controller
         ];
         $this->validate($request, $rules, $messages);
         //Source query
-        $query = ['utm_medium' => '', 'utm_source'=>'', 'utm_campaign'=>''];
+        $query = ['utm_medium' => '', 'utm_source' => '', 'utm_campaign' => ''];
         $url = parse_url($request->url);
-        if(array_key_exists('query',$url)){
+        if (array_key_exists('query', $url)) {
             parse_str($url['query'], $query);
         }
         //chuẩn hóa dữ liệu
-        $pphone = str_replace('(','', str_replace(')','', str_replace('-','',$request->pphone)));
-        $dob = date('Y-m-d', strtotime(str_replace('/','-', $request->dob)));
+        $pphone = str_replace('(', '', str_replace(')', '', str_replace('-', '', $request->pphone)));
+        $dob = date('Y-m-d', strtotime(str_replace('/', '-', $request->dob)));
 
         //Check dữ liệu phụ huynh
         $p = Parents::where('phone', $pphone)->orWhere('alt_phone', $pphone)->first();
-        if($p){// Phụ huynh đã tồn tại trong csdl
+        if ($p) { // Phụ huynh đã tồn tại trong csdl
             //Check học sinh
-            $s = Student::where('fullname', $request->sname)->where('dob', $dob)->first();
-            if($s){//Đã tồn tại học sinh
-                //Tạo mới ghi danh
-                $this->createEntrance($s, $request->center, NULL, $request->note, $query);              
-            }
-            else{
-                $student['fullname'] = $request->sname;
-                $student['parent_id'] = $p->id;
-                $student['dob'] = $dob;
-                $student['school'] = $request->school;
-                $student['relationship_id'] = $p->relationship_id;
-                $student = Student::create($student);
-                $this->createEntrance($student, $request->center, NULL, $request->note, $query);
-            }
-        }else{
-            $relationship = Relationship::orderBy('weight', 'asc')->first();          
+            // $s = Student::where('fullname', $request->sname)->where('dob', $dob)->first();
+            // if ($s) { //Đã tồn tại học sinh
+            //     //Tạo mới ghi danh
+            //     $this->createEntrance($s, $request->center, NULL, $request->note, $query);
+            // } else {
+            $student['fullname'] = "Con của PH " . $request->pname;
+            $student['parent_id'] = $p->id;
+            // $student['dob'] = $dob;
+            // $student['school'] = $request->school;
+            $student['relationship_id'] = 5;
+            $student = Student::create($student);
+            $this->createEntrance($student, 1, NULL,$request->sclass ." - ".  $request->note, $query);
+            // }
+        } else {
+            $relationship = Relationship::orderBy('weight', 'asc')->first();
             $parent['fullname'] = $request->pname;
             $parent['phone'] = $pphone;
             $parent['email'] = $request->pemail;
             $parent['relationship_id'] = $relationship->id;
             $parent = Parents::create($parent);
 
-            $student['fullname'] = $request->sname;
-            $student['dob'] = $dob;
-            $student['school'] = $request->school;
+            $student['fullname'] = "Con của PH " . $request->pname;
             $student['parent_id'] = $parent->id;
-            $student['relationship_id'] = $relationship->id;
+            // $student['dob'] = $dob;
+            // $student['school'] = $request->school;
+            $student['relationship_id'] = 1;
             $student = Student::create($student);
-            $this->createEntrance($student, $request->center, NULL, $request->note, $query);
+            $this->createEntrance($student, 1, NULL, $request->sclass ." - ". $request->note, $query);
         }
         return redirect('https://vietelite.edu.vn/dangkythanhcong/');
-
     }
 }

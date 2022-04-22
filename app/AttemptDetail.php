@@ -12,4 +12,8 @@ class AttemptDetail extends Model
     protected $casts = [
         'fib' => 'array',
     ];
+    public function question()
+    {
+        return $this->belongsTo(Question::class,  'question_id');
+    }
 }
