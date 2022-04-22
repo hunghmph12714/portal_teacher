@@ -526,7 +526,12 @@ class SessionController extends Controller
             $event = Classes::find($session->class_id);
             $students = $session->students()->where('attendance', 'present')->select('students.fullname as label', 'students.id as value', DB::raw('DATE_FORMAT(dob, "%d/%m/%Y") AS dob'),'students.school')->get();
             foreach($students as $key => $s){
-                $students[$key]['code'] = $event->code . "" . StudentClass::where('class_id', $event->id)->where('student_id', $s->value)->first()->id;
+                $sc = StudentClass::where('class_id', $event->id)->where('student_id', $s->value)->first();
+                if($sc){
+                    $students[$key]['code'] = $sc->id;
+
+                }else $students[$key]['code'] = '';
+
                 $student = Student::find($s->value);
                 $active_class = $student->activeClasses;
                 if(!count($active_class) == 0){
