@@ -62,26 +62,26 @@ const ListResult = (props) => {
                 <Chip variant="outlined" label={sname} size="small" />      
             )
         },
-        {
-            title: "Lớp học",
-            field: "classes",
-            headerStyle: {
-                padding: '0px',
-                fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
-            },
-            render: rowData => {
-                return (                                
-                    <>
-                    {
-                        rowData.classes.map(c => {return (<Chip variant="outlined" label={c.code} size="small" className="classes"/>)})
-                    } 
-                    </>    
-                )
-            },
-        },
+        // {
+        //     title: "Lớp học",
+        //     field: "classes",
+        //     headerStyle: {
+        //         padding: '0px',
+        //         fontWeight: '600',
+        //     },
+        //     cellStyle: {
+        //         padding: '0px',
+        //     },
+        //     render: rowData => {
+        //         return (                                
+        //             <>
+        //             {
+        //                 rowData.classes.map(c => {return (<Chip variant="outlined" label={c.code} size="small" className="classes"/>)})
+        //             } 
+        //             </>    
+        //         )
+        //     },
+        // },
         {
             title: "Cơ sở",
             field: "center",
