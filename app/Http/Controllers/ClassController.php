@@ -1202,6 +1202,31 @@ class ClassController extends Controller
                         $student->sbd = '';
 
                     }
+                    $active_class = $student->activeClasses;
+                    if(!count($active_class) == 0){
+                        $c = Classes::find($active_class[0]->id);
+                        switch ($c->center_id) {
+                            case 2:                           
+                            case 4:
+                                # code...
+                                $student->center = 'TDH-DQ';
+                                break;
+                            case 3:
+                                # code...
+                                $student->center = 'PTT';
+                                break;
+                            case 5:
+                            case 1:
+                                $student->center = 'TY';
+                                # code...
+                                break;
+                            default:
+                                # code...
+                                break;
+                        }
+                    }else{
+                        $student->center = '';
+                    }
                     // $obj_ids = array($ss->objectives);
                     //     $objs = Objective::whereIn('id', $obj_ids)->get();
                     //     $student->objectives = implode(array_column($objs->toArray(), 'content'));

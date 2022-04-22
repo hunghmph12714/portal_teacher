@@ -82,6 +82,17 @@ const ListResult = (props) => {
                 )
             },
         },
+        {
+            title: "Cơ sở",
+            field: "center",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
         // //Phụ huynh
         // {
         //     title: "Phụ huynh",
