@@ -31,6 +31,25 @@ use App\Objective;
 class ClassController extends Controller
 {
     // Phòng học
+    protected function convertSession(){
+        //18619-400
+        //21422-408
+        $ss = StudentSession::where('session_id', 18619)->get();
+        echo sizeof($ss->toArray());
+        foreach($ss as $s){
+            //
+            $ss->session_id = 21422;
+            // $ss->save();
+
+            $sc = StudentClass::where('class_id', 400)->where('student_id', $s->student_id)->first();
+            $transactions = Transaction::where('class_id', 400)->where('student_id', $s->student_id)->get();
+
+            $input = $transactions->toArray();
+            
+            echo "<pre>";
+            print_r($input);
+        }
+    }
     protected function subscribe()
     {
         $classes = Classes::where('code', 'LIKE', '%5.%')->where('year', 2021)->get();
@@ -1176,6 +1195,8 @@ class ClassController extends Controller
                 foreach ($students as $k => $student) {
                     //Get class
                     $ss = StudentSession::find($student->pivot['id']);
+                    $sc = StudentClass::where('student_id', $student->id)->where('class_id', $request->event_id)->first();
+                    $student->sbd = $sc->id;
                     // $obj_ids = array($ss->objectives);
                     //     $objs = Objective::whereIn('id', $obj_ids)->get();
                     //     $student->objectives = implode(array_column($objs->toArray(), 'content'));
@@ -1689,8 +1710,8 @@ class ClassController extends Controller
                 if (in_array($s->id, $arr_student_id) == false) {
                     $data = [
                         'student_id' => $s->id,
-                        'class_id' => 405,
-                        'entrance_date' => '2022-03-12',
+                        'class_id' => 407,
+                        'entrance_date' => '2022-04-07',
                         'status' => 'active'
                     ];
                     $a = StudentClass::create($data);

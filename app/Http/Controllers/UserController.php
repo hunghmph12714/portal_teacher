@@ -128,7 +128,7 @@ class UserController extends Controller
             if ($jsDateTS !== false)
                 $user->dob =  date('Y-m-d', $jsDateTS);
             else
-                $user->dob = null;
+            $user->dob = null;
             $user->save();
             return response()->json($user);
         }

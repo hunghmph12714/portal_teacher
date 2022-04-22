@@ -148,6 +148,16 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
         Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2 hoặc <a href='tel: 0949845665'>0949.845.665</a>  để được giải đáp kịp thời. <br/> 
         @break
     @default
+    *NH: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+        Chủ TK: Phan Việt Anh<br/>
+        Số TK: <a href="#"><strong>385666888</strong> </a> <br/>
+        *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
+        <br/><br>
+
+        <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
+        Quý phụ huynh vui lòng chụp lại màn hình biên lai/ sao kê ngân hàng và gửi vào Email: cs.phamtuantai@vietelite.edu.vn  <br/>
+        Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2 hoặc <a href='tel: 0949845665'>0949.845.665</a>  để được giải đáp kịp thời. <br/> 
+        @break
     
 @endswitch
 

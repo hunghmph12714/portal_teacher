@@ -32,7 +32,7 @@ Cảm ơn quý Phụ huynh đã tin tưởng và lựa chọn chúng tôi trong 
 VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng để giúp quý phụ huynh dễ dàng theo dõi các thông tin trước kỳ thi và cách thức tra cứu điểm cho con sau kỳ thi.
 <div class="container">
   <div class="row">
-  @if(!$result['is_vee'])
+  <!-- @if(!$result['is_vee'])
     <div class="col-sm">
         
         <h3><u>Thông tin xác nhận lệ phí</u></h3>
@@ -45,9 +45,9 @@ VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng đ
           </li>
         </ul>
     </div>
-  @endif
+  @endif -->
     
-    <div class="col-sm">
+    <!-- <div class="col-sm">
         <h3><u>Thông tin khảo sát Online</u></h3>
         <ul>
           <li>
@@ -61,6 +61,28 @@ VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng đ
           </li>
           <li>
              Nhận xét và kết quả thi: Sẽ được cập nhật trên Portal Khảo sát Online.
+          </li>
+        </ul>
+    </div>
+  </div>   	 -->
+    <div class="col-sm">
+        <h3><u>Thông tin khảo sát Offline</u></h3>
+        <ul>
+          <li>
+            <b> Địa điểm thi: </b>  Cơ sở Trung Yên: số 83 phố Xuân Quỳnh, Trung Hoà, Cầu Giấy </a>
+          </li>
+          <li>
+            <b> Số báo danh: </b> {{$result['sbd']}} 
+          </li>
+          <li>
+            <b> Mục tiêu khảo sát: </b> {{$result['objectives']}} <br/>
+            *Vui lòng liên hệ cơ sở nếu mục tiêu khảo sát chưa được lựa chọn.
+          </li>
+          <li>
+             <b>Nhận xét và kết quả thi:</b> trước 30/04/2022
+          </li>
+          <li>
+             <b>Lưu ý:</b> Học sinh có mặt trước thời gian thi 15 phút.
           </li>
         </ul>
     </div>

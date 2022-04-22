@@ -634,7 +634,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 // Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
 // Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
-// Route::get('export-student', [StudentController::class, 'exportStudent']);
-// Route::get('auto-register', [ClassController::class, 'autoRegister']);
+Route::get('export-student', [StudentController::class, 'exportStudent']);
+Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('student-ptt', 'ClassController@studentPtt');
 // Route::get('entrance-lose','EntranceController@EntranceLose');
+// Route::get('bnm', 'QuizController@bnm');
+Route::get('/convert-session', 'ClassController@convertSession');

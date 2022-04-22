@@ -722,6 +722,8 @@ class EntranceController extends Controller
             
             $entrance->status_id = $status->id;
             $entrance->save();
+            $this->enrollStudent($entrance->class_id, $entrance->student_id, $entrance->enroll_date);
+
             
         }
 

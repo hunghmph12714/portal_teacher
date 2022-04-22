@@ -22,13 +22,18 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
             // ->where(activeClasses(), true)
             ->join('student_class', 'students.id', 'student_class.student_id')
             ->join('classes', 'student_class.class_id', 'classes.id')
-            ->where('status', 'active')->where('classes.type', 'class')
+            ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2021')
             ->join('courses', 'classes.course_id', 'courses.id')
-            ->select('students.id as id',  'courses.grade', 'parents.email as email', 'students.fullname as student_name', 'parents.fullname as parent_name', 'year')
+            ->select('students.sgd_id as sgd_id','students.id as id', 'students.fullname as student_name','students.school','parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone' ,  'classes.code')
             ->groupBy('students.id')
             ->get();
         // dd(1);
-
+        $result = $students->toArray();
+        foreach($students as $s){
+            $classes = $s->activeClasses()->select('classes.code')->get();
+            $code = implode(',', array_column($classes->toArray(), 'code'));
+            $s->code = $code;
+        }
         return $students;
     }
 
@@ -38,11 +43,14 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            "Name 1",
-            "Email 1",
+            "ID sở",
+            "ID Vee",
             "Ho ten hoc sinh",
-            "Khoi lop",
-            "Nam hoc"
+            "Trường",
+            "Họ tên Phụ huynh",
+            "Email",
+            "Số điện thoại",
+            "Lớp Vee"
 
         ];
     }
@@ -61,11 +69,15 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
     public function map($students): array
     {
         return [
+            $students->sgd_id,
+            $students->id,
+            $students->student_name,
+            $students->school,
             $students->parent_name,
             $students->email,
-            $students->student_name,
-            $students->grade,
-            $students->year
+            $students->phone,
+            $students->code,
+
         ];
     }
 }

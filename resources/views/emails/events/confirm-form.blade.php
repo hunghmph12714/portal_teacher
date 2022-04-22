@@ -30,7 +30,7 @@
 Kính gửi phụ huynh con <b>{{$result['student']['name']}}</b>,<br/>
 Cảm ơn quý phụ huynh đã tin tưởng và lựa chọn Viet Elite Education trong kỳ thi thử cho con sắp tới. Chúng tôi đã nhận được thông tin đăng ký của Quý phụ huynh. <br/>
 Để hoàn thành thủ tục đăng ký, Quý phụ huynh vui lòng thanh toán Lệ phí thi trước thời gian quy định.<br/>
-Trong trường hợp quý phụ huynh có con đang theo học tại VietElite, xin vui lòng chờ trong vòng 2h (giờ làm việc) để nhận được email xác nhận giảm trừ lệ phí trước khi chính thức nộp tiền.<br/></p>
+</p>
 <div class="container">
   <div class="row">
     <div class="col-sm">
@@ -48,7 +48,10 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
             @foreach($result['product'] as $product)
             <tr>
               <td>{{$product['content']}}  </td>
-              <td>{{$product['time_formated']}}  </td>
+              <td>
+                  {{$product['time_formated']}} 
+              <!--9/4 -15/4-->
+              </td>
               <td>{{$product['note']}}  </td>
             </tr>
             @endforeach
@@ -59,24 +62,34 @@ Trong trường hợp quý phụ huynh có con đang theo học tại VietElite,
     <div class="col-sm">
         <h3><u> Lệ phí thi </u></h3>
         <b>Số tiền: </b> {{number_format($result['total_fee'])}} đ<br/>
-        <b>Địa điểm thi: </b> {{$result['location']}} <br/>
+        <b>Địa điểm thi: </b>
+        <!--{{$result['location']}}-->   83 Xuân Quỳnh, Trung Hoà, Cầu Giấy, Hà Nội
+        <br/>
     </div>    
   </div>
   <div class="row">
     <div class="col-sm">
       <h3> <u>Thanh toán Chuyển khoản </u></h3>
       
-      <b> Ngân hàng:</b> VP BANK - CN Trung Hòa Nhân Chính <br/>
-      <b> Số tài khoản:</b> 6873065565 <br/>
+      <b> Ngân hàng:</b> Sài Gòn Hà Nội SHB, CN Kinh Đô, PGD Kim Giang <br/>
+      <b> Số tài khoản:</b> 8818698888 <br/>
       <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
       <b> Nội dung CK:</b> {{$result['ck_content']}} <br/>
     </div>
+    
+    
+    
+<!--    THÔNG TIN THANH TOÁN:-->
+<!--NH: Sài Gòn Hà Nội SHB, CN Kinh Đô, PGD Kim Giang-->
+<!--Chủ TK: Phan Việt Anh-->
+<!--Số TK: 8818698888-->
+<!--Nội dung chuyển khoản: KS6_Họ và tên_số điện thoại-->
     <div class="col-sm">
         <h3> <u>Thanh toán Tiền mặt </u></h3>
         <b> Tại các địa điểm </b>
         <ul>
           <li>
-            Nhà 23 lô 14A Trung Yên 11, Trung Hoà, Cầu Giấy, Hà Nội
+      83 Xuân Quỳnh, Trung Hoà, Cầu Giấy, Hà Nội
           </li>
           <li>
             Nhà 33, ngõ 91 Trần Duy Hưng, Trung Hòa, Cầu Giấy, Hà Nội
