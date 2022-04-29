@@ -183,14 +183,14 @@
             <div class="col-sm">   
 <!-- <h3></b>Hiện tại hệ thống tài khoản ngân hàng của trung tâm đang gặp sự cố, quý Phụ Huynh vui lòng nộp tiền mặt tại quầy lễ tân.</b></h3><br/>
 Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/> -->
-            <!-- <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
+             <strong>THÔNG TIN THANH TOÁN:</strong> <br/>
 
             @switch($result['center_id'])
                 @case(5)
-                                         
-                            * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
-                            Chủ TK: Phan Việt Anh <br/>
-                            Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
+                        <div>
+                            <b> Ngân hàng:</b> Sài Gòn Hà Nội SHB, CN Kinh Đô, PGD Kim Giang <br/>
+                            <b> Số tài khoản:</b> 8818698888 <br/>
+                            <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
                             *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
                         </div>
                         <div class="col-sm">
@@ -206,9 +206,9 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                 @case(4)
                     <div class="row header">
                         <div class="col-sm">                        
-                            Ngân hàng: <strong>VIB CN Ba Đình </strong> <br/>
+                            Ngân hàng: <strong>VP Bank - CN Trung Hòa Nhân Chính </strong> <br/>
                             Chủ TK: Phan Việt Anh<br/>
-                            Số TK: <a href="#"><strong>015704060030799</strong> </a> <br/>
+                            Số TK: <a href="#"><strong>6873065565</strong> </a> <br/>
                             *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
                         </div>
                         <div class="col-sm">
@@ -231,9 +231,10 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 2 hoặc <a href='tel: 0949845665'>0949.845.665 </a> để được giải đáp kịp thời. <br/>
                     @break
                 @default
-                    * NH:<strong> ACB CN Huỳnh Thúc Kháng </strong><br/>
-                    Chủ TK: Phan Việt Anh <br/>
-                    Số TK:<a href="#"><strong>26856688</strong> </a>  <br/>
+                            <b> Ngân hàng:</b> Sài Gòn Hà Nội SHB, CN Kinh Đô, PGD Kim Giang <br/>
+                            <b> Số tài khoản:</b> 8818698888 <br/>
+                            <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
+                            
                     *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
                     <br/><br>
 
@@ -242,7 +243,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                     Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 hoặc <a href='tel: 0366765565'>03667.65565</a>  để được giải đáp kịp thời. <br/>
                     @break
             @endswitch
-     -->
+     
         </div>
     </section>
 </body>

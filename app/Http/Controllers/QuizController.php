@@ -26,42 +26,9 @@ use Mail;
 class QuizController extends Controller
 {
     //
-<<<<<<< HEAD
-    public function bnm(){
-        
-        $at = AttemptDetail::where('attempt_id', 1560)->where('question_id', '<=', 1312)->get();
 
-        foreach($at as $a){
-            $question = Question::find($a->question_id);
-            if($question){
-                $option = Option::find($a->options);
-                if($option->weight > 0){
-                    print_r($option->weight);
-                    $attempt = AttemptDetail::find($a->id);
-                    $attempt->score = 1;
-                    $attempt->save();
-                    // $a->score = 1;
-                    // $a->save;
-                }
-                // $input['quiz_id'] = 1379;
-                // $input['question_id'] = $question->id;
-                // $input['option_config'] = array_column(Option::where('question_id', $question->id)->select('id')->get()->toArray(), 'id');
-                // $input['max_score'] = 1;
-
-                // $quiz = Quiz::find(1379);
-                // $quiz->questions()->attach([$question->id => $input]);
-                // QuizQuestion::create($input);
-                // print_r($input);
-            }
-        }
-        
-
-    }
-    public function checkQuestionDeleted(){
-=======
     public function checkQuestionDeleted()
     {
->>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
         // $ad = AttemptDetail::where('attempt_id', 1090)->get();
         // foreach($ad as $a){
         //     $question = Question::find($a->question_id);
@@ -384,15 +351,10 @@ class QuizController extends Controller
         //Get class
         // $ss = StudentSession::find($student->pivot['id']);
         // $attempt = Attempt::where('student_session', $student->pivot['id'])->first();
-<<<<<<< HEAD
-        // $attempts = Attempt::where('quiz_id', $quiz->id)->get();
-        $at = Attempt::find(1541);
-        $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
-=======
+
         $attempts = Attempt::where('quiz_id', $quiz->id)->get();
         foreach ($attempts as $at) {
             $attempt_detail = AttemptDetail::where('attempt_id', $at->id)->get();
->>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
             if (!$attempt_detail->first()) {
                 // echo "<pre>";
                 // print_r($student->toArray());
@@ -506,13 +468,9 @@ class QuizController extends Controller
         foreach ($config_topic as $cf) {
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
-<<<<<<< HEAD
-            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-04-05')->get();
-            foreach($topic_questions as $topic_question){
-=======
+
             $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
             foreach ($topic_questions as $topic_question) {
->>>>>>> 3abe6d5c039a4abd7360d74ef08942e79fade7bb
                 $question = Question::find($topic_question->question_id);
                 if ($question) {
                     print_r($question->id);
