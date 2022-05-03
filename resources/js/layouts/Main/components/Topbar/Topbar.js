@@ -96,6 +96,7 @@ const Topbar = props => {
           >
             <MenuItem value={'2020'}>Năm học 2020-2021</MenuItem>
             <MenuItem value={'2021'}>Năm học 2021-2022</MenuItem>
+            <MenuItem value={'2022'}>Năm học 2022-2023</MenuItem>
           </Select>
         </FormControl>
         <div className={classes.flexGrow} />
