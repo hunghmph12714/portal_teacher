@@ -24,6 +24,7 @@ use App\Attempt;
 use App\AttemptDetail;
 use App\Quiz;
 use App\Question;
+use App\User;
 use App\Option;
 use App\Criteria;
 use App\Objective;
@@ -535,14 +536,17 @@ class ClassController extends Controller
         $this->validate($request, $rules);
         $request = $request->toArray();
         $request['open_date'] = date('Y-m-d', $request['open_date']);
-        $year = date('Y', strtotime($request['open_date']));
-        $p_year = $year - 1;
-        $this_year = date('Y-m-d', strtotime('15-05-' . $year));
-        $previous_year = date('Y-m-d', strtotime('15-05-' . $p_year));
-        $request['year'] = $year;
-        if ($request['open_date'] < $this_year && $request['open_date'] > $previous_year) $request['year'] = $p_year;
-        $class = Classes::create($request);
+        // $year = date('Y', strtotime($request['open_date']));
+        // $p_year = $year - 1;
+        // $this_year = date('Y-m-d', strtotime('15-05-' . $year));
+        // $previous_year = date('Y-m-d', strtotime('15-05-' . $p_year));
+        // $request['year'] = $year;
+        // if ($request['open_date'] < $this_year && $request['open_date'] > $previous_year) $request['year'] = $p_year;
+        $request['year'] = auth()->user()->wp_year;
 
+        $class = Classes::create($request);
+        $user = User::find(auth()->user()->id);
+        $user->classes()->attach([$class->id => ['manager' => 0]]);
         $result = Classes::where('classes.id', $class->id)->select(
             'classes.id as id',
             'classes.name as name',
