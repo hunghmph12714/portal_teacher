@@ -262,16 +262,7 @@ fbq('track', 'PageView');
     <div class="container-fluid">
         <form action="{{ url('handle-simplified-form') }}" method="POST" role="form">
             {{ csrf_field() }}
-            {{-- @csrf
-
-
-
-
-
-
-
-
-            --}}
+          <!--@csrf-->
             <p>Hãy cho chúng tôi biết khoá học bạn quan tâm và những thắc mắc của bạn. Chuyên viên tư vấn của VietElite
                 sẽ giải đáp thắc mắc và hỗ trợ bạn một cách tốt nhất. </p>
             <input class="form-control" id="inputEmail4" name="pname" required placeholder="Họ tên phụ huynh">
