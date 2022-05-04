@@ -69,17 +69,17 @@ VietElite xin gửi tới quý Phụ huynh một số thông tin quan trọng đ
         <h3><u>Thông tin khảo sát Offline</u></h3>
         <ul>
           <li>
-            <b> Địa điểm thi: </b>  Cơ sở Trung Yên: số 83 phố Xuân Quỳnh, Trung Hoà, Cầu Giấy </a>
+            <b> Địa điểm thi: </b> Số 33, Ngõ 91 Trần Duy Hưng, Trung Hoà, Cầu Giấy   </a>
           </li>
           <li>
             <b> Số báo danh: </b> {{$result['sbd']}} 
           </li>
-          <li>
+          <!-- <li>
             <b> Mục tiêu khảo sát: </b> {{$result['objectives']}} <br/>
             *Vui lòng liên hệ cơ sở nếu mục tiêu khảo sát chưa được lựa chọn.
-          </li>
+          </li> -->
           <li>
-             <b>Nhận xét và kết quả thi:</b> trước 30/04/2022
+             <b>Nhận xét và kết quả thi:</b> trước 14/04/2022
           </li>
           <li>
              <b>Lưu ý:</b> Học sinh có mặt trước thời gian thi 15 phút.

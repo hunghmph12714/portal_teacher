@@ -26,6 +26,47 @@ use Mail;
 class QuizController extends Controller
 {
     //
+    public function hotFix(){
+        $session = Session::find(21422);
+        $ss = $session->students;
+       
+        foreach($ss as $student){
+            $input['title'] = 'Đề tổ hợp Toán - Tiếng Việt - Tiếng Anh';
+            $input['quizz_code'] = 3116;
+            $input['duration'] = 165;
+            $input['quiz_config'] = 10;
+            $input['student_session_id'] = $student->pivot['id'];
+            $quiz = Quiz::create($input);
+
+            $old_quiz = Quiz::find(1621);
+            $old_question = $old_quiz->questions;
+            // echo "<pre>";
+            // print_r($old_question->toArray());
+            foreach($old_question as $oq){
+                $a['option_config'] = $oq->pivot['option_config'];
+                $a['max_score'] = $oq->pivot['max_score'];
+                $quiz->questions()->attach([$oq->id => $a]);
+            }
+            $attempt['quiz_id'] = $quiz->id;
+            $attempt['start_time'] = '2022-04-23 08:00:00';
+            $attempt['student_session'] = $student->pivot['id'];
+            $attempt['parent_id'] = $student->parent_id;
+            $at = Attempt::create($attempt);
+            $questions = $quiz->questions;
+
+            foreach($questions as $q){
+                $ad['attempt_id'] = $at->id;
+                $ad['question_id'] = $q->id;
+                echo "<pre>";
+                print_r($ad);
+                AttemptDetail::create($ad);
+            }
+            
+            echo "<pre>";
+            print_r($attempt);
+            
+        }
+    }
 
     public function checkQuestionDeleted()
     {
@@ -418,7 +459,7 @@ class QuizController extends Controller
         // echo $a;
         // dd($result);    
         // return response()->json($result);
-    }
+    }}
 
     public function checkSs()
     {

@@ -641,4 +641,5 @@ Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('student-ptt', 'ClassController@studentPtt');
 // Route::get('entrance-lose','EntranceController@EntranceLose');
 // Route::get('bnm', 'QuizController@bnm');
-Route::get('/convert-session', 'ClassController@convertSession');
+// Route::get('/convert-session', 'ClassController@convertSession');
+Route::get('/hot-fix', 'QuizController@hotFix');
