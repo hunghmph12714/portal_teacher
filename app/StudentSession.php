@@ -11,4 +11,8 @@ class StudentSession extends Pivot
     protected $fillable = ['student_id','session_id','attendance','type','score','note','attendance_note','logs','max_score','btvn_score','btvn_max','btvn_complete','comment','btvn_comment','checked', 'upload_exercice','objectives'];
     protected $casts = ['logs' => 'array', 'objectives' => 'array'];
     public $incrementing = true;
+     public function attempt()
+    {
+        return $this->hasOne(Attempt::class, 'id', 'student_session');
+    }
 }

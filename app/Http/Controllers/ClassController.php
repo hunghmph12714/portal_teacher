@@ -666,8 +666,8 @@ class ClassController extends Controller
     }
     protected function getEvents()
     {
-
-        $result = Classes::where('classes.type', 'event')->select(
+        $year = auth()->user()->wp_year;
+        $result = Classes::where('classes.type', 'event')->where('year', $year)->select(
             'classes.id as id',
             'classes.name as name',
             'classes.code as code',
@@ -701,6 +701,7 @@ class ClassController extends Controller
         $request['center_id'] = -1;
         $request['course_id'] = -1;
         $request['type'] = 'event';
+        $request['year'] = auth()->user()->wp_year;
         $class = Classes::create($request);
 
         $result = Classes::where('classes.id', $class->id)->select(

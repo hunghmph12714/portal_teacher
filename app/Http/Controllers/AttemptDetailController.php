@@ -6,7 +6,9 @@ use App\Attempt;
 use App\AttemptDetail;
 use App\Criteria;
 use App\QuizQuestion;
+use App\Session;
 use App\Student;
+use App\StudentClass;
 use App\StudentSession;
 use Illuminate\Http\Request;
 
@@ -118,5 +120,54 @@ class AttemptDetailController extends Controller
             return response()->json($alert);
         }
         return 'chưa có bài';
+    }
+    
+     public function autoAddAttempt($session_id)
+    {
+        $student_sessions = StudentSession::where('session_id', $session_id)->get();
+        $student_sessions->load('attempt');
+        $exam=null;
+        dd( $student_sessions);
+        foreach ($student_sessions as $s){
+            if($s->attempt==true||$s->attempt!=null||$s->attempt){
+                dd(1);
+                $exam=$s->id;
+                break;
+            }                dd(1);
+
+        }
+        if($exam==null){
+            dd('không có bài mẫu');
+        }
+        $attempt = Attempt::where('student_session',  $exam)->first();
+        if ($attempt) {
+            $attempt_details = AttemptDetail::where('attempt_id', $attempt->id)->get();
+            if (!$attempt_details ) {
+                dd('không có attempt_detail');
+            }
+            // dd($student_sessions);
+            foreach ($student_sessions as $ss) {
+                if ($ss->attempt == null || !$ss->attempt || $ss->attempt == false) {
+                            //   dd(1);
+                   $at = [
+                        'quiz_id' =>  $attempt->quiz_id,
+                        'start_time' => '2022-05-07 16:37:03',
+                        'finish_time' => '2022-05-07 18:52:59',
+                        'student_session' => $ss->id,
+                    ];
+                    // dd(   $at);
+                    $creat_attempt = Attempt::create($at);
+                    foreach ($attempt_details as $ad) {
+                        $data_ad = [
+                            'attempt_id' => $creat_attempt->id,
+                            'question_id' => $ad->question_id,
+                        ];
+                        $creat_attempt_detail = AttemptDetail::create($data_ad);
+                    }
+                }
+            }
+            dd('thanh cong');
+        }
+        dd('không có attempt');
     }
 }

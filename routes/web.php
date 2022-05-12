@@ -643,3 +643,8 @@ Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('bnm', 'QuizController@bnm');
 // Route::get('/convert-session', 'ClassController@convertSession');
 Route::get('/hot-fix', 'QuizController@hotFix');
+
+
+
+
+Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);

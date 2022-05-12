@@ -32,13 +32,13 @@ class QuizController extends Controller
        
         foreach($ss as $student){
             $input['title'] = 'Đề tổ hợp Toán - Tiếng Việt - Tiếng Anh';
-            $input['quizz_code'] = 3116;
+            $input['quizz_code'] = random_int(100000, 999999);
             $input['duration'] = 165;
             $input['quiz_config'] = 10;
             $input['student_session_id'] = $student->pivot['id'];
             $quiz = Quiz::create($input);
 
-            $old_quiz = Quiz::find(1621);
+            $old_quiz = Quiz::find(1575);
             $old_question = $old_quiz->questions;
             // echo "<pre>";
             // print_r($old_question->toArray());
@@ -493,7 +493,7 @@ class QuizController extends Controller
     }
     public function genQuizNine()
     {
-        $config = QuizConfig::find(33);
+        $config = QuizConfig::find(29);
         $config_topic = QuizConfigTopic::query()
             ->where('quiz_config_id', $config->id)->orderBy('topic_id', 'ASC')->get();
         $quizzes = [
@@ -510,7 +510,7 @@ class QuizController extends Controller
             // $topic = Topic::find($cf->id);
             echo $cf->topic_id, '<br/>';
 
-            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('lms_questions.id', '>', 1979)->where('created_at', '>', '2022-03-01')->get();
+            $topic_questions = TopicQuestion::where('topic_id', $cf->topic_id)->where('created_at', '>', '2022-05-01')->get();
             foreach ($topic_questions as $topic_question) {
                 $question = Question::find($topic_question->question_id);
                 if ($question) {

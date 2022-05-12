@@ -263,8 +263,8 @@ fbq('track', 'PageView');
         <form action="{{ url('handle-simplified-form') }}" method="POST" role="form">
             {{ csrf_field() }}
           <!--@csrf-->
-            <p>Hãy cho chúng tôi biết khoá học bạn quan tâm và những thắc mắc của bạn. Chuyên viên tư vấn của VietElite
-                sẽ giải đáp thắc mắc và hỗ trợ bạn một cách tốt nhất. </p>
+            <!--<p>Hãy cho chúng tôi biết khoá học bạn quan tâm và những thắc mắc của bạn. Chuyên viên tư vấn của VietElite-->
+            <!--    sẽ giải đáp thắc mắc và hỗ trợ bạn một cách tốt nhất. </p>-->
             <input class="form-control" id="inputEmail4" name="pname" required placeholder="Họ tên phụ huynh">
             {{-- <input type="text" class="form-control" id="datepicker" placeholder="Ngày sinh học sinh" name="dob"
                 required> --}}

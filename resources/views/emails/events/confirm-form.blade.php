@@ -63,7 +63,7 @@ Cảm ơn quý phụ huynh đã tin tưởng và lựa chọn Viet Elite Educati
         <h3><u> Lệ phí thi </u></h3>
         <b>Số tiền: </b> {{number_format($result['total_fee'])}} đ<br/>
         <b>Địa điểm thi: </b>
-        <!-- {{$result['location']}}    -->Số 33, Ngõ 91 Trần Duy Hưng, Trung Hoà, Cầu Giấy 
+        <!-- {{$result['location']}}    -->Số 83 Xuân Quỳnh, Trung Hoà, Cầu Giấy 
         <br/>
     </div>    
   </div>
@@ -71,8 +71,8 @@ Cảm ơn quý phụ huynh đã tin tưởng và lựa chọn Viet Elite Educati
     <div class="col-sm">
       <h3> <u>Thanh toán Chuyển khoản </u></h3>
       
-      <b> Ngân hàng:</b> VP BANK - CN Trung Hòa Nhân Chính <br/>
-      <b> Số tài khoản:</b> 6873065565 <br/>
+      <b> Ngân hàng:</b> SHB, CN Kinh Đô, PGD Kim Giang <br/>
+      <b> Số tài khoản:</b> 8818698888 <br/>
       <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
       <b> Nội dung CK:</b> {{$result['ck_content']}} <br/>
     </div>
