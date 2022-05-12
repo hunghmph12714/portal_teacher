@@ -1395,6 +1395,7 @@ class ClassController extends Controller
     }
     protected function submitMark(Request $request)
     {
+        dd($request);
         $rules = ['questions' => 'required'];
         $this->validate($request, $rules);
         $attempt_id = 0;

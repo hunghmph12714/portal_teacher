@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\AttemptDetailController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ParentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
@@ -243,6 +244,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/entrance/failed', function () {
             return view('welcome');
         });
+        Route::get('entrance/filter/{start_time}/{finish_time}/{center_id}', [GuestController::class, 'filter']);
         //Budgets
         Route::get('/budget', function () {
             return view('welcome');
