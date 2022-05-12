@@ -3,6 +3,13 @@ import './ViewEntrance.scss'
 import { DialogCreate,  StepAppointment,  StepFinal, StepInform, StepInit, StepResult, ViewDelay, ViewLost} from '../components';
 import { EditEntrance } from '../EditEntrance';
 import {
+  KeyboardDatePicker,
+  MuiPickersUtilsProvider
+} from "@material-ui/pickers";
+import vi from "date-fns/locale/vi";
+import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+
+import {
     Menu,
     MenuItem,
     IconButton,
@@ -115,12 +122,14 @@ class ViewEntrance extends React.Component{
 
             open_delay: false,
             open_lost: false,
+            from: null,
+            to: new Date(),
         }
     }
 
     componentDidMount() {      
       this.init();
-      this.getStats(this.props.match.params.center_id, this.props.match.params.step_id)
+      this.getStats(this.props.match.params.center_id, this.props.match.params.step_id, this.props.match.params.from, this.props.match.params.to)
     }
     
     init = () =>{
@@ -141,12 +150,12 @@ class ViewEntrance extends React.Component{
           
           this.setState({ 
             centers: response.data.map(d => {
-              return {value: d.id, label: d.name }
+              return {value: d.id, label: d.code }
             }),
             selected_centers: selected_center_ids.map( i => {
               let f = response.data.filter( d => d.id === parseInt(i))[0]
               if(f){
-                return { value: f.id, label: f.name }
+                return { value: f.id, label: f.code }
               }
             }),
             selected_centers_param: this.props.match.params.center_id
@@ -158,24 +167,33 @@ class ViewEntrance extends React.Component{
         .catch(err => {
           console.log('get center bug: '+ err)
         })
+        this.setState({
+          from:  Date(this.props.match.params.from),
+          to:  Date(this.props.match.params.to)
+        })
     }
     handleStep = step => () => {
       let step_id = this.state.steps[step].id
-      this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +step)
+      let from = new Date(this.state.from)
+      let to = new Date(this.state.to)
+      this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +step + '/' + from.getTime() + '/' + to.getTime()) 
+      
+      // this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +step)
       this.setState({activeStep : step})
-      this.getStats(this.props.match.params.center_id, step)
+      this.getStats(this.props.match.params.center_id, step, this.props.match.params.from, this.props.match.params.to)
     }
     onCenterChange = (value) => {
       let selected_center_ids = value.map(v => v.value)
       let selected_center_params = selected_center_ids.join('_')
       this.setState({ selected_centers: value, selected_centers_param:  selected_center_params})
-      this.props.history.push('/entrance/list/' +selected_center_params + '/' +this.state.activeStep)
-      this.getStats(selected_center_params, this.props.match.params.step_id)
+      let from = new Date(this.state.from)
+      let to = new Date(this.state.to)
+      this.props.history.push('/entrance/list/' +selected_center_params + '/' +this.state.activeStep + '/' + from.getTime() + '/' + to.getTime()) 
+      this.getStats(selected_center_params, this.props.match.params.step_id,  this.props.match.params.from, this.props.match.params.to)
     }
-    getStats = (center_id, step_id) => {
-      console.log(center_id)
-      console.log(step_id)
-      axios.get('/entrance/stats/'+ center_id + '/' + step_id)
+    getStats = (center_id, step_id, from, to) => {
+    
+      axios.get('/entrance/stats/'+ center_id + '/' + step_id + '/' + from + '/' + to)
         .then(response => {
           this.setState({
             total: response.data.total,
@@ -282,6 +300,24 @@ class ViewEntrance extends React.Component{
         open_lost: false,
       })
     }
+    handleFromChange(date){
+      this.setState({
+        from: date
+      })
+      let to = new Date(this.state.to)
+      this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +this.state.activeStep + '/' +  date.getTime() + '/' + to.getTime())
+      this.getStats(this.state.selected_centers_param, this.props.match.params.step_id,  this.props.match.params.from, this.props.match.params.to)
+    }
+    handleToChange(date){
+      this.setState({
+        to: date
+      })
+      let from = new Date(this.state.from)
+      let to = new Date(this.state.to)
+      this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +this.state.activeStep + '/' +  from.getTime() + '/' + date.getTime())
+      this.getStats(this.state.selected_centers_param, this.props.match.params.step_id,  this.props.match.params.from, this.props.match.params.to)
+
+    }
     render(){      
       document.title = 'Danh sách ghi danh'
         return(          
@@ -292,7 +328,7 @@ class ViewEntrance extends React.Component{
               <div> 
                 <div  className="root-entrance">
                   <Grid container spacing={2}>
-                    <Grid item md={6} sm={12}>
+                    <Grid item md={4} sm={12}>
                       <h4>CƠ SỞ GHI DANH</h4>
                       <Select
                         isMulti
@@ -303,7 +339,50 @@ class ViewEntrance extends React.Component{
                         onChange = {this.onCenterChange}
                       />
                     </Grid>
-                    <Grid item md={6} sm={12}>
+                    <Grid item md={4} sm={12}>
+                      <div>
+                      <h4>THỜI GIAN</h4>
+                      <Grid container spacing={1}>
+                            <Grid item md={6} sm={12}> 
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} >
+                                <KeyboardDatePicker
+                                    fullWidth
+                                    autoOk
+                                    size= "small"
+                                    className="input-from-range"
+                                    variant="inline"
+                                    inputVariant="outlined"
+                                    format="dd/MM/yyyy"
+                                    label="Từ ngày"
+                                    views={["year", "month", "date"]}
+                                    value={this.state.from}
+                                    onChange={(date) => this.handleFromChange(date)}
+                                />  
+                            </MuiPickersUtilsProvider>
+                            </Grid>
+                            <Grid item md={6} sm={12}> 
+                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={vi} className='to'>
+                                <KeyboardDatePicker
+                                    fullWidth
+                                    autoOk
+                                    minDate = {this.state.from}
+                                    className="input-to-range"
+                                    size= "small"
+                                    variant="inline"
+                                    inputVariant="outlined"
+                                    format="dd/MM/yyyy"
+                                    label="Đến ngày"
+                                    views={["year", "month", "date"]}
+                                    value={this.to}
+                                    onChange={() => this.handleToChange()}
+                                />  
+                                </MuiPickersUtilsProvider>
+                            </Grid>
+
+                        </Grid>
+                      </div>
+                    </Grid>
+                    <Grid item md={4} sm={12}>
                       <div>
                         <h4>QUY TRÌNH</h4>
                         <Stepper alternativeLabel nonLinear activeStep={this.state.activeStep}>
@@ -322,7 +401,9 @@ class ViewEntrance extends React.Component{
                         </Stepper>
                       </div>
                     </Grid>
+                    
                   </Grid>
+                  
                   <div className="stats"> 
                           <Grid container spacing={1} className="grid-no-shadow">
                             <Grid item md={2} sm={12}>
@@ -417,11 +498,17 @@ class ViewEntrance extends React.Component{
                       {
                         0: <StepInit 
                             centers = {this.state.selected_centers_param}
+                            from = {this.props.match.params.from}
+                            to = {this.props.match.params.to}
                           />,
-                        1: <StepAppointment  centers = {this.state.selected_centers_param}/>,
-                        2: <StepResult centers = {this.state.selected_centers_param}/>,
-                        3: <StepInform centers = {this.state.selected_centers_param}/>,
-                        4: <StepFinal centers = {this.state.selected_centers_param}/>,
+                        1: <StepAppointment  centers = {this.state.selected_centers_param} from = {this.props.match.params.from}
+                        to = {this.props.match.params.to}/>,
+                        2: <StepResult centers = {this.state.selected_centers_param} from = {this.props.match.params.from}
+                        to = {this.props.match.params.to}/>,
+                        3: <StepInform centers = {this.state.selected_centers_param} from = {this.props.match.params.from}
+                        to = {this.props.match.params.to}/>,
+                        4: <StepFinal centers = {this.state.selected_centers_param} from = {this.props.match.params.from}
+                        to = {this.props.match.params.to}/>,
                       }[this.state.activeStep]
                 }
               </div>

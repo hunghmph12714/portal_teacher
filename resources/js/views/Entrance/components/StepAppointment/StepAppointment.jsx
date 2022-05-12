@@ -217,7 +217,7 @@ const StepAppointment = (props) => {
         setOpenEdit(false)
     }
     function fetchdata(){
-        axios.post( "/entrance/get/appointment", {centers: centers})
+        axios.post( "/entrance/get/appointment", {centers: centers, from: props.from, to: props.to})
             .then(response => {
                 // let d1, d2, d3 = []
                 let d1 = []

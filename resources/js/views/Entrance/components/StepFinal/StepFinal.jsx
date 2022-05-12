@@ -233,7 +233,7 @@ const StepFinal = (props) => {
     }
     function fetchdata(){
         setLoading(true)
-        axios.post( "/entrance/get/final", {centers: centers})
+        axios.post( "/entrance/get/final", {centers: centers, from: props.from, to: props.to})
             .then(response => {
                 let d1 = []
                 let d2 = []

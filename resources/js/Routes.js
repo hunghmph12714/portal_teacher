@@ -221,7 +221,7 @@ const Routes = (props) => {
       <ProtectedRouteWithLayout 
         component = {ViewEntrance}        
         layout={MainLayout}
-        path="/entrance/list/:center_id/:step_id"
+        path="/entrance/list/:center_id/:step_id/:from/:to"
       />
       <ProtectedRouteWithLayout 
         component = {ClassDetail}        

@@ -195,7 +195,7 @@ const StepInit = (props) => {
         setOpenEdit(false)
     }
     function fetchdata(){
-        axios.post( "/entrance/get/init", {centers: centers})
+        axios.post( "/entrance/get/init", {centers: centers, from: props.from, to: props.to})
             .then(response => {
                 // let d1, d2, d3 = []
                 console.log(response.data.length)

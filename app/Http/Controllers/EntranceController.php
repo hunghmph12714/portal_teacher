@@ -208,7 +208,7 @@ class EntranceController extends Controller
         }
         return response()->json($result);
     }
-    protected function getEntranceByStep($step, $centers){
+    protected function getEntranceByStep($step, $centers, $from, $to){
         $completed = Status::where('name', 'Đã xử lý')->first()->id;
         $lost = Status::where('name', 'Mất')->first()->id;
         $delay = Status::where('name', 'Chờ')->first()->id;
@@ -221,6 +221,9 @@ class EntranceController extends Controller
             'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
             ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source')
         )->where('entrances.step_id', $step)
+        ->where('entrances.created_at', '>=', $from)
+        ->where('entrances.created_at', '<=', $to)
+        
         ->where('entrances.status_id', '!=', $completed)
         ->where('entrances.status_id', '!=', $lost)
         ->where('entrances.status_id', '!=', $delay)
@@ -268,7 +271,7 @@ class EntranceController extends Controller
 
         $centers = explode('_', $request->centers);
         // $entrances = Entrance::all();
-        return response()->json($this->getEntranceByStep(1, $centers));
+        return response()->json($this->getEntranceByStep(1, $centers, $request->from, $request->to));
         
     }
     protected function getEntranceAppointment(Request $request){
@@ -276,21 +279,21 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $centers = explode('_', $request->centers);
-        return response()->json($this->getEntranceByStep(2, $centers));
+        return response()->json($this->getEntranceByStep(2, $centers, $request->from, $request->to));
     }
     protected function getEntranceResult(Request $request){
         $rules = ['centers' => 'required']; 
         $this->validate($request, $rules);
 
         $centers = explode('_', $request->centers);
-        return response()->json($this->getEntranceByStep(3, $centers));
+        return response()->json($this->getEntranceByStep(3, $centers, $request->from, $request->to));
     }
     protected function getEntranceInform(Request $request){
         $rules = ['centers' => 'required']; 
         $this->validate($request, $rules);
 
         $centers = explode('_', $request->centers);
-        $entrances = $this->getEntranceByStep(4, $centers);
+        $entrances = $this->getEntranceByStep(4, $centers, $request->from, $request->to);
         foreach($entrances as &$e){
             $e['deadline'] = date('d-m-Y',strtotime($e['step_updated_at'] . "+1 days"));
             $e['deadline_formated'] = date('Y-m-d',strtotime($e['step_updated_at'] . "+1 days"));
@@ -302,7 +305,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $centers = explode('_', $request->centers);
-        $entrances = $this->getEntranceByStep(5, $centers);
+        $entrances = $this->getEntranceByStep(5, $centers, $request->from, $request->to);
         return response()->json($entrances);
     }
     protected function getEntranceDelay(Request $request){
@@ -758,7 +761,7 @@ class EntranceController extends Controller
             $entrance->save();
         }
     }
-    protected function getStats($center_id, $step_id){
+    protected function getStats($center_id, $step_id, $from, $to){
         $step_id = $step_id + 1;
         $centers = explode('_', $center_id);
         $result = [
@@ -771,6 +774,8 @@ class EntranceController extends Controller
         ];
 
         $step = Step::find($step_id);
+        $from = date('Y-m-d', $from/1000);
+        $to = date('Y-m-d', $to/1000);
         if($step){
             $next_step = Step::where('type', 'Quy trình đầu vào')->where('order', $step->order+1)->first();
             $status = Status::where('name','Đang xử lý')->first();
@@ -781,18 +786,18 @@ class EntranceController extends Controller
                 // echo $center;
                 if($next_step && $status){
                     $today = date('Y-m-d 00:00:00');
-                    $result['test'] = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->get();
-                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
+                    $result['test'] = Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->get();
+                    $result['total'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    // $result['total_remain'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
+                    // $result['total_remain'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','<', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)
                     //     ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
+                    $result['total_today'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $total_completed = Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
+                    $total_completed = Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
 
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
+                    $result['total_today'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $next_step->id)->where('step_updated_at','>', $today)->where('status_id', '!=', $status_lost)->where('status_id', '!=', $status_complete)->where('status_id', '!=', $status_delay)
                         ->where('entrances.created_at', '>' ,$today)->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
                     $result['total_delay'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_delay)->count();
@@ -802,15 +807,15 @@ class EntranceController extends Controller
                     $today = date('Y-m-d 00:00:00');
                     $status = Status::where('name', 'Đã xử lý')->first()->id;
                     
-                    $result['total'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
+                    $result['total'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
+                    $result['total_today'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('entrances.step_updated_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
-                    $total_completed = Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('status_id', '==', $status)
+                    $total_completed = Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('status_id', '==', $status)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_completed'] += $total_completed;
-                    $result['total_today'] += Entrance::Where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
+                    $result['total_today'] += Entrance::Where('entrances.created_at', '>=', $from)->where('entrances.created_at', '<=', $to)->where('center_id', $center)->where('step_id', $step_id)->where('step_updated_at','>', $today)->where('entrances.created_at', '>' ,$today)->where('status_id', '!=', $status)->where('status_id', '!=', $status_delay)
                         ->join('students','student_id','students.id')->join('parents','students.parent_id','parents.id')->count();
                     $result['total_remain'] = $result['total'] + $result['total_completed'] - $result['total_today'];
                     $result['total_delay'] += Entrance::where('center_id', $center)->where('step_id', $step_id)->where('status_id', $status_delay)->count();

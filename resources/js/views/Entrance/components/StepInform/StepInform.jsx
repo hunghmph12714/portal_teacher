@@ -251,7 +251,7 @@ const StepInform = (props) => {
     }
     function fetchdata(){
         setLoading(true)
-        axios.post( "/entrance/get/inform", {centers: centers})
+        axios.post( "/entrance/get/inform", {centers: centers , from: props.from, to: props.to})
             .then(response => {
                 // let d1, d2, d3 = []
                 let d1 = []

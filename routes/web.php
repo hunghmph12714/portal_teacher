@@ -199,11 +199,11 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/entrance/list', function () {
             return view('welcome');
         });
-        Route::get('/entrance/list/{center_id}/{step_id}',  function () {
+        Route::get('/entrance/list/{center_id}/{step_id}/{from}/{to}',  function () {
             return view('welcome');
         });
-        Route::get('/entrance/stats/{center_id}/{step_id}', 'EntranceController@getStats');
-        Route::get('/entrance/stats/{center_id}', 'EntranceController@getDetailStats');
+    Route::get('/entrance/stats/{center_id}/{step_id}/{from}/{to}', 'EntranceController@getStats');
+        Route::get('/entrance/stats/{center_id}/{from}/{to}', 'EntranceController@getDetailStats');
 
         Route::post('/entrance/create', 'EntranceController@createEntrance');
         Route::post('/entrance', 'EntranceController@getEntrance');
