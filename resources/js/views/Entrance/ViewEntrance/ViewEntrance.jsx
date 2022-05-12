@@ -168,8 +168,8 @@ class ViewEntrance extends React.Component{
           console.log('get center bug: '+ err)
         })
         this.setState({
-          from:  Date(this.props.match.params.from),
-          to:  Date(this.props.match.params.to)
+          from:  new Date(parseInt(this.props.match.params.from)),
+          to:  new Date(parseInt(this.props.match.params.to))
         })
     }
     handleStep = step => () => {

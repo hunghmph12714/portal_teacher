@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1)
   }
 }));
-
+var to = new Date()
+var from = new Date('2022-01-01')
 const Sidebar = props => {
   const { open, variant, onClose, className, ...rest } = props;
   const classes = useStyles();
@@ -92,7 +93,7 @@ const Sidebar = props => {
         },
         {
           title: 'DS ghi danh',
-          href: '/entrance/list/2_3_4_5/0',
+          href: '/entrance/list/2_3_4_5/0/' + from.getTime() + '/' +to.getTime(),
           children: [
             {
               title: 'DS hoàn thành',
