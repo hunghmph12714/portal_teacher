@@ -372,7 +372,7 @@ class ViewEntrance extends React.Component{
                                     format="dd/MM/yyyy"
                                     label="Đến ngày"
                                     views={["year", "month", "date"]}
-                                    value={this.to}
+                                    value={this.state.to}
                                     onChange={(date) => this.handleToChange(date)}
                                 />  
                                 </MuiPickersUtilsProvider>
