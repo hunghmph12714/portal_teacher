@@ -127,13 +127,13 @@ class AttemptDetailController extends Controller
         $student_sessions = StudentSession::where('session_id', $session_id)->get();
         $student_sessions->load('attempt');
         $exam=null;
-        dd( $student_sessions);
+        // dd( $student_sessions);
         foreach ($student_sessions as $s){
             if($s->attempt==true||$s->attempt!=null||$s->attempt){
                 dd(1);
-                $exam=$s->id;
+                $exam=$s->id; dd($exam);
                 break;
-            }                dd(1);
+            }               
 
         }
         if($exam==null){

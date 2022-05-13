@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 <!--<!doctype html>-->
 <!--<html lang="en">-->
@@ -34,7 +34,7 @@
 <!--    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
 <!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">-->
 <!--    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,800" rel="stylesheet">-->
-=======
+
 <!doctype html>
 <html lang="en">
 
@@ -72,11 +72,10 @@ fbq('track', 'PageView');
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,800" rel="stylesheet">
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
+
 
 <!--    <script src="https://www.google.com/recaptcha/api.js" async defer></script>-->
 
-<<<<<<< HEAD
 <!--    <style>-->
 <!--    body{-->
 <!--        background: transparent;-->
@@ -225,24 +224,10 @@ fbq('track', 'PageView');
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,800" rel="stylesheet">
-=======
-    <style>
-        body {
-            background: transparent;
-            font-family: 'Montserrat', sans-serif;
-        }
+ 
+        
 
-        .ui-autocomplete {
-            overflow: auto;
-            height: 300px;
-        }
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
 
-        label {
-            font-weight: bold;
-        }
-
-<<<<<<< HEAD
     <style>
         body {
             background: transparent;
@@ -258,8 +243,6 @@ fbq('track', 'PageView');
             font-weight: bold;
         }
 
-=======
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
         h1 {
             font-size: 32px;
             color: #6ebe45;
@@ -320,12 +303,10 @@ fbq('track', 'PageView');
     <div class="container-fluid">
         <form action="{{ url('handle-simplified-form') }}" method="POST" role="form">
             {{ csrf_field() }}
-<<<<<<< HEAD
+
           <!--@csrf-->
             <!--<p>Hãy cho chúng tôi biết khoá học bạn quan tâm và những thắc mắc của bạn. Chuyên viên tư vấn của VietElite-->
             <!--    sẽ giải đáp thắc mắc và hỗ trợ bạn một cách tốt nhất. </p>-->
-=======
-            {{-- @csrf
 
 
 
@@ -334,10 +315,7 @@ fbq('track', 'PageView');
 
 
 
-            --}}
-            <p>Hãy cho chúng tôi biết khoá học bạn quan tâm và những thắc mắc của bạn. Chuyên viên tư vấn của VietElite
-                sẽ giải đáp thắc mắc và hỗ trợ bạn một cách tốt nhất. </p>
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
+
             <input class="form-control" id="inputEmail4" name="pname" required placeholder="Họ tên phụ huynh">
             {{-- <input type="text" class="form-control" id="datepicker" placeholder="Ngày sinh học sinh" name="dob"
                 required> --}}
@@ -349,7 +327,7 @@ fbq('track', 'PageView');
                 {{-- @foreach($centers as $key => $value)
                 <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
                 @endforeach --}}
-<<<<<<< HEAD
+
                 <option value="3 lên 4">3 lên 4</option>
                 <option value="4 lên 5">4 lên 5</option>
                 <option value="5 lên 6">5 lên 6</option>
@@ -360,18 +338,7 @@ fbq('track', 'PageView');
                 <option value="10 lên 11">10 lên 11</option>
                 <option value="11 lên 12">11 lên 12</option>
                 <option value="Đang học lớp 12">Đang học lớp 12</option>
-=======
-                <option value="3">3 lên 4</option>
-                <option value="4">4 lên 5</option>
-                <option value="5">5 lên 6</option>
-                <option value="6">6 lên 7</option>
-                <option value="7">7 lên 8</option>
-                <option value="8">8 lên 9</option>
-                <option value="9">9 lên 10</option>
-                <option value="10">10 lên 11</option>
-                <option value="11">11 lên 12</option>
-                <option value="12">Lớp 12</option>
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
+
             </select>
             <textarea rows="4" class="form-control" name="note"
                 placeholder="Quý phụ huynh để lại khoá học quan tâm hoặc nguyện vọng để được tư vấn từ VietElite"></textarea>
@@ -412,8 +379,5 @@ fbq('track', 'PageView');
     </script>
 </body>
 
-<<<<<<< HEAD
+
 </html>
-=======
-</html>
->>>>>>> 5abf4f9cbb694d73938940686f6845d04be8cd62
