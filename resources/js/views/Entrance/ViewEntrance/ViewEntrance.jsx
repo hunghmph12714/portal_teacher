@@ -313,7 +313,6 @@ class ViewEntrance extends React.Component{
         to: date
       })
       let from = new Date(this.state.from)
-      let to = new Date(this.state.to)
       this.props.history.push('/entrance/list/' +this.state.selected_centers_param + '/' +this.state.activeStep + '/' +  from.getTime() + '/' + date.getTime())
       this.getStats(this.state.selected_centers_param, this.props.match.params.step_id,  this.props.match.params.from, this.props.match.params.to)
 
@@ -374,7 +373,7 @@ class ViewEntrance extends React.Component{
                                     label="Đến ngày"
                                     views={["year", "month", "date"]}
                                     value={this.to}
-                                    onChange={() => this.handleToChange()}
+                                    onChange={(date) => this.handleToChange(date)}
                                 />  
                                 </MuiPickersUtilsProvider>
                             </Grid>

@@ -269,7 +269,7 @@ class EntranceController extends Controller
         $rules = ['centers' => 'required']; 
         $this->validate($request, $rules);
         $from = date('Y-m-d', $request->from/1000);
-        $to = date('Y-m-d', $request->to/1000);
+        $to = date('Y-m-d 23:59:59', $request->to/1000);
 
         $centers = explode('_', $request->centers);
         // $entrances = Entrance::all();
@@ -281,7 +281,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $from = date('Y-m-d', $request->from/1000);
-        $to = date('Y-m-d', $request->to/1000);
+        $to = date('Y-m-d 23:59:59', $request->to/1000);
         $centers = explode('_', $request->centers);
         return response()->json($this->getEntranceByStep(2, $centers, $from, $to));
     }
@@ -290,7 +290,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $from = date('Y-m-d', $request->from/1000);
-        $to = date('Y-m-d', $request->to/1000);
+        $to = date('Y-m-d 23:59:59', $request->to/1000);
         $centers = explode('_', $request->centers);
         return response()->json($this->getEntranceByStep(3, $centers, $from, $to));
     }
@@ -299,7 +299,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $from = date('Y-m-d', $request->from/1000);
-        $to = date('Y-m-d', $request->to/1000);
+        $to = date('Y-m-d 23:59:59', $request->to/1000);
         $centers = explode('_', $request->centers);
         $entrances = $this->getEntranceByStep(4, $centers, $from, $to);
         foreach($entrances as &$e){
@@ -313,7 +313,7 @@ class EntranceController extends Controller
         $this->validate($request, $rules);
 
         $from = date('Y-m-d', $request->from/1000);
-        $to = date('Y-m-d', $request->to/1000);
+        $to = date('Y-m-d 23:59:59', $request->to/1000);
         $centers = explode('_', $request->centers);
         $entrances = $this->getEntranceByStep(5, $centers, $from, $to);
         return response()->json($entrances);
