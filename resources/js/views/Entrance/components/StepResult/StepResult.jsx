@@ -274,7 +274,7 @@ const StepResult = (props) => {
         fetchdata()
         fetchStatus()
         fetchCourse()        
-    }, [centers])    
+    }, [centers, props.to, props.from])    
     function handleFailClick(rowData, reason, comment, status){
         axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail3', reason: reason, comment: comment, status: status})
             .then(response => { 

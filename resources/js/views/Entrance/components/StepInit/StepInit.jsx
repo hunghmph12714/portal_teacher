@@ -49,7 +49,7 @@ const customChip = (color = '#ccc') => ({
     fontSize: '12px',
   })
 const StepInit = (props) => {
-    const {centers,  ...rest} = props
+    const {centers, from, to , ...rest} = props
     const [data1, setData1] = useState([]);
     const [data2, setData2] = useState([]);
     const [data3, setData3] = useState([]);
@@ -247,7 +247,7 @@ const StepInit = (props) => {
         fetchdata()
         fetchStatus()
         fetchCourse()        
-    }, [centers])    
+    }, [centers, from, to])    
     function handleFailClick(rowData, reason, comment, status){
         axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment, status: status})
             .then(response => { 
