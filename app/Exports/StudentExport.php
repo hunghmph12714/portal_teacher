@@ -30,16 +30,18 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
         // dd(1);
         
         $students=Student::join('student_class','students.id','student_class.student_id')
-        ->where('class_id',408) 
-        ->select('students.id as id','students.fullname as student_name','dob')->groupBy('id')->get();
-       
+        ->where('class_id',425) 
+        ->select('students.id as id','student_class.id as sbd','students.fullname as student_name','dob')
+        ->groupBy('id')
+        ->get();
+                dd($students);
+
         // $result = $students->toArray();
-        foreach($students as $s){
-            $classes = $s->activeClasses()->select('classes.code')->get();
-            $code = implode(',', array_column($classes->toArray(), 'code'));
-            $s->code = $code;
-        } 
-        // dd($students);
+        // foreach($students as $s){
+        //     $classes = $s->activeClasses()->select('classes.code')->get();
+        //     $code = implode(',', array_column($classes->toArray(), 'code'));
+        //     $s->code = $code;
+        // } 
         return $students;
     }
 
@@ -50,33 +52,25 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
           
-            "ID Vee",
+            "ID (sbd)",
             "Ho ten hoc sinh",
             "Ngày sinh",
-            "Lớp Vee",
+            // "Lớp Vee",
 
         ];
     }
 
 
-    // public function columnWidths(): array
-    // {
-    //     return [
-    //         'Name 1' => 20,
-    //         'Email 1' => 20,
-    //         "Ho ten hoc sinh" => 20,
-    //         "Khoi lop" => 20,
-    //         "Nam hoc" => 20,
-    //     ];
-    // }
+
     public function map($students): array
     {
+        // echo('<pre>');
+        // print_r($students->dob);
         return [
           
-            $students->id,
+            $students->sbd,
             $students->student_name,
-            $students->dob,
-            $students->code,
+            $students->dob
 
         ];
     }

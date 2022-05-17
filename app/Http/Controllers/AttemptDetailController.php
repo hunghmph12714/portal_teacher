@@ -130,8 +130,8 @@ class AttemptDetailController extends Controller
         // dd( $student_sessions);
         foreach ($student_sessions as $s){
             if($s->attempt==true||$s->attempt!=null||$s->attempt){
-                dd(1);
-                $exam=$s->id; dd($exam);
+                // dd(1);
+                $exam=$s->id; 
                 break;
             }               
 

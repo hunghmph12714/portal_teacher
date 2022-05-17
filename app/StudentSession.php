@@ -13,6 +13,6 @@ class StudentSession extends Pivot
     public $incrementing = true;
      public function attempt()
     {
-        return $this->hasOne(Attempt::class, 'id', 'student_session');
+        return $this->hasOne(Attempt::class, 'student_session', 'id');
     }
 }

@@ -1995,33 +1995,7 @@ class StudentController extends Controller
     public function exportStudent()
     {
 
-        //     $students = Student::join('parents', 'students.parent_id', 'parents.id')
-        //         // ->where(activeClasses(), true)
-        //         ->join('student_class', 'students.id', 'student_class.student_id')
-        //         ->join('classes', 'student_class.class_id', 'classes.id')
-        //         ->where('status', 'active')->where('classes.type', 'class')
-        //         ->join('courses', 'classes.course_id', 'courses.id')
-        //         ->select('students.id as id',  'courses.grade', 'parents.email', 'students.fullname as student_name', 'parents.fullname as parent_name')
-        //         ->groupBy('students.id')
-
-        //         ->get();
-        //     dd($students);
-
-        //     // $student_active = [];
-
-        //     // foreach ($students as $s) {
-
-
-        //     //     // if ($s->parents()->get()) {
-        //     //     $p =   $s->parents()->get()->toArray();
-        //     //     // $s = $s + $p;
-        //     //     dd($p);
-        //     //     array_push($student_active, $s);
-        //     //     // }
-        //     // }
-        //     dd($student_active);
-        // }
-
+      
 
         return Excel::download(new StudentExport, 'student.xlsx');
     }
