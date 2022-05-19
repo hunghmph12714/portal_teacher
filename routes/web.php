@@ -245,8 +245,8 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
             return view('welcome');
         });
      
-                Route::post('entrance/export/', [GuestController::class, 'export_list']);
-                Route::get('entrance/export-mkt',[GuestController::class,'export_list_mkt']);
+        Route::post('entrance/export', [GuestController::class, 'export_list']);
+        Route::get('entrance/export-mkt',[GuestController::class,'export_list_mkt']);
 
         //Budgets
         Route::get('/budget', function () {

@@ -317,6 +317,26 @@ class ViewEntrance extends React.Component{
       this.getStats(this.state.selected_centers_param, this.props.match.params.step_id,  this.props.match.params.from, this.props.match.params.to)
 
     }
+    exportReport = () => {
+      let data = {
+        start_time: this.state.from,
+        finish_time: this.state.to,
+        center_id: this.state.selected_centers,
+      }
+      console.log(data)
+      axios.post('/entrance/export', data, {responseType: 'blob'})
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'Báo cáo MKT-TGD.xlsx'); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(err => {
+
+        })
+    }
     render(){      
       document.title = 'Danh sách ghi danh'
         return(          
@@ -377,8 +397,10 @@ class ViewEntrance extends React.Component{
                                 />  
                                 </MuiPickersUtilsProvider>
                             </Grid>
+                          <Button variant='outlined' color='primary' style={{margin: '4px',}} onClick={() => this.exportReport()}>Báo cáo MKT-TGD</Button>
+                          <Button variant='outlined' color='primary' style={{margin: '4px',}} onClick={() => this.exportStats()}>Báo cáo Quản lý</Button>
+                      </Grid>
 
-                        </Grid>
                       </div>
                     </Grid>
                     <Grid item md={4} sm={12}>
@@ -442,9 +464,7 @@ class ViewEntrance extends React.Component{
                                     Tồn cuối ngày: <br/>
                                   </Typography>
                                   <span className="stats_number"> {this.state.total} </span>
-                                  <a>
-                                    <GetAppIcon onClick={() => this.exportStats()} className="btn-export" />
-                                  </a>
+                                  
                                   
                                 </CardContent>
                               </Card>
