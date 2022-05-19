@@ -1,4 +1,14 @@
 ﻿"Hiển thị trên sổ","Phương thức thanh toán","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Tài khoản chi","Mở tại NH","Nội dung thanh toán","Diễn giải nội dung thanh toán","Mã đối tượng","Tên đối tượng","Địa chỉ","Tài khoản nhận","Tên NH nhận","Người lĩnh tiền","Số CMND","Ngày cấp CMND","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
-0,0,03-02-2022,03-02-2022,PC300340,'015704060030799,VIB,43,"Thanh toán tiền phí thuê máy chủ VPS Vultr",,,,,,,,,,,"Thanh toán tiền phí thuê máy chủ VPS Vultr",6422-Khac,1124,753136
-0,0,03-04-2022,03-04-2022,PC300341,'015704060030799,VIB,43,"Chuyển tiền nội bộ từ VIB PTT về Techcombank Hội sở",,,,,,,,,,,"Chuyển tiền nội bộ từ VIB PTT về Techcombank Hội sở",1368,1124,300000000
-0,0,03-10-2022,03-10-2022,PC300346,'015704060030799,VIB,43,"Chuyển tiền nội bộ từ VIB PTT về Techcombank Hội sở",,,,,,,,,,,"Chuyển tiền nội bộ từ VIB PTT về Techcombank Hội sở",1368,1124,250000000
+0,0,01-15-2022,01-15-2022,PC500316,'26856688,ACB,43,"tiền điện thoại bàn",,,,,,,,,,,"tiền điện thoại bàn",6422-CPĐT,1123,284761
+0,0,01-21-2022,01-21-2022,PC500321,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,350000000
+0,0,01-25-2022,01-25-2022,PC500322,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,60000000
+0,0,02-27-2022,02-27-2022,PC500331,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,7000000
+0,0,03-05-2022,03-05-2022,PC500340,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,200000000
+0,0,03-10-2022,03-10-2022,PC500341,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,170000000
+0,0,03-14-2022,03-14-2022,PC500342,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,85000000
+0,0,03-28-2022,03-28-2022,PC500343,43,"SHB THU PHI DV SMS THONG BAO SO DU THANG 03/2022",,,,,,,,,,,"SHB THU PHI DV SMS THONG BAO SO DU THANG 03/2022",6422-QLDN,1126,11000
+0,0,03-28-2022,03-28-2022,PC500344,43,"THU PHI THUONG NIEN THE VISA DEBIT THANG 03.2022",,,,,,,,,,,"THU PHI THUONG NIEN THE VISA DEBIT THANG 03.2022",6422-QLDN,1126,5500
+0,0,04-13-2022,04-13-2022,PC500345,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,7000000
+0,0,04-06-2022,04-06-2022,PC500346,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,300000000
+0,0,04-26-2022,04-26-2022,PC500347,43,"SHB THU PHI DV SMS THONG BAO SO DU THANG 04/2022",,,,,,,,,,,"SHB THU PHI DV SMS THONG BAO SO DU THANG 04/2022",6422-QLDN,1126,11000
+0,0,04-27-2022,04-27-2022,PC500348,43,"THU PHI THUONG NIEN THE VISA DEBIT THANG 04/2022",,,,,,,,,,,"THU PHI THUONG NIEN THE VISA DEBIT THANG 04/2022",6422-QLDN,1126,5500

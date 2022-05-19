@@ -34,7 +34,7 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
         ->select('students.id as id','student_class.id as sbd','students.fullname as student_name','dob')
         ->groupBy('id')
         ->get();
-                dd($students);
+                // dd($students);
 
         // $result = $students->toArray();
         // foreach($students as $s){

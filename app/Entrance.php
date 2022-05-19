@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Medium;
 
 class Entrance extends Model
 {
@@ -20,5 +21,14 @@ class Entrance extends Model
             ->withPivot('user_id', 'comment', 'reason', 'active')
             ->withTimestamps();
     }
+    /**
+     * Get the user associated with the Entrance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function medium()
+    {
+        return $this->hasOne(Medium::class, 'id','medium_id');
+    } 
     
 }

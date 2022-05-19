@@ -244,7 +244,10 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/entrance/failed', function () {
             return view('welcome');
         });
-        Route::get('entrance/filter/{start_time}/{finish_time}/{center_id}', [GuestController::class, 'filter']);
+     
+                Route::post('entrance/export/', [GuestController::class, 'export_list']);
+                Route::get('entrance/export-mkt',[GuestController::class,'export_list_mkt']);
+
         //Budgets
         Route::get('/budget', function () {
             return view('welcome');
@@ -649,4 +652,4 @@ Route::get('/hot-fix', 'QuizController@hotFix');
 
 
 
-Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
+// Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);

@@ -19,6 +19,10 @@ use App\Tracuu;
 use App\Question;
 use App\Option;
 use GuzzleHttp;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EntranceExport;
+use App\Exports\EntranceMktExport;
+
 
 class GuestController extends Controller
 {
@@ -352,7 +356,7 @@ class GuestController extends Controller
         $rules = [
             'pname' => 'required',
 
-            'dob' => 'required',
+            // 'dob' => 'required',
             'pphone' => 'required',
             'pemail' => 'required',
             'g-recaptcha-response' => 'required|captcha'
@@ -387,8 +391,8 @@ class GuestController extends Controller
             $student['school'] = $request->school;
             $student['relationship_id'] = 5;
             $student = Student::create($student);
-            $this->createEntrance($student, 0, NULL, $request->note, $query);
-            // }
+            $this->createEntrance($student, 1, NULL, $request->note, $query);
+            // }1
         } else {
             $relationship = Relationship::orderBy('weight', 'asc')->first();
             $parent['fullname'] = $request->pname;
@@ -399,20 +403,23 @@ class GuestController extends Controller
 
 
             $student['fullname'] = "Con của PH" . $request->pname;
-            $student['parent_id'] = $p->id;
-            $student['dob'] = $dob;
-            $student['school'] = $request->school;
+            $student['parent_id'] = $parent ->id;
+            // $student['dob'] = $dob;
+            // $student['school'] = $request->school;
             $student['relationship_id'] = 5;
             $student = Student::create($student);
-            $this->createEntrance($student, 0, NULL, $request->note, $query);
+            $this->createEntrance($student, 1, NULL, $request->note, $query);
         }
         return redirect('https://vietelite.edu.vn/dangkythanhcong/');
     }
 
 
-    public function filter($start_time, $finish_time, $center_id)
+    public function filter()
     {
+        // $start_time, $finish_time, $center_id
         // dd($start_time);
+        $center_id=4;
+        $start_time='2022-05-17';$finish_time='2022-05-18';
         $entrances = Entrance::whereBetween('entrances.created_at', [$start_time, $finish_time])
             ->join('students', 'entrances.student_id', 'students.id')
             ->join('parents', 'students.parent_id', 'parents.id')
@@ -420,14 +427,30 @@ class GuestController extends Controller
             ->join('status', 'entrances.status_id', 'status.id')
             ->get();
 
-        if ($center_id == -1) {
-            // dd($entrances);
+      
+    }
+    public function export_list(    Request $request)
+    {
+   
+        $data=['start_time'=>$request->start_time,
+        'finish_time'=>$request->finish_time,
+        'center_id'=>$request->center_id,
+    ];
+        return Excel::download(new EntranceExport($data) ,'entrance.xlsx');
+                // return Excel::download(new StudentExport, 'student.xlsx');
 
-            return response()->json($entrances);
-        } else {
-            // dd($entrances->where('center_id', $center_id));
+    }
 
-            return response()->json($entrances->where('center_id', $center_id));
-        }
+
+
+    public function export_list_mkt()
+    {       $center_id=[4,2,-1];
+        $start_time='2022-05-17';$finish_time='2022-05-19';
+          $data=['start_time'=>$start_time,
+        'finish_time'=>$finish_time,
+        'center_id'=>$center_id,
+    ];   
+         return Excel::download(new EntranceMktExport($data) ,'entrance_mkt.xlsx');
+
     }
 }

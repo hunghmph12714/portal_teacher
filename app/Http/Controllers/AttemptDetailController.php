@@ -132,7 +132,7 @@ class AttemptDetailController extends Controller
             if($s->attempt==true||$s->attempt!=null||$s->attempt){
                 // dd(1);
                 $exam=$s->id; 
-                break;
+                // break;
             }               
 
         }
@@ -146,14 +146,16 @@ class AttemptDetailController extends Controller
                 dd('không có attempt_detail');
             }
             // dd($student_sessions);
+            // dd($attempt_details );
             foreach ($student_sessions as $ss) {
                 if ($ss->attempt == null || !$ss->attempt || $ss->attempt == false) {
                             //   dd(1);
                    $at = [
                         'quiz_id' =>  $attempt->quiz_id,
-                        'start_time' => '2022-05-07 16:37:03',
-                        'finish_time' => '2022-05-07 18:52:59',
+                        'start_time' => '2022-05-15 16:37:03',
+                        'finish_time' => '2022-05-15 18:52:59',
                         'student_session' => $ss->id,
+
                     ];
                     // dd(   $at);
                     $creat_attempt = Attempt::create($at);
@@ -161,6 +163,8 @@ class AttemptDetailController extends Controller
                         $data_ad = [
                             'attempt_id' => $creat_attempt->id,
                             'question_id' => $ad->question_id,
+                            'fib'=>[],
+                            
                         ];
                         $creat_attempt_detail = AttemptDetail::create($data_ad);
                     }
