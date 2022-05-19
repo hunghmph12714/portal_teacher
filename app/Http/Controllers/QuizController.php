@@ -27,7 +27,7 @@ class QuizController extends Controller
 {
     //
     public function hotFix(){
-        $session = Session::find(21422);
+        $session = Session::find(21489);
         $ss = $session->students;
        
         foreach($ss as $student){
@@ -48,7 +48,7 @@ class QuizController extends Controller
                 $quiz->questions()->attach([$oq->id => $a]);
             }
             $attempt['quiz_id'] = $quiz->id;
-            $attempt['start_time'] = '2022-04-23 08:00:00';
+            $attempt['start_time'] = '2022-05-19 08:00:00';
             $attempt['student_session'] = $student->pivot['id'];
             $attempt['parent_id'] = $student->parent_id;
             $at = Attempt::create($attempt);
