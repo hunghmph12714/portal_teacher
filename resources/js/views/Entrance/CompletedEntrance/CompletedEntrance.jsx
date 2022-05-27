@@ -5,10 +5,13 @@ import {
     MenuItem,
     IconButton,
     Tooltip,
+    Grid,
     Button,
     Chip, 
     Typography,LinearProgress 
   } from "@material-ui/core";
+import Select from 'react-select';
+
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import AddAlarmIcon from '@material-ui/icons/AddAlarm';
@@ -51,7 +54,7 @@ const customChip = (color = '#ccc') => ({
     fontSize: '12px',
   })
 const CompletedEntrance = (props) => {
-    const {centers,  ...rest} = props
+    const { ...rest} = props
     const [data1, setData1] = useState([]);
     const [column1, setCol1] = useState(
         [
@@ -200,6 +203,8 @@ const CompletedEntrance = (props) => {
         
         ]
     )
+    const [centers, setCenters] = useState([])
+    const [selected_centers, setSelectedCenters] = useState([])
     const [openStatus, setOpenStatus] = useState(false)
     const [typeStatus, setTypeStatus] = useState('')
     const [loading , setLoading] = useState(true)
@@ -219,7 +224,7 @@ const CompletedEntrance = (props) => {
         setOpenEdit(false)
     }
     function fetchdata(){
-        axios.post( "/entrance/get/completed")
+        axios.post( "/entrance/get/completed", {center_id: selected_centers})
             .then(response => {
                 setData1(response.data)
                 setLoading(false)
@@ -228,26 +233,27 @@ const CompletedEntrance = (props) => {
                 console.log(err)
             })
     }
+    function onCenterChange(value){
+        setSelectedCenters(value)
+    }
     useEffect(() => {
-        
-        const fetchStatus = async() => {
-            const r = await axios.post('/status/get', {'type': 'Quy trình đầu vào'})
-            setStatusOptions(r.data.map(s => {
-                    return {label: s.name , value: s.id}
-                })
-            )
-        }
-        const fetchCourse = async() => {
-            const c = await axios.get('/get-courses')
-            setCourseOptions(c.data.map(center => {
-                    return {label: center.name + center.grade, value: center.id}
-                })
-            )
-        }
         fetchdata()
-        fetchStatus()
-        fetchCourse()        
-    }, [centers])    
+        // fetchStatus()
+        // fetchCourse()        
+    }, [selected_centers])
+    useEffect(() => {
+        axios.get('/get-center')
+        .then(response => {
+        // let selected_center_ids = this.props.match.params.center_id.split('_')
+            setCenters(response.data.map(d => {
+                return {value: d.id, label: d.code }
+                })
+            )
+        })
+        .catch(err => {
+            console.log('get center bug: '+ err)
+        })
+    },[])    
     function handleFailClick(rowData, reason, comment){
         axios.post('/entrance/step/fail', {id: rowData.eid, type: 'fail1', reason: reason, comment: comment})
             .then(response => { 
@@ -305,12 +311,25 @@ const CompletedEntrance = (props) => {
     }
     
     return(
-        <div>
+        <div className='root-entrance'>
             {
                 loading ? 
                 (<LinearProgress  className="loading"/>):
                 (
                     <div> 
+                        <Grid container spacing={2}>
+                            <Grid item md={4} sm={12}>
+                            <h4>CƠ SỞ GHI DANH</h4>
+                            <Select
+                                isMulti
+                                isClearable={false}
+                                name="centers"
+                                options={centers}
+                                value = {selected_centers}
+                                onChange = {onCenterChange}
+                            />
+                            </Grid>
+                        </Grid>
                         <div className= "entrance_table"> 
                             <MaterialTable
                                 title="Danh sách ghi danh đã hoàn thành"
