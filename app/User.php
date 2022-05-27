@@ -46,4 +46,9 @@ protected $hidden = [
     {
         return $this->getAllPermissions();
     }
+
+    public function user_class()
+    {
+        return $this->hasMany(UserClass::class, 'user_id', 'id');
+    }
 }

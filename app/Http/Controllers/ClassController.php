@@ -28,6 +28,8 @@ use App\User;
 use App\Option;
 use App\Criteria;
 use App\Objective;
+// use App\UserClass; 
+use App\Role;
 
 class ClassController extends Controller
 {
@@ -1755,5 +1757,35 @@ class ClassController extends Controller
             // $arr_student = $arr_student + $d->toArray();
         }
         dd($arr_student_id);
+    }
+      public function autoAddUserClass()
+    {
+        # code...
+        $classes = Classes::where('active', 1)->where('year', 2021)->get();
+        // dd($classes);
+        $role = Role::whereIn('id', [1, 5])->get();
+        $role->load('users');
+        foreach ($role as $r) {
+            foreach ($r->users as $u) {
+                $arr_class_id = [];
+                $arr_class_id = array_column($u->user_class->toArray(), 'id');
+                // dd(1);
+
+                foreach ($classes as $class) {
+                    dd($class->id);
+
+                    if (in_array($arr_class_id, $class->id) == false) {
+                        // dd(1);hui
+                        UserClass::create([
+                            'user_id' => $u->id,
+                            'class_id' => $class->id,
+                            'manager' => 0,
+                        ]);
+                    }
+                }
+            }
+        }
+        dd('Thành công');
+        dd($role[0]->users->load('user_class'));
     }
 }

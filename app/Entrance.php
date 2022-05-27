@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Medium;
+use App\Center;
 
 class Entrance extends Model
 {
@@ -30,5 +31,20 @@ class Entrance extends Model
     {
         return $this->hasOne(Medium::class, 'id','medium_id');
     } 
+    /**
+     * Get the center that owns the Entrance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function center()
+    {
+        return $this->belongsTo(Center::class, 'center_id', 'id');
+    }
+
+         
+    // public function source()
+    // {
+    //     return $this->belongsToMany(Scource::class, 'mediums', 'scource', 'id');
+    // }
     
 }

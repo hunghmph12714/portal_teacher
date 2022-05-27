@@ -131,8 +131,11 @@ class AttemptDetailController extends Controller
         foreach ($student_sessions as $s){
             if($s->attempt==true||$s->attempt!=null||$s->attempt){
                 // dd(1);
-                $exam=$s->id; 
-                // break;
+                $detail=AttemptDetail::where('attempt_id',$s->attempt->id)->get();
+                if($detail!=null||$detail!=[]){
+                        $exam=$s->id; 
+                        break;       
+                          }
             }               
 
         }

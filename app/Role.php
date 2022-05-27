@@ -8,4 +8,10 @@ class Role extends BaseRole {
     //
     public $table = 'roles';
     protected $fillable = ['id', 'department', 'name', 'note','guard_name'];
+
+    
+    public function user()
+    {
+        return $this->morphMany(User::class, 'model');
+    }
 }

@@ -431,26 +431,26 @@ class GuestController extends Controller
     }
     public function export_list(    Request $request)
     {
-   
-        $data=['start_time'=>$request->start_time,
-        'finish_time'=>$request->finish_time,
+//    dd($request);
+           $data=['start_time'=>$request->start_time,
+           'finish_time'=>$request->finish_time,
         'center_id'=>$request->center_id,
     ];
-        return Excel::download(new EntranceExport($data) ,'entrance.xlsx');
+        return Excel::download(new EntranceExport($data) ,'entrancedd.xlsx');
                 // return Excel::download(new StudentExport, 'student.xlsx');
 
     }
 
 
 
-    public function export_list_mkt()
-    {       $center_id=[4,2,-1];
-        $start_time='2022-05-17';$finish_time='2022-05-19';
-          $data=['start_time'=>$start_time,
-        'finish_time'=>$finish_time,
-        'center_id'=>$center_id,
-    ];   
-         return Excel::download(new EntranceMktExport($data) ,'entrance_mkt.xlsx');
+    // public function export_list_mkt()
+    // {       $center_id=[4,2,-1];
+    //     $start_time='2022-05-17';$finish_time='2022-05-19';
+    //       $data=['start_time'=>$start_time,
+    //     'finish_time'=>$finish_time,
+    //     'center_id'=>$center_id,
+    // ];   
+    //      return Excel::download(new EntranceMktExport($data) ,'entrance_mkt.xlsx');
 
-    }
+    // }
 }

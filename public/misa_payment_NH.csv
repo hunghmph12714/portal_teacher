@@ -1,14 +1,9 @@
 ﻿"Hiển thị trên sổ","Phương thức thanh toán","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Tài khoản chi","Mở tại NH","Nội dung thanh toán","Diễn giải nội dung thanh toán","Mã đối tượng","Tên đối tượng","Địa chỉ","Tài khoản nhận","Tên NH nhận","Người lĩnh tiền","Số CMND","Ngày cấp CMND","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
-0,0,01-15-2022,01-15-2022,PC500316,'26856688,ACB,43,"tiền điện thoại bàn",,,,,,,,,,,"tiền điện thoại bàn",6422-CPĐT,1123,284761
-0,0,01-21-2022,01-21-2022,PC500321,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,350000000
-0,0,01-25-2022,01-25-2022,PC500322,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,60000000
-0,0,02-27-2022,02-27-2022,PC500331,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,7000000
-0,0,03-05-2022,03-05-2022,PC500340,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,200000000
-0,0,03-10-2022,03-10-2022,PC500341,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,170000000
-0,0,03-14-2022,03-14-2022,PC500342,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,85000000
-0,0,03-28-2022,03-28-2022,PC500343,43,"SHB THU PHI DV SMS THONG BAO SO DU THANG 03/2022",,,,,,,,,,,"SHB THU PHI DV SMS THONG BAO SO DU THANG 03/2022",6422-QLDN,1126,11000
-0,0,03-28-2022,03-28-2022,PC500344,43,"THU PHI THUONG NIEN THE VISA DEBIT THANG 03.2022",,,,,,,,,,,"THU PHI THUONG NIEN THE VISA DEBIT THANG 03.2022",6422-QLDN,1126,5500
-0,0,04-13-2022,04-13-2022,PC500345,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,7000000
-0,0,04-06-2022,04-06-2022,PC500346,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,300000000
-0,0,04-26-2022,04-26-2022,PC500347,43,"SHB THU PHI DV SMS THONG BAO SO DU THANG 04/2022",,,,,,,,,,,"SHB THU PHI DV SMS THONG BAO SO DU THANG 04/2022",6422-QLDN,1126,11000
-0,0,04-27-2022,04-27-2022,PC500348,43,"THU PHI THUONG NIEN THE VISA DEBIT THANG 04/2022",,,,,,,,,,,"THU PHI THUONG NIEN THE VISA DEBIT THANG 04/2022",6422-QLDN,1126,5500
+0,0,01-09-2022,01-09-2022,PC200203,'152171277,VP,43,"Thanh toán tiền thuê nhà 6 tháng cơ sở Trần Duy Hưng",,,,,,,,,,,"Thanh toán tiền thuê nhà 6 tháng cơ sở Trần Duy Hưng",6422-TN,1121,150000000
+0,0,01-10-2022,01-10-2022,PC200206,'152171277,VP,43,"Thanh toán tiền sửa chữa nhà 17 Đỗ Quang",,,,,,,,,,,"Thanh toán tiền sửa chữa nhà 17 Đỗ Quang",6421-SCCSVC,1121,9125000
+0,0,01-10-2022,01-10-2022,PC200207,'152171277,VP,43,"Hoàn trả học phí chuyển khoản nhầm cho ph Dương Phương Thúy T9.1",,,,,,,,,,,"Hoàn trả học phí chuyển khoản nhầm cho ph Dương Phương Thúy T9.1",131,1121,16065000
+0,0,01-11-2022,01-11-2022,PC200209,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",1368,1121,500000000
+0,0,01-14-2022,01-14-2022,PC200211,'26856688,ACB,43,"Thanh toán tiền điện thoại hotline",,,,,,,,,,,"Thanh toán tiền điện thoại hotline",6422-CPĐT,1123,599519
+0,0,01-18-2022,01-18-2022,PC200213,'152171277,VP,43,"Hoàn trả học phí chuyển khoản nhầm cho ph Đặng Ngọc Thành V7.1",,,,,,,,,,,"Hoàn trả học phí chuyển khoản nhầm cho ph Đặng Ngọc Thành V7.1",131,1121,11513250
+0,0,01-20-2022,01-20-2022,PC200214,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",1368,1121,450000000
+0,0,01-24-2022,01-24-2022,PC200226,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",1368,1121,250000000
