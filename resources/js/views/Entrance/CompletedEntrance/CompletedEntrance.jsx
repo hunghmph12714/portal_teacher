@@ -200,6 +200,18 @@ const CompletedEntrance = (props) => {
                   padding: '0px',
               },
           },
+          {
+              title: "Cơ sở",
+              field: "code",
+              
+              headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+              },
+              cellStyle: {
+                  padding: '0px',
+              },
+          },
         
         ]
     )
@@ -321,6 +333,7 @@ const CompletedEntrance = (props) => {
                             <Grid item md={4} sm={12}>
                             <h4>CƠ SỞ GHI DANH</h4>
                             <Select
+                                className="select"
                                 isMulti
                                 isClearable={false}
                                 name="centers"
@@ -344,8 +357,8 @@ const CompletedEntrance = (props) => {
                                         paddingLeft: '0px'
                                     },
                                     exportCsv: (c, d) => {
-                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn'];
-                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source]);
+                                        const cols = ['Học sinh','Ngày sinh','Phụ huynh','SĐT','Email','Khối đăng ký', 'Lịch hẹn', 'Ghi chú', 'Nguồn', 'CS'];
+                                        const data = d.map(dt => [dt.sname,dt.dob ,dt.pname, dt.phone,dt.pemail, dt.course, dt.test_time, dt.note, dt.source, dt.code]);
                                         const builder = new CsvBuilder('DSHS ghi danh kiểm tra.csv');
                                         builder
                                         .setDelimeter(',')

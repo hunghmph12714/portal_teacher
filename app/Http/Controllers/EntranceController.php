@@ -751,7 +751,7 @@ class EntranceController extends Controller
             'parents.alt_fullname as alt_pname', 'parents.alt_email as alt_pemail', 'parents.alt_phone as alt_phone','parents.note as pnote',
             'relationships.color as color',DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'),'courses.id as course_id','center.name as center','center.id as center_id','steps.name as step','steps.id as step_id','status.name as status','status.id as status_id',
             'classes.id as class_id', 'classes.code as class', 'enroll_date', 'message', 'step_updated_at', 'attempts'
-            ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source'),'entrances.center_id as center_id'
+            ,DB::raw('CONCAT(sources.name," ",mediums.name)  AS source'),'entrances.center_id as center_id', 'center.code'
         )
         ->where('entrances.status_id', $status)
         ->leftJoin('students','student_id','students.id')->join('parents','students.parent_id','parents.id')
