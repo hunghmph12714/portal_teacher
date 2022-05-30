@@ -25,6 +25,7 @@ class EntranceExport implements FromCollection ,WithHeadings, WithMapping
             // dd($data);
             $center=array_column($data['center_id'],'value');
             // dd($center);
+            // dd($data['start_time']->format('Y-m-d H:i:s')  );
         $entrances = Entrance::whereBetween('entrances.created_at', [$data['start_time'], $data['finish_time']])
             ->join('students', 'entrances.student_id', 'students.id')
             ->join('parents', 'students.parent_id', 'parents.id')
@@ -68,22 +69,22 @@ class EntranceExport implements FromCollection ,WithHeadings, WithMapping
     }
     public function map($entrances):array
     {
-
+// dd($entrances)
     return[
         // $entrances->id,
         $entrances->student_name,
-        $entrances->parent_name,
+       $entrances->parent_name,
         $entrances->ngay_dang_ky,
         $entrances->center->name,
         $entrances->step_name,
         $entrances->test_time,
-        $entrances->ngay_nhap_hoc,
+        $entrances->ngay_nhap_hoc, 
         // $entrances->status_name,
   
 
     
     
     
-    ]   ;
+    ];
      }
 }

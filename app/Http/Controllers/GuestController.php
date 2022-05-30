@@ -434,9 +434,9 @@ class GuestController extends Controller
 //    dd($request);
            $data=['start_time'=>$request->start_time,
            'finish_time'=>$request->finish_time,
-        'center_id'=>$request->center_id,
+           'center_id'=>$request->center_id,
     ];
-        return Excel::download(new EntranceExport($data) ,'entrancedd.xlsx');
+        return Excel::download(new EntranceExport($data) ,'Báo cáo MKT-TGD.xlsx');
                 // return Excel::download(new StudentExport, 'student.xlsx');
 
     }

@@ -763,9 +763,12 @@ class EntranceController extends Controller
         ->orderBy('priority','desc')->orderBy('created_at','desc')->get();
         
             if($request->center_id&&$request->center_id!=[]){
-                
-                $center_id=array_column($request->center_id, 'value');
-                return  $entrances->whereIn('center_id',$center_id);
+               $center_id=array_column($request->center_id, 'value');
+// dd( $entrances->whereIn('emtrances.center_id',$center_id));
+
+$e= $entrances->whereIn('center_id',$center_id);
+// dd( $e);
+                return  $e;
                 
             }
         
