@@ -167,7 +167,9 @@ class ClassController extends Controller
         $s['parent_id'] = $parent_id;
         $s['relationship_id'] = $request['selected_relationship']['value'];
         $s['fullname'] = $request['student_name']['value'];
-        $s['school'] = $request['student_school']['label'];
+        if($request['student_school'] != ''){
+            $s['school'] = $request['student_school']['label'];
+        }
         $s['grade'] = $request['student_grade'];
         $s['email'] = $request['student_email'];
         $s['phone'] = $request['student_phone'];

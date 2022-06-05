@@ -144,6 +144,20 @@ class StudentController extends Controller
         if($student){
             $student->ms_id = $request->ms_id;
             $student->sgd_id = $request->sgd_id;
+            $parent = Parents::find($student->parent_id);
+            $result['student_name'] = $student->fullname;
+            $result['id'] = $request->sgd_id. "@vietelite.edu.vn";
+            $to_email = $parent->email;
+            $to_name = '';
+            $mail = 'info@vietelite.edu.vn';
+            $d = ['result' => $result];
+            Mail::send('emails.teams.new-account', $d, function ($message) use ($to_name, $to_email, $result, $mail) {
+                $message->to($to_email, $to_name)
+                    ->to('webmaster@vietelite.edu.vn')
+                    ->subject($result['student_name'] . " - Thông tin tài khoản Microsoft Teams")
+                    ->replyTo($mail, 'Phụ huynh hs ' . $result['student_name']);
+                $message->from($mail, 'VIETELITE EDUCATION CENTER');
+            });
             $student->save();
         }
     }
@@ -1990,7 +2004,10 @@ class StudentController extends Controller
 
 
 
+    //Teams
+    protected function notifyNewAccount(Request $request){
 
+    }
 
     public function exportStudent()
     {

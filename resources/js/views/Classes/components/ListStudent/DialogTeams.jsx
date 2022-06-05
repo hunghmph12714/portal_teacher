@@ -13,7 +13,7 @@ import { useSnackbar } from 'notistack';
 
 const config = {
     headers: { Accept: 'application/json',
-        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6Imlrd1B2eVhDd0kyX3FVb2ZqRE5jbktvaTRKUWdFWi1hQ08zY2htdk9TNEkiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjQ5MjI4Mjg0LCJuYmYiOjE2NDkyMjgyODQsImV4cCI6MTY0OTIzMzE0NSwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhUQUFBQTlVekFSZ1NWU0xzMnhtSS92SnFwS0hQaitPUVlZbzREeDA2MHBybmxKZjQ9IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJWaWV0RWxpdGUgTWFpbiBBcHAiLCJhcHBpZCI6IjBmZWZlNWM0LWVjYjQtNDA1NC1hMDJlLTMyNGEzNzIxOTI4NCIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiVHLhuqduIiwiZ2l2ZW5fbmFtZSI6IlRow6BuaCIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjE0LjI0OC44Mi4xMTEiLCJuYW1lIjoiVHLhuqduIFRy4buLbmggQsOsbmggVGjDoG5oIChIUy5LVENOKSIsIm9pZCI6ImYxZTk3YzlhLTc4ODUtNDliYi04Mzg0LWU3MzA4ZjA4NDI2NCIsInBsYXRmIjoiNSIsInB1aWQiOiIxMDAzMjAwMDQwRjczRjBCIiwicmgiOiIwLkFWWUFKMHlKcEVCRWxFV1NSYVlOdVF5UFh3TUFBQUFBQUFBQXdBQUFBQUFBQUFCV0FJZy4iLCJzY3AiOiJEaXJlY3RvcnkuUmVhZC5BbGwgRGlyZWN0b3J5LlJlYWRXcml0ZS5BbGwgZW1haWwgTWFpbC5SZWFkIHByb2ZpbGUgVXNlci5SZWFkIFVzZXIuUmVhZC5BbGwgVXNlci5SZWFkV3JpdGUuQWxsIG9wZW5pZCIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6InI3U0w2bFBOMy1kcC1ORlJrNW5SU2NrMVFKYVdZYUFZcERkRE5xMjJZeG8iLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiQVMiLCJ0aWQiOiJhNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYiLCJ1bmlxdWVfbmFtZSI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1cG4iOiJ0aGFuaHR0YkB2aWV0ZWxpdGUuZWR1LnZuIiwidXRpIjoiTmpiNGdKMXVHRUtNcXlaWlMwMDhBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiNjJlOTAzOTQtNjlmNS00MjM3LTkxOTAtMDEyMTc3MTQ1ZTEwIiwiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19zdCI6eyJzdWIiOiJHZy1YWjRqQTN0SVNranVKYzA2TTROYzhJbThFUTdKTHRRcTFQLW1HcThvIn0sInhtc190Y2R0IjoxNDgwNzA0MzkzfQ.Mcqpg-Cw-lxcaC49ae00pspWzv5yWN-_EYMuK2aE4PVxgMdatKOY90htX7PjyEmjdp-geIV6iW7NrXHGO0w1WAJ1gyr_ac7kF138HU-5r_tE9uWOFdibz_4n0wssdj_5R9psojCPw2hWN6Tne2hu0a4B8gFf6McWrL9Vmy8Ow6Xl-e79KSWebeWLdLaGRga84ZLUKYEGBJ2H-KIk2JxyM12ZqkAnuPSrbVQR5ERl3AgTsS7ToyMfYaS0_LebPahZQaUkQ5l4KaKQkpLyY81cKYqFSir-3ERY3Veo3ZQwB34mPYXyzJ03r5MXF0sgZvT-wvzFCpTTezo3rdETUQApiQ' }
+        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6Ik92ZWVHOGk0dzg1TDJxZ2dpV3ZLd0EwMjFTRnlZWXA2dGU5NGYtZUhNNVEiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjU0NDQ4Mjc5LCJuYmYiOjE2NTQ0NDgyNzksImV4cCI6MTY1NDQ1MzM0NiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZREM4VWp4QmNDT2J6ZXdQODlWNFZTMmJWa3pYdUdYdzZveW1lVGJuc2VOeEt2SUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlZpZXRFbGl0ZSBNYWluIEFwcCIsImFwcGlkIjoiMGZlZmU1YzQtZWNiNC00MDU0LWEwMmUtMzI0YTM3MjE5Mjg0IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJUcuG6p24iLCJnaXZlbl9uYW1lIjoiVGjDoG5oIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTQuMjMxLjIzMy42OCIsIm5hbWUiOiJUcuG6p24gVHLhu4tuaCBCw6xuaCBUaMOgbmggKEhTLktUQ04pIiwib2lkIjoiZjFlOTdjOWEtNzg4NS00OWJiLTgzODQtZTczMDhmMDg0MjY0IiwicGxhdGYiOiI1IiwicHVpZCI6IjEwMDMyMDAwNDBGNzNGMEIiLCJyaCI6IjAuQVZZQUoweUpwRUJFbEVXU1JhWU51UXlQWHdNQUFBQUFBQUFBd0FBQUFBQUFBQUJXQUlnLiIsInNjcCI6IkRpcmVjdG9yeS5SZWFkLkFsbCBEaXJlY3RvcnkuUmVhZFdyaXRlLkFsbCBlbWFpbCBNYWlsLlJlYWQgcHJvZmlsZSBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRXcml0ZS5BbGwgb3BlbmlkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoicjdTTDZsUE4zLWRwLU5GUms1blJTY2sxUUphV1lhQVlwRGRETnEyMll4byIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6ImE0ODk0YzI3LTQ0NDAtNDU5NC05MjQ1LWE2MGRiOTBjOGY1ZiIsInVuaXF1ZV9uYW1lIjoidGhhbmh0dGJAdmlldGVsaXRlLmVkdS52biIsInVwbiI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1dGkiOiJOd3VLamN1Z1lrQ2xORk04VVkxZEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IkdnLVhaNGpBM3RJU2tqdUpjMDZNNE5jOEltOEVRN0pMdFFxMVAtbUdxOG8ifSwieG1zX3RjZHQiOjE0ODA3MDQzOTN9.V4FuLkhJUrysxaNj7GneYQqOtDkmB46jUq3PmVTKOAKsVABGW1r3HFqM47ScX36QnU6k9yYdD2mjPxwQYAlMP-FEh5pmJZZTTZlM_PWi2LKWArwvXkEU2vzsB4Fr0sZVm44LX9IYT5ZFJYmazkH2arOLgoFPawKjwvQDq2frbKp0mDAYKFuxagulsFYcWLcZLS2wcdka6crMpH8Gh2rCr9R_UVbt-y5faoktU_eS0WhbOV9nZs46vS9Ap9i5KbQb4_1Excw_DCUJfwUFTMTlSZlKbvLfqTH1XKg7Ztb-xTIgPFvDRjzkmKdRpQ3AzIfn9lZdYgCzohg3Dm9_cyt0dA' }
 };
 const DialogTeams = (props) => {
     const [sgd_id, setSgdId] = useState('')
@@ -26,9 +26,12 @@ const DialogTeams = (props) => {
             setMsId(props.selected_data.ms_id)
             setDisable(true)
         }else{
-            setSgdId('')
-            setMsId('')
-            setDisable(false)
+            if(props.selected_data){
+                setSgdId(props.selected_data.id)
+                setMsId('')
+                setDisable(false)
+            }
+            
         }
     }, [props.open])
     function onSgdIdChange(e){
@@ -40,11 +43,13 @@ const DialogTeams = (props) => {
     function handleCreateTeams(){
         setDisable(true)
         if(sgd_id){
+            let si = sgd_id.toString()
+            console.log(`2022${si}@vietelite.edu.vn`)
             let data = {
                 "accountEnabled": true,
                 "displayName": props.selected_data.fullname,
-                "mailNickname": sgd_id,
-                "userPrincipalName": `01${sgd_id}@vietelite.edu.vn`,
+                "mailNickname": si,
+                "userPrincipalName": `${si}@vietelite.edu.vn`,
                 "usageLocation": "VN",
                 "passwordProfile": {
                     "forceChangePasswordNextSignIn": true,
@@ -73,6 +78,8 @@ const DialogTeams = (props) => {
                                 props.handleClose()
                                 enqueueSnackbar('Tạo tài khoản Teams thành công', {variant: 'success'})
                                 setDisable(false)
+                                
+                                
                             })
                             .catch(err => {
                                 
@@ -86,6 +93,7 @@ const DialogTeams = (props) => {
                     enqueueSnackbar('Token Microsoft đã hết hạn, vui lòng gia hạn', {variant: 'error'})
                 })
         }
+        
         
     }
     return (
@@ -102,8 +110,8 @@ const DialogTeams = (props) => {
                 {ms_id ? (
                     <>
                     <span>Mã số Teams: <b>{ms_id}</b></span><br/>
-                    <span>Email Teams: <b>01{sgd_id}@vietelite.edu.vn</b></span><br/>
-                    <span>Mã số Sở GD: <b>{sgd_id}</b></span><br/>
+                    <span>Email Teams: <b>{sgd_id}@vietelite.edu.vn</b></span><br/>
+                    <span>Mã số Vee: <b>{sgd_id}</b></span><br/>
 
                     </>
                 ): ""}
@@ -111,7 +119,7 @@ const DialogTeams = (props) => {
                      <TextField 
                         style={{marginTop: '15px'}}
                         id="outlined-basic" 
-                        label="Mã số Sở GD cấp"
+                        label="Mã số học sinh"
                         variant="outlined" size="small"
                         name="sgd_id"
                         fullWidth
