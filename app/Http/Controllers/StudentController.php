@@ -1250,7 +1250,7 @@ class StudentController extends Controller
         }
         $classes = implode(',', $classes);
         $months = date('m', strtotime($request->from)) . ' - ' . date('m', strtotime($request->to));
-        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP ' . $classes . ' tháng ' . $months . ' năm học 2021-2022';
+        $title = '[VIETELITE] THÔNG BÁO HỌC PHÍ LỚP ' . $classes . ' tháng ' . $months . ' năm học 2022-2023';
 
         $center = Center::find($center_id);
         $center_code = "";

@@ -1763,20 +1763,20 @@ class ClassController extends Controller
       public function autoAddUserClass()
     {
         # code...
-        $classes = Classes::where('active', 1)->where('year', 2021)->get();
+        $classes = Classes::where('active', 1)->get();
         // dd($classes);
         $role = Role::whereIn('id', [1, 5])->get();
         $role->load('users');
         foreach ($role as $r) {
             foreach ($r->users as $u) {
                 $arr_class_id = [];
-                $arr_class_id = array_column($u->user_class->toArray(), 'id');
-                // dd(1);
+                $arr_class_id = array_column($u->user_class->toArray(), 'class_id');
+                // dd($u->user_class[0]->class_id);
 
                 foreach ($classes as $class) {
-                    dd($class->id);
+                    // dd($class->id);
 
-                    if (in_array($arr_class_id, $class->id) == false) {
+                    if (in_array($class->id, $arr_class_id) == false) {
                         // dd(1);hui
                         UserClass::create([
                             'user_id' => $u->id,
@@ -1790,4 +1790,13 @@ class ClassController extends Controller
         dd('Thành công');
         dd($role[0]->users->load('user_class'));
     }
-}
+    public function deleteUserClass()
+    {
+       $users=UserClass::where('created_at','2022-05-27 14:39:29')->delete();
+    //    dd( $users);
+    //    foreach($users as $u){
+    //        User::destroy($u->id);
+    //    }
+       dd('Xóa thành công');
+    }
+}   
