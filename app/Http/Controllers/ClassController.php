@@ -551,6 +551,29 @@ class ClassController extends Controller
         $class = Classes::create($request);
         $user = User::find(auth()->user()->id);
         $user->classes()->attach([$class->id => ['manager' => 0]]);
+        $role = Role::whereIn('id', [1, 5])->get();
+        $role->load('users');
+        $classes = Classes::where('id', $class->id)->get();
+        foreach ($role as $r) {
+            foreach ($r->users as $u) {
+                $arr_class_id = [];
+                $arr_class_id = array_column($u->user_class->toArray(), 'class_id');
+                // dd($u->user_class[0]->class_id);
+
+                foreach ($classes as $c) {
+                    // dd($class->id);
+
+                    if (in_array($c->id, $arr_class_id) == false) {
+                        // dd(1);hui
+                        UserClass::create([
+                            'user_id' => $u->id,
+                            'class_id' => $c->id,
+                            'manager' => 0,
+                        ]);
+                    }
+                }
+            }
+        }
         $result = Classes::where('classes.id', $class->id)->select(
             'classes.id as id',
             'classes.name as name',
@@ -565,6 +588,7 @@ class ClassController extends Controller
             'config',
             'classes.fee as fee'
         )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->first()->toArray();
+
         return response()->json($result);
         // echo date("Y-m-d\TH:i:s\Z", $request->open_date/1000);
     }
