@@ -483,7 +483,8 @@ class ClassController extends Controller
         $wp_year = auth()->user()->wp_year;
 
         // $result = Classes::where('center_id', $center_operator, $center_value)->where('course_id', $course_operator, $course_value)->where('classes.year', $wp_year)->select(
-        $result = Classes::where('classes.year', $wp_year)->select(
+        // $result = Classes::where('classes.year', $wp_year)->select(
+        $result = Classes::select(
             'classes.id as id',
             'classes.name as name',
             'classes.code as code',
@@ -498,7 +499,8 @@ class ClassController extends Controller
             'online_id',
             'password',
             'droped_number',
-            'waiting_number'
+            'waiting_number',
+            'year'
         )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
         $classes = $result->toArray();
         foreach ($result as $key => $class) {

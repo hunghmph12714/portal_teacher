@@ -20,7 +20,7 @@ const ClassSearch = React.memo(props => {
             const r = await axios.get(baseUrl + '/class/get-all/'+center+'/'+course)
             setClasses(r.data.map(c => {
                     // console.log(c)
-                    return {label: c.code + ' - ' +c.name, value: c.id}
+                    return {label: c.year+ ' - '+c.code , value: c.id}
                 })
             )
         }
@@ -29,7 +29,6 @@ const ClassSearch = React.memo(props => {
     
     return( 
         <Select className = "select-box"
-            className="select-box"
             key = "class-select"
             value = {props.selected_class}
             name = "selected_class"
