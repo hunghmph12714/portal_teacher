@@ -13,7 +13,7 @@ import { useSnackbar } from 'notistack';
 
 const config = {
     headers: { Accept: 'application/json',
-        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6Ik92ZWVHOGk0dzg1TDJxZ2dpV3ZLd0EwMjFTRnlZWXA2dGU5NGYtZUhNNVEiLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjU0NDQ4Mjc5LCJuYmYiOjE2NTQ0NDgyNzksImV4cCI6MTY1NDQ1MzM0NiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZREM4VWp4QmNDT2J6ZXdQODlWNFZTMmJWa3pYdUdYdzZveW1lVGJuc2VOeEt2SUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlZpZXRFbGl0ZSBNYWluIEFwcCIsImFwcGlkIjoiMGZlZmU1YzQtZWNiNC00MDU0LWEwMmUtMzI0YTM3MjE5Mjg0IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJUcuG6p24iLCJnaXZlbl9uYW1lIjoiVGjDoG5oIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTQuMjMxLjIzMy42OCIsIm5hbWUiOiJUcuG6p24gVHLhu4tuaCBCw6xuaCBUaMOgbmggKEhTLktUQ04pIiwib2lkIjoiZjFlOTdjOWEtNzg4NS00OWJiLTgzODQtZTczMDhmMDg0MjY0IiwicGxhdGYiOiI1IiwicHVpZCI6IjEwMDMyMDAwNDBGNzNGMEIiLCJyaCI6IjAuQVZZQUoweUpwRUJFbEVXU1JhWU51UXlQWHdNQUFBQUFBQUFBd0FBQUFBQUFBQUJXQUlnLiIsInNjcCI6IkRpcmVjdG9yeS5SZWFkLkFsbCBEaXJlY3RvcnkuUmVhZFdyaXRlLkFsbCBlbWFpbCBNYWlsLlJlYWQgcHJvZmlsZSBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRXcml0ZS5BbGwgb3BlbmlkIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoicjdTTDZsUE4zLWRwLU5GUms1blJTY2sxUUphV1lhQVlwRGRETnEyMll4byIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6ImE0ODk0YzI3LTQ0NDAtNDU5NC05MjQ1LWE2MGRiOTBjOGY1ZiIsInVuaXF1ZV9uYW1lIjoidGhhbmh0dGJAdmlldGVsaXRlLmVkdS52biIsInVwbiI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1dGkiOiJOd3VLamN1Z1lrQ2xORk04VVkxZEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IkdnLVhaNGpBM3RJU2tqdUpjMDZNNE5jOEltOEVRN0pMdFFxMVAtbUdxOG8ifSwieG1zX3RjZHQiOjE0ODA3MDQzOTN9.V4FuLkhJUrysxaNj7GneYQqOtDkmB46jUq3PmVTKOAKsVABGW1r3HFqM47ScX36QnU6k9yYdD2mjPxwQYAlMP-FEh5pmJZZTTZlM_PWi2LKWArwvXkEU2vzsB4Fr0sZVm44LX9IYT5ZFJYmazkH2arOLgoFPawKjwvQDq2frbKp0mDAYKFuxagulsFYcWLcZLS2wcdka6crMpH8Gh2rCr9R_UVbt-y5faoktU_eS0WhbOV9nZs46vS9Ap9i5KbQb4_1Excw_DCUJfwUFTMTlSZlKbvLfqTH1XKg7Ztb-xTIgPFvDRjzkmKdRpQ3AzIfn9lZdYgCzohg3Dm9_cyt0dA' }
+        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6Ik5nd3RQX2JiUkR6VlNzNVJWMV9MSkIzMkdvaWJfUnNvdWhzTWZteGlLc3ciLCJhbGciOiJSUzI1NiIsIng1dCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyIsImtpZCI6ImpTMVhvMU9XRGpfNTJ2YndHTmd2UU8yVnpNYyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjU0NDg5NTgwLCJuYmYiOjE2NTQ0ODk1ODAsImV4cCI6MTY1NDQ5NDk5NiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFTUUEyLzhUQUFBQTlZaE9QbjY2RWcvYXZkWmszVFdReGMyMjBva0kva2RCaUQvcnVFU0tUcms9IiwiYW1yIjpbInB3ZCJdLCJhcHBfZGlzcGxheW5hbWUiOiJWaWV0RWxpdGUgTWFpbiBBcHAiLCJhcHBpZCI6IjBmZWZlNWM0LWVjYjQtNDA1NC1hMDJlLTMyNGEzNzIxOTI4NCIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoiVHLhuqduIiwiZ2l2ZW5fbmFtZSI6IlRow6BuaCIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjE0LjI0OC44Mi4xMTEiLCJuYW1lIjoiVHLhuqduIFRy4buLbmggQsOsbmggVGjDoG5oIChIUy5LVENOKSIsIm9pZCI6ImYxZTk3YzlhLTc4ODUtNDliYi04Mzg0LWU3MzA4ZjA4NDI2NCIsInBsYXRmIjoiNSIsInB1aWQiOiIxMDAzMjAwMDQwRjczRjBCIiwicmgiOiIwLkFWWUFKMHlKcEVCRWxFV1NSYVlOdVF5UFh3TUFBQUFBQUFBQXdBQUFBQUFBQUFCV0FJZy4iLCJzY3AiOiJEaXJlY3RvcnkuUmVhZC5BbGwgRGlyZWN0b3J5LlJlYWRXcml0ZS5BbGwgZW1haWwgTWFpbC5SZWFkIHByb2ZpbGUgVXNlci5SZWFkIFVzZXIuUmVhZC5BbGwgVXNlci5SZWFkV3JpdGUuQWxsIG9wZW5pZCIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6InI3U0w2bFBOMy1kcC1ORlJrNW5SU2NrMVFKYVdZYUFZcERkRE5xMjJZeG8iLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiQVMiLCJ0aWQiOiJhNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYiLCJ1bmlxdWVfbmFtZSI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1cG4iOiJ0aGFuaHR0YkB2aWV0ZWxpdGUuZWR1LnZuIiwidXRpIjoiWjdJMUt3aHRJa09sa0k4V0xxUUpBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiNjJlOTAzOTQtNjlmNS00MjM3LTkxOTAtMDEyMTc3MTQ1ZTEwIiwiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19zdCI6eyJzdWIiOiJHZy1YWjRqQTN0SVNranVKYzA2TTROYzhJbThFUTdKTHRRcTFQLW1HcThvIn0sInhtc190Y2R0IjoxNDgwNzA0MzkzfQ.TZaEA_sXcu64gfx5zTYivv4o0uNfmDnX-iBrHwfIJQ5E3ypHJRSpIQ83j6xCgo1QhVkoRUn1MhccvBnp7j2BC8XXJ4xZ76Kj-m-nxvjQKCy9ncWAz2KgPLvONzNtZFPMEkJKmUJ79oUu34FTmjOiOEKf__3u_lDiAGAuxXFgI5EdhGFrpOndIE7qvmFgqCgfJxTiOmtnceo8J4JVnXc-_5jHS1Bv9oTodymo9v2s9ea1mL0ZDu3wYDNtnoDVpo6CBlD9k6jar15HsHvHHjo22Qe9x9R0KrzpKMAD5lp3D1poWrDk7aV0BELZeFhznRxTIWwNgJyjHBEsD-G2ZVk17w' }
 };
 const DialogTeams = (props) => {
     const [sgd_id, setSgdId] = useState('')
@@ -44,10 +44,9 @@ const DialogTeams = (props) => {
         setDisable(true)
         if(sgd_id){
             let si = sgd_id.toString()
-            console.log(`2022${si}@vietelite.edu.vn`)
             let data = {
                 "accountEnabled": true,
-                "displayName": props.selected_data.fullname,
+                "displayName": `${props.selected_data.fullname}(Student)`,
                 "mailNickname": si,
                 "userPrincipalName": `${si}@vietelite.edu.vn`,
                 "usageLocation": "VN",
@@ -61,9 +60,9 @@ const DialogTeams = (props) => {
                     // console.log(response)
                     let body = {
                         "addLicenses": [
-                            {
-                                "skuId": "94763226-9b3c-4e75-a931-5c89701abe66"
-                            },
+                            // {
+                            //     "skuId": "94763226-9b3c-4e75-a931-5c89701abe66"
+                            // },
                             {
                                 "skuId": "314c4481-f395-4525-be8b-2ec4bb1e9d91"
                             }
