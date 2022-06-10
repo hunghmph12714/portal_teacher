@@ -22,6 +22,9 @@ use GuzzleHttp;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EntranceExport;
 use App\Exports\EntranceMktExport;
+use App\Exports\EntranceSlExport;
+
+// use App\Exports\EntranceSlExport;
 
 
 class GuestController extends Controller
@@ -403,7 +406,7 @@ class GuestController extends Controller
 
 
             $student['fullname'] = "Con của PH" . $request->pname;
-            $student['parent_id'] = $parent ->id;
+            $student['parent_id'] = $parent->id;
             // $student['dob'] = $dob;
             // $student['school'] = $request->school;
             $student['relationship_id'] = 5;
@@ -418,39 +421,49 @@ class GuestController extends Controller
     {
         // $start_time, $finish_time, $center_id
         // dd($start_time);
-        $center_id=4;
-        $start_time='2022-05-17';$finish_time='2022-05-18';
+        $center_id = 4;
+        $start_time = '2022-05-17';
+        $finish_time = '2022-05-18';
         $entrances = Entrance::whereBetween('entrances.created_at', [$start_time, $finish_time])
             ->join('students', 'entrances.student_id', 'students.id')
             ->join('parents', 'students.parent_id', 'parents.id')
             ->join('steps', 'entrances.step_id', 'steps.id')
             ->join('status', 'entrances.status_id', 'status.id')
             ->get();
-
-      
     }
-    public function export_list(    Request $request)
+    public function export_list(Request $request)
     {
-//    dd($request);
-           $data=['start_time'=>$request->start_time,
-           'finish_time'=>$request->finish_time,
-           'center_id'=>$request->center_id,
-    ];
-        return Excel::download(new EntranceExport($data) ,'Báo cáo MKT-TGD.xlsx');
-                // return Excel::download(new StudentExport, 'student.xlsx');
+        //    dd($request);
+        $data = [
+            'start_time' => $request->start_time,
+            'finish_time' => $request->finish_time,
+            'center_id' => $request->center_id,
+        ];
+        return Excel::download(new EntranceExport($data), 'Báo cáo MKT-TGD.xlsx');
+        // return Excel::download(new StudentExport, 'student.xlsx');
 
     }
 
-
-
-    // public function export_list_mkt()
-    // {       $center_id=[4,2,-1];
-    //     $start_time='2022-05-17';$finish_time='2022-05-19';
-    //       $data=['start_time'=>$start_time,
-    //     'finish_time'=>$finish_time,
-    //     'center_id'=>$center_id,
-    // ];   
-    //      return Excel::download(new EntranceMktExport($data) ,'entrance_mkt.xlsx');
+    // public function soLieu_export()
+    // {
+    //     //    dd($request);
+    //     // $data = [
+    //     //     'start_time' => $request->start_time,
+    //     //     'finish_time' => $request->finish_time,
+    //     //     'center_id' => $request->center_id,
+    //     // ];
+    //     return Excel::download(new EntranceMktExport(), 'Báo cáo MKT-TGD.xlsx');
+    //     // return Excel::download(new StudentExport, 'student.xlsx');
 
     // }
+
+    public function export_list_mkt(Request $request)
+    {
+        $data = [
+            'start_time' => $request->start_time,
+            'finish_time' => $request->finish_time,
+            // 'center_id' => $request->center_id,
+        ];
+        return Excel::download(new EntranceSlExport($data), 'entrance_mkt.xlsx');
+    }
 }
