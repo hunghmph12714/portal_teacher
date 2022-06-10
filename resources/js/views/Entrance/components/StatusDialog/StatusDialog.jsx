@@ -29,8 +29,8 @@ const StatusDialog = (props) => {
     const [statuses, setStatusOption] = useState([
         {value: 'Đang xử lý', label: 'Đang xử lý'},
         {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
-        {value: 'Mất', label: 'Mất'},
-        {value: 'Chờ', label: 'Chờ'},
+        // {value: 'Mất', label: 'Mất'},
+        // {value: 'Chờ', label: 'Chờ'},
     ])
     const [selected_status, setSelectedStatus] = useState('');
     const [status, setStatus] = useState('');
