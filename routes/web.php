@@ -202,7 +202,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/entrance/list/{center_id}/{step_id}/{from}/{to}',  function () {
             return view('welcome');
         });
-    Route::get('/entrance/stats/{center_id}/{step_id}/{from}/{to}', 'EntranceController@getStats');
+        Route::get('/entrance/stats/{center_id}/{step_id}/{from}/{to}', 'EntranceController@getStats');
         Route::get('/entrance/stats/{center_id}/{from}/{to}', 'EntranceController@getDetailStats');
 
         Route::post('/entrance/create', 'EntranceController@createEntrance');
@@ -244,9 +244,10 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         Route::get('/entrance/failed', function () {
             return view('welcome');
         });
-     
-        Route::post('entrance/export', [GuestController::class, 'export_list']);
-        Route::get('entrance/export-mkt',[GuestController::class,'export_list_mkt']);
+
+        // Route::post('entrance/export', [GuestController::class, 'export_list']);
+        Route::post('entrance/export', [GuestController::class, 'export_list_mkt']);
+        Route::get('entrance/export-mkt', [GuestController::class, 'export_list_mkt']);
 
         //Budgets
         Route::get('/budget', function () {
@@ -654,5 +655,5 @@ Route::get('/hot-fix', 'QuizController@hotFix');
 
 Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
 
-Route::get('delete-user-class',[ClassController::class,'deleteUserClass']);
+Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
