@@ -82,10 +82,12 @@ class everyHour extends Command
             if($i['status'] == 'Thất bại 1'){
                 $result['init_3']++;
                 continue;
+            }else{
+                if($date >= $today){
+                    $result['init_1']++;
+                }else $result['init_2']++;
             }
-            if($date >= $today){
-                $result['init_1']++;
-            }else $result['init_2']++;
+            
         }
         // print_r("<pre>");
         // print_r($init->toArray());
