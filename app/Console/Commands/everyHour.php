@@ -109,9 +109,12 @@ class everyHour extends Command
                 $result['appointment_3']++;
                 continue;
             }
-            if($date >= $today){
-                $result['appointment_1']++;
-            }else $result['appointment_2']++;
+            if($i['status'] == 'Đang xử lý' || $i['status'] == 'Thất bại tư vấn'){
+                if($date >= $today){
+                    $result['appointment_1']++;
+                }else $result['appointment_2']++;
+            }
+            
         }
         //result
         $r = $this->getStats($center_id, 2)->original;
@@ -128,9 +131,11 @@ class everyHour extends Command
                 $result['result_3']++;
                 continue;
             }
-            if($date >= $today){
-                $result['result_1']++;
-            }else $result['result_2']++;
+            if($i['status'] == 'Đang xử lý' || $i['status'] == 'Thất bại tư vấn'){
+                if($date >= $today){
+                    $result['result_1']++;
+                }else $result['result_2']++;
+            }
         }
         //inform
         $inform = $this->getStats($center_id, 3)->original;
@@ -145,6 +150,7 @@ class everyHour extends Command
                 $result['inform_4']++;
                 continue;
             }
+            if($i['status'] == 'Đang xử lý' || $i['status'] == 'Thất bại tư vấn'){
             switch ($i['attempts']) {
                 case 0:
                     $result['inform_1']++;
@@ -165,7 +171,7 @@ class everyHour extends Command
                 default:
                     # code...
                     break;
-            }
+            }}
         }
         //final
         $final = $this->getStats($center_id, 4)->original;
@@ -181,9 +187,10 @@ class everyHour extends Command
                 $result['final_3']++;
                 continue;
             }
+            if($i['status'] == 'Đang xử lý' || $i['status'] == 'Thất bại tư vấn'){
             if($date >= $today){
                 $result['final_1']++;
-            }else $result['final_2']++;
+            }else $result['final_2']++;}
         }
         return $result;
 
