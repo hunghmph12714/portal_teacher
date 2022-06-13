@@ -1143,7 +1143,7 @@ class EntranceController extends Controller
     }
     public function exportEntranceStats()
     {
-        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->get();
+        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->where('created_at', '>', '2022-04-01')->orderBy('created_at', 'DESC')->get();
 
         $fp = fopen(public_path() . '/entrance.csv', 'w');
         $first_line = ['', '', 'Bước 1', '', '', '', '', '', '', '', '', '', 'Bước 2', '', '', '', '', '', '', '', '', '', 'Bước 3', '', '', '', '', '', '', '', '', '', 'Bước 4', '', '', '', '', '', '', '', '', '', '', 'Bước 5', '', '', '', '', '', '', '', ''];
@@ -1166,7 +1166,7 @@ class EntranceController extends Controller
                 $i->final_remain, $i->final_today, $i->final_completed, $i->final_total, $i->final_1, $i->final_2, $i->final_3, $i->final_delay, $i->final_lost, '',
             ];
             fputcsv($fp, $result);
-            if ($j == 4) {
+            if ($j == 5) {
                 $j = 0;
                 fputcsv($fp, []);
             }
