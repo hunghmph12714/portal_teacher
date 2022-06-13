@@ -1143,7 +1143,7 @@ class EntranceController extends Controller
     }
     public function exportEntranceStats()
     {
-        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->where('entrance_stats.created_at', '>', '2022-04-01')->orderBy('created_at', 'DESC')->get();
+        $e = EntranceStat::Join('center', 'entrance_stats.center_id', 'center.id')->where('entrance_stats.created_at', '>', '2022-04-01')->orderBy('entrance_stats.created_at', 'DESC')->get();
 
         $fp = fopen(public_path() . '/entrance.csv', 'w');
         $first_line = ['', '', 'Bước 1', '', '', '', '', '', '', '', '', '', 'Bước 2', '', '', '', '', '', '', '', '', '', 'Bước 3', '', '', '', '', '', '', '', '', '', 'Bước 4', '', '', '', '', '', '', '', '', '', '', 'Bước 5', '', '', '', '', '', '', '', ''];
