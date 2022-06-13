@@ -83,9 +83,12 @@ class everyHour extends Command
                 $result['init_3']++;
                 continue;
             }else{
-                if($date >= $today){
-                    $result['init_1']++;
-                }else $result['init_2']++;
+                if($i['status'] == 'Đang xử lý'){
+                    if($date >= $today){
+                        $result['init_1']++;
+                    }else $result['init_2']++;
+                }
+                
             }
             
         }
