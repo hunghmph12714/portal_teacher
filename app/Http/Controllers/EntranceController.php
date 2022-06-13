@@ -1169,8 +1169,9 @@ class EntranceController extends Controller
             if ($j == 4) {
                 $j = 0;
                 fputcsv($fp, []);
+            }else{
+                $j++;
             }
-            $j++;
         }
         return redirect('/public/entrance.csv');
         // foreach()
