@@ -385,14 +385,15 @@ const CompletedEntrance = (props) => {
                                         onClick: (event, rowData) => {
                                             if (window.confirm('Chuyển về trạng thái chưa hoàn thành?')) handleNotCompleteEntrance(rowData)}
                                     },
-                                    // {
-                                    //     icon: () => <HighlightOffIcon />,
-                                    //     tooltip: 'Xoá',
-                                    //     isFreeAction: false,
-                                    //     text: 'Xoá',
-                                    //     onClick: (event, rowData) => {
-                                    //         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
-                                    // },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                            
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}
