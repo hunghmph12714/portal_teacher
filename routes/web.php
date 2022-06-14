@@ -654,6 +654,6 @@ Route::get('/hot-fix', 'QuizController@hotFix');
 
 
 Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
-
+Route::get('test-token-azure', 'ClassController@testToken');
 Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);

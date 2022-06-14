@@ -1825,4 +1825,24 @@ class ClassController extends Controller
     //    }
        dd('Xóa thành công');
     }
+    public function testToken(){
+        $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
+        $data = array('grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284', 
+        'client_secret' => 'zsm8Q~uNXgDXoojtr-TAjw0wz45aBuCRzjfpDcCB', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
+    );
+        // use key 'http' even if you send the request to https://...
+        $options = array(
+            'https' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        if ($result === FALSE) { /* Handle error */ }
+
+        var_dump($result);
+
+    }
 }   
