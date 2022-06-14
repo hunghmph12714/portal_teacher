@@ -36,12 +36,13 @@ use App\Role;
 class ClassController extends Controller
 {
     // Phòng học
-    protected function convertSession(){
+    protected function convertSession()
+    {
         //18619-400
         //21422-408
         $ss = StudentSession::where('session_id', 18619)->get();
         echo sizeof($ss->toArray());
-        foreach($ss as $s){
+        foreach ($ss as $s) {
             //
             $ss->session_id = 21422;
             // $ss->save();
@@ -50,7 +51,7 @@ class ClassController extends Controller
             $transactions = Transaction::where('class_id', 400)->where('student_id', $s->student_id)->get();
 
             $input = $transactions->toArray();
-            
+
             echo "<pre>";
             print_r($input);
         }
@@ -169,7 +170,7 @@ class ClassController extends Controller
         $s['parent_id'] = $parent_id;
         $s['relationship_id'] = $request['selected_relationship']['value'];
         $s['fullname'] = $request['student_name']['value'];
-        if($request['student_school'] != ''){
+        if ($request['student_school'] != '') {
             $s['school'] = $request['student_school']['label'];
         }
         $s['grade'] = $request['student_grade'];
@@ -1233,17 +1234,16 @@ class ClassController extends Controller
                     //Get class
                     $ss = StudentSession::find($student->pivot['id']);
                     $sc = StudentClass::where('student_id', $student->id)->where('class_id', $request->event_id)->first();
-                    if($sc){
+                    if ($sc) {
                         $student->sbd = $sc->id;
-                    }else{
+                    } else {
                         $student->sbd = '';
-
                     }
                     $active_class = $student->activeClasses;
-                    if(!count($active_class) == 0){
+                    if (!count($active_class) == 0) {
                         $c = Classes::find($active_class[0]->id);
                         switch ($c->center_id) {
-                            case 2:                           
+                            case 2:
                             case 4:
                                 # code...
                                 $student->center = 'TDH-DQ';
@@ -1261,7 +1261,7 @@ class ClassController extends Controller
                                 # code...
                                 break;
                         }
-                    }else{
+                    } else {
                         $student->center = '';
                     }
                     // $obj_ids = array($ss->objectives);
@@ -1788,10 +1788,10 @@ class ClassController extends Controller
         }
         dd($arr_student_id);
     }
-      public function autoAddUserClass()
+    public function autoAddUserClass()
     {
         # code...
-        $classes = Classes::where('active', 1)->get();
+        $classes = Classes::where('active', 1)->where('year', 2021)->get();
         // dd($classes);
         $role = Role::whereIn('id', [1, 5])->get();
         $role->load('users');
@@ -1820,24 +1820,51 @@ class ClassController extends Controller
     }
     public function deleteUserClass()
     {
-       $users=UserClass::where('created_at','2022-05-27 14:39:29')->delete();
-    //    dd( $users);
-    //    foreach($users as $u){
-    //        User::destroy($u->id);
-    //    }
-       dd('Xóa thành công');
+        //    $users=UserClass::where('created_at','2022-05-27 14:39:29')->delete();
+        // //    dd( $users);
+        // //    foreach($users as $u){
+        // //        User::destroy($u->id);
+        // //    }
+        $role = Role::whereIn('id', [1, 5])->get();
+        $role->load('users');
+        foreach ($role as $r) {
+            foreach ($r->users as $u) {
+                $arr_class_id = [];
+                // $arr_class_id = array_column($u->user_class->toArray(), 'class_id');
+                // dd($u->user_class[0]->class_id);
+
+                // foreach ($classes as $class) {
+                //     // dd($class->id);
+
+                //     if (
+                //         in_array($class->id, $arr_class_id) == false
+                //     ) {
+                //         // dd(1);hui
+                //         UserClass::create([
+                //             'user_id' => $u->id,
+                //             'class_id' => $class->id,
+                //             'manager' => 0,
+                //         ]);
+                //     }
+                // }
+                UserClass::where('user_id', $u->id)->delete();
+            }
+        }
+        dd('Xóa thành công');
     }
-    public function getAzureToken(){
+    public function getAzureToken()
+    {
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
-        $data = array('grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284', 
+        $data = array(
+            'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
             'client_secret' => 'zsm8Q~uNXgDXoojtr-TAjw0wz45aBuCRzjfpDcCB', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
         );
         // use key 'http' even if you send the request to https://...
-        
+
         $client = new Client();
         $response = $client->request('POST', $url, [
             'form_params' => $data
         ]);
         return response()->json(json_decode($response->getBody()->getContents()));
     }
-}   
+}

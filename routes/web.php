@@ -19,6 +19,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\StudentController;
+use App\Student;
 
 // use App\Http\Controllers\ParentController;
 // use Illuminate\Routing\Route;
@@ -658,3 +659,7 @@ Route::get('/hot-fix', 'QuizController@hotFix');
 Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
 Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
+Route::get('loc-hoc-sinh-thi-chuyen-su-pham', function () {
+    return view('file_filter_student');
+});
+Route::post('loc-hoc-sinh-thi-chuyen-su-pham', [StudentController::class, 'HSChuyenSuPham']);

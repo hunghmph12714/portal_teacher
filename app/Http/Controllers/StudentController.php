@@ -14,6 +14,7 @@ use App\Session;
 use App\Teacher;
 use App\Entrance;
 use App\Exports\StudentExport;
+use App\Imports\StudentSPImport;
 use App\Objective;
 use App\StudentSession;
 use App\Tag;
@@ -136,17 +137,18 @@ class StudentController extends Controller
 
         $t = Transaction::where('student_id', $id)->forceDelete();
     }
-    protected function saveSgdId(Request $request){
+    protected function saveSgdId(Request $request)
+    {
         $rules = ['id' => 'required', 'sgd_id' => 'required', 'ms_id' => 'required'];
         $this->validate($request, $rules);
 
         $student = Student::find($request->id);
-        if($student){
+        if ($student) {
             $student->ms_id = $request->ms_id;
             $student->sgd_id = $request->sgd_id;
             $parent = Parents::find($student->parent_id);
             $result['student_name'] = $student->fullname;
-            $result['id'] = $request->sgd_id. "@vietelite.edu.vn";
+            $result['id'] = $request->sgd_id . "@vietelite.edu.vn";
             $to_email = $parent->email;
             $to_name = '';
             $mail = 'info@vietelite.edu.vn';
@@ -951,12 +953,11 @@ class StudentController extends Controller
                     $ss = StudentSession::where('student_id', $student['id'])->where('session_id', $session->id)->first();
                     if ($ss) {
                         $ss->attendance = 'present';
-                        if(!empty($ss->objectives) ){
+                        if (!empty($ss->objectives)) {
                             $obj_ids = array($ss->objectives);
                             $objs = Objective::whereIn('id', $obj_ids)->get();
                             $result['objectives'] = implode(array_column($objs->toArray(), 'content'));
-    
-                        }else {
+                        } else {
                             $result['objectives'] = 'Chưa lựa chọn';
                         }
                         $ss->save();
@@ -999,22 +1000,22 @@ class StudentController extends Controller
                 $d = ['result' => $result];
                 //Send Email
                 //Send Zns
-                    // $body = [
-                    //     'phone' => '+84' . ltrim($result['phone'], '0'),
-                    //     'template_id' => '201880',
-                    //     'template_data' => [
-                    //         'event_name' => $result['event_name'],
-                    //         'fee' => $result['total_fee'],
-                    //         'receipt_number' => $result['receipt_number'],
-                    //         'sbd' => $result['sbd'],
-                    //         'passcode' => $result['pass'],
-                    //     ],
-                    // ];
-                    // $client = new Client();
-                    // $zns_api = 'https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK';
-                    // $response = $client->request('POST', $zns_api, [
-                    //     \GuzzleHttp\RequestOptions::JSON => $body
-                    // ]);
+                // $body = [
+                //     'phone' => '+84' . ltrim($result['phone'], '0'),
+                //     'template_id' => '201880',
+                //     'template_data' => [
+                //         'event_name' => $result['event_name'],
+                //         'fee' => $result['total_fee'],
+                //         'receipt_number' => $result['receipt_number'],
+                //         'sbd' => $result['sbd'],
+                //         'passcode' => $result['pass'],
+                //     ],
+                // ];
+                // $client = new Client();
+                // $zns_api = 'https://business.openapi.zalo.me/message/template?access_token=iKGMLgs70XEzHX9KfuO64RT06rIgcNr4q28h1f-7TqU36Jm9mBv85g888Yp7p5WyXNHG2UdvGnkNH1SEp-P7CuPI4pwOodnn-WuAJE6cI6kuPHTCoDbnNfH9DahwY4HEgoq9QyxjQsIhSWWZpUru08TlEKQVx5K8XqmlCVNqN2lbHHjic_TsI8jQPdRLrIfFoLXBRQo29own8N8nmViQDg1s2pN5p4eCdruvDFoVMGM_6Kf4puOrKP43IdVJi3r7kW5SGR-H4Ldj3G1dYerXFTit4Wp0Y0TBAFSbTwgT0XK';
+                // $response = $client->request('POST', $zns_api, [
+                //     \GuzzleHttp\RequestOptions::JSON => $body
+                // ]);
                 // echo $response->getbody();
 
                 $backup = Mail::getSwiftMailer();
@@ -2005,15 +2006,24 @@ class StudentController extends Controller
 
 
     //Teams
-    protected function notifyNewAccount(Request $request){
-
+    protected function notifyNewAccount(Request $request)
+    {
     }
 
-    public function exportStudent()
+    public function exportStudent(Request $request)
     {
+        dd($request);
+        // Excel::import(new StudentSPImport, 'xxxx.xlsx');
 
-      
+        // return redirect('/')->with('success', 'All good!');
 
-        return Excel::download(new StudentExport, 'student.xlsx');
+        return Excel::download(new StudentExport($request->data), 'student.xlsx');
+    }
+
+
+
+    public function HSChuyenSuPham(Request $request)
+    {
+        Excel::import(new StudentSPImport, $request->file('file_filter'));
     }
 }
