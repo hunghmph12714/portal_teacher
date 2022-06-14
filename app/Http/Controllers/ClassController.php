@@ -28,6 +28,8 @@ use App\User;
 use App\Option;
 use App\Criteria;
 use App\Objective;
+use GuzzleHttp\Client;
+
 // use App\UserClass; 
 use App\Role;
 
@@ -1825,24 +1827,17 @@ class ClassController extends Controller
     //    }
        dd('Xóa thành công');
     }
-    public function testToken(){
+    public function getAzureToken(){
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
         $data = array('grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284', 
-        'client_secret' => 'zsm8Q~uNXgDXoojtr-TAjw0wz45aBuCRzjfpDcCB', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
-    );
-        // use key 'http' even if you send the request to https://...
-        $options = array(
-            'https' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($data)
-            )
+            'client_secret' => 'zsm8Q~uNXgDXoojtr-TAjw0wz45aBuCRzjfpDcCB', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
         );
-        $context  = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        if ($result === FALSE) { /* Handle error */ }
-
-        var_dump($result);
-
+        // use key 'http' even if you send the request to https://...
+        
+        $client = new Client();
+        $response = $client->request('POST', $url, [
+            'form_params' => $data
+        ]);
+        return response()->json(json_decode($response->getBody()->getContents()));
     }
 }   

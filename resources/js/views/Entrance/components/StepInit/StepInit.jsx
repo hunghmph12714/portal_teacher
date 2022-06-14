@@ -358,14 +358,15 @@ const StepInit = (props) => {
                                         text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
-                                    // {
-                                    //     icon: () => <HighlightOffIcon />,
-                                    //     tooltip: 'Xoá',
-                                    //     isFreeAction: false,
-                                    //     text: 'Xoá',
-                                    //     onClick: (event, rowData) => {
-                                    //         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
-                                    // },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                            
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}
@@ -418,15 +419,15 @@ const StepInit = (props) => {
                                         text: 'Chuyển trạng thái',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'type1')},
                                     },
-                                    // {
-                                    //     icon: () => <HighlightOffIcon />,
-                                    //     tooltip: 'Xoá',
-                                    //     isFreeAction: false,
-                                    //     text: 'Xoá',
-                                    //     onClick: (event, rowData) => {
-                                    //         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
                                             
-                                    // },
+                                    },
                                     
                                 ]}
                                 localization={lang}
@@ -480,14 +481,15 @@ const StepInit = (props) => {
                                         text: 'Thất bại tư vấn',
                                         onClick: (event, rowData) => {handleOpenDialogStatus(rowData, 'lost')},
                                     },
-                                    // {
-                                    //     icon: () => <HighlightOffIcon />,
-                                    //     tooltip: 'Xoá',
-                                    //     isFreeAction: false,
-                                    //     text: 'Xoá',
-                                    //     onClick: (event, rowData) => {
-                                    //         if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
-                                    // },
+                                    {
+                                        icon: () => <HighlightOffIcon />,
+                                        tooltip: 'Xoá',
+                                        isFreeAction: false,
+                                        text: 'Xoá',
+                                        onClick: (event, rowData) => {
+                                            if (window.confirm('Bạn có chắc muốn xóa bản ghi này? !')) handleDeleteEntrance(rowData)}
+                                            
+                                    },
                                 ]}
                                 localization={lang}
                                 columns={column1}

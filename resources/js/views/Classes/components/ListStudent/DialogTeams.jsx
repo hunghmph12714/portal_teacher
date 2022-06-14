@@ -54,59 +54,45 @@ const DialogTeams = (props) => {
                     "password": "V33du2022"
                 }
             }
-            axios.post('https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token', 
-            qs.stringify({
-                    grant_type: 'password',
-                    client_id: '0fefe5c4-ecb4-4054-a02e-324a37219284',
-                    client_secret: 'zsm8Q~uNXgDXoojtr-TAjw0wz45aBuCRzjfpDcCB',
-                    scope: 'openid',
-                    username: 'thanhttb@vietelite.edu.vn',
-                    password: 'V33du2020',
-                    // client_type: 'Single-Page Application'
-                }), {
-                headers: { 
-                  "Content-Type": "application/x-www-form-urlencoded"
-                }})
+           axios.post('/azure-token', {})
+            .then(response => {
+                let config = {
+                    headers: { Accept: 'application/json',
+                        Authorization: `Bearer ${response.data.access_token}` }
+                };
+                axios.post('https://graph.microsoft.com/v1.0/users', data, config)
                 .then(response => {
-                    let config = {
-                        headers: { Accept: 'application/json',
-                            Authorization: `Bearer ${response.access_token}` }
-                    };
-                    axios.post('https://graph.microsoft.com/v1.0/users', data, config)
-                    .then(response => {
-                        // console.log(response)
-                        let body = {
-                            "addLicenses": [
-                                {
-                                    "skuId": "314c4481-f395-4525-be8b-2ec4bb1e9d91"
-                                }
-                            ],
-                            "removeLicenses": []
-                        }
-                        let user_id = response.data.id
-                        axios.post(`https://graph.microsoft.com/v1.0/users/${user_id}/assignLicense`, body, config)
-                        .then(r => {
-                            axios.post('/student/save-sgd-id', {id: props.selected_data.id, sgd_id: sgd_id, ms_id: user_id})
-                                .then(response => {
-                                    props.handleClose()
-                                    enqueueSnackbar('Tạo tài khoản Teams thành công', {variant: 'success'})
-                                    setDisable(false)   
-                                })
-                                .catch(err => {
-                                    
-                                })
-                        })
-                        .catch(err => {
-        
-                        })
+                    // console.log(response)
+                    let body = {
+                        "addLicenses": [
+                            {
+                                "skuId": "314c4481-f395-4525-be8b-2ec4bb1e9d91"
+                            }
+                        ],
+                        "removeLicenses": []
+                    }
+                    let user_id = response.data.id
+                    axios.post(`https://graph.microsoft.com/v1.0/users/${user_id}/assignLicense`, body, config)
+                    .then(r => {
+                        axios.post('/student/save-sgd-id', {id: props.selected_data.id, sgd_id: sgd_id, ms_id: user_id})
+                            .then(response => {
+                                props.handleClose()
+                                enqueueSnackbar('Tạo tài khoản Teams thành công', {variant: 'success'})
+                                setDisable(false)   
+                            })
+                            .catch(err => {
+                                
+                            })
                     })
                     .catch(err => {
-                        enqueueSnackbar('Token Microsoft đã hết hạn, vui lòng gia hạn', {variant: 'error'})
+    
                     })
                 })
                 .catch(err => {
-                    console.log(err)
+                    enqueueSnackbar('Token Microsoft đã hết hạn, vui lòng gia hạn', {variant: 'error'})
                 })
+            })
+            .catch(err => {})
             
         }
         

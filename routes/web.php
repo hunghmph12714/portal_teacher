@@ -438,6 +438,8 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
+    Route::post('azure-token', 'ClassController@getAzureToken');
+
     // Route::get('/student/import', 'StudentController@importStudent');
     //MISA
     Route::get('/misa', function () {
@@ -654,6 +656,5 @@ Route::get('/hot-fix', 'QuizController@hotFix');
 
 
 Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
-Route::get('test-token-azure', 'ClassController@testToken');
 Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
