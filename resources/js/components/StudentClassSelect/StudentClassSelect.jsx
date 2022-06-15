@@ -12,7 +12,7 @@ const StudentClassSelect = React.memo(props => {
             const r = await axios.post(baseUrl + '/class/active-student', 
             {class_id: props.class_id, type: props.dialogType, session_date: props.session_date, session_id: props.session_id})
             setStudent(r.data.map(d => {
-                    return {label: d.status + '-' +d.fullname, value: d.id}
+                    return {label: d.pivot.status + '-' +d.fullname, value: d.id}
                 })
             )
         }
