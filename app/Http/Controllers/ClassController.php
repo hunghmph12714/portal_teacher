@@ -29,12 +29,21 @@ use App\Option;
 use App\Criteria;
 use App\Objective;
 use GuzzleHttp\Client;
-
+use App\Exports\ClassesExport;
+use Maatwebsite\Excel\Facades\Excel;
 // use App\UserClass; 
 use App\Role;
 
 class ClassController extends Controller
 {
+    //Export lop hoc
+    protected function exportClasses(){
+        
+        // return $classes;
+        $year = auth()->user()->wp_year;
+
+        return Excel::download(new ClassesExport(), 'Danh sách lớp học '. $year .'.xlsx');
+    }
     // Phòng học
     protected function convertSession()
     {

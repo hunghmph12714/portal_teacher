@@ -14,6 +14,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import axios from 'axios';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import {format, subDays } from 'date-fns';
 
 const baseUrl = window.Laravel.baseUrl;
@@ -237,6 +238,21 @@ class Classes extends React.Component{
     handleClassDetail = (event, rowData) => {
       this.props.history.push('/class/'+rowData.id)
     }
+    handleExportClasses = () => {
+      axios.get('/class/export',{ responseType: 'blob' })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'Danh sách lớp học.xlsx'); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(err => {
+
+        })
+
+    }
     componentDidMount(){ 
       this.getClass()
     }
@@ -254,7 +270,7 @@ class Classes extends React.Component{
                           pageSize: 20,
                           grouping: true,
                           filtering: true,
-                          exportButton: true,
+                          exportButton: false,
                           rowStyle: {
                             padding: '0px',
                           },
@@ -263,7 +279,16 @@ class Classes extends React.Component{
                           }
                       }}
                       onRowClick={(event, rowData) => this.handleClassDetail(event, rowData)}
-                      actions={[                       
+                      actions={[   
+                          {
+                              icon: () => <GetAppIcon />,
+                              tooltip: 'Xuất danh sách lớp học',
+                              isFreeAction: true,
+                              text: 'Xuất danh sách lớp học',
+                              onClick: (event) => {
+                                  this.handleExportClasses()
+                              },
+                          },                    
                           {
                               icon: () => <AddBoxIcon />,
                               tooltip: 'Thêm lớp học',
@@ -273,6 +298,7 @@ class Classes extends React.Component{
                                   this.handleOpenDialogCreate()
                               },
                           },
+                          
                           {
                             icon: () => <EditOutlinedIcon />,
                             tooltip: 'Chỉnh sửa',

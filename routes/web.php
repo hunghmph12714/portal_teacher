@@ -398,6 +398,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/classes', function () {
         return view('welcome');
     });
+    Route::get('/class/export', 'ClassController@exportClasses');
     Route::get('/class/get/{center_id}/{course_id}', 'ClassController@getClass');
     Route::get('/class/get-all/{center_id}/{course_id}', 'ClassController@getAllClass');
     Route::post('/class/create', 'ClassController@createClass');
