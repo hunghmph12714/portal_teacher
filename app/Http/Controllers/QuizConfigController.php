@@ -18,6 +18,7 @@ class QuizConfigController extends Controller
     //
     protected function edit(Request $request)
     {
+        // dd(2);
         $config = QuizConfig::find($request->config['id']);
         if ($config) {
             $config->title = $request->config['title'];
@@ -69,7 +70,7 @@ class QuizConfigController extends Controller
     protected function create(Request $request)
     {
         // dd($request->quiz_config);
-
+// dd(1);
         $rules = ['config' => 'required', 'quiz_config'];
         $this->validate($request, $rules);
 

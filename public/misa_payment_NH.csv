@@ -1,9 +1,6 @@
 ﻿"Hiển thị trên sổ","Phương thức thanh toán","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Tài khoản chi","Mở tại NH","Nội dung thanh toán","Diễn giải nội dung thanh toán","Mã đối tượng","Tên đối tượng","Địa chỉ","Tài khoản nhận","Tên NH nhận","Người lĩnh tiền","Số CMND","Ngày cấp CMND","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
-0,0,01-09-2022,01-09-2022,PC200203,'152171277,VP,43,"Thanh toán tiền thuê nhà 6 tháng cơ sở Trần Duy Hưng",,,,,,,,,,,"Thanh toán tiền thuê nhà 6 tháng cơ sở Trần Duy Hưng",6422-TN,1121,150000000
-0,0,01-10-2022,01-10-2022,PC200206,'152171277,VP,43,"Thanh toán tiền sửa chữa nhà 17 Đỗ Quang",,,,,,,,,,,"Thanh toán tiền sửa chữa nhà 17 Đỗ Quang",6421-SCCSVC,1121,9125000
-0,0,01-10-2022,01-10-2022,PC200207,'152171277,VP,43,"Hoàn trả học phí chuyển khoản nhầm cho ph Dương Phương Thúy T9.1",,,,,,,,,,,"Hoàn trả học phí chuyển khoản nhầm cho ph Dương Phương Thúy T9.1",131,1121,16065000
-0,0,01-11-2022,01-11-2022,PC200209,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",1368,1121,500000000
-0,0,01-14-2022,01-14-2022,PC200211,'26856688,ACB,43,"Thanh toán tiền điện thoại hotline",,,,,,,,,,,"Thanh toán tiền điện thoại hotline",6422-CPĐT,1123,599519
-0,0,01-18-2022,01-18-2022,PC200213,'152171277,VP,43,"Hoàn trả học phí chuyển khoản nhầm cho ph Đặng Ngọc Thành V7.1",,,,,,,,,,,"Hoàn trả học phí chuyển khoản nhầm cho ph Đặng Ngọc Thành V7.1",131,1121,11513250
-0,0,01-20-2022,01-20-2022,PC200214,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang ACB(HS)",1368,1121,450000000
-0,0,01-24-2022,01-24-2022,PC200226,'152171277,VP,43,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",,,,,,,,,,,"Chuyển tiền từ VPB(TDH/ĐQ) sang TCB(HS)",1368,1121,250000000
+0,0,05-10-2022,05-10-2022,PC500361,43,"chuyển tiền về hội sở",,,,,,,,,,,"chuyển tiền về hội sở",1368,1126,100000000
+0,0,05-10-2022,05-10-2022,PC500362,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,7000000
+0,0,05-18-2022,05-18-2022,PC500363,43,"Nhập quỹ tiền mặt",,,,,,,,,,,"Nhập quỹ tiền mặt",1111,1126,5000000
+0,0,05-28-2022,05-28-2022,PC500380,43,"THU PHI THUONG NIEN THE VISA DEBIT THANG 05.2022",,,,,,,,,,,"THU PHI THUONG NIEN THE VISA DEBIT THANG 05.2022",6422-QLDN,1126,5500
+0,0,05-30-2022,05-30-2022,PC500381,43,"SHB THU PHI DV SMS THONG BAO SO DU THANG 05/2022",,,,,,,,,,,"SHB THU PHI DV SMS THONG BAO SO DU THANG 05/2022",6422-QLDN,1126,11000

@@ -27,40 +27,46 @@ class StudentSPImport implements
     {
         // dd($rows);
         $students = Student::join('parents', 'students.parent_id', 'parents.id')
+        ->join('entrances' ,'students.id','entrances.student_id')
+        ->join('center' ,'entrances.center_id' ,'center.id')
             // ->where(activeClasses(), true)
-            ->join('student_class', 'students.id', 'student_class.student_id')
-            ->join('classes', 'student_class.class_id', 'classes.id')
-            ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2021')
-            ->join('courses', 'classes.course_id', 'courses.id')
-            ->select('students.id as id', 'students.fullname as student_name', 'students.school', 'parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone',  'classes.code', 'dob')
+            // ->join('student_class', 'students.id', 'student_class.student_id')
+            // ->join('classes', 'student_class.class_id', 'classes.id')
+            // ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2021')
+            // ->join('courses', 'classes.course_id', 'courses.id')
+            ->select('students.id as id', 'students.fullname as student_name', 'parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone',  'center.name as center_name')
             ->groupBy('students.id')
             ->get();
-
-        $result = $students->toArray();
+// dd($students);
+        // $result = $students->toArray();
         $student_filter = [];
-        foreach ($students as $s) {
-            $classes = $s->activeClasses()->select('classes.code')->get();
-            $code = implode(',', array_column($classes->toArray(), 'code'));
-            $s->code = $code;
-        }
+        // foreach ($students as $s) {
+        //     $classes = $s->activeClasses()->select('classes.code')->get();
+        //     $code = implode(',', array_column($classes->toArray(), 'code'));
+        //     $s->code = $code;
+        // }
         // dd($students->all());
 
         foreach ($rows as $row) {
-            $dob1 = date('Y-m-d', strtotime(str_replace('/', '-', $row[2])));
+            // $dob1 = date('Y-m-d', strtotime(str_replace('/', '-', $row[2])));
             // dd($students);
             foreach ($students as $st) {
                 // dd($dob1, $st->dob);
-                // print_r($st->dob, '<br>');
-                if ($row[1] == $st->student_name && $dob1 == $st->dob) {
+                // print_r($st->dob, '<br>');        
+                    // dd($row);
+
+             if(!empty($row[2])){
+                   if ($row[2] == $st->phone) {
                     // dd(1);
                     array_push($student_filter, $st);
                 }
+             }
             }
             // break;
         }
         // dd($student_filter);
         $data = [];
-        $data['students'] = (object) $student_filter;
+        $data['students'] = $student_filter;
         return Excel::download(new StudentExport($data), 'entrances.xlsx');
     }
 }
