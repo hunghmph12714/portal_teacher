@@ -664,3 +664,9 @@ Route::get('loc-hoc-sinh-thi-chuyen-su-pham', function () {
     return view('file_filter_student');
 });
 Route::post('loc-hoc-sinh-thi-chuyen-su-pham', [StudentController::class, 'HSChuyenSuPham']);
+Route::get('kiem-tra-ghi-danh',function(){
+    // $data=[];
+    return view('tra_cuu_entrances' );
+});
+
+Route::post('kiem-tra-ghi-danh','EntranceController@searchEntrance');
