@@ -441,7 +441,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
     Route::post('azure-token', 'ClassController@getAzureToken');
-
+    Route::get('/teams/generate-class', 'ClassController@generateClass');
     // Route::get('/student/import', 'StudentController@importStudent');
     //MISA
     Route::get('/misa', function () {

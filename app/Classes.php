@@ -8,7 +8,7 @@ class Classes extends Model
 {
     //
     public $table = 'classes';
-    protected $fillable = ['id', 'center_id', 'course_id', 'code', 'document', 'active', 'config', 'fee', 'open_date', 'name', 'note', 'student_number', 'adjust_fee', 'online_id', 'password', 'droped_number', 'waiting_number', 'transfer_number', 'type', 'year', 'cost'];
+    protected $fillable = ['id', 'center_id', 'course_id', 'code', 'document', 'active', 'config', 'fee', 'open_date', 'name', 'note', 'student_number', 'adjust_fee', 'online_id', 'password', 'droped_number', 'waiting_number', 'transfer_number', 'type', 'year', 'cost', 'ms_id'];
     protected $casts = ['adjust_fee' => 'array'];
     public function sessions()
     {

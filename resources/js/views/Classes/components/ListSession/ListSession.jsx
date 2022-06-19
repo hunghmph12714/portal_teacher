@@ -66,7 +66,6 @@ const ListSession = (props) => {
       setOpen(true)
       setDialogType('edit')
       setSelectedSession(rowData)
-      //ss
     }
     function handleCheckSession(rowData){
       setOpenCheck(true)
@@ -116,7 +115,7 @@ const ListSession = (props) => {
             r.from_full = r.from
             r.to_full = r.to
             r.date = format(date , 'dd-MM-yyyy')
-            r.day = format(date, 'i') 
+            r.day = format(date, 'i')
             r.from = format(new Date(r.from), 'HH:mm')
             r.to = format(new Date(r.to), 'HH:mm')
             r.document = (r.document)?r.document:'',
