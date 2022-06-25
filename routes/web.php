@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Feedback;
 use App\Http\Controllers\AttemptDetailController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\GuestController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\StudentController;
 use App\Student;
+use Illuminate\Support\Facades\Auth;
 
 // use App\Http\Controllers\ParentController;
 // use Illuminate\Routing\Route;
@@ -574,6 +576,19 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/mark/{id}', function () {
         return view('welcome');
     });
+
+    Route::get('feedback/gui-phan-hoi', function () {
+        $feedbacks = Feedback::query()->orderBy('created_at', 'desc')->paginate(10);
+        // dd($feedbacks[0]->upload);
+        // dd(Auth::user());
+
+        return view('feedbacks.create', compact('feedbacks'));
+    });
+    Route::post('feedback/gui-phan-hoi', 'FeedbackController@create');
+    Route::get('feedback/quan-tri', 'FeedbackController@list')->name('feedback.list');
+    // Route::post('feedback/quan-tri', 'FeedbackController@editStatus');
+    Route::get('feedback/chi-tiet/{id}', 'FeedbackController@detail')->name('feedback.chi-tiet');
+    Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -664,9 +679,21 @@ Route::get('loc-hoc-sinh-thi-chuyen-su-pham', function () {
     return view('file_filter_student');
 });
 Route::post('loc-hoc-sinh-thi-chuyen-su-pham', [StudentController::class, 'HSChuyenSuPham']);
-Route::get('kiem-tra-ghi-danh',function(){
+Route::get('kiem-tra-ghi-danh', function () {
     // $data=[];
-    return view('tra_cuu_entrances' );
+    return view('tra_cuu_entrances');
 });
 
-Route::post('kiem-tra-ghi-danh','EntranceController@searchEntrance');
+Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
+// Route::get('feedback/gui-phan-hoi', function () {
+//     $feedbacks = Feedback::query()->orderBy('created_at', 'desc')->paginate(10);
+//     // dd($feedbacks[0]->upload);
+//     // dd(Auth::user());
+
+//     return view('feedbacks.create', compact('feedbacks'));
+// });
+// Route::post('feedback/gui-phan-hoi', 'FeedbackController@create');
+// Route::get('feedback/quan-tri', 'FeedbackController@list')->name('feedback.list');
+// // Route::post('feedback/quan-tri', 'FeedbackController@editStatus');
+// Route::get('feedback/chi-tiet/{id}', 'FeedbackController@detail')->name('feedback.chi-tiet');
+Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');

@@ -33,7 +33,7 @@
 
 
         <h3>Danh sách học sinh</h3>
-        @if(sizeOf($data)>0){
+        {{-- @if(sizeOf($data)>0){ --}}
 
         @foreach ($data['students'] as $k=>$s)
 
@@ -48,7 +48,7 @@
 
         @endforeach
 
-        }
+        {{-- } --}}
 
 
     </div>
