@@ -1169,7 +1169,7 @@ class EntranceController extends Controller
             if ($j == 4) {
                 $j = 0;
                 fputcsv($fp, []);
-            }else{
+            } else {
                 $j++;
             }
         }
@@ -1192,19 +1192,20 @@ class EntranceController extends Controller
     public function searchEntrance(Request $request)
     {
         // dd($request);
-            $parent=Parents::where('parents.phone','like','%'.$request->phone.'%')
-            ->join('students','parents.id','students.parent_id')
-            ->join('entrances','students.id','entrances.student_id')
-            ->join('center','entrances.center_id','center.id')
+
+        $parent = Parents::where('parents.phone', 'like', '%' . $request->phone . '%')
+            ->join('students', 'parents.id', 'students.parent_id')
+            ->join('entrances', 'students.id', 'entrances.student_id')
+            ->join('center', 'entrances.center_id', 'center.id')
             ->select('students.id as id', 'students.fullname as student_name', 'parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone',  'center.name as center_name')
 
             ->groupBy('students.id')
             ->get();
 
-            $data=[];
-            $data['students']=$parent;
-            // dd($data);
-            return view('data_tra_cuu_entrances', compact('data'));
 
+        $data = [];
+        $data['students'] = $parent;
+        dd($data);
+        return view('data_tra_cuu_entrances', compact('data'));
     }
 }

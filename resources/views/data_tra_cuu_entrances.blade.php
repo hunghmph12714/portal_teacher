@@ -33,8 +33,8 @@
 
 
         <h3>Danh sách học sinh</h3>
-        {{-- @if($data['students']==null){ --}}
-        @if (sizeOf($data['students'])<=0){ Không có ghi danh } @endif @foreach ($data['students'] as $k=>$s)
+
+        {{-- @if(sizeOf($data)>0){ --}}
 
 
             <div>
@@ -47,7 +47,8 @@
 
             @endforeach
 
-            {{-- } --}}
+
+        {{-- } --}}
 
 
     </div>
