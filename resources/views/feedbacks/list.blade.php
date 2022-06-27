@@ -22,6 +22,7 @@
                     @csrf
                     <button type="submit" name="" class="btn btn-primary btn-lg btn-block"> Đã xử lý</button>
                 </form> --}}
+
                 <table class="table table-striped table-inverse table-responsive" style="width: 70%">
                     <thead class="thead-inverse">
                         <tr>
@@ -31,6 +32,7 @@
                             <th>Mô tả</th>
                             <th>Ngày</th>
                             <th>Người dùng</th>
+                            <th>Loại</th>
                             <th>Trạng thái</th>
                         </tr>
                     </thead>
@@ -39,7 +41,8 @@
 
                         <tr>
                             <td><input type="checkbox" form="dxl" name="feedbacks_id[]" value="{{ $f->id }}" id=""></td>
-                            <td scope="row">{{ $key+1 }}</td>
+                            <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}
+                            </td>
                             <td><a href="{{ route('feedback.chi-tiet', ['id'=>$f]) }}">{{ $f->title }}</a></td>
                             <td>{!! $f->description !!}</td>
                             <td>{{ $f->created_at }}</td>
@@ -48,6 +51,11 @@
                                 Đang xử lý
                                 @elseif($f->status==2)
                                 Đã xử lý
+                                @endif</td>
+                            <td>@if ($f->status==1)
+                                Báo lỗi
+                                @elseif($f->status==2)
+                                Góp ý nâng cấp
                                 @endif</td>
                         </tr>
                         @endforeach

@@ -8,14 +8,19 @@
     <title>Phản hồi feedback</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="//cdn.ckeditor.com/4.19.0/basic/ckeditor.js"></script>
+    <script src="//cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
 </head>
 
 <body>
     <div class="container" style="width: 100%;">
-        <div class="mx-auto align-center m-5">
-            <img src="https://vietelite.edu.vn/wp-content/uploads/elementor/thumbs/logo-1-pqlel3us4tqrbnci8wlk8gabsz4mmu67lqirmodips.png"
-                alt="">
+        <div class="row m-5 ">
+            <div class=" col-3">
+                <img src="https://vietelite.edu.vn/wp-content/uploads/elementor/thumbs/logo-1-pqlel3us4tqrbnci8wlk8gabsz4mmu67lqirmodips.png"
+                    alt="">
+            </div>
+            <div class="col-3"><a name="" id="" class="btn btn-primary" href="{{ route('feedback.list') }}"
+                    role="button">Danh
+                    sách</a></div>
         </div>
         <div class="row">
             <div class="col">

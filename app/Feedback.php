@@ -8,7 +8,7 @@ class Feedback extends Model
 
 {
     protected $table = 'feedbacks';
-    public $fillable = ['title', 'description', 'upload', 'user_id', 'result', 'status', 'feedack_id'];
+    public $fillable = ['title', 'description', 'upload', 'user_id', 'result', 'status', 'feedack_id', 'phone'];
 
     /**
      * Get the user that owns the Feedback
