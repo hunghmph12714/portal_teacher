@@ -513,7 +513,7 @@ class ClassController extends Controller
             'droped_number',
             'waiting_number',
             'year'
-        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
+        )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->where('year', $wp_year)->get();
         $classes = $result->toArray();
         foreach ($result as $key => $class) {
             $last_session = $class->sessions->last();
@@ -1861,12 +1861,110 @@ class ClassController extends Controller
         }
         dd('Xóa thành công');
     }
+    public function pmt(){
+        // $sessions = Session::whereBetween('date', ['2022-06-20', '2022-06-27'])->where('center_id', 5)->get();
+        // $ss = 0;
+        // $students = [];
+        // foreach($sessions as $s){
+        //     $ss += $s->students()->count();
+        //     $students[] = array_column($s->students()->select('students.id')->get()->toArray(), 'id');
+        // }
+        // $singleArray = [] ; 
+        // foreach($students as $s){
+        //     foreach($s as $student){
+        //         $singleArray[] = $student;
+        //     }
+        // }
+        // echo "<pre>";
+        // print_r(count(array_unique($singleArray)));
+        $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
+        $data = array(
+            'grant_type' => 'client_credentials', 'client_id' => 'a0558926-0978-472d-9902-eda1fead4fb7',
+            'client_secret' => 'EWQ8Q~cG5sxA2nRkAD72L4rBYnVCTikDwGQG6aBw', 'scope' => 'https://graph.microsoft.com/.default'
+        );
+        // use key 'http' even if you send the request to https://...
+        
+        $client = new Client();
+        $response = $client->request('POST', $url, [
+            'form_params' => $data
+        ]);
+        $response = json_decode($response->getBody()->getContents(), true);
+        // $token = 'eyJ0eXAiOiJKV1QiLCJub25jZSI6ImtFTjFKcXVybFhPNEswUUtzX1NLMFlsbFBVUDVQTHE1UmhlTnRSSE13QTAiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjU1ODI1MzIzLCJuYmYiOjE2NTU4MjUzMjMsImV4cCI6MTY1NTgyOTU5NywiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZRGoxMi9tSk9MdnUzeEtmbVNYR1JmWGxsdG9TbXVrWlcwOGJUZmUyNmw0bU5RTUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlZpZXRFbGl0ZSBNYWluIEFwcCIsImFwcGlkIjoiMGZlZmU1YzQtZWNiNC00MDU0LWEwMmUtMzI0YTM3MjE5Mjg0IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJUcuG6p24iLCJnaXZlbl9uYW1lIjoiVGjDoG5oIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTQuMjMxLjI1Mi4yMTYiLCJuYW1lIjoiVHLhuqduIFRy4buLbmggQsOsbmggVGjDoG5oIChIUy5LVENOKSIsIm9pZCI6ImYxZTk3YzlhLTc4ODUtNDliYi04Mzg0LWU3MzA4ZjA4NDI2NCIsInBsYXRmIjoiNSIsInB1aWQiOiIxMDAzMjAwMDQwRjczRjBCIiwicmgiOiIwLkFWWUFKMHlKcEVCRWxFV1NSYVlOdVF5UFh3TUFBQUFBQUFBQXdBQUFBQUFBQUFCV0FJZy4iLCJzY3AiOiJBcHBsaWNhdGlvbi5SZWFkLkFsbCBBcHBsaWNhdGlvbi5SZWFkV3JpdGUuQWxsIENhbGVuZGFycy5SZWFkIENhbGVuZGFycy5SZWFkLlNoYXJlZCBDYWxlbmRhcnMuUmVhZFdyaXRlIENhbGVuZGFycy5SZWFkV3JpdGUuU2hhcmVkIENoYW5uZWwuQ3JlYXRlIENoYW5uZWwuRGVsZXRlLkFsbCBDaGFubmVsLlJlYWRCYXNpYy5BbGwgQ2hhbm5lbE1lbWJlci5SZWFkLkFsbCBDaGFubmVsTWVtYmVyLlJlYWRXcml0ZS5BbGwgRGlyZWN0b3J5LkFjY2Vzc0FzVXNlci5BbGwgRGlyZWN0b3J5LlJlYWQuQWxsIERpcmVjdG9yeS5SZWFkV3JpdGUuQWxsIERpcmVjdG9yeS5Xcml0ZS5SZXN0cmljdGVkIEVkdUFkbWluaXN0cmF0aW9uLlJlYWQgRWR1QWRtaW5pc3RyYXRpb24uUmVhZFdyaXRlIEVkdUFzc2lnbm1lbnRzLlJlYWQgRWR1QXNzaWdubWVudHMuUmVhZEJhc2ljIEVkdUFzc2lnbm1lbnRzLlJlYWRXcml0ZSBFZHVBc3NpZ25tZW50cy5SZWFkV3JpdGVCYXNpYyBFZHVSb3N0ZXIuUmVhZCBFZHVSb3N0ZXIuUmVhZEJhc2ljIEVkdVJvc3Rlci5SZWFkV3JpdGUgZW1haWwgTWFpbC5SZWFkIG9wZW5pZCBPcmdhbml6YXRpb24uUmVhZC5BbGwgT3JnYW5pemF0aW9uLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBUYXNrcy5SZWFkIFRhc2tzLlJlYWQuU2hhcmVkIFRhc2tzLlJlYWRXcml0ZSBUYXNrcy5SZWFkV3JpdGUuU2hhcmVkIFRlYW0uQ3JlYXRlIFRlYW0uUmVhZEJhc2ljLkFsbCBUZWFtTWVtYmVyLlJlYWQuQWxsIFRlYW1NZW1iZXIuUmVhZFdyaXRlLkFsbCBUZWFtTWVtYmVyLlJlYWRXcml0ZU5vbk93bmVyUm9sZS5BbGwgVGVhbVNldHRpbmdzLlJlYWQuQWxsIFRlYW1TZXR0aW5ncy5SZWFkV3JpdGUuQWxsIFVzZXIuRXhwb3J0LkFsbCBVc2VyLkludml0ZS5BbGwgVXNlci5NYW5hZ2VJZGVudGl0aWVzLkFsbCBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRCYXNpYy5BbGwgVXNlci5SZWFkV3JpdGUgVXNlci5SZWFkV3JpdGUuQWxsIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoicjdTTDZsUE4zLWRwLU5GUms1blJTY2sxUUphV1lhQVlwRGRETnEyMll4byIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6ImE0ODk0YzI3LTQ0NDAtNDU5NC05MjQ1LWE2MGRiOTBjOGY1ZiIsInVuaXF1ZV9uYW1lIjoidGhhbmh0dGJAdmlldGVsaXRlLmVkdS52biIsInVwbiI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1dGkiOiJCak1yR1drcGRraTYwTWF1eDhvcUFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IkdnLVhaNGpBM3RJU2tqdUpjMDZNNE5jOEltOEVRN0pMdFFxMVAtbUdxOG8ifSwieG1zX3RjZHQiOjE0ODA3MDQzOTN9.bRZuNQfj7QxqDfI9zooZq5loScTVFJbvM49yBX4CZEZS8MW1iOUQxo9HzyDxIKickyS1dnm9hbW3ZVjgkHqVsitl2G5cIzFY_lF4D9Q4PJw155WS6E05mTaVaMaWbrQCeLGzjU0DfgaD8v2CFJynBTesUo82MC0jFqJKibztRkP15O2sZjmkIZZegzwZ43Ar1iu1fNNAavuWrZSMZmLQxQiC9JZw0_CUFMdjZWq2f0pkxPK6WzPH6FSZy9HJo-5oswWBskgufXrhOza4joe0aZLHVBORMvz49ptkS4KY0V2H0vLOrbfgbp190s9MZkv2ZSA7IMZpjPgozDHwGin_zQ';
+        $token = $response['access_token'];
+        print_r($token);
+        $url = 'https://graph.microsoft.com/beta/education/classes/';
+        $data = [
+            // "@odata.type" => "#microsoft.graph.educationClass",
+            "displayName" => "Health Level 2",
+            "mailNickname" => "124sdc.net",
+            "description" => "Health 2",
+            "createdBy" => [
+              "@odata.type" => "microsoft.graph.identitySet"
+            ],
+            "classCode" => "H@23r",
+            "externalName" => "H@H2",
+            "externalId" => "H@H2",
+            "externalSource" => "H@H2",
+            "grade" => "4",
+        ];
+        
+        $client = new Client();
+        $r = $client->request('POST', $url, [
+            'json' => $data,
+            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+        ]);
+
+        // $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
+        echo "<pre>";
+        $ms_id = json_decode($r->getBody()->getContents())->id;
+        print_r($ms_id);
+            // print_r($r);
+        //     try {} catch (\Exception $ex) {
+        // $response = $ex->getResponse();
+        // \Log::critical($ex);
+        // dd($response);
+    //   }
+    }
+    public function deleteTeam(){
+        $classes = Classes::whereNotNull('ms_id')->where('code', '!=', 'TC9.2')->get();
+        $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
+        $data = array(
+            'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
+            'client_secret' => '7r_8Q~_xkiqP2FUysOW0SGFS6UlCb-re6-mYEcY9', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
+        );
+        // use key 'http' even if you send the request to https://...
+
+        $client = new Client();
+        $response = $client->request('POST', $url, [
+            'form_params' => $data
+        ]);
+        $response = json_decode($response->getBody()->getContents(), true);
+        $token = $response['access_token'];
+
+        foreach($classes as $class){
+            echo $class->ms_id;
+            echo "<br>";
+            echo $class->code;            echo "<br>";
+            $url = 'https://graph.microsoft.com/v1.0/groups/'.$class->ms_id;
+            $team_client = new Client();
+            $r = $team_client->request('DELETE', $url, [
+                // 'json' => $team_data,
+                'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+            ]);
+            $class->ms_id = null;
+            $class->save();
+            // echo $token;
+
+            // break;
+        }
+        // print_r($classes);
+    }
     public function getAzureToken()
     {
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
         $data = array(
             'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
-            'client_secret' => 'zdg8Q~6pSdZg-cbDLftMII5EjooOdnVuzgdhXaar', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
+            'client_secret' => 'vsQ8Q~TmFtwJoRv6mjGulWLMardlRO~0A0loua.1', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
         );
         // use key 'http' even if you send the request to https://...
 
@@ -1880,144 +1978,404 @@ class ClassController extends Controller
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
         $data = array(
             'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
-            'client_secret' => 'zdg8Q~6pSdZg-cbDLftMII5EjooOdnVuzgdhXaar', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
+            'client_secret' => 'vsQ8Q~TmFtwJoRv6mjGulWLMardlRO~0A0loua.1', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
         );
         // use key 'http' even if you send the request to https://...
-
+        
         $client = new Client();
         $response = $client->request('POST', $url, [
             'form_params' => $data
         ]);
         $response = json_decode($response->getBody()->getContents(), true);
         $token = $response['access_token'];
-        // print_r($token);
+        print_r($token);
 
         
-        $classes = Classes::where('year', 2022)->get();
+        $classes = Classes::where('year', 2022)->orderBy('id', 'ASC')->get();
         //Check if ms exist
 
         foreach($classes as $class){
             $active_students = $class->activeStudents;
             //if ms exist -> 
             
-            if($class->ms_id){
+            if($class->ms_id ){
                 //if student
-                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
-                //Add quan ly
-                switch ($class->center_id) {
-                    case 2:
-                    case 4:
-                        $team_data = 
-                            [
-                                "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                                "roles"=> ["owner"],
-                                "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('61865c64-56b5-4ea2-8017-8c2047d69a83')"
-                            ];
-                        $team_client = new Client();
-                        $r = $team_client->request('POST', $team_url, [
-                            'json' => $team_data,
-                            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                        ]);
-                        break;
-                    case 3:
-                        $team_data = 
-                            [
-                                "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                                "roles"=> ["owner"],
-                                "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('c4ec6566-0b20-43e6-a838-ee013c2bc3d9')"
-                            ];
-                        $team_client = new Client();
-                        $r = $team_client->request('POST', $team_url, [
-                            'json' => $team_data,
-                            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                        ]);
-                        break;
-                    case 5:
-                        $team_data = 
-                            [
-                                "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                                "roles"=> ["owner"],
-                                "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('e9910308-03fa-40b3-b5e0-a567fdd1f697')"
-                            ];
-                        $team_client = new Client();
-                        $r = $team_client->request('POST', $team_url, [
-                            'json' => $team_data,
-                            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                        ]);
-                        break;
-                    case 6:
-                        $team_data = 
-                            [
-                                "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                                "roles"=> ["owner"],
-                                "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('4224446a-7b66-4331-908f-f6c9a60af83e')"
-                            ];
-                        $team_client = new Client();
-                        $r = $team_client->request('POST', $team_url, [
-                            'json' => $team_data,
-                            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                        ]);
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-                    
-                //Add hoc sinh
-                foreach($active_students as $s){
-                    if($s->ms_id){
-                        $team_data = 
-                            [
-                                "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                                "roles"=> ["member"],
-                                "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
-                            ];
-                        $team_client = new Client();
-                        $r = $team_client->request('POST', $team_url, [
-                            'json' => $team_data,
-                            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                        ]);
-                    }
-                    
-                }
+                if(!$class->center_id == 3) continue;
+                echo $class->code."<br/>";
+                $course = Course::find($class->course_id);
+                echo $course->grade;
                 
-            }else{
-                $team_data = [
-                    "template@odata.bind" => "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
-                    "visibility" => "Private",
-                    "displayName" => "2022-2023 ".$class->code,
-                    "description" => $class->name,
-                    "memberSettings" => [
-                        "allowCreateUpdateChannels" => false,
-                        "allowDeleteChannels" => false,
-                        "allowAddRemoveApps" => false,
-                        "allowCreateUpdateRemoveTabs" => false,
-                        "allowCreateUpdateRemoveConnectors" => false
-                    ],
-                    "members" => [
-                        [
-                           "@odata.type" => "#microsoft.graph.aadUserConversationMember",
-                           "roles" => [
-                              "owner"
-                           ],
-                           "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('f1e97c9a-7885-49bb-8384-e7308f084264')"
-                        ],
-                    ]
-                ];
-                $team_url = 'https://graph.microsoft.com/v1.0/teams';
+                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
+                $team_data = 
+                    [
+                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        "roles"=> ["owner"],
+                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('45c94aa4-d8f6-487d-ad7e-f9d8573d10ea')"
+                    ];
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
                     'json' => $team_data,
                     'headers' => [ 'Authorization' => 'Bearer ' . $token ],
                 ]);
-                $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
-                $class->ms_id = $ms_id;
+                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
+                $team_data = 
+                    [
+                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        "roles"=> ["owner"],
+                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('b77eb657-84e9-4e2d-9c70-791850771fe4')"
+                    ];
+                $team_client = new Client();
+                $r = $team_client->request('POST', $team_url, [
+                    'json' => $team_data,
+                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                ]);
+                
+                //Add quan ly
+                // switch ($course->grade) {
+                //     case 8:
+                //         # code...
+                //         $team_data = 
+                //             [
+                //                 "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                //                 "roles"=> ["owner"],
+                //                 "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('444d3fc6-963f-4385-b4a4-49d11632f96b')"
+                //             ];
+                //         $team_client = new Client();
+                //         $r = $team_client->request('POST', $team_url, [
+                //             'json' => $team_data,
+                //             'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                //         ]);
+                //         break;
+                //     case 9:
+                //             # code...
+                //             $team_data = 
+                //                 [
+                //                     "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                //                     "roles"=> ["owner"],
+                //                     "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('6640c0d2-4672-44bc-bfad-11d3a5574b89')"
+                //                 ];
+                //             $team_client = new Client();
+                //             $r = $team_client->request('POST', $team_url, [
+                //                 'json' => $team_data,
+                //                 'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                //             ]);
+                //             break;
+                //     case 7:
+                //             # code...
+                //             $team_data = 
+                //                 [
+                //                     "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                //                     "roles"=> ["owner"],
+                //                     "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('05c8444e-c7eb-4ddc-ab3f-ddf0fb4b83a1')"
+                //                 ];
+                //             $team_client = new Client();
+                //             $r = $team_client->request('POST', $team_url, [
+                //                 'json' => $team_data,
+                //                 'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                //             ]);
+                //             break;
+                //     case 6:
+                //     case 10:
+                //     case 11:
+                //     case 12:
+                //             # code...
+                //             $team_data = 
+                //                 [
+                //                     "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                //                     "roles"=> ["owner"],
+                //                     "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('425de149-0e70-40c6-b206-c493dfee556a')"
+                //                 ];
+                //             $team_client = new Client();
+                //             $r = $team_client->request('POST', $team_url, [
+                //                 'json' => $team_data,
+                //                 'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                //             ]);
+                //             break;
+                //     default:
+                //         # code...
+                //         break;
+                // }
+                switch ($class->center_id) {
+                    // case 2:
+                    // case 4:
+                    //     $team_data = 
+                    //         [
+                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                    //             "roles"=> ["owner"],
+                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('61865c64-56b5-4ea2-8017-8c2047d69a83')"
+                    //         ];
+                    //     $team_client = new Client();
+                    //     $r = $team_client->request('POST', $team_url, [
+                    //         'json' => $team_data,
+                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    //     ]);
+                    //     break;
+                    // case 3:
+                    //     $team_data = 
+                    //         [
+                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                    //             "roles"=> ["owner"],
+                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('c4ec6566-0b20-43e6-a838-ee013c2bc3d9')"
+                    //         ];
+                    //     $team_client = new Client();
+                    //     $r = $team_client->request('POST', $team_url, [
+                    //         'json' => $team_data,
+                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    //     ]);
+                    //     break;
+                    // case 5:
+                    //     $team_data = 
+                    //         [
+                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                    //             "roles"=> ["owner"],
+                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('0d0455a3-b01d-4415-a0f8-225352bbaa01')"
+                    //         ];
+                    //     $team_client = new Client();
+                    //     $r = $team_client->request('POST', $team_url, [
+                    //         'json' => $team_data,
+                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    //     ]);
+                    //     break;
+                        // case 6:
+                        //     $team_data = 
+                        //         [
+                        //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        //             "roles"=> ["owner"],
+                        //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('4224446a-7b66-4331-908f-f6c9a60af83e')"
+                        //         ];
+                        //     $team_client = new Client();
+                        //     $r = $team_client->request('POST', $team_url, [
+                        //         'json' => $team_data,
+                        //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                        //     ]);
+                        //     break;
+                    default:
+                        # code...
+                        break;
+                }
+                $class->misa_upload = 1;
                 $class->save();
-                echo $class->code. ': '. $class->ms_id. "<br/>";
+                //Add hoc sinh
+                // foreach($active_students as $s){
+                //     if($s->ms_id){
+                //         $team_data = 
+                //             [
+                //                 "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                //                 "roles"=> ["member"],
+                //                 "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
+                //             ];
+                //         $team_client = new Client();
+                //         $r = $team_client->request('POST', $team_url, [
+                //             'json' => $team_data,
+                //             'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                //         ]);
+                //     }
+                    
+                // }
+                
+            }else{
+                // $team_data = [
+                //     "template@odata.bind"=> "https://graph.microsoft.com/v1.0/teamsTemplates('educationClass')",
+                //     // "visibility" => "Private",
+                //     "displayName" => "2022-2023 ".$class->code,
+                //     "description" => $class->name,
+                //     "memberSettings" => [
+                //         "allowCreateUpdateChannels" => false,
+                //         "allowDeleteChannels" => false,
+                //         "allowAddRemoveApps" => false,
+                //         "allowCreateUpdateRemoveTabs" => false,
+                //         "allowCreateUpdateRemoveConnectors" => false
+                //     ],
+                //     "members" => [
+                //         [
+                //            "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                //            "roles" => [
+                //               "owner"
+                //            ],
+                //            "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('f1e97c9a-7885-49bb-8384-e7308f084264')"
+                //         ],
+                //     ]
+                // ];
+                // $team_url = 'https://graph.microsoft.com/v1.0/teams';
+                // $team_client = new Client();
+                // $r = $team_client->request('POST', $team_url, [
+                //     'json' => $team_data,
+                //     'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                // ]);
+                // $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
+                // $class->ms_id = $ms_id;
+                // $class->save();
+                // echo $class->code. ': '. $class->ms_id. "<br/>";
+                
             }
+            // break;
         }
         // echo "<pre>";
         // print_r($classes->toArray());
 
     }
+    public function teamCheckStudent(){
+        $classes = Classes::where('year', 2022)->get();
+        foreach($classes as $class){
+            $active_students = $class->activeStudents()->where('ms_id', NULL)->get();
+            if(sizeof($active_students->toArray()) > 0){
+                echo $class->code.'<br/>';
+            }
+            // echo $class->code;
+
+            // echo "<pre>";
+            // print_r($active_students->toArray());
+            // foreach($active_students as $)
+        }
+
+    }
+    // public function generateClass(){
+    //     $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
+    //     $data = array(
+    //         'grant_type' => 'client_credentials', 'client_id' => 'a0558926-0978-472d-9902-eda1fead4fb7',
+    //         'client_secret' => 'EWQ8Q~cG5sxA2nRkAD72L4rBYnVCTikDwGQG6aBw', 'scope' => 'https://graph.microsoft.com/.default'
+    //     );
+    //     // use key 'http' even if you send the request to https://...
+        
+    //     $client = new Client();
+    //     $response = $client->request('POST', $url, [
+    //         'form_params' => $data
+    //     ]);
+    //     $response = json_decode($response->getBody()->getContents(), true);
+    //     // $token = 'eyJ0eXAiOiJKV1QiLCJub25jZSI6ImtFTjFKcXVybFhPNEswUUtzX1NLMFlsbFBVUDVQTHE1UmhlTnRSSE13QTAiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9hNDg5NGMyNy00NDQwLTQ1OTQtOTI0NS1hNjBkYjkwYzhmNWYvIiwiaWF0IjoxNjU1ODI1MzIzLCJuYmYiOjE2NTU4MjUzMjMsImV4cCI6MTY1NTgyOTU5NywiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkUyWmdZRGoxMi9tSk9MdnUzeEtmbVNYR1JmWGxsdG9TbXVrWlcwOGJUZmUyNmw0bU5RTUEiLCJhbXIiOlsicHdkIl0sImFwcF9kaXNwbGF5bmFtZSI6IlZpZXRFbGl0ZSBNYWluIEFwcCIsImFwcGlkIjoiMGZlZmU1YzQtZWNiNC00MDU0LWEwMmUtMzI0YTM3MjE5Mjg0IiwiYXBwaWRhY3IiOiIxIiwiZmFtaWx5X25hbWUiOiJUcuG6p24iLCJnaXZlbl9uYW1lIjoiVGjDoG5oIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTQuMjMxLjI1Mi4yMTYiLCJuYW1lIjoiVHLhuqduIFRy4buLbmggQsOsbmggVGjDoG5oIChIUy5LVENOKSIsIm9pZCI6ImYxZTk3YzlhLTc4ODUtNDliYi04Mzg0LWU3MzA4ZjA4NDI2NCIsInBsYXRmIjoiNSIsInB1aWQiOiIxMDAzMjAwMDQwRjczRjBCIiwicmgiOiIwLkFWWUFKMHlKcEVCRWxFV1NSYVlOdVF5UFh3TUFBQUFBQUFBQXdBQUFBQUFBQUFCV0FJZy4iLCJzY3AiOiJBcHBsaWNhdGlvbi5SZWFkLkFsbCBBcHBsaWNhdGlvbi5SZWFkV3JpdGUuQWxsIENhbGVuZGFycy5SZWFkIENhbGVuZGFycy5SZWFkLlNoYXJlZCBDYWxlbmRhcnMuUmVhZFdyaXRlIENhbGVuZGFycy5SZWFkV3JpdGUuU2hhcmVkIENoYW5uZWwuQ3JlYXRlIENoYW5uZWwuRGVsZXRlLkFsbCBDaGFubmVsLlJlYWRCYXNpYy5BbGwgQ2hhbm5lbE1lbWJlci5SZWFkLkFsbCBDaGFubmVsTWVtYmVyLlJlYWRXcml0ZS5BbGwgRGlyZWN0b3J5LkFjY2Vzc0FzVXNlci5BbGwgRGlyZWN0b3J5LlJlYWQuQWxsIERpcmVjdG9yeS5SZWFkV3JpdGUuQWxsIERpcmVjdG9yeS5Xcml0ZS5SZXN0cmljdGVkIEVkdUFkbWluaXN0cmF0aW9uLlJlYWQgRWR1QWRtaW5pc3RyYXRpb24uUmVhZFdyaXRlIEVkdUFzc2lnbm1lbnRzLlJlYWQgRWR1QXNzaWdubWVudHMuUmVhZEJhc2ljIEVkdUFzc2lnbm1lbnRzLlJlYWRXcml0ZSBFZHVBc3NpZ25tZW50cy5SZWFkV3JpdGVCYXNpYyBFZHVSb3N0ZXIuUmVhZCBFZHVSb3N0ZXIuUmVhZEJhc2ljIEVkdVJvc3Rlci5SZWFkV3JpdGUgZW1haWwgTWFpbC5SZWFkIG9wZW5pZCBPcmdhbml6YXRpb24uUmVhZC5BbGwgT3JnYW5pemF0aW9uLlJlYWRXcml0ZS5BbGwgcHJvZmlsZSBUYXNrcy5SZWFkIFRhc2tzLlJlYWQuU2hhcmVkIFRhc2tzLlJlYWRXcml0ZSBUYXNrcy5SZWFkV3JpdGUuU2hhcmVkIFRlYW0uQ3JlYXRlIFRlYW0uUmVhZEJhc2ljLkFsbCBUZWFtTWVtYmVyLlJlYWQuQWxsIFRlYW1NZW1iZXIuUmVhZFdyaXRlLkFsbCBUZWFtTWVtYmVyLlJlYWRXcml0ZU5vbk93bmVyUm9sZS5BbGwgVGVhbVNldHRpbmdzLlJlYWQuQWxsIFRlYW1TZXR0aW5ncy5SZWFkV3JpdGUuQWxsIFVzZXIuRXhwb3J0LkFsbCBVc2VyLkludml0ZS5BbGwgVXNlci5NYW5hZ2VJZGVudGl0aWVzLkFsbCBVc2VyLlJlYWQgVXNlci5SZWFkLkFsbCBVc2VyLlJlYWRCYXNpYy5BbGwgVXNlci5SZWFkV3JpdGUgVXNlci5SZWFkV3JpdGUuQWxsIiwic2lnbmluX3N0YXRlIjpbImttc2kiXSwic3ViIjoicjdTTDZsUE4zLWRwLU5GUms1blJTY2sxUUphV1lhQVlwRGRETnEyMll4byIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJBUyIsInRpZCI6ImE0ODk0YzI3LTQ0NDAtNDU5NC05MjQ1LWE2MGRiOTBjOGY1ZiIsInVuaXF1ZV9uYW1lIjoidGhhbmh0dGJAdmlldGVsaXRlLmVkdS52biIsInVwbiI6InRoYW5odHRiQHZpZXRlbGl0ZS5lZHUudm4iLCJ1dGkiOiJCak1yR1drcGRraTYwTWF1eDhvcUFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX3N0Ijp7InN1YiI6IkdnLVhaNGpBM3RJU2tqdUpjMDZNNE5jOEltOEVRN0pMdFFxMVAtbUdxOG8ifSwieG1zX3RjZHQiOjE0ODA3MDQzOTN9.bRZuNQfj7QxqDfI9zooZq5loScTVFJbvM49yBX4CZEZS8MW1iOUQxo9HzyDxIKickyS1dnm9hbW3ZVjgkHqVsitl2G5cIzFY_lF4D9Q4PJw155WS6E05mTaVaMaWbrQCeLGzjU0DfgaD8v2CFJynBTesUo82MC0jFqJKibztRkP15O2sZjmkIZZegzwZ43Ar1iu1fNNAavuWrZSMZmLQxQiC9JZw0_CUFMdjZWq2f0pkxPK6WzPH6FSZy9HJo-5oswWBskgufXrhOza4joe0aZLHVBORMvz49ptkS4KY0V2H0vLOrbfgbp190s9MZkv2ZSA7IMZpjPgozDHwGin_zQ';
+    //     $token = $response['access_token'];
+    //     // print_r($token);
+
+        
+    //     $classes = Classes::where('year', 2022)->get();
+    //     //Check if ms exist
+
+    //     foreach($classes as $class){
+    //         $active_students = $class->activeStudents;
+    //         //if ms exist -> 
+    //         $course = Course::find($class->course_id);
+    //         echo $course->grade;
+    //         if($class->ms_id){
+    //             //if student
+    //             $team_url = "https://graph.microsoft.com/beta/education/classes/".$class->ms_id.'/teachers/$ref';
+    //             $team_data = 
+    //                 [
+    //                     "@odata.id" => "https://graph.microsoft.com/beta/education/users/f1e97c9a-7885-49bb-8384-e7308f084264" 
+    //                 ];
+    //             $team_client = new Client();
+    //             try {
+    //                 $r = $team_client->request('POST', $team_url, [
+    //                     'json' => $team_data,
+    //                     'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //                 ]);                } catch (\Throwable $th) {
+    //                 //throw $th;
+    //             }
+                
+    //             //Add quan ly
+    //             switch ($class->center_id) {
+    //                 case 2:
+    //                 case 4:
+    //                     $team_data = 
+    //                         [
+    //                             "@odata.id" => "https://graph.microsoft.com/beta/education/users/61865c64-56b5-4ea2-8017-8c2047d69a83" 
+    //                         ];
+    //                     $team_client = new Client();
+    //                     $r = $team_client->request('POST', $team_url, [
+    //                         'json' => $team_data,
+    //                         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //                     ]);
+    //                     break;
+    //                 case 3:
+    //                     $team_data = 
+    //                         [
+    //                             "@odata.id" => "https://graph.microsoft.com/beta/education/users/c4ec6566-0b20-43e6-a838-ee013c2bc3d9" 
+    //                         ];
+    //                     $team_client = new Client();
+    //                     $r = $team_client->request('POST', $team_url, [
+    //                         'json' => $team_data,
+    //                         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //                     ]);
+    //                     break;
+    //                 case 5:
+    //                     $team_data = 
+    //                     [
+    //                         "@odata.id" => "https://graph.microsoft.com/beta/education/users/e9910308-03fa-40b3-b5e0-a567fdd1f697" 
+    //                     ];
+                           
+    //                     $team_client = new Client();
+    //                     $r = $team_client->request('POST', $team_url, [
+    //                         'json' => $team_data,
+    //                         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //                     ]);
+    //                     break;
+    //                 case 6:
+    //                     $team_data = 
+    //                     [
+    //                         "@odata.id" => "https://graph.microsoft.com/beta/education/users/4224446a-7b66-4331-908f-f6c9a60af83e" 
+    //                     ];
+    //                     $team_client = new Client();
+    //                     $r = $team_client->request('POST', $team_url, [
+    //                         'json' => $team_data,
+    //                         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //                     ]);
+    //                     break;
+    //                 default:
+    //                     # code...
+    //                     break;
+    //             }
+                    
+    //             //Add hoc sinh
+    //             // foreach($active_students as $s){
+    //             //     if($s->ms_id){
+    //             //         echo $s->ms_id."<br/>";
+    //             //         $team_data = 
+    //             //             [
+    //             //                 "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+    //             //                 "roles"=> ["member"],
+    //             //                 "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
+    //             //             ];
+    //             //         $team_client = new Client();
+    //             //         $r = $team_client->request('POST', $team_url, [
+    //             //             'json' => $team_data,
+    //             //             'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //             //         ]);
+    //             //     }
+                    
+    //             // }
+                
+    //         }else{
+    //             $url = 'https://graph.microsoft.com/beta/education/classes/';
+    //             $data = [
+    //                 // "@odata.type" => "#microsoft.graph.educationClass",
+    //                 "displayName" => "2022-2023 ".$class->code,
+    //                 "mailNickname" => "2022".$class->code.".net",
+    //                 "description" => $class->name,
+    //                 "createdBy" => [
+    //                   "@odata.type" => "microsoft.graph.identitySet"
+    //                 ],
+    //                 "classCode" => "2022-2023 ".$class->code,
+    //                 "externalName" =>  "2022-2023 ".$class->code,
+    //                 "externalId" =>  "2022-2023 ".$class->code,
+    //                 "externalSource" =>  "2022-2023 ".$class->code,
+    //                 "grade" => "{$course->grade}",
+    //             ];
+    //             $client = new Client();
+    //             $r = $client->request('POST', $url, [
+    //                 'json' => $data,
+    //                 'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+    //             ]);
+        
+    //             // $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
+    //             echo "<pre>";
+    //             $ms_id = json_decode($r->getBody()->getContents())->id;
+    //             $class->ms_id = $ms_id;
+    //             $class->save();
+    //             echo $class->code. ': '. $class->ms_id. "<br/>";
+    //         }
+    //         break;
+    //     }
+    //     // echo "<pre>";
+    //     // print_r($classes->toArray());
+
+    // }
 }

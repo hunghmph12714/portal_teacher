@@ -33,22 +33,21 @@
 
 
         <h3>Danh sách học sinh</h3>
-        @if(sizeOf($data)>0){
-
-        @foreach ($data['students'] as $k=>$s)
-
-
-        <div>
-            <h5>Học sinh {{ $k+1 }}</h5>
-        </div>
-        <div>Họ tên: {{ $s->student_name }}</div>
-        <div>Cơ sở: {{ $s->center_name }}</div>
+        {{-- @if($data['students']==null){ --}}
+        @if (sizeOf($data['students'])<=0){ Không có ghi danh } @endif @foreach ($data['students'] as $k=>$s)
 
 
+            <div>
+                <h5>Học sinh {{ $k+1 }}</h5>
+            </div>
+            <div>Họ tên: {{ $s->student_name }}</div>
+            <div>Cơ sở: {{ $s->center_name }}</div>
 
-        @endforeach
 
-        }
+
+            @endforeach
+
+            {{-- } --}}
 
 
     </div>

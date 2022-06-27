@@ -43,6 +43,7 @@ Route::get('/login', function () {
 Route::post('/login', 'Auth\LoginController@authenticate');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/check-auth', 'UserController@checkAuth');
+Route::get('/pmt', 'ClassController@pmt');
 Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/parent-export', 'StudentController@csv');
     Route::get('/dashboard', function () {
@@ -440,8 +441,11 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
+    
     Route::post('azure-token', 'ClassController@getAzureToken');
     Route::get('/teams/generate-class', 'ClassController@generateClass');
+    Route::get('/teams/delete-class', 'ClassController@deleteTeam');
+    Route::get('/teams/check-students', 'ClassController@teamCheckStudent');
     // Route::get('/student/import', 'StudentController@importStudent');
     //MISA
     Route::get('/misa', function () {
@@ -670,3 +674,4 @@ Route::get('kiem-tra-ghi-danh',function(){
 });
 
 Route::post('kiem-tra-ghi-danh','EntranceController@searchEntrance');
+Route::get('/azure-token', 'ClassController@pmt');

@@ -1191,7 +1191,7 @@ class EntranceController extends Controller
 
     public function searchEntrance(Request $request)
     {
-        dd($request);
+        // dd($request);
             $parent=Parents::where('parents.phone','like','%'.$request->phone.'%')
             ->join('students','parents.id','students.parent_id')
             ->join('entrances','students.id','entrances.student_id')
@@ -1202,9 +1202,9 @@ class EntranceController extends Controller
             ->get();
 
             $data=[];
-            $data['student']=$parent->students();
-            dd($data);
-            return view('data_tra_cuu_entrances' compact('data'));
+            $data['students']=$parent;
+            // dd($data);
+            return view('data_tra_cuu_entrances', compact('data'));
 
     }
 }

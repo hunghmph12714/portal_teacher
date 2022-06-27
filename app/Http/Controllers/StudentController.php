@@ -271,9 +271,9 @@ class StudentController extends Controller
         if ($parent) {
             $parent->fullname = $s['pname'];
             $parent->alt_fullname = $s['pname2'];
-            $parent->email = (strpos($s['pemail'], '***') !== false) ? $parent->email : $s['pemail'];
+            $parent->email = (strpos($s['pemail'], '**') !== false) ? $parent->email : $s['pemail'];
 
-            $parent->phone = (strpos($s['pphone'], '***') !== false) ? $parent->phone : $s['pphone'];
+            $parent->phone = (strpos($s['pphone'], '**') !== false) ? $parent->phone : $s['pphone'];
             $parent->alt_email = $s['pemail2'];
             $parent->alt_phone = $s['pphone2'];
             $parent->relationship_id = $s['relationship']['value'];
