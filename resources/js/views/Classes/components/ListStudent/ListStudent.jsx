@@ -12,6 +12,7 @@ import DialogDropout from './DialogDropout'
 import DialogTeams from './DialogTeams'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
+import SyncIcon from '@material-ui/icons/Sync';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
     Menu,
@@ -127,6 +128,15 @@ const ListStudent = (props) => {
 
             })
     }
+    function syncStudentTeam(){
+        axios.post('/teams/sync-student', {id: class_id})
+            .then(response => {
+
+            })
+            .catch(err => {
+
+            })
+    }
     return (
         <div>
             <MaterialTable
@@ -174,6 +184,15 @@ const ListStudent = (props) => {
                             text: 'Thêm học sinh',
                             onClick: (event) => {
                                 openCreateDialog()
+                            },
+                        },
+                        {
+                            icon: () => <SyncIcon />,
+                            tooltip: 'Đồng bộ học sinh vào Teams',
+                            isFreeAction: true,
+                            text: 'Đồng bộ học sinh vào Teams',
+                            onClick: (event) => {
+                                syncStudentTeam()
                             },
                         },
                         {

@@ -1925,6 +1925,79 @@ class ClassController extends Controller
         // dd($response);
     //   }
     }
+    public function syncStudent(Request $request){
+        $rules = ['id' => "required"];
+        $this->validate($request, $rules);
+
+        $class = Classes::find($request->id);
+        if($class){
+            
+            $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
+            $data = array(
+                'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
+                'client_secret' => 'vsQ8Q~TmFtwJoRv6mjGulWLMardlRO~0A0loua.1', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
+            );
+            // use key 'http' even if you send the request to https://...
+            
+            $client = new Client();
+            $response = $client->request('POST', $url, [
+                'form_params' => $data
+            ]);
+            $response = json_decode($response->getBody()->getContents(), true);
+            $token = $response['access_token'];
+
+            if(!$class->ms_id){
+                $team_data = [
+                    "template@odata.bind"=> "https://graph.microsoft.com/v1.0/teamsTemplates('educationClass')",
+                    // "visibility" => "Private",
+                    "displayName" => "2022-2023 ".$class->code,
+                    "description" => $class->name,
+                    "memberSettings" => [
+                        "allowCreateUpdateChannels" => false,
+                        "allowDeleteChannels" => false,
+                        "allowAddRemoveApps" => false,
+                        "allowCreateUpdateRemoveTabs" => false,
+                        "allowCreateUpdateRemoveConnectors" => false
+                    ],
+                    "members" => [
+                        [
+                           "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                           "roles" => [
+                              "owner"
+                           ],
+                           "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('f1e97c9a-7885-49bb-8384-e7308f084264')"
+                        ],
+                    ]
+                ];
+                $team_url = 'https://graph.microsoft.com/v1.0/teams';
+                $team_client = new Client();
+                $r = $team_client->request('POST', $team_url, [
+                    'json' => $team_data,
+                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                ]);
+                $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
+                $class->ms_id = $ms_id;
+                $class->save();
+            }
+            $students = $class->activeStudents()->whereNotNull('ms_id')->get();
+            foreach($students as $s){
+                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
+                $team_data = 
+                    [
+                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        "roles"=> ["member"],
+                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('b77eb657-84e9-4e2d-9c70-791850771fe4')"
+                    ];
+                $team_client = new Client();
+                $r = $team_client->request('POST', $team_url, [
+                    'json' => $team_data,
+                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                ]);
+                
+            }
+            return response()->json(200);
+        }
+    }
     public function deleteTeam(){
         $classes = Classes::whereNotNull('ms_id')->where('code', '!=', 'TC9.2')->get();
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
