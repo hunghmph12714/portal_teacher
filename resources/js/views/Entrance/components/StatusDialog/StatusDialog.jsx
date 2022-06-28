@@ -11,7 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 const StatusDialog = (props) => {
-    const {state, open, handleClose, ...rest} = props
+    const {state, open, handleClose, statuses, ...rest} = props
     const reasons = [
         {value: 'Phụ huynh không nghe điện thoại', label: 'Phụ huynh không nghe điện thoại'},
         {value: 'Phụ huynh cần tư vấn thêm', label: 'Phụ huynh cần tư vấn thêm'},
@@ -26,12 +26,7 @@ const StatusDialog = (props) => {
     const [selected_reason, setSelectedReason] = useState('');
     const [reason, setReason]= useState('');
     const [comment, setComment] = useState('');
-    const [statuses, setStatusOption] = useState([
-        {value: 'Đang xử lý', label: 'Đang xử lý'},
-        {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
-        // {value: 'Mất', label: 'Mất'},
-        // {value: 'Chờ', label: 'Chờ'},
-    ])
+    
     const [selected_status, setSelectedStatus] = useState('');
     const [status, setStatus] = useState('');
     useEffect(() => {

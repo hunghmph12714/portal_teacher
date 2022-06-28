@@ -50,6 +50,12 @@ const customChip = (color = '#ccc') => ({
     color: '#000',
     fontSize: '12px',
   })
+const statuses = [
+    {value: 'Đang xử lý', label: 'Đang xử lý'},
+    {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+    // {value: 'Mất', label: 'Mất'},
+    // {value: 'Chờ', label: 'Chờ'},
+]
 const StepInform = (props) => {
     const {centers,  ...rest} = props
     const [data1, setData1] = useState([]);
@@ -761,6 +767,7 @@ const StepInform = (props) => {
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {handleFailClick}
+                                statuses = {statuses}
                             /> 
                             <ClassDialog
                                 open = {open_class}

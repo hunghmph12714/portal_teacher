@@ -44,6 +44,12 @@ const lang = {
         placeholder: 'Kéo tên cột vào đây để nhóm'
     }
 }
+const statuses = [
+    {value: 'Đang xử lý', label: 'Đang xử lý'},
+    {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+    // {value: 'Mất', label: 'Mất'},
+    // {value: 'Chờ', label: 'Chờ'},
+]
 const customChip = (color = '#ccc') => ({
     border: '1px solid ' + color,
     color: '#000',
@@ -453,6 +459,7 @@ const ViewDelay = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {handleFailClick}
                                 type = {'Chờ'}
+                                statuses = {statuses}
                             />   
                         </div>
                     </div>

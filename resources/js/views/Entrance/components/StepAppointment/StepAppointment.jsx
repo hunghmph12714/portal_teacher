@@ -26,7 +26,12 @@ import yellow from '@material-ui/core/colors/yellow';
 import CreateIcon from '@material-ui/icons/Create';
 import { CsvBuilder } from 'filefy';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
+const statuses = [
+    {value: 'Đang xử lý', label: 'Đang xử lý'},
+    {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+    // {value: 'Mất', label: 'Mất'},
+    // {value: 'Chờ', label: 'Chờ'},
+]
 const lang = {
     body: {
         emptyDataSourceMessage: 'Không tìm thấy ghi danh'
@@ -187,6 +192,7 @@ const StepAppointment = (props) => {
     )
     const [openStatus, setOpenStatus] = useState(false)
     const [typeStatus, setTypeStatus] = useState('')
+   
     const [refresh, setRefresh] = useState(true)
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
@@ -598,6 +604,7 @@ const StepAppointment = (props) => {
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {handleFailClick}
+                                statuses = {statuses}
                             />   
                             <AppointmentDialog
                                 open = {openAppointment}

@@ -54,6 +54,12 @@ const customChip = (color = '#ccc') => ({
     color: '#000',
     fontSize: '12px',
   })
+const statuses = [
+    {value: 'Đang xử lý', label: 'Đang xử lý'},
+    {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+    // {value: 'Mất', label: 'Mất'},
+    // {value: 'Chờ', label: 'Chờ'},
+]
 const StepResult = (props) => {
     const {centers,  ...rest} = props
     const [data1, setData1] = useState([]);
@@ -188,7 +194,6 @@ const StepResult = (props) => {
         
         ]
     )
-    
     const [refresh, setRefresh] = useState(true)
     const [loading , setLoading] = useState(true)
     const [openAppointment, setOpenAppointment] = useState(false)
@@ -619,6 +624,7 @@ const StepResult = (props) => {
                                 handleClose = {handleCloseStatus}
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {handleFailClick}
+                                statuses = {statuses}
                             /> 
                             <EditEntrance 
                                 open={open_edit} 

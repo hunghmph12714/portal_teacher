@@ -23,6 +23,12 @@ import { TestDialog, MessageDialog, StatusDialog, AnswersDialog, ClassDialog  } 
 import { useSnackbar } from 'notistack';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+const statuses = [
+    {value: 'Đang xử lý', label: 'Đang xử lý'},
+    {value: 'Thất bại', label: 'Cần tư vấn từ quản lý'},
+    // {value: 'Mất', label: 'Mất'},
+    // {value: 'Chờ', label: 'Chờ'},
+]
 const lang = {
     body: {
         emptyDataSourceMessage: 'Không tìm thấy ghi danh'
@@ -450,6 +456,7 @@ const ViewLost = (props) => {
                                 selectedEntrance = {selectedEntrance}
                                 handleStatusChange = {handleFailClick}
                                 type = {'Mất'}
+                                statuses = {statuses}
                             />   
                         </div>
                     </div>
