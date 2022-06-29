@@ -286,6 +286,14 @@ class DialogSession extends React.Component {
             old_exercice: old
         })
     }
+    deleteCorrection = (doc, e) => {
+        e.preventDefault();
+        let old = this.state.old_correction
+        old = old.filter(e => e != doc)
+        this.setState({
+            old_correction: old
+        })
+    }
     deleteDocument = (doc, e) => {
         e.preventDefault();
         this.setState(prevState => {
@@ -578,6 +586,26 @@ class DialogSession extends React.Component {
                                         dropzoneText = "Kéo thả tài bài tập về nhà (Ảnh, PDF, Word)"
                                     />
                                 </div>
+                                {
+                                    (this.state.old_correction.length != 0 && this.props.dialogType == 'edit') ? (
+                                        <List dense>
+                                            {this.state.old_correction.map(doc => {
+                                                return(
+                                                <ListItem >
+                                                    <ListItemIcon>
+                                                        <FolderIcon />
+                                                    </ListItemIcon>
+                                                    {
+                                                         <span> {doc.split('/')[doc.split('/').length-1]}</span>
+                                                    }
+                                                    <a href={baseUrl+"/"+doc} download className="a_document">Tải về</a>
+                                                    <a href="#" onClick={(e) => this.deleteCorrection(doc, e)} className="a_document">Xóa</a>
+                                                </ListItem>
+                                                )
+                                            })}
+                                        </List>
+                                    ): ''
+                                }
                                 <div className = 'upload' style={{marginTop: '10px'}}>
                                     <DropzoneArea 
                                         onChange={this.handleCorrectionUpload}

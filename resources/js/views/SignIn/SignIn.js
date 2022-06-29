@@ -321,7 +321,7 @@ const SignIn = props => {
                 <FormControl variant="outlined" fullWidth className={classes.year}>
                   <InputLabel id="demo-simple-select-outlined-label">Năm học</InputLabel>
                   <Select
-                    value={formState.values.year  || '2021'}
+                    value={formState.values.year  || '2022'}
                     onChange={handleChange}
                     name="year"
                     label="Năm học"
