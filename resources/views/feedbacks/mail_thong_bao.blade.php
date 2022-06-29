@@ -12,15 +12,7 @@
                     @else
                     Góp ý nâng cấp
                     @endif</span></p>
-            <p><b>Ảnh</b></p>
-            @foreach ($upload as $u)
-            @foreach ($upload as $u)
-            <div class=" p-4" style="padding: 20px">
-                <a href="{{ asset('') }}{{ $u }}" target="_blank"><img width="600px" src="{{ asset('') }} {{ $u }}"
-                        alt=""></a>
-            </div>
-            @endforeach
-            @endforeach
+   
         </div>
 
     </div>

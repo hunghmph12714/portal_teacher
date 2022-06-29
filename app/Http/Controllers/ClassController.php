@@ -37,12 +37,13 @@ use App\Role;
 class ClassController extends Controller
 {
     //Export lop hoc
-    protected function exportClasses(){
-        
+    protected function exportClasses()
+    {
+
         // return $classes;
         $year = auth()->user()->wp_year;
 
-        return Excel::download(new ClassesExport(), 'Danh sách lớp học '. $year .'.xlsx');
+        return Excel::download(new ClassesExport(), 'Danh sách lớp học ' . $year . '.xlsx');
     }
     // Phòng học
     protected function convertSession()
@@ -1861,7 +1862,8 @@ class ClassController extends Controller
         }
         dd('Xóa thành công');
     }
-    public function pmt(){
+    public function pmt()
+    {
         // $sessions = Session::whereBetween('date', ['2022-06-20', '2022-06-27'])->where('center_id', 5)->get();
         // $ss = 0;
         // $students = [];
@@ -1883,7 +1885,7 @@ class ClassController extends Controller
             'client_secret' => 'EWQ8Q~cG5sxA2nRkAD72L4rBYnVCTikDwGQG6aBw', 'scope' => 'https://graph.microsoft.com/.default'
         );
         // use key 'http' even if you send the request to https://...
-        
+
         $client = new Client();
         $response = $client->request('POST', $url, [
             'form_params' => $data
@@ -1899,7 +1901,7 @@ class ClassController extends Controller
             "mailNickname" => "124sdc.net",
             "description" => "Health 2",
             "createdBy" => [
-              "@odata.type" => "microsoft.graph.identitySet"
+                "@odata.type" => "microsoft.graph.identitySet"
             ],
             "classCode" => "H@23r",
             "externalName" => "H@H2",
@@ -1907,38 +1909,39 @@ class ClassController extends Controller
             "externalSource" => "H@H2",
             "grade" => "4",
         ];
-        
+
         $client = new Client();
         $r = $client->request('POST', $url, [
             'json' => $data,
-            'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+            'headers' => ['Authorization' => 'Bearer ' . $token],
         ]);
 
         // $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
         echo "<pre>";
         $ms_id = json_decode($r->getBody()->getContents())->id;
         print_r($ms_id);
-            // print_r($r);
+        // print_r($r);
         //     try {} catch (\Exception $ex) {
         // $response = $ex->getResponse();
         // \Log::critical($ex);
         // dd($response);
-    //   }
+        //   }
     }
-    public function syncStudent(Request $request){
+    public function syncStudent(Request $request)
+    {
         $rules = ['id' => "required"];
         $this->validate($request, $rules);
 
         $class = Classes::find($request->id);
-        if($class){
-            
+        if ($class) {
+
             $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
             $data = array(
                 'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
                 'client_secret' => 'vsQ8Q~TmFtwJoRv6mjGulWLMardlRO~0A0loua.1', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
             );
             // use key 'http' even if you send the request to https://...
-            
+
             $client = new Client();
             $response = $client->request('POST', $url, [
                 'form_params' => $data
@@ -1946,11 +1949,11 @@ class ClassController extends Controller
             $response = json_decode($response->getBody()->getContents(), true);
             $token = $response['access_token'];
 
-            if(!$class->ms_id){
+            if (!$class->ms_id) {
                 $team_data = [
-                    "template@odata.bind"=> "https://graph.microsoft.com/v1.0/teamsTemplates('educationClass')",
+                    "template@odata.bind" => "https://graph.microsoft.com/v1.0/teamsTemplates('educationClass')",
                     // "visibility" => "Private",
-                    "displayName" => "2022-2023 ".$class->code,
+                    "displayName" => "2022-2023 " . $class->code,
                     "description" => $class->name,
                     "memberSettings" => [
                         "allowCreateUpdateChannels" => false,
@@ -1961,11 +1964,11 @@ class ClassController extends Controller
                     ],
                     "members" => [
                         [
-                           "@odata.type" => "#microsoft.graph.aadUserConversationMember",
-                           "roles" => [
-                              "owner"
-                           ],
-                           "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('f1e97c9a-7885-49bb-8384-e7308f084264')"
+                            "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                            "roles" => [
+                                "owner"
+                            ],
+                            "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('f1e97c9a-7885-49bb-8384-e7308f084264')"
                         ],
                     ]
                 ];
@@ -1973,32 +1976,32 @@ class ClassController extends Controller
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
                     'json' => $team_data,
-                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
                 ]);
                 $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
                 $class->ms_id = $ms_id;
                 $class->save();
             }
             $students = $class->activeStudents()->whereNotNull('ms_id')->get();
-            foreach($students as $s){
-                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
-                $team_data = 
+            foreach ($students as $s) {
+                $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
+                $team_data =
                     [
-                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                        "roles"=> ["member"],
+                        "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                        "roles" => ["member"],
                         "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('b77eb657-84e9-4e2d-9c70-791850771fe4')"
                     ];
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
                     'json' => $team_data,
-                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
                 ]);
-                
             }
             return response()->json(200);
         }
     }
-    public function deleteTeam(){
+    public function deleteTeam()
+    {
         $classes = Classes::whereNotNull('ms_id')->where('code', '!=', 'TC9.2')->get();
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
         $data = array(
@@ -2014,15 +2017,16 @@ class ClassController extends Controller
         $response = json_decode($response->getBody()->getContents(), true);
         $token = $response['access_token'];
 
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             echo $class->ms_id;
             echo "<br>";
-            echo $class->code;            echo "<br>";
-            $url = 'https://graph.microsoft.com/v1.0/groups/'.$class->ms_id;
+            echo $class->code;
+            echo "<br>";
+            $url = 'https://graph.microsoft.com/v1.0/groups/' . $class->ms_id;
             $team_client = new Client();
             $r = $team_client->request('DELETE', $url, [
                 // 'json' => $team_data,
-                'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                'headers' => ['Authorization' => 'Bearer ' . $token],
             ]);
             $class->ms_id = null;
             $class->save();
@@ -2047,14 +2051,15 @@ class ClassController extends Controller
         ]);
         return response()->json(json_decode($response->getBody()->getContents()));
     }
-    public function generateClass(){
+    public function generateClass()
+    {
         $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
         $data = array(
             'grant_type' => 'password', 'client_id' => '0fefe5c4-ecb4-4054-a02e-324a37219284',
             'client_secret' => 'vsQ8Q~TmFtwJoRv6mjGulWLMardlRO~0A0loua.1', 'scope' => 'openid', 'username' => 'thanhttb@vietelite.edu.vn', 'password' => 'V33du2020'
         );
         // use key 'http' even if you send the request to https://...
-        
+
         $client = new Client();
         $response = $client->request('POST', $url, [
             'form_params' => $data
@@ -2063,46 +2068,46 @@ class ClassController extends Controller
         $token = $response['access_token'];
         print_r($token);
 
-        
+
         $classes = Classes::where('year', 2022)->orderBy('id', 'ASC')->get();
         //Check if ms exist
 
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $active_students = $class->activeStudents;
             //if ms exist -> 
-            
-            if($class->ms_id ){
+
+            if ($class->ms_id) {
                 //if student
-                if(!$class->center_id == 3) continue;
-                echo $class->code."<br/>";
+                if (!$class->center_id == 3) continue;
+                echo $class->code . "<br/>";
                 $course = Course::find($class->course_id);
                 echo $course->grade;
-                
-                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
-                $team_data = 
+
+                $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
+                $team_data =
                     [
-                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                        "roles"=> ["owner"],
+                        "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                        "roles" => ["owner"],
                         "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('45c94aa4-d8f6-487d-ad7e-f9d8573d10ea')"
                     ];
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
                     'json' => $team_data,
-                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
                 ]);
-                $team_url = "https://graph.microsoft.com/v1.0/teams/".$class->ms_id."/members";
-                $team_data = 
+                $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
+                $team_data =
                     [
-                        "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                        "roles"=> ["owner"],
+                        "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                        "roles" => ["owner"],
                         "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('b77eb657-84e9-4e2d-9c70-791850771fe4')"
                     ];
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
                     'json' => $team_data,
-                    'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
                 ]);
-                
+
                 //Add quan ly
                 // switch ($course->grade) {
                 //     case 8:
@@ -2169,46 +2174,46 @@ class ClassController extends Controller
                 //         break;
                 // }
                 switch ($class->center_id) {
-                    // case 2:
-                    // case 4:
-                    //     $team_data = 
-                    //         [
-                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                    //             "roles"=> ["owner"],
-                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('61865c64-56b5-4ea2-8017-8c2047d69a83')"
-                    //         ];
-                    //     $team_client = new Client();
-                    //     $r = $team_client->request('POST', $team_url, [
-                    //         'json' => $team_data,
-                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                    //     ]);
-                    //     break;
-                    // case 3:
-                    //     $team_data = 
-                    //         [
-                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                    //             "roles"=> ["owner"],
-                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('c4ec6566-0b20-43e6-a838-ee013c2bc3d9')"
-                    //         ];
-                    //     $team_client = new Client();
-                    //     $r = $team_client->request('POST', $team_url, [
-                    //         'json' => $team_data,
-                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                    //     ]);
-                    //     break;
-                    // case 5:
-                    //     $team_data = 
-                    //         [
-                    //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
-                    //             "roles"=> ["owner"],
-                    //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('0d0455a3-b01d-4415-a0f8-225352bbaa01')"
-                    //         ];
-                    //     $team_client = new Client();
-                    //     $r = $team_client->request('POST', $team_url, [
-                    //         'json' => $team_data,
-                    //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
-                    //     ]);
-                    //     break;
+                        // case 2:
+                        // case 4:
+                        //     $team_data = 
+                        //         [
+                        //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        //             "roles"=> ["owner"],
+                        //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('61865c64-56b5-4ea2-8017-8c2047d69a83')"
+                        //         ];
+                        //     $team_client = new Client();
+                        //     $r = $team_client->request('POST', $team_url, [
+                        //         'json' => $team_data,
+                        //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                        //     ]);
+                        //     break;
+                        // case 3:
+                        //     $team_data = 
+                        //         [
+                        //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        //             "roles"=> ["owner"],
+                        //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('c4ec6566-0b20-43e6-a838-ee013c2bc3d9')"
+                        //         ];
+                        //     $team_client = new Client();
+                        //     $r = $team_client->request('POST', $team_url, [
+                        //         'json' => $team_data,
+                        //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                        //     ]);
+                        //     break;
+                        // case 5:
+                        //     $team_data = 
+                        //         [
+                        //             "@odata.type"=> "#microsoft.graph.aadUserConversationMember",
+                        //             "roles"=> ["owner"],
+                        //             "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('0d0455a3-b01d-4415-a0f8-225352bbaa01')"
+                        //         ];
+                        //     $team_client = new Client();
+                        //     $r = $team_client->request('POST', $team_url, [
+                        //         'json' => $team_data,
+                        //         'headers' => [ 'Authorization' => 'Bearer ' . $token ],
+                        //     ]);
+                        //     break;
                         // case 6:
                         //     $team_data = 
                         //         [
@@ -2243,10 +2248,10 @@ class ClassController extends Controller
                 //             'headers' => [ 'Authorization' => 'Bearer ' . $token ],
                 //         ]);
                 //     }
-                    
+
                 // }
-                
-            }else{
+
+            } else {
                 // $team_data = [
                 //     "template@odata.bind"=> "https://graph.microsoft.com/v1.0/teamsTemplates('educationClass')",
                 //     // "visibility" => "Private",
@@ -2279,7 +2284,7 @@ class ClassController extends Controller
                 // $class->ms_id = $ms_id;
                 // $class->save();
                 // echo $class->code. ': '. $class->ms_id. "<br/>";
-                
+
             }
             // break;
         }
@@ -2287,12 +2292,13 @@ class ClassController extends Controller
         // print_r($classes->toArray());
 
     }
-    public function teamCheckStudent(){
+    public function teamCheckStudent()
+    {
         $classes = Classes::where('year', 2022)->get();
-        foreach($classes as $class){
+        foreach ($classes as $class) {
             $active_students = $class->activeStudents()->where('ms_id', NULL)->get();
-            if(sizeof($active_students->toArray()) > 0){
-                echo $class->code.'<br/>';
+            if (sizeof($active_students->toArray()) > 0) {
+                echo $class->code . '<br/>';
             }
             // echo $class->code;
 
@@ -2300,7 +2306,6 @@ class ClassController extends Controller
             // print_r($active_students->toArray());
             // foreach($active_students as $)
         }
-
     }
     // public function generateClass(){
     //     $url = 'https://login.microsoftonline.com/a4894c27-4440-4594-9245-a60db90c8f5f/oauth2/v2.0/token';
@@ -2309,7 +2314,7 @@ class ClassController extends Controller
     //         'client_secret' => 'EWQ8Q~cG5sxA2nRkAD72L4rBYnVCTikDwGQG6aBw', 'scope' => 'https://graph.microsoft.com/.default'
     //     );
     //     // use key 'http' even if you send the request to https://...
-        
+
     //     $client = new Client();
     //     $response = $client->request('POST', $url, [
     //         'form_params' => $data
@@ -2319,7 +2324,7 @@ class ClassController extends Controller
     //     $token = $response['access_token'];
     //     // print_r($token);
 
-        
+
     //     $classes = Classes::where('year', 2022)->get();
     //     //Check if ms exist
 
@@ -2343,7 +2348,7 @@ class ClassController extends Controller
     //                 ]);                } catch (\Throwable $th) {
     //                 //throw $th;
     //             }
-                
+
     //             //Add quan ly
     //             switch ($class->center_id) {
     //                 case 2:
@@ -2374,7 +2379,7 @@ class ClassController extends Controller
     //                     [
     //                         "@odata.id" => "https://graph.microsoft.com/beta/education/users/e9910308-03fa-40b3-b5e0-a567fdd1f697" 
     //                     ];
-                           
+
     //                     $team_client = new Client();
     //                     $r = $team_client->request('POST', $team_url, [
     //                         'json' => $team_data,
@@ -2396,7 +2401,7 @@ class ClassController extends Controller
     //                     # code...
     //                     break;
     //             }
-                    
+
     //             //Add hoc sinh
     //             // foreach($active_students as $s){
     //             //     if($s->ms_id){
@@ -2413,9 +2418,9 @@ class ClassController extends Controller
     //             //             'headers' => [ 'Authorization' => 'Bearer ' . $token ],
     //             //         ]);
     //             //     }
-                    
+
     //             // }
-                
+
     //         }else{
     //             $url = 'https://graph.microsoft.com/beta/education/classes/';
     //             $data = [
@@ -2437,7 +2442,7 @@ class ClassController extends Controller
     //                 'json' => $data,
     //                 'headers' => [ 'Authorization' => 'Bearer ' . $token ],
     //             ]);
-        
+
     //             // $ms_id = str_replace("')", "", str_replace("/teams('", '', $r->getHeaders()['Content-Location'][0]));
     //             echo "<pre>";
     //             $ms_id = json_decode($r->getBody()->getContents())->id;
@@ -2451,4 +2456,41 @@ class ClassController extends Controller
     //     // print_r($classes->toArray());
 
     // }
+
+
+
+
+    public function addRoleUserClass(Request $request)
+    {
+        // dd($request);
+        function checkUserClass($users_id, $role, $class_id)
+        {
+            $user_class = UserClass::where('class_id', $class_id)->where('role', $role)->delete();
+            foreach ($users_id as $ql) {
+                $user_class = UserClass::where('class_id', $class_id)->where('user_id', $ql)->first();
+                if ($user_class) {
+                    $user_class->role = $role;
+                    $user_class->save();
+                    // dd(1);
+                } else {
+                    UserClass::create(['user_id' => $ql, 'class_id' => $class_id, 'role' => $role, 'manager' => 1]);
+                    // dd(2);
+                }
+            }
+        }
+        $class_id = $request->class_id;
+
+        if ($request->nguoi_xem != null) {
+            checkUserClass($request->nguoi_xem, 0, $class_id);
+        }
+        if ($request->tro_giang != null) {
+            checkUserClass($request->tro_giang, 1, $class_id);
+        }
+
+        if ($request->quan_ly != null) {
+            checkUserClass($request->quan_ly, 2, $class_id);
+        }
+
+        return back();
+    }
 }
