@@ -36,12 +36,12 @@
 @endsection
 @section('content')
 <p>
-    Dear <b>{{$name}}</b>,<br /><br />
-    Cảm ơn đã phản hồi cho chúng tôi chúng tôi sẽ cố gắng khắc phục hệ thống trong thời gian sớm nhất
+    Dear <b>{{$user['name']}}</b>,<br /><br />
+    Cảm ơn đã phản hồi cho chúng tôi, chúng tôi đã khắc phục được hệ thống
 <div class="container">
-    <div class="row">
+    <div class="row" style="display: grid;grid-template-columns: 1fr 1fr">
         <div class="col-sm">
-            <h3><u>Chi tiết phản hồi</u></h3>
+            <h3 style="text-align: center"><b>Chi tiết phản hồi</b></h3>
             <p> <b>Số điện thoại: </b> <span>{{ $phone }}</span></p>
             <p> <b>Tiêu đề: </b> <span>{{ $title }}</span></p>
             <p> <b>Chi tiết: </b> <span>{!! $description !!}</span></p>
@@ -50,7 +50,15 @@
                     @else
                     Góp ý nâng cấp
                     @endif</span></p>
-       
+        
+           
+          
+        </div><div class="col-sm">
+            <h3 style="text-align: center"><b>PHẢN HỒI SỬA CHỮA</b></h3>
+          <p><b>Chi tiết phản hồi: </b>{!! $result!!}</p>
+        
+        
+        
         </div>
 
     </div>

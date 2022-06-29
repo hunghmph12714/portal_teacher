@@ -35,11 +35,13 @@
                             <h3>Hình ảnh</h3>
                         </div>
                         <div class="">
-                            @foreach ($feedback->upload as $u)
-                            <div class=" p-4">
-                                <a href="/{{ $u }}" target="_blank"><img width="600px" src=" /{{ $u }}" alt=""></a>
-                            </div>
-                            @endforeach
+                          @if ($feedback->upload!=[])
+                              @foreach ($feedback->upload as $u)
+                                <div class=" p-4">
+                                    <a href="/{{ $u }}" target="_blank"><img width="600px" src=" /{{ $u }}" alt=""></a>
+                                </div>
+                                @endforeach
+                          @endif
                         </div>
                     </div>
                 </div>

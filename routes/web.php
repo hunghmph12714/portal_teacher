@@ -11,6 +11,7 @@
 |s
 */
 
+use App\Classes;
 use App\Feedback;
 use App\Http\Controllers\AttemptDetailController;
 use App\Http\Controllers\ClassController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\QuizConfigController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\StudentController;
 use App\Student;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 // use App\Http\Controllers\ParentController;
@@ -411,6 +413,24 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/class/:id', function () {
         return view('welcome');
     });
+
+
+
+
+    Route::get('class/phan-quyen-lop-hoc/', function () {
+
+        $users = User::query()->where('isVerified', 1)->get();
+
+        $classes = Classes::where('active', 1)->where('year', Auth::user()->wp_year)->get();
+        // dd($classes);
+        return view('classes.add_role_class_user', compact('users', 'classes'));
+    });
+    Route::post('class/phan-quyen-lop-hoc', [ClassController::class, 'addRoleUserClass']);
+
+
+
+
+
     //a
 
     Route::post('/class/report', 'ClassController@getReport');
@@ -443,7 +463,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
-    
+
     Route::post('azure-token', 'ClassController@getAzureToken');
     Route::get('/teams/generate-class', 'ClassController@generateClass');
     Route::get('/teams/delete-class', 'ClassController@deleteTeam');
