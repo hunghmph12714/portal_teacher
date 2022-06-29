@@ -19,7 +19,7 @@
                     alt="">
             </div>
             <div class="">
-                <form action="" method="post" class="p-4 mx-auto border border-dark p-4" style="width: 60%"
+                <form action="" method="post" class="p-4 mx-auto border border-dark p-4" style="width: 80%"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
@@ -28,7 +28,7 @@
                     <div class="form-group m-3">
                         <label class="fw-bold" for="">Số điện thoại</label>
                         <input type="text" class="form-control" value="{{ old('phone') }}" name="phone" id=""
-                            aria-describedby="helpId" placeholder="Nhập thông tin...">
+                            aria-describedby="helpId" placeholder="Nhập số điện thoại...">
                         @error('phone')
                         <small id="helpId" class="form-text  text-danger">{{ $message }}</small>
 
@@ -84,7 +84,7 @@
                     <h2>Danh sách Feedback<span class="badge badge-primary">New</span></h2>
                 </div>
             </div>
-            <table class="table table-striped table-inverse table-responsive" style="width: 70%">
+            <table class="table table-striped table-inverse table-responsive" style="width: 80%">
                 <thead class="thead-inverse">
                     <tr>
                         <th>STT</th>

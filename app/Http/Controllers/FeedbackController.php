@@ -121,9 +121,22 @@ class FeedbackController extends Controller
     {
         $feedback = Feedback::find($id);
         if ($feedback) {
+            $feedback->load('user');
+            $email_user = $feedback->user->email;
+            $name_user = $feedback->user->name;
+
             $feedback->result = $request->result;
             $feedback->status = 2;
             $feedback->save();
+            $data=$feedback->toArray();
+            // dd($data);
+            Mail::send('feedbacks.mail_phan_hoi_xu_ly', $data, function ($message) use ($email_user,$name_user) {
+                $message->from('info@vietelite.edu.vn', 'Bộ phận kĩ thuật VietElite');
+
+                $message->to($email_user, $name_user);
+
+                $message->subject('Phản hổi xử lý lỗi Center');
+            });
             return redirect(route('feedback.list'));
         }
     }

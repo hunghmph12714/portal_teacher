@@ -17,19 +17,20 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','first_name','last_name','phone','gender','dob','city','quarter','ward','address','avatar','isVerified','wp_year'
+        'name', 'email', 'password', 'first_name', 'last_name', 'phone', 'gender', 'dob', 'city', 'quarter', 'ward', 'address', 'avatar', 'isVerified', 'wp_year'
     ];
-    public function classes(){
-        return $this->belongsToMany('App\Classes','user_class','user_id','class_id')->using('App\UserClass')
-                    ->withPivot('manager')
-                    ->withTimestamps();
+    public function classes()
+    {
+        return $this->belongsToMany('App\Classes', 'user_class', 'user_id', 'class_id')->using('App\UserClass')
+            ->withPivot('manager')
+            ->withTimestamps();
     }
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-protected $hidden = [
+    protected $hidden = [
         'password', 'remember_token',
     ];
 

@@ -1,0 +1,66 @@
+<html lang="en">
+
+<head>
+    <title>Select2 Multiple Selected Get Value and Text Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha256-aAr2Zpq8MZ+YA/D6JtRD3xtrwpEz2IqOS+pWD/7XKIw=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+</head>
+
+<body>
+    <div class="row mt-5">
+        <div class="col-md-6 offset-3 mt-5">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5>Select2 Multiple Selected Get Value and Text Example - Nicesnippets.com</h5>
+                </div>
+                <div class="card-body" style="height: 300px;">
+                    <div class="row mb-2">
+                        <div class="data-response col-md-12" style="display: none;">
+                            <div class="alert alert-success"></div>
+                        </div>
+                    </div>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label>Category :</label>
+                            <select class="category form-control" name="category[]" multiple>
+                                <option value="1">Laravel</option>
+                                <option value="2">Jquery</option>
+                                <option value="3">PHP</option>
+                                <option value="4">React</option>
+                                <option value="5">Jquery ui</option>
+                                <option value="6">Android</option>
+                                <option value="7">React Native</option>
+                                <option value="8">Vue js</option>
+                                <option value="9">Bootstrap 4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success store-data btn-sm">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.category').select2();
+
+        });
+
+        $('body').on('click', '.store-data', function(e) {
+            e.preventDefault();
+
+            //Get Text
+            var selected = $('.category').select2("data");
+            for (var i = 0; i <= selected.length - 1; i++) {
+                console.log(selected[i].text);
+            }
+        });
+    </script>
+</body>
+
+</html>
