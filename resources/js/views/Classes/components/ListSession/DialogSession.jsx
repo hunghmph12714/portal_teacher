@@ -158,6 +158,8 @@ const initState = {
     status: ['Khởi tạo','Đã tạo công nợ','Đã diễn ra','Đã đóng'],
     fetch_student: false,
     cost: 0,
+    correction: [],
+    old_correction: [],
 }
 class DialogSession extends React.Component {
     constructor(props){
@@ -186,6 +188,7 @@ class DialogSession extends React.Component {
                 exercice: [],
                 old_document: (s.document) ? s.document.split(',') : [],
                 old_exercice: (s.exercice) ? s.exercice.split(',') : [],
+                old_correction: (s.correction) ? s.correction.split(',') : [],
                 students: s.students,
                 cost: s.cost
             })
@@ -263,6 +266,9 @@ class DialogSession extends React.Component {
     handleExerciceUpload = exercice => {
         this.setState({exercice: exercice})
     }
+    handleCorrectionUpload = correction => {
+        this.setState({correction: correction})
+    }
     handleAddNewSession = () => {
         
     }
@@ -297,10 +303,14 @@ class DialogSession extends React.Component {
         for(let j = 0 ; j < this.state.exercice.length ; j++){
             fd.append('exercice' + j, this.state.exercice[j], this.state.exercice[j].name)
         }
+        for(let j = 0 ; j < this.state.correction.length ; j++){
+            fd.append('correction' + j, this.state.correction[j], this.state.correction[j].name)
+        }
         let from_date = this.state.from_date.getTime()/1000
         let to_date = this.state.to_date.getTime()/1000
         fd.append('document_count', this.state.document.length)
         fd.append('exercice_count', this.state.exercice.length)
+        fd.append('correction_count', this.state.correction.length)
         fd.append('center_id', this.state.center)
         fd.append('class_id', this.props.class_id)
         fd.append('room_id', (this.state.room))
@@ -330,6 +340,7 @@ class DialogSession extends React.Component {
         if(this.props.dialogType == 'edit'){
             fd.append('old_exercice', this.state.old_exercice.join(','))
             fd.append('old_document', this.state.old_document.join(','))
+            fd.append('old_correction', this.state.old_correction.join(','))
             fd.append('ss_id', this.props.session.id)
             axios.post(baseUrl +'/session/edit' , fd)
                 .then(response => {
@@ -567,7 +578,16 @@ class DialogSession extends React.Component {
                                         dropzoneText = "Kéo thả tài bài tập về nhà (Ảnh, PDF, Word)"
                                     />
                                 </div>
-                                
+                                <div className = 'upload' style={{marginTop: '10px'}}>
+                                    <DropzoneArea 
+                                        onChange={this.handleCorrectionUpload}
+                                        acceptedFiles = {['image/*', 'application/pdf','application/msword']}
+                                        filesLimit = {5}
+                                        initialFiles= {[]}
+                                        maxFileSize = {10000000}
+                                        dropzoneText = "Kéo thả tài bài chữa (Ảnh, PDF, Word)"
+                                    />
+                                </div>
                             </Grid>
                             <Grid item
                                 sm={12}

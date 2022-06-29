@@ -425,7 +425,7 @@ class SessionController extends Controller
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
-                    'sessions.cost', 'sessions.duration')->
+                    'sessions.cost', 'sessions.duration', 'sessions.correction')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -438,7 +438,7 @@ class SessionController extends Controller
                 select('sessions.id as id','sessions.class_id as cid','sessions.teacher_id as tid','sessions.room_id as rid','sessions.center_id as ctid','sessions.fee as fee',
                     'sessions.ss_number','sessions.present_number','sessions.absent_number','sessions.from','sessions.to','sessions.date','center.name as ctname','room.name as rname','teacher.name as tname','teacher.phone','teacher.email',
                     'sessions.percentage','sessions.classes','sessions.stats','sessions.document','sessions.type','sessions.exercice','sessions.note','sessions.status','sessions.content','sessions.btvn_content',
-                    'sessions.cost', 'sessions.duration')->
+                    'sessions.cost', 'sessions.duration', 'sessions.correction')->
                 leftJoin('teacher','sessions.teacher_id','teacher.id')->
                 leftJoin('center','sessions.center_id','center.id')->
                 leftJoin('room','sessions.room_id','room.id')->orderBy('sessions.date', 'ASC')->
@@ -617,6 +617,7 @@ class SessionController extends Controller
             if (!is_dir($new_dir)) {
                 mkdir($new_dir.'/documents', 0775, true);
                 mkdir($new_dir.'/exercices', 0775, true);
+                mkdir($new_dir.'/corrections', 0775, true);
             }
             //Xoá file
             $old_documents = $session->document;
@@ -679,9 +680,41 @@ class SessionController extends Controller
                     } 
                 }
             }
+            $correction = $request->old_correction;
+            //Xoá file
+            $old_corrections = $session->correction;
+            if($old_corrections != $correction){
+                $old_corrections = str_replace($correction, '', $old_corrections);
+                $old_corrections = explode(',', $old_corrections);
+                foreach($old_corrections as $od){
+                    if($od != ""){
+                        unlink(base_path().$od);
+                    }
+                }
+            }
+            //Thêm mới upload files
+            for($i = 0 ; $i < $request->correction_count; $i++){
+                if($request->has('correction'.$i)){
+                    $ans = $request->file('correction'.$i);                    
+                    $name = $ans->getClientOriginalName();
+                    $ans->move($new_dir.'/corrections/',$name);
+                    $path = "/public/docs/".$class->code.'/'.$session->date.'_'.$session->id.'/corrections/'.$name;
+                    if($i == 0 && $correction == ''){
+                        $correction = str_replace(',','',$path);
+                    }else{
+                        if (strpos($correction, str_replace(',','',$path)) !== false) {
+                            
+                        }else{
+                            $correction = $correction.",".str_replace(',','',$path);
+                        }
+                        
+                    } 
+                }
+            }
 
             $session->document = $document;
             $session->exercice = $exercice;
+            $session->correction = $correction;
             $session->btvn_content = $request->btvn_content;
             $session->content = $request->content;
             $session->type = $request->type;
@@ -1260,7 +1293,7 @@ class SessionController extends Controller
                     }
                 }
             }
-            $exercice = $request->old_exercice;
+            $exercice = $request->old_correction;
             for($i = 0 ; $i < $request->exercice_count ; $i++){
                 if($request->has('exercice'.$i)){
                     $ans = $request->file('exercice'.$i);
