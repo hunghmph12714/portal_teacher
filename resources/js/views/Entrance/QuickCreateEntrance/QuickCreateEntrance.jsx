@@ -203,7 +203,9 @@ class QuickCreateEntrance extends React.Component {
                 this.props.enqueueSnackbar('Tạo ghi danh thành công', { 
                     variant: 'success',
                 });
-                setTimeout(this.props.history.push('/entrance/list/2_3_4/0'), 1000)
+                var d = new Date()
+                console.log('/entrance/list/2_3_4/0/1640995200000/' + d.getTime())
+                setTimeout(this.props.history.push('/entrance/list/2_3_4/0/1640995200000/' + d.getTime()), 1000)
             })
             .catch(err => {
                 this.setState({
