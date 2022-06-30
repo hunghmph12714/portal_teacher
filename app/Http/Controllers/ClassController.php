@@ -1996,6 +1996,7 @@ class ClassController extends Controller
                     'json' => $team_data,
                     'headers' => ['Authorization' => 'Bearer ' . $token],
                 ]);
+                print_r($r);
             }
             return response()->json(200);
         }
