@@ -1989,7 +1989,7 @@ class ClassController extends Controller
                     [
                         "@odata.type" => "#microsoft.graph.aadUserConversationMember",
                         "roles" => ["member"],
-                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('b77eb657-84e9-4e2d-9c70-791850771fe4')"
+                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
                     ];
                 $team_client = new Client();
                 $r = $team_client->request('POST', $team_url, [
