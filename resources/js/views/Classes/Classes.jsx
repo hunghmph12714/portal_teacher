@@ -81,6 +81,20 @@ const col = [
     },
   },
   {
+    title: "Teams",
+    field: "teams_added",
+    type: "number",
+    filtering: false,
+    headerStyle: {
+        padding: '0px',
+        fontWeight: '600',
+        
+    },
+    cellStyle: {
+        padding: '0px',
+    },
+  },
+  {
     title: "Đã nghỉ",
     field: "droped_number",
     type: "number",

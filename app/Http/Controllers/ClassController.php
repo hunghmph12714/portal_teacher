@@ -475,8 +475,13 @@ class ClassController extends Controller
             'droped_number',
             'waiting_number'
         )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
+        
         $classes = $result->toArray();
         foreach ($result as $key => $class) {
+            //count student teams added
+            $student = $class->activeStudents()->where('teams_added', '1')->count();
+            $classes[$key]['teams_added'] = $student;
+            //Las session
             $last_session = $class->sessions->last();
             if ($last_session) {
                 $classes[$key]['last_session'] = $last_session->date;
