@@ -264,7 +264,7 @@ class StudentController extends Controller
             $student->school = $s['school'];
             $student->grade = $s['grade'];
             $student->email = $s['semail'];
-            $student->phone = $s['pphone'];
+            $student->phone = $s['sphone'];
             $student->save();
         }
         $parent = Parents::find($s['pid']);
