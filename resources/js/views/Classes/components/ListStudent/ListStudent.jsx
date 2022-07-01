@@ -13,6 +13,8 @@ import DialogTeams from './DialogTeams'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import SyncIcon from '@material-ui/icons/Sync';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
     Menu,
@@ -25,7 +27,7 @@ import MaterialTable from "material-table";
 import Chip from '@material-ui/core/Chip';
 import { CsvBuilder } from 'filefy';
 import DialogUploadAvatar from './DialogUploadAvatar';
-
+import { useSnackbar } from 'notistack';
 const baseUrl = window.Laravel.baseUrl
 const customChip = (color = '#ccc') => ({
     border: '1px solid ' + color,
@@ -37,6 +39,7 @@ const exportCsv = (columnList, initialData) => {
 };
 const ListStudent = (props) => {
     const Vndate = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
+    const {enqueueSnackbar } = useSnackbar()
     const { class_id, class_name } = props
     const [data, setData] = useState([]);
     const [ openDialog, setOpen ] = useState(false);
@@ -48,7 +51,7 @@ const ListStudent = (props) => {
     const[ openStatus, setOpenStatus] = useState(false);
     const [ openDropout, setOpenDropout ] = useState(false);
     const [ openTeams, setOpenTeams ] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     // const[ ]
     useEffect(() => {
         const fetchdata = async() => {
@@ -129,9 +132,11 @@ const ListStudent = (props) => {
             })
     }
     function syncStudentTeam(){
+        setLoading(true)
         axios.post('/teams/sync-student', {id: class_id})
             .then(response => {
-
+                setLoading(false)
+                enqueueSnackbar('Đồng bộ thành công, vui lòng kiểm tra TEAMS', {variant: 'success'})
             })
             .catch(err => {
 
@@ -139,6 +144,7 @@ const ListStudent = (props) => {
     }
     return (
         <div>
+            {loading ? <LinearProgress /> : ''}
             <MaterialTable
                 title="Danh sách học sinh"
                 data={data}

@@ -1984,19 +1984,27 @@ class ClassController extends Controller
             }
             $students = $class->activeStudents()->whereNotNull('ms_id')->get();
             foreach ($students as $s) {
-                $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
-                $team_data =
-                    [
-                        "@odata.type" => "#microsoft.graph.aadUserConversationMember",
-                        "roles" => ["member"],
-                        "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
-                    ];
-                $team_client = new Client();
-                $r = $team_client->request('POST', $team_url, [
-                    'json' => $team_data,
-                    'headers' => ['Authorization' => 'Bearer ' . $token],
-                ]);
-                print_r($r);
+                $sc = StudentClass::where('class_id', $class->id)->where('student_id', $s->id)->first();
+                if(!$sc->teams_added){
+                    $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
+                    $team_data =
+                        [
+                            "@odata.type" => "#microsoft.graph.aadUserConversationMember",
+                            "roles" => ["member"],
+                            "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
+                        ];
+                    $team_client = new Client();
+                    $r = $team_client->request('POST', $team_url, [
+                        'json' => $team_data,
+                        'headers' => ['Authorization' => 'Bearer ' . $token],
+                    ]);
+                    if($r->getStatusCode() == 200 || $r->getStatusCode() == 201){
+                        $sc->teams_added = 1; 
+                        $sc->save();
+                    }
+                }
+                
+                
             }
             return response()->json(200);
         }
