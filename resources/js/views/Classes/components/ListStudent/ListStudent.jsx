@@ -62,6 +62,7 @@ const ListStudent = (props) => {
                     r.dob_format = format(date , 'dd/MM/yyyy')      
                     r.entrance_date_format = format(new Date(r.detail.entrance_date), 'dd/MM/yyyy')  
                     r.drop_date_format = (r.detail.drop_time)?format(new Date(r.detail.drop_time), 'dd/MM/yyyy') : ''
+                    r.teams_added = r.detail.teams_added
                     const d = r.detail
                     const o = r.parent
                     let a = Object.assign(r, o, d)
@@ -451,8 +452,20 @@ const ListStudent = (props) => {
                         },
                         lookup: {'active': 'Đang học', 'droped': 'Đã nghỉ', 'waiting': 'Đang chờ', 'retain': 'Bảo lưu','transfer': 'Chuyển lớp'},
                           
-                    }                 
-                    
+                    },                 
+                    {
+                        title: "Đã thêm vào Teams",
+                        field: "teams_added",
+                        headerStyle: {
+                            padding: '0px',
+                            fontWeight: '600',
+                        },
+                        cellStyle: {
+                            padding: '0px',
+                        },
+                        lookup: {'0': '', '1': 'x'},
+                          
+                    }
                   ]}
             />
             <DialogCreate 
