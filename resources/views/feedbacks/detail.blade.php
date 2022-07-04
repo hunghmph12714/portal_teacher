@@ -53,7 +53,9 @@
                         @csrf
                         <div class="form-group">
                             {{-- <label for=""></label> --}}
-                            <textarea class="form-control" name="result" id="ckeditor" rows="3"></textarea>
+                            <textarea class="form-control" name="result" id="ckeditor" rows="3">@if (!empty($feedback->result))
+                              {{   $feedback->result }} 
+                            @endif</textarea>
                         </div>
                     </form>
 

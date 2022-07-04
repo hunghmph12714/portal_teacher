@@ -1,14 +1,8 @@
 ﻿"Hiển thị trên sổ","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Mã đối tượng","Tên đối tượng","Địa chỉ","Lý do nộp","Diễn giải lý do nộp","Người nộp","Nhân viên thu","Kèm theo","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền","Đối tượng","TK ngân hàng","mã thống kê"
-0,06-04-2022,06-04-2022,PTTM300568,KH05421,"Nguyễn Thị Minh Chi",,13,"Học phí tăng cường khối 5",,,,"Học phí tăng cường khối 5",1111,131,150000,,,TC5.4
-0,06-04-2022,06-04-2022,PTTM300569,KH07484,"Trần Hiểu Phong",,13,"Học phí tăng cường khối 5",,,,"Học phí tăng cường khối 5",1111,131,150000,,,TC5.4
-0,06-04-2022,06-04-2022,PTTM300570,KH07394,"Nguyễn Tùng Minh",,13,"Học phí tăng cường khối 5",,,,"Học phí tăng cường khối 5",1111,131,150000,,,TC5.4
-0,06-04-2022,06-04-2022,PTTM300571,KH05943,"Đào Đăng Khoa",,13,"Học phí tăng cường khối 5",,,,"Học phí tăng cường khối 5",1111,131,150000,,,TC5.6
-0,06-04-2022,06-04-2022,PTTM300572,KH06023,"Hoàng Trí Dung",,13,"Học phí tăng cường khối 5",,,,"Học phí tăng cường khối 5",1111,131,150000,,,TC5.4
-0,06-08-2022,06-08-2022,PTTM300573,KH07221,"Đặng Ngọc Minh Khuê",,13,"Học phí tăng cường khối 9",,,,"Học phí tăng cường khối 9",1111,131,350000,,,TNC9.2
-0,06-15-2022,06-15-2022,PTTM300574,KH07221,"Đặng Ngọc Minh Khuê",,13,"Thu học phí Đặng Ngọc Minh Khuê",,,,"Thu học phí Đặng Ngọc Minh Khuê",1111,131,350000,,,TTC9
-0,06-21-2022,06-21-2022,PTTM300575,KH996105,"Trần Khánh Ngọc",,13,"Thu học phí Trần Khánh Ngọc",,,,"Thu học phí 07-2022",1111,131,920000,,,TC5.8
-0,06-21-2022,06-21-2022,PTTM300576,KH996004,"Dư Đức Tuấn Phong",,13,"Thu học phí Dư Đức Tuấn Phong",,,,"Thu học phí 07-2022",1111,131,1280000,,,TC5.8
-0,06-21-2022,06-21-2022,PTTM300576,KH996004,"Dư Đức Tuấn Phong",,13,"Thu học phí Dư Đức Tuấn Phong",,,,"Thu học phí 06-2022",1111,131,640000,,,TC5.8
-0,06-21-2022,06-21-2022,PTTM300577,KH04278,"Hồ Phương Chi",,13,"Thu học phí tháng 67",,,,"Thu học phí tháng 7",1111,131,450000,,,ANC5.2
-0,06-21-2022,06-21-2022,PTTM300577,KH04278,"Hồ Phương Chi",,13,"Thu học phí tháng 67",,,,"Thu học phí tháng 6",1111,131,90000,,,ANC5.2
-0,06-22-2022,06-22-2022,PTTM300578,KH00000,,,13,"Nhập quỹ tiền mặt cơ sở PTT",,,,"Nhập quỹ tiền mặt cơ sở PTT",1111,1124,7000000,,,
+0,05-09-2022,05-09-2022,PTTM500610,KH04566,"Bùi Minh Khánh",,13,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",,,,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",1111,131,150000,,,KS6OFF2
+0,05-14-2022,05-14-2022,PTTM500611,KH05559,"Ngô Thùy Dương 23/11",,13,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",,,,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",1111,131,150000,,,KS6OFF2
+0,05-14-2022,05-14-2022,PTTM500612,KH07021,"Nguyễn Thảo Linh",,13,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",,,,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",1111,131,150000,,,KS6OFF2
+0,05-14-2022,05-14-2022,PTTM500613,KH05943,"Đào Đăng Khoa",,13,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",,,,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",1111,131,150000,,,KS6OFF2
+0,05-14-2022,05-14-2022,PTTM500614,KH04737,"Trịnh Lam Uyên",,13,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",,,,"Lệ phí Khảo sát 5 lên 6 OFFLINE Tháng 5 đợt 6",1111,131,150000,,,KS6OFF2
+0,05-14-2022,05-14-2022,PTTM500615,KH03195,"Nguyễn Minh Ngọc",,13,"Thu học phí Nguyễn Minh Ngọc",,,,"Thu học phí 05-2022",1111,131,1088000,,,TC5.1
+0,05-14-2022,05-14-2022,PTTM500615,KH03195,"Nguyễn Minh Ngọc",,13,"Thu học phí Nguyễn Minh Ngọc",,,,"Thu học phí 04-2022",1111,131,150000,,,TC5.1
