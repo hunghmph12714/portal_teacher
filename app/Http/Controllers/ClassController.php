@@ -1050,7 +1050,11 @@ class ClassController extends Controller
             $class_count = $classes->count();
             $classes = $classes->get();
             $arr_student = [];
+            $arr_student_2 = [];
             $sum_student = 0;
+            $one = 0;
+            $two = 0;
+            $three = 0;
             foreach ($classes as $class) {
                 if ($year < 2021) {
                     $students = $class->students;
@@ -1067,9 +1071,19 @@ class ClassController extends Controller
                     $sum_student++;
                     if (!in_array($student->id, $arr_student)) {
                         $arr_student[] = $student->id;
+                        $one++;
+                    }else{
+                        
+                        if (!in_array($student->id, $arr_student_2)) {
+                            $arr_student_2[] = $student->id;
+                            $two++;
+                        }else{
+                            $three++;
+                        }
                     }
                 }
             }
+
             print_r("Tổng số lớp: " . $class_count);
             echo "<br>";
             print_r("Tổng lượt học: " . $sum_student);
