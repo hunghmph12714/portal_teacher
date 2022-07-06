@@ -237,12 +237,12 @@ class StudentController extends Controller
             ->leftjoin('parents', 'students.parent_id', 'parents.id')
             ->leftJoin('relationships', 'parents.relationship_id', 'relationships.id')
             ->first();
-        if (!auth()->user()->can('read_phone')) {
-            $student->pphone = '******' . substr($student->pphone, 6);
-        }
-        if (!auth()->user()->can('read_email')) {
-            $student->pemail = '******' . substr($student->pemail, 6);
-        }
+        // if (!auth()->user()->can('read_phone')) {
+        //     $student->pphone = '******' . substr($student->pphone, 6);
+        // }
+        // if (!auth()->user()->can('read_email')) {
+        //     $student->pemail = '******' . substr($student->pemail, 6);
+        // }
         if ($student) {
             $brothers = Student::where('id', '!=', $student->sid)->where('parent_id', $student->pid)->get();
             return response()->json($student);

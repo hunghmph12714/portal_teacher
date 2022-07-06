@@ -1046,7 +1046,7 @@ class ClassController extends Controller
         $center = Center::find($id);
         $year = auth()->user()->wp_year;
         if ($center) {
-            $classes = Classes::where('center_id', $id)->where('year', $year);
+            $classes = Classes::where('center_id', $id)->where('year', '2022');
             $class_count = $classes->count();
             $classes = $classes->get();
             $arr_student = [];
@@ -1073,7 +1073,6 @@ class ClassController extends Controller
                         $arr_student[] = $student->id;
                         $one++;
                     }else{
-                        
                         if (!in_array($student->id, $arr_student_2)) {
                             $arr_student_2[] = $student->id;
                             $two++;
@@ -1089,9 +1088,9 @@ class ClassController extends Controller
             print_r("Tổng lượt học: " . $sum_student);
             echo "<br>";
             print_r("Tổng học sinh: " . count($arr_student));
-            print_r("Tổng HS học 1 lớp: " . $one);
+            print_r("Tổng HS học 1 lớp: " . $one-$two);
             echo "<br>";
-            print_r("Tổng HS học 2 lớp: " . $two);
+            print_r("Tổng HS học 2 lớp: " . $two-$three);
             echo "<br>";
             print_r("Tổng HS học 3 lớp: " . $three);
         }
