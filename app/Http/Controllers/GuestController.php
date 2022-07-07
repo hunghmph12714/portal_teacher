@@ -457,13 +457,14 @@ class GuestController extends Controller
 
     // }
 
-    public function export_list_mkt(Request $request)
+    public function export_list_mkt()
     {
+        dd(1);
         $data = [
-            'start_time' => $request->start_time,
-            'finish_time' => $request->finish_time,
+            'start_time' =>'2022-01-01 00:00:01',
+            'finish_time' => '2022-07-08 00:00:01',
             // 'center_id' => $request->center_id,
         ];
-        return Excel::download(new EntranceSlExport($data), 'entrance_mkt.xlsx');
+        return Excel::download(new EntranceExport(   $data), 'entrance_mkt.xlsx');
     }
 }

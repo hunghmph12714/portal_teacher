@@ -711,16 +711,18 @@ Route::get('kiem-tra-ghi-danh', function () {
 });
 
 Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
-// Route::get('feedback/gui-phan-hoi', function () {
-//     $feedbacks = Feedback::query()->orderBy('created_at', 'desc')->paginate(10);
-//     // dd($feedbacks[0]->upload);
-//     // dd(Auth::user());
 
-//     return view('feedbacks.create', compact('feedbacks'));
-// });
-// Route::post('feedback/gui-phan-hoi', 'FeedbackController@create');
-// Route::get('feedback/quan-tri', 'FeedbackController@list')->name('feedback.list');
-// // Route::post('feedback/quan-tri', 'FeedbackController@editStatus');
-// Route::get('feedback/chi-tiet/{id}', 'FeedbackController@detail')->name('feedback.chi-tiet');
 Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');
 Route::get('/azure-token', 'ClassController@pmt');
+Route::get('cham-soc-chu-dong/{class_id}/{student_id}','CareController@addCare')->name('care.add');
+Route::post('cham-soc-chu-dong/{class_id}/{student_id}','CareController@saveCare');
+Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
+    return view('cares.create_service');
+});
+Route::post('tieu-tri-danh-gia-hoc-sinh/add','ServiceController@addService')->name('service.add');
+Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service.list');
+Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
+Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
+Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
+
+
