@@ -459,7 +459,7 @@ class GuestController extends Controller
 
     public function export_list_mkt()
     {
-        dd(1);
+        // dd(1);
         $data = [
             'start_time' =>'2022-01-01 00:00:01',
             'finish_time' => '2022-07-08 00:00:01',
