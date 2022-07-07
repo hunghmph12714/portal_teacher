@@ -1,11 +1,20 @@
 ﻿"Hiển thị trên sổ","Ngày hạch toán (*)","Ngày chứng từ (*)","Số chứng từ (*)","Mã đối tượng","Tên đối tượng","Địa chỉ","Nhân viên","Kèm theo","Lý do chi","Diễn giải lý do chi","Người nhận","Diễn giải","TK Nợ (*)","TK Có (*)","Số tiền"
-0,06-10-2022,06-10-2022,PC300412,,,,,,23,"Thanh toán tiền điện, điện thoại tháng 5/2022",,"Thanh toán tiền điện thoại tháng 5/2022",6422-CPĐT,1111,174000
-0,06-10-2022,06-10-2022,PC300412,,,,,,23,"Thanh toán tiền điện, điện thoại tháng 5/2022",,"Thanh toán tiền điện tháng 5/2022",6422-ĐN,1111,2383000
-0,06-10-2022,06-10-2022,PC300413,,,,,,23,"Hoàn học phí lớp Toán tăng cường khối 9",,"Hoàn học phí lớp Toán tăng cường khối 9",5111,1111,700000
-0,06-13-2022,06-13-2022,PC300414,,,,,,23,"Chi mua đồ thắp hương rằm",,"Chi mua đồ thắp hương rằm",6422-ĐL,1111,100000
-0,06-15-2022,06-15-2022,PC300417,,,,,,23,"Sửa bàn phím máy tính Asus",,"Sửa bàn phím máy tính Asus",6422-Khac,1111,200000
-0,06-17-2022,06-17-2022,PC300418,,,,,,23,"Chi mua bìa A4+ khăn lau bảng",,"Chi mua bìa A4+ khăn lau bảng",6422-VPP,1111,80000
-0,06-20-2022,06-20-2022,PC300419,,,,,,23,"Chi mua hoa+ quả thắp hương",,"Chi mua hoa+ quả thắp hương",6422-ĐL,1111,110000
-0,06-21-2022,06-21-2022,PC300420,,,,,,23,"Chi mua sữa học sinh",,"Chi mua sữa học sinh",6329,1111,932000
-0,06-21-2022,06-21-2022,PC300421,,,,,,23,"Chi mua bánh học sinh",,"Chi mua bánh học sinh",6329,1111,1640000
-0,06-22-2022,06-22-2022,PC300422,,,,,,23,"Chăm sóc cây cảnh",,"Chăm sóc cây cảnh",6422-Khac,1111,30000
+0,06-03-2022,06-03-2022,PC500383,,,,,,23,"Đồ lễ m1/5 + đoan ngọ 5/5",,"Đồ lễ m1/5 + đoan ngọ 5/5",6422-ĐL,1111,265000
+0,06-03-2022,06-03-2022,PC500384,,,,,,23,"Nạp thẻ hotline",,"Nạp thẻ hotline",6422-CPĐT,1111,200000
+0,06-04-2022,06-04-2022,PC500385,,,,,,23,"200 cốc giấy+ship",,"200 cốc giấy+ship",6421-VS,1111,130000
+0,06-06-2022,06-06-2022,PC500386,,,,,,23,"đồ ăn nhẹ : 170 bimbim, 3 sữa",,"đồ ăn nhẹ : 170 bimbim, 3 sữa",6329,1111,1378000
+0,06-09-2022,06-09-2022,PC500387,,,,,,23,"Nước uống tháng 5+khẩu trang, khăn ướt",,"Nước uống tháng 5+khẩu trang, khăn ướt",6421-VS,1111,35000
+0,06-09-2022,06-09-2022,PC500387,,,,,,23,"Nước uống tháng 5+khẩu trang, khăn ướt",,"Nước uống tháng 5+khẩu trang, khăn ướt",6422-NU,1111,956000
+0,06-09-2022,06-09-2022,PC500388,,,,,,23,"70 bánh, 3 thùng milo",,"70 bánh, 3 thùng milo",6329,1111,1081000
+0,06-08-2022,06-08-2022,PC500389,,,,,,23,"Hoàn học phí tháng 5 VC5.7",,"Hoàn học phí tháng 5 VC5.7",131,1111,272000
+0,06-09-2022,06-09-2022,PC500390,,,,,,23,"Vệ sinh + thay ống điều hòa",,"Vệ sinh + thay ống điều hòa",6421-SCCSVC,1111,100000
+0,06-13-2022,06-13-2022,PC500391,,,,,,23,"30 túi Bánh Karo + 5 thùng Sữa mộc Châu",,"30 túi Bánh Karo + 5 thùng Sữa mộc Châu",6329,1111,1935000
+0,06-13-2022,06-13-2022,PC500392,,,,,,23,"Hoa + Quả + tiền vàng",,"Hoa + Quả + tiền vàng",6422-ĐL,1111,15000
+0,06-15-2022,06-15-2022,PC500393,,,,,,23,"Tiền điện tháng 6/2022 + Tiền nước Tháng 6/2022",,"Tiền điện tháng 6/2022 + Tiền nước Tháng 6/2022",6422-ĐN,1111,3022000
+0,06-16-2022,06-16-2022,PC500394,,,,,,23,"15 bịch Nabiti",,"15 bịch Nabiti",6329,1111,300000
+0,06-22-2022,06-22-2022,PC500395,,,,,,23,"Thay tụ điều hòa P302 + sửa điều hòa P402",,"Thay tụ điều hòa P302 + sửa điều hòa P402",6421-SCCSVC,1111,900000
+0,06-22-2022,06-22-2022,PC500396,,,,,,23,"5 khăn lau",,"5 khăn lau",6421-VS,1111,50000
+0,06-24-2022,06-24-2022,PC500397,,,,,,23,"6 Thùng MC + 25 gói Karo",,"6 Thùng MC + 25 gói Karo",6329,1111,1278000
+0,06-27-2022,06-27-2022,PC500398,,,,,,23,"500 cốc giấy + ship",,"500 cốc giấy + ship",6421-VS,1111,280000
+0,06-29-2022,06-29-2022,PC500399,,,,,,23,"24 Xôi + Chả (50) + Hoa hồng",,"24 Xôi + Chả (50) + Hoa hồng",6422-ĐL,1111,89000
+0,06-15-2022,06-15-2022,PC500402,,,,,,23,"Hoàn học phí tháng 5 VC5.7 Hs Dương Ngọc Ánh",,"Hoàn học phí tháng 5 VC5.7 Hs Dương Ngọc Ánh",131,1111,544000

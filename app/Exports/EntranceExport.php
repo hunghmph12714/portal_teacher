@@ -24,8 +24,8 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
     public function collection()
     {
         $data = $this->data;
-        // dd($data);
-        $center = array_column($data['center_id'], 'value');
+        dd($data);
+        // $center = array_column($data['center_id'], 'value');
         // dd($center);
         // dd($data['start_time']->format('Y-m-d H:i:s')  );
         $entrances = Entrance::whereBetween('entrances.created_at', [$data['start_time'], $data['finish_time']])
@@ -44,11 +44,11 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
                 'center_id'
                 // 'medium_id','status.name as status_name'
             )
-            ->whereIn('center_id',  $center)
+            // ->whereIn('center_id',  $center)
             ->get();
-        //    $entrances->load('center');
+        
 
-        //    dd( $entrances);
+           dd( $entrances);
         return $entrances;
         // if (in_array(-1,$data['center_id'])==true) {
         //     return $entrances;
@@ -69,27 +69,14 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
             'Phụ huynh',
             'Ngày đăng ký',
             'Cơ sở',
-            'Đang ở bước',
-            'Ngày hẹn lịch KTĐV',
-            'Ngày nhập học',
-            //   'Trạng thái',
+           
 
         ];
     }
     public function map($entrances): array
     {
-        // dd($entrances)
         return [
-            // $entrances->id,
-            $entrances->student_name,
-            $entrances->parent_name,
-            $entrances->ngay_dang_ky,
-            $entrances->center->name,
-            $entrances->step_name,
-            $entrances->test_time,
-            $entrances->ngay_nhap_hoc,
-            // $entrances->status_name,
-
+         
 
 
 
