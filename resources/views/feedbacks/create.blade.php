@@ -55,8 +55,10 @@
                         <label class="fw-bold" for="">Upload ảnh lỗi</label>
                         <input type="file" class="form-control" name="upload[]" id="" aria-describedby="helpId"
                             placeholder="Nhập thông tin..." multiple>
-                        {{-- <small id="helpId" class="form-text ">Help text</small> --}}
-                    </div>
+                            @error('upload[]')
+                            <small id="helpId" class="form-text  text-danger">{{ $message }}</small>
+    
+                            @enderror                    </div>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label fw-bold">
                             <input class="form-check-input" type="radio" name="type" @if (old('type')==1) checked @endif
