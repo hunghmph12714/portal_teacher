@@ -24,59 +24,62 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
     public function collection()
     {
         $data = $this->data;
-        dd($data);
+        // dd($data);
         // $center = array_column($data['center_id'], 'value');
         // dd($center);
         // dd($data['start_time']->format('Y-m-d H:i:s')  );
         $entrances = Entrance::whereBetween('entrances.created_at', [$data['start_time'], $data['finish_time']])
             ->join('students', 'entrances.student_id', 'students.id')
             ->join('parents', 'students.parent_id', 'parents.id')
-            ->join('steps', 'entrances.step_id', 'steps.id')
+            // ->join('steps', 'entrances.step_id', 'steps.id')
             ->join('status', 'entrances.status_id', 'status.id')->groupBy('entrances.id')
+            ->join('center', 'entrances.center_id', 'center.id')
             ->select(
                 'entrances.id',
-                'test_time',
-                'steps.name as step_name',
+                'entrances.created_at',
+                'parents.phone as phone',
+                'parents.email as email',
                 'entrances.created_at as ngay_dang_ky',
-                'enroll_date as ngay_nhap_hoc',
                 'parents.fullname as parent_name',
                 'students.fullname as student_name',
-                'center_id'
-                // 'medium_id','status.name as status_name'
-            )
-            // ->whereIn('center_id',  $center)
+                'center.name as center_name',
+                'step_id', 
+                  'status_id')
+            ->where('step_id',1)
+            ->whereIn('status_id',[2,3,4,5,6,7,8,9,10,11])
             ->get();
-        
 
-           dd( $entrances);
+
+        //    dd( $entrances);
         return $entrances;
-        // if (in_array(-1,$data['center_id'])==true) {
-        //     return $entrances;
-        // } else {
-
-        //     return $entrances->whereIn('center_id', $data['center_id']);
-        // }
-
-
-
     }
 
     public function headings(): array
     {
         return [
-            //   'id',
+            //   'id',     
+            'Cơ sở',
             'Tên học sinh',
             'Phụ huynh',
+            'SDT',
+            'Email',
             'Ngày đăng ký',
-            'Cơ sở',
-           
+
+
 
         ];
     }
     public function map($entrances): array
     {
         return [
-         
+            $entrances->center_name,
+            $entrances->student_name,
+            $entrances->parent_name,
+            $entrances->phone,
+            $entrances->email,
+            $entrances->created_at,
+            // $entrances->student_name,
+
 
 
 
