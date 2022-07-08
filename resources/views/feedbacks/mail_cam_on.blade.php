@@ -45,11 +45,11 @@
             <p> <b>Số điện thoại: </b> <span>{{ $phone }}</span></p>
             <p> <b>Tiêu đề: </b> <span>{{ $title }}</span></p>
             <p> <b>Chi tiết: </b> <span>{!! $description !!}</span></p>
-            <p> <b>Type: </b> <span>@if ($type==1 )
+            {{-- <p> <b>Type: </b> <span>@if ($type==1 )
                     Báo lỗi
                     @else
                     Góp ý nâng cấp
-                    @endif</span></p>
+                    @endif</span></p> --}}
        
         </div>
 

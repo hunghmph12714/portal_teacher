@@ -41,8 +41,7 @@
 
                         <tr>
                             <td><input type="checkbox" form="dxl" name="feedbacks_id[]" value="{{ $f->id }}" id=""></td>
-                            <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}
-                            </td>
+                            <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}</td>
                             <td><a href="{{ route('feedback.chi-tiet', ['id'=>$f]) }}">{{ $f->title }}</a></td>
                             <td>{!! $f->description !!}</td>
                             <td>{{ $f->created_at }}</td>

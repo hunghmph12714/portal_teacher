@@ -46,4 +46,14 @@ class Student extends Model
             ->where('class_id', $class_id);
         // ->withTimestamps();
     }
+    /**
+     * Get all of the care for the Student
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function care()
+    {
+        return $this->hasMany(Comment::class, 'foreign_key', 'local_key');
+    }
 }
+ 
