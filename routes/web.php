@@ -461,6 +461,10 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     Route::get('/student/remove/{id}', 'StudentController@removeStudent');
     Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');
+
+    //Gala
+    Route::get('/student-email', 'StudentController@getEmail');
+    
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
 

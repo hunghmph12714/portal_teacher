@@ -250,6 +250,29 @@ class StudentController extends Controller
             return response()->json('Không tìm thấy học sinh', 412);
         }
     }
+    protected function getEmail(){
+        $existed = explode(',', 'eanh0478@gmail.com,ngangiang1004@gmail.com,hoangchauthanh@gmail.com,trantuananhdabala@gmail.com,huytam1901@gmail.com,huongptihn@gmail.com,phungthivietha@gmail.com,hanh.hoanghong1710@gmail.com,vuthidung1110@gmail.com,lienvcb2016@gmail.com,lehaianh.hp@gmail.com,lephuongthuys@gmail.com,thuhang.tran7580@gmail.com,khanhthy1@gmail.com,nguyenhanh264@gmail.com,maitrang178@gmail.com,Vanntbhxh@gmail.com,nhungluu.0590@gmail.com,haitrinh.noip@gmail.com,luonghoangyen1973@gmail.com,nguyen.hai.nam.vn@gmail.com,ngotramoanh@gmail.com,hoant.viet@gmail.com,zinvamiu@gmail.com,vantrang1981@gmail.com,phuonganh23580@gmail.com,phuonganh189@yahoo.com.vn,thuthuy.mdc@gmail.com,tooanhiemm@gmail.com,hieu.daule@gmail.com,langocanh1@gmail.com,donghangthi@gmail.com,hanhphuc198081@gmail.com,lanhuong1603@gmail.com,dung.niitd@gmail.com,tramleoanh@gmail.com,hangphamcbls@gmail.com,phuongdt_ript@yahoo.com,dzungngo2607@gmail.com,vomaidung2002@gmail.com,kimthuy@tapchikientruc.com.vn,hong.van.do83@gmail.com,chikenmin1126@gmail.com,kimtrangphunghnue@gmail.com,duonglt@bidv.com.vn,baopln05082007@gmail.com,giaplinhvt0@gmail.com,hungvclcs@gmail.com,yenkhanh78@gmail.com,vanthanhhn@gmail.com,nmquang79@gmail.com');
+
+        $students = Student::all();
+        $result = [];
+        foreach($students as $s){
+            if($s->activeClasses()->count() > 0){
+                echo "<br>";
+                print_r($s->fullname);
+                $parent = Parents::find($s->parent_id);
+                if($parent){
+                    if(in_array($parent->email, $existed) || in_array($parent->alt_email, $existed)){
+                        continue;
+                    }else{
+                        $result[] = [$s->fullname, $parent->email];
+                    }
+                }
+                
+            }
+        }
+        echo "<pre>";
+        print_r($result);
+    }
     protected function saveStudent(Request $request)
     {
         $rules = ['student' => 'required'];

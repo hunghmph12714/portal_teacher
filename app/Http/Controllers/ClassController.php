@@ -1088,9 +1088,9 @@ class ClassController extends Controller
             print_r("Tổng lượt học: " . $sum_student);
             echo "<br>";
             print_r("Tổng học sinh: " . count($arr_student));
-            print_r("Tổng HS học 1 lớp: " . $one-$two);
-            echo "<br>";
-            print_r("Tổng HS học 2 lớp: " . $two-$three);
+            // print_r("Tổng HS học 1 lớp: " . $one-$two);
+            // echo "<br>";
+            // print_r("Tổng HS học 2 lớp: " . $two-$three);
             echo "<br>";
             print_r("Tổng HS học 3 lớp: " . $three);
         }
