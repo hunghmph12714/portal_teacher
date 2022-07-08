@@ -50,6 +50,7 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
 
             
             ->whereIn('step_id',[3,4])
+        
             ->whereIn('status_id',[2,3,4,5,6,7,8,9,10,11])
             ->get();
 

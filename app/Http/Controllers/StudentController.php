@@ -2006,18 +2006,18 @@ class StudentController extends Controller
 
 
     //Teams
-    protected function notifyNewAccount(Request $request)
+    protected function notifyNewAccount()
     {
     }
 
     public function exportStudent(Request $request)
     {
-        dd($request);
+        // dd($request);
         // Excel::import(new StudentSPImport, 'xxxx.xlsx');
 
         // return redirect('/')->with('success', 'All good!');
 
-        return Excel::download(new StudentExport($request->data), 'student.xlsx');
+        return Excel::download(new StudentExport(), 'student.xlsx');
     }
 
 

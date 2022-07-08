@@ -470,7 +470,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::get('/teams/check-students', 'ClassController@teamCheckStudent');
 
     Route::post('/teams/sync-student', 'ClassController@syncStudent');
-    // Route::get('/student/import', 'StudentController@importStudent');
+    Route::get('/student/import', 'StudentController@importStudent');
     //MISA
     Route::get('/misa', function () {
         return view('welcome');
