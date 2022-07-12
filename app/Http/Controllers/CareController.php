@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Care;
-use App\CareServive;
+use App\CareService;
+// use App\CareServive;
 use App\Classes;
 use App\Service;
 // use App\CareServive;
@@ -21,22 +22,29 @@ class CareController extends Controller
         $services = Service::where('active', 1)->get();
         return view('cares.create', compact('services', 'class', 'student'));
     }
-    public function saveCare($class_id, $student_id, Request $request)
+    public function saveCare(Request $request)
     {
         // dd($request);
-        if ($request->method == false || $request->method == 'on') {
-            $mt = $request->method1;
-        } else {
-            $mt = $request->method;
-        }
+        $class_id = $request->class_id;
+        $student_id = $request->student_id;
+
+
+        // if ($request->method == false || $request->method == 'on') {
+        //     $mt = $request->method1;
+        // } else {
+        //     $mt = $request->method;
+        // }
+
+        $mt=$request->method;
 
         // dd($mt);/
         $data_care = ['student_id' => $student_id, 'class_id' => $class_id, 'method' => $mt, 'user_id' => Auth::id()];
         $care = Care::create($data_care);
 
         foreach ($request->cares as $key => $s) {
-            $data_service_care = ['care_id' => $care->id, 'sirvice_id' => $key, 'content' => $s];
-            $service_care = CareServive::create($data_service_care);
+
+            $data_service_care = ['care_id' => $care->id, 'service_id' => $s['id'], 'content' => $s['value']];
+            CareService::create($data_service_care);
         }
         return back();
     }
@@ -52,21 +60,21 @@ class CareController extends Controller
         if ($care) {
             $care->load('student');
             $care->load('service_care');
-            return view('cares.edit_care',compact('care'));
+            return view('cares.edit_care', compact('care'));
         }
     }
 
-    public function saveEditCare($id,Request $request)
+    public function saveEditCare($id, Request $request)
     {
         $care = Care::find($id);
-        if($care){
+        if ($care) {
             $care->fill($request->all())->save();
             if ($request->method == false || $request->method == 'on') {
                 $mt = $request->method1;
             } else {
                 $mt = $request->method;
             }
-            $care->method=$mt;
+            $care->method = $mt;
             $care->save();
         }
         return back();

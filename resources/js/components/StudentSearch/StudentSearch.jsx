@@ -55,16 +55,16 @@ const CustomOption = props => {
                             <b>Phụ huynh: </b>{data.p_name}
                         <br />
                             SDT:{data.p_phone}
-                                <Tooltip title="Sao chép">
-                                    <FileCopyIcon fontSize="small" 
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            var dummy = $('<input>').val(data.p_phone).appendTo('body').select()
-                                            document.execCommand('copy')
-                                            enqueueSnackbar('Đã sao chép', {'variant': 'success'})
-                                        }}
-                                    />
-                                </Tooltip> 
+                            <Tooltip title="Sao chép">
+                                <FileCopyIcon fontSize="small" 
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        var dummy = $('<input>').val(data.p_phone).appendTo('body').select()
+                                        document.execCommand('copy')
+                                        enqueueSnackbar('Đã sao chép', {'variant': 'success'})
+                                    }}
+                                />
+                            </Tooltip> 
                             <br />
                             EMAIL: {data.p_email}
                             <Tooltip title="Sao chép">

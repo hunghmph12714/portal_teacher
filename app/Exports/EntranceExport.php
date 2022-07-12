@@ -28,8 +28,10 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
         // $center = array_column($data['center_id'], 'value');
         // dd($center);
         // dd($data['start_time']->format('Y-m-d H:i:s')  );
-        $entrances = Entrance::whereBetween('entrances.created_at', [$data['start_time'], $data['finish_time']])
-            ->join('students', 'entrances.student_id', 'students.id')
+// whereBetween('entrances.created_at', [$data['start_time'], $data['finish_time']])
+//             ->
+
+        $entrances = Entrance::join('students', 'entrances.student_id', 'students.id')
             ->join('parents', 'students.parent_id', 'parents.id')
             // ->join('steps', 'entrances.step_id', 'steps.id')
             ->join('status', 'entrances.status_id', 'status.id')->groupBy('entrances.id')
@@ -43,11 +45,11 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
                 'parents.fullname as parent_name',
                 'students.fullname as student_name',
                 'center.name as center_name',
-                'step_id',
-                'status_id',
+                'step_id', 
+                  'status_id')
 
-            )
-            ->where('step_id',1)
+            
+            ->whereIn('step_id',[3,4])
             ->whereIn('status_id',[2,3,4,5,6,7,8,9,10,11])
             ->get();
 
@@ -78,7 +80,8 @@ class EntranceExport implements FromCollection, WithHeadings, WithMapping
             $entrances->student_name,
             $entrances->parent_name,
             $entrances->phone,
-            $entrances->name,
+
+            $entrances->email,
             $entrances->created_at,
             // $entrances->student_name,
 

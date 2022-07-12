@@ -42,6 +42,10 @@ class ServiceController extends Controller
         $services = Service::query()->orderBy('created_at', 'desc')->paginate(10);
         return view('cares.list_service', compact('services'));
     }
+    public function getServiceCriteria(){
+        $services = Service::where('active', 1)->get();
+        return response()->json($services);
+    }
     public function editActive(Request $request)
     {
         // 

@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { ListSession, ListStudent, ListAttendance, ListScore } from '../components';
+import { ListSession, ListStudent, ListAttendance, ListScore, ProactiveService } from '../components';
 import DateFnsUtils from "@date-io/date-fns"; // choose your lib
 
 import vi from "date-fns/locale/vi";
@@ -129,10 +129,11 @@ class ClassDetail extends React.Component{
                         <Tab label="Lịch học" {...a11yProps(1)} />
                         <Tab label="Danh sách học sinh" {...a11yProps(2)} />
                         <Tab label="Tình hình học tập" {...a11yProps(3)} />
+                        <Tab label="Chăm sóc chủ động" {...a11yProps(4)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>
-                  <ListAttendance class_id={this.props.match.params.id} 
+                  <ListAttendance class_id={this.props.match.params.id}
                     from = {this.state.from}
                     to = {this.state.to}/>
                 </TabPanel>
@@ -150,6 +151,12 @@ class ClassDetail extends React.Component{
                   <ListScore 
                     class_id={this.props.match.params.id} 
                     class_name={this.state.selected_class.name}
+                    from = {this.state.from}
+                    to = {this.state.to} />
+                </TabPanel>
+                <TabPanel value={this.state.value} index={4}>
+                  <ProactiveService 
+                    class_id={this.props.match.params.id} 
                     from = {this.state.from}
                     to = {this.state.to} />
                 </TabPanel>
