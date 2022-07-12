@@ -2010,14 +2010,14 @@ class StudentController extends Controller
     {
     }
 
-    public function exportStudent(Request $request)
+    public function exportStudent()
     {
-        dd($request);
+        // dd($request);
         // Excel::import(new StudentSPImport, 'xxxx.xlsx');
 
         // return redirect('/')->with('success', 'All good!');
 
-        return Excel::download(new StudentExport($request->data), 'student.xlsx');
+        return Excel::download(new StudentExport(), 'student.xlsx');
     }
 
 

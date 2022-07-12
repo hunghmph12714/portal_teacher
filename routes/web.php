@@ -724,5 +724,5 @@ Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service
 Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
 Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
 Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
-
+Route::get('sendSMS','UserController@sendSMS');
 

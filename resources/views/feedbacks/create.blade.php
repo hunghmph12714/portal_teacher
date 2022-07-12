@@ -55,10 +55,11 @@
                         <label class="fw-bold" for="">Upload ảnh lỗi</label>
                         <input type="file" class="form-control" name="upload[]" id="" aria-describedby="helpId"
                             placeholder="Nhập thông tin..." multiple>
-                            @error('upload[]')
-                            <small id="helpId" class="form-text  text-danger">{{ $message }}</small>
-    
-                            @enderror                    </div>
+                        @error('upload[]')
+                        <small id="helpId" class="form-text  text-danger">{{ $message }}</small>
+
+                        @enderror
+                    </div>
                     <div class="form-check form-check-inline">
                         <label class="form-check-label fw-bold">
                             <input class="form-check-input" type="radio" name="type" @if (old('type')==1) checked @endif
@@ -100,7 +101,8 @@
                 <tbody>
                     @foreach ($feedbacks as $f)
                     <tr>
-                        <td scope="row">{{ $loop->iteration }}</td>
+                        <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}
+                        </td>
                         <td>{{ $f->title }}</td>
                         <td>{!! $f->description !!}</td>
                         <td>{{ $f->created_at }}</td>

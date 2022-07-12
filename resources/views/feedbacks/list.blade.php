@@ -41,21 +41,23 @@
 
                         <tr>
                             <td><input type="checkbox" form="dxl" name="feedbacks_id[]" value="{{ $f->id }}" id=""></td>
-                            <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}</td>
+                            <td scope="row">{{($feedbacks->currentPage() - 1)*$feedbacks->perPage() + $loop->iteration}}
+                            </td>
                             <td><a href="{{ route('feedback.chi-tiet', ['id'=>$f]) }}">{{ $f->title }}</a></td>
                             <td>{!! $f->description !!}</td>
                             <td>{{ $f->created_at }}</td>
                             <td>{{ $f->user->name }}</td>
                             <td>@if ($f->status==1)
-                                Đang xử lý
-                                @elseif($f->status==2)
-                                Đã xử lý
-                                @endif</td>
-                            <td>@if ($f->status==1)
                                 Báo lỗi
                                 @elseif($f->status==2)
                                 Góp ý nâng cấp
                                 @endif</td>
+                            <td>@if ($f->status==1)
+                                Đang xử lý
+                                @elseif($f->status==2)
+                                Đã xử lý
+                                @endif</td>
+
                         </tr>
                         @endforeach
 

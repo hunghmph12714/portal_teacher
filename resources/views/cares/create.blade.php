@@ -19,76 +19,80 @@
         </div>
         {{-- {{ dd($get) }} --}}<form action="" method="POST">
             @csrf
-        <div class="p-4 ">
-            <div>
-                <span><b>Học sinh: </b> {{ $student->fullname }}</span><br>
-                <span><b>Lớp: </b> {{ $class->code.'-'.$class->name }}</span>
-
-            </div>
-
             <div class="p-4 ">
+                <div>
+                    <span><b>Học sinh: </b> {{ $student->fullname }}</span><br>
+                    <span><b>Lớp: </b> {{ $class->code.'-'.$class->name }}</span>
 
-                <h3>1. Phương thức chăm sóc</h3>
-                <div onclick="cscd()">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="" value=" Điện thoại">
-                            Điện thoại
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="" value="Email">
-                            Email
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="" value="Tin nhắn SMS">
-                            Tin nhắn SMS
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="" value="Zalo">
-                            Zalo
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="" value="Trực tiếp">
-                            Trực tiếp
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" name="method" id="khac">
-                            Khác
-                        </label>
-                    </div>
-                    <div class="form-group " style="display: none" id="form_khac">
-                        {{-- <label for=""></label> --}}
-                        <input type="text" class="form-control" name="method1" id="input_khac" aria-describedby="helpId"
-                            placeholder="Nhập phương thức">
-                        {{-- <small id="helpId" class="form-text text-muted">Help text</small> --}}
+                </div>
+
+                <div class="p-4 ">
+
+                    <h3>1. Phương thức chăm sóc</h3>
+                    <div onclick="cscd()">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="" value=" Điện thoại">
+                                Điện thoại
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="" value="Email">
+                                Email
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="" value="Tin nhắn SMS">
+                                Tin nhắn SMS
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="" value="Zalo">
+                                Zalo
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="" value="Trực tiếp">
+                                Trực tiếp
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="method" id="khac">
+                                Khác
+                            </label>
+                        </div>
+                        <div class="form-group " style="display: none" id="form_khac">
+                            {{-- <label for=""></label> --}}
+                            <input type="text" class="form-control" name="method1" id="input_khac"
+                                aria-describedby="helpId" placeholder="Nhập phương thức...">
+                            {{-- <small id="helpId" class="form-text text-muted">Help text</small> --}}
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            @foreach ($services as $k=>$s)
-            <div class="p-4">
-                <h3>{{ $k+2 .". ".$s->name }}</h3>
-                <div class="form-group">
-                    {{-- <label for=""></label> --}}
-                    <textarea class="form-control" placeholder="Nhập câu trả lời của bạn..." name="cares[{{ $s->id }}]" id=""
-                        rows="5"></textarea>
+                <div class="row">
+                    <h3> 2. Tiêu chí chăm sóc </h3>
+                    @foreach ($services as $k=>$s)
+                    <div class="p-4 col-4">
+                        <h6 style="height: 40px">2.{{ $k+1 ." ".$s->name }}</h6>
+                        <div class="form-group">
+                            {{-- <label for=""></label> --}}
+                            <textarea class="form-control" placeholder="Nhập câu trả lời của bạn..."
+                                name="cares[{{ $s->id }}]" id="" rows="5"></textarea>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
+
+                <div><button type="submit" name="" id="" class="btn btn-primary btn-lg btn-block">Lưu thông tin</button>
+                </div>
+
             </div>
-            @endforeach
-
-            <div><button type="submit" name="" id="" class="btn btn-primary btn-lg btn-block">Lưu thông tin</button></div>
-
-        </div></form>
+        </form>
 
     </div>
     <script>

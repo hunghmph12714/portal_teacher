@@ -55,4 +55,20 @@ class CareController extends Controller
             return view('cares.edit_care',compact('care'));
         }
     }
+
+    public function saveEditCare($id,Request $request)
+    {
+        $care = Care::find($id);
+        if($care){
+            $care->fill($request->all())->save();
+            if ($request->method == false || $request->method == 'on') {
+                $mt = $request->method1;
+            } else {
+                $mt = $request->method;
+            }
+            $care->method=$mt;
+            $care->save();
+        }
+        return back();
+    }
 }
