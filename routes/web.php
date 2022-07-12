@@ -693,40 +693,44 @@ Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'chec
 // Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
 // Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
-Route::get('export-student', [StudentController::class, 'exportStudent']);
-Route::get('auto-register', [ClassController::class, 'autoRegister']);
+// Route::get('export-student', [StudentController::class, 'exportStudent']);
+// Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('student-ptt', 'ClassController@studentPtt');
 // Route::get('entrance-lose','EntranceController@EntranceLose');
 // Route::get('bnm', 'QuizController@bnm');
 // Route::get('/convert-session', 'ClassController@convertSession');
-Route::get('/hot-fix', 'QuizController@hotFix');
+// Route::get('/hot-fix', 'QuizController@hotFix');
 
-
-Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
-Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
+// Route::get('/tra-cuu', 'ClassController@tracuu');
+// Route::get('/tra-cuu-2', 'ClassController@tracuu2');
+// Route::get('/tra-cuu-3', 'ClassController@tracuu3');
+// Route::get('/tra-cuu-4', 'ClassController@tracuu4');
+// Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
+// Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
-Route::get('loc-hoc-sinh-thi-chuyen-su-pham', function () {
-    return view('file_filter_student');
-});
-Route::post('loc-hoc-sinh-thi-chuyen-su-pham', [StudentController::class, 'HSChuyenSuPham']);
-Route::get('kiem-tra-ghi-danh', function () {
-    // $data=[];
-    return view('tra_cuu_entrances');
-});
+// Route::get('loc-hoc-sinh-thi-chuyen-su-pham', function () {
+//     return view('file_filter_student');
+// });
+// Route::post('loc-hoc-sinh-thi-chuyen-su-pham', [StudentController::class, 'HSChuyenSuPham']);
+// Route::get('kiem-tra-ghi-danh', function () {
+//     // $data=[];
+//     return view('tra_cuu_entrances');
+// });
 
 Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
 
 Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');
 Route::get('/azure-token', 'ClassController@pmt');
+
+
 Route::get('cham-soc-chu-dong/{class_id}/{student_id}','CareController@addCare')->name('care.add');
 Route::post('cham-soc-chu-dong/{class_id}/{student_id}','CareController@saveCare');
 Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
     return view('cares.create_service');
 });
+Route::post('/service-criteria/get', 'ServiceController@getServiceCriteria');
 Route::post('tieu-tri-danh-gia-hoc-sinh/add','ServiceController@addService')->name('service.add');
 Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service.list');
 Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
 Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
 Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
-
-
