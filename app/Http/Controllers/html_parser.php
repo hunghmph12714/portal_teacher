@@ -1535,392 +1535,390 @@ class simple_html_dom
 		// strip out server side scripts
 		$this->remove_noise("'(<\?)(.*?)(\?>)'s", true);
 
-if($options & HDOM_SMARTY_AS_TEXT) { // Strip Smarty scripts
-$this->remove_noise("'(\{\w)(.*?)(\})'s", true);
-}
+		if($options & HDOM_SMARTY_AS_TEXT) { // Strip Smarty scripts
+			$this->remove_noise("'(\{\w)(.*?)(\})'s", true);
+		}
 
-// parsing
-$this->parse();
-// end
-$this->root->_[HDOM_INFO_END] = $this->cursor;
-$this->parse_charset();
+		// parsing
+		$this->parse();
+		// end
+		$this->root->_[HDOM_INFO_END] = $this->cursor;
+		$this->parse_charset();
 
-// make load function chainable
-return $this;
-}
+		// make load function chainable
+		return $this;
+	}
 
-function load_file()
-{
-$args = func_get_args();
+	function load_file()
+	{
+		$args = func_get_args();
 
-if(($doc = call_user_func_array('file_get_contents', $args)) !== false) {
-$this->load($doc, true);
-} else {
-return false;
-}
-}
+		if(($doc = call_user_func_array('file_get_contents', $args)) !== false) {
+			$this->load($doc, true);
+		} else {
+			return false;
+		}
+	}
 
-function set_callback($function_name)
-{
-$this->callback = $function_name;
-}
+	function set_callback($function_name)
+	{
+		$this->callback = $function_name;
+	}
 
-function remove_callback()
-{
-$this->callback = null;
-}
+	function remove_callback()
+	{
+		$this->callback = null;
+	}
 
-function save($filepath = '')
-{
-$ret = $this->root->innertext();
-if ($filepath !== '') { file_put_contents($filepath, $ret, LOCK_EX); }
-return $ret;
-}
+	function save($filepath = '')
+	{
+		$ret = $this->root->innertext();
+		if ($filepath !== '') { file_put_contents($filepath, $ret, LOCK_EX); }
+		return $ret;
+	}
 
-function find($selector, $idx = null, $lowercase = false)
-{
-return $this->root->find($selector, $idx, $lowercase);
-}
+	function find($selector, $idx = null, $lowercase = false)
+	{
+		return $this->root->find($selector, $idx, $lowercase);
+	}
 
-function clear()
-{
-if (isset($this->nodes)) {
-foreach ($this->nodes as $n) {
-$n->clear();
-$n = null;
-}
-}
+	function clear()
+	{
+		if (isset($this->nodes)) {
+			foreach ($this->nodes as $n) {
+				$n->clear();
+				$n = null;
+			}
+		}
 
-// This add next line is documented in the sourceforge repository.
-// 2977248 as a fix for ongoing memory leaks that occur even with the
-// use of clear.
-if (isset($this->children)) {
-foreach ($this->children as $n) {
-$n->clear();
-$n = null;
-}
-}
+		// This add next line is documented in the sourceforge repository.
+		// 2977248 as a fix for ongoing memory leaks that occur even with the
+		// use of clear.
+		if (isset($this->children)) {
+			foreach ($this->children as $n) {
+				$n->clear();
+				$n = null;
+			}
+		}
 
-if (isset($this->parent)) {
-$this->parent->clear();
-unset($this->parent);
-}
+		if (isset($this->parent)) {
+			$this->parent->clear();
+			unset($this->parent);
+		}
 
-if (isset($this->root)) {
-$this->root->clear();
-unset($this->root);
-}
+		if (isset($this->root)) {
+			$this->root->clear();
+			unset($this->root);
+		}
 
-unset($this->doc);
-unset($this->noise);
-}
+		unset($this->doc);
+		unset($this->noise);
+	}
 
-function dump($show_attr = true)
-{
-$this->root->dump($show_attr);
-}
+	function dump($show_attr = true)
+	{
+		$this->root->dump($show_attr);
+	}
 
-protected function prepare(
-$str, $lowercase = true,
-$defaultBRText = DEFAULT_BR_TEXT,
-$defaultSpanText = DEFAULT_SPAN_TEXT)
-{
-$this->clear();
+	protected function prepare(
+		$str, $lowercase = true,
+		$defaultBRText = DEFAULT_BR_TEXT,
+		$defaultSpanText = DEFAULT_SPAN_TEXT)
+	{
+		$this->clear();
 
-$this->doc = trim($str);
-$this->size = strlen($this->doc);
-$this->original_size = $this->size; // original size of the html
-$this->pos = 0;
-$this->cursor = 1;
-$this->noise = array();
-$this->nodes = array();
-$this->lowercase = $lowercase;
-$this->default_br_text = $defaultBRText;
-$this->default_span_text = $defaultSpanText;
-$this->root = new simple_html_dom_node($this);
-$this->root->tag = 'root';
-$this->root->_[HDOM_INFO_BEGIN] = -1;
-$this->root->nodetype = HDOM_TYPE_ROOT;
-$this->parent = $this->root;
-if ($this->size > 0) { $this->char = $this->doc[0]; }
-}
+		$this->doc = trim($str);
+		$this->size = strlen($this->doc);
+		$this->original_size = $this->size; // original size of the html
+		$this->pos = 0;
+		$this->cursor = 1;
+		$this->noise = array();
+		$this->nodes = array();
+		$this->lowercase = $lowercase;
+		$this->default_br_text = $defaultBRText;
+		$this->default_span_text = $defaultSpanText;
+		$this->root = new simple_html_dom_node($this);
+		$this->root->tag = 'root';
+		$this->root->_[HDOM_INFO_BEGIN] = -1;
+		$this->root->nodetype = HDOM_TYPE_ROOT;
+		$this->parent = $this->root;
+		if ($this->size > 0) { $this->char = $this->doc[0]; }
+	}
 
-protected function parse()
-{
-while (true) {
-// Read next tag if there is no text between current position and the
-// next opening tag.
-if (($s = $this->copy_until_char('<'))==='' ) { if($this->read_tag()) {
-    continue;
-    } else {
-    return true;
-    }
-    }
+	protected function parse()
+	{
+		while (true) {
+			// Read next tag if there is no text between current position and the
+			// next opening tag.
+			if (($s = $this->copy_until_char('<')) === '') {
+				if($this->read_tag()) {
+					continue;
+				} else {
+					return true;
+				}
+			}
 
-    // Add a text node for text between tags
-    $node = new simple_html_dom_node($this);
-    ++$this->cursor;
-    $node->_[HDOM_INFO_TEXT] = $s;
-    $this->link_nodes($node, false);
-    }
-    }
+			// Add a text node for text between tags
+			$node = new simple_html_dom_node($this);
+			++$this->cursor;
+			$node->_[HDOM_INFO_TEXT] = $s;
+			$this->link_nodes($node, false);
+		}
+	}
 
-    protected function parse_charset()
-    {
-    global $debug_object;
+	protected function parse_charset()
+	{
+		global $debug_object;
 
-    $charset = null;
+		$charset = null;
 
-    if (function_exists('get_last_retrieve_url_contents_content_type')) {
-    $contentTypeHeader = get_last_retrieve_url_contents_content_type();
-    $success = preg_match('/charset=(.+)/', $contentTypeHeader, $matches);
-    if ($success) {
-    $charset = $matches[1];
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2,
-    'header content-type found charset of: '
-    . $charset
-    );
-    }
-    }
-    }
+		if (function_exists('get_last_retrieve_url_contents_content_type')) {
+			$contentTypeHeader = get_last_retrieve_url_contents_content_type();
+			$success = preg_match('/charset=(.+)/', $contentTypeHeader, $matches);
+			if ($success) {
+				$charset = $matches[1];
+				if (is_object($debug_object)) {
+					$debug_object->debug_log(2,
+						'header content-type found charset of: '
+						. $charset
+					);
+				}
+			}
+		}
 
-    if (empty($charset)) {
-    // https://www.w3.org/TR/html/document-metadata.html#statedef-http-equiv-content-type
-    $el = $this->root->find('meta[http-equiv=Content-Type]', 0, true);
+		if (empty($charset)) {
+			// https://www.w3.org/TR/html/document-metadata.html#statedef-http-equiv-content-type
+			$el = $this->root->find('meta[http-equiv=Content-Type]', 0, true);
 
-    if (!empty($el)) {
-    $fullvalue = $el->content;
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2,
-    'meta content-type tag found'
-    . $fullvalue
-    );
-    }
+			if (!empty($el)) {
+				$fullvalue = $el->content;
+				if (is_object($debug_object)) {
+					$debug_object->debug_log(2,
+						'meta content-type tag found'
+						. $fullvalue
+					);
+				}
 
-    if (!empty($fullvalue)) {
-    $success = preg_match(
-    '/charset=(.+)/i',
-    $fullvalue,
-    $matches
-    );
+				if (!empty($fullvalue)) {
+					$success = preg_match(
+						'/charset=(.+)/i',
+						$fullvalue,
+						$matches
+					);
 
-    if ($success) {
-    $charset = $matches[1];
-    } else {
-    // If there is a meta tag, and they don't specify the
-    // character set, research says that it's typically
-    // ISO-8859-1
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2,
-    'meta content-type tag couldn\'t be parsed. using iso-8859 default.'
-    );
-    }
+					if ($success) {
+						$charset = $matches[1];
+					} else {
+						// If there is a meta tag, and they don't specify the
+						// character set, research says that it's typically
+						// ISO-8859-1
+						if (is_object($debug_object)) {
+							$debug_object->debug_log(2,
+								'meta content-type tag couldn\'t be parsed. using iso-8859 default.'
+							);
+						}
 
-    $charset = 'ISO-8859-1';
-    }
-    }
-    }
-    }
+						$charset = 'ISO-8859-1';
+					}
+				}
+			}
+		}
 
-    if (empty($charset)) {
-    // https://www.w3.org/TR/html/document-metadata.html#character-encoding-declaration
-    if ($meta = $this->root->find('meta[charset]', 0)) {
-    $charset = $meta->charset;
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2, 'meta charset: ' . $charset);
-    }
-    }
-    }
+		if (empty($charset)) {
+			// https://www.w3.org/TR/html/document-metadata.html#character-encoding-declaration
+			if ($meta = $this->root->find('meta[charset]', 0)) {
+				$charset = $meta->charset;
+				if (is_object($debug_object)) {
+					$debug_object->debug_log(2, 'meta charset: ' . $charset);
+				}
+			}
+		}
 
-    if (empty($charset)) {
-    // Try to guess the charset based on the content
-    // Requires Multibyte String (mbstring) support (optional)
-    if (function_exists('mb_detect_encoding')) {
-    /**
-    * mb_detect_encoding() is not intended to distinguish between
-    * charsets, especially single-byte charsets. Its primary
-    * purpose is to detect which multibyte encoding is in use,
-    * i.e. UTF-8, UTF-16, shift-JIS, etc.
-    *
-    * -- https://bugs.php.net/bug.php?id=38138
-    *
-    * Adding both CP1251/ISO-8859-5 and CP1252/ISO-8859-1 will
-    * always result in CP1251/ISO-8859-5 and vice versa.
-    *
-    * Thus, only detect if it's either UTF-8 or CP1252/ISO-8859-1
-    * to stay compatible.
-    */
-    $encoding = mb_detect_encoding(
-    $this->doc,
-    array( 'UTF-8', 'CP1252', 'ISO-8859-1' )
-    );
+		if (empty($charset)) {
+			// Try to guess the charset based on the content
+			// Requires Multibyte String (mbstring) support (optional)
+			if (function_exists('mb_detect_encoding')) {
+				/**
+				 * mb_detect_encoding() is not intended to distinguish between
+				 * charsets, especially single-byte charsets. Its primary
+				 * purpose is to detect which multibyte encoding is in use,
+				 * i.e. UTF-8, UTF-16, shift-JIS, etc.
+				 *
+				 * -- https://bugs.php.net/bug.php?id=38138
+				 *
+				 * Adding both CP1251/ISO-8859-5 and CP1252/ISO-8859-1 will
+				 * always result in CP1251/ISO-8859-5 and vice versa.
+				 *
+				 * Thus, only detect if it's either UTF-8 or CP1252/ISO-8859-1
+				 * to stay compatible.
+				 */
+				$encoding = mb_detect_encoding(
+					$this->doc,
+					array( 'UTF-8', 'CP1252', 'ISO-8859-1' )
+				);
 
-    if ($encoding === 'CP1252' || $encoding === 'ISO-8859-1') {
-    // Due to a limitation of mb_detect_encoding
-    // 'CP1251'/'ISO-8859-5' will be detected as
-    // 'CP1252'/'ISO-8859-1'. This will cause iconv to fail, in
-    // which case we can simply assume it is the other charset.
-    if (!@iconv('CP1252', 'UTF-8', $this->doc)) {
-    $encoding = 'CP1251';
-    }
-    }
+				if ($encoding === 'CP1252' || $encoding === 'ISO-8859-1') {
+					// Due to a limitation of mb_detect_encoding
+					// 'CP1251'/'ISO-8859-5' will be detected as
+					// 'CP1252'/'ISO-8859-1'. This will cause iconv to fail, in
+					// which case we can simply assume it is the other charset.
+					if (!@iconv('CP1252', 'UTF-8', $this->doc)) {
+						$encoding = 'CP1251';
+					}
+				}
 
-    if ($encoding !== false) {
-    $charset = $encoding;
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2, 'mb_detect: ' . $charset);
-    }
-    }
-    }
-    }
+				if ($encoding !== false) {
+					$charset = $encoding;
+					if (is_object($debug_object)) {
+						$debug_object->debug_log(2, 'mb_detect: ' . $charset);
+					}
+				}
+			}
+		}
 
-    if (empty($charset)) {
-    // Assume it's UTF-8 as it is the most likely charset to be used
-    $charset = 'UTF-8';
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2, 'No match found, assume ' . $charset);
-    }
-    }
+		if (empty($charset)) {
+			// Assume it's UTF-8 as it is the most likely charset to be used
+			$charset = 'UTF-8';
+			if (is_object($debug_object)) {
+				$debug_object->debug_log(2, 'No match found, assume ' . $charset);
+			}
+		}
 
-    // Since CP1252 is a superset, if we get one of it's subsets, we want
-    // it instead.
-    if ((strtolower($charset) == 'iso-8859-1')
-    || (strtolower($charset) == 'latin1')
-    || (strtolower($charset) == 'latin-1')) {
-    $charset = 'CP1252';
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(2,
-    'replacing ' . $charset . ' with CP1252 as its a superset'
-    );
-    }
-    }
+		// Since CP1252 is a superset, if we get one of it's subsets, we want
+		// it instead.
+		if ((strtolower($charset) == 'iso-8859-1')
+			|| (strtolower($charset) == 'latin1')
+			|| (strtolower($charset) == 'latin-1')) {
+			$charset = 'CP1252';
+			if (is_object($debug_object)) {
+				$debug_object->debug_log(2,
+					'replacing ' . $charset . ' with CP1252 as its a superset'
+				);
+			}
+		}
 
-    if (is_object($debug_object)) {
-    $debug_object->debug_log(1, 'EXIT - ' . $charset);
-    }
+		if (is_object($debug_object)) {
+			$debug_object->debug_log(1, 'EXIT - ' . $charset);
+		}
 
-    return $this->_charset = $charset;
-    }
+		return $this->_charset = $charset;
+	}
 
-    protected function read_tag()
-    {
-    // Set end position if no further tags found
-    if ($this->char !== '<') { $this->root->_[HDOM_INFO_END] = $this->cursor;
-        return false;
-        }
+	protected function read_tag()
+	{
+		// Set end position if no further tags found
+		if ($this->char !== '<') {
+			$this->root->_[HDOM_INFO_END] = $this->cursor;
+			return false;
+		}
 
-        $begin_tag_pos = $this->pos;
-        $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
+		$begin_tag_pos = $this->pos;
+		$this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
 
-            // end tag
-            if ($this->char === '/') {
-            $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
+		// end tag
+		if ($this->char === '/') {
+			$this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
 
-                // Skip whitespace in end tags (i.e. in "</ html>")
-            $this->skip($this->token_blank);
-            $tag = $this->copy_until_char('>');
+			// Skip whitespace in end tags (i.e. in "</   html>")
+			$this->skip($this->token_blank);
+			$tag = $this->copy_until_char('>');
 
-            // Skip attributes in end tags
-            if (($pos = strpos($tag, ' ')) !== false) {
-            $tag = substr($tag, 0, $pos);
-            }
+			// Skip attributes in end tags
+			if (($pos = strpos($tag, ' ')) !== false) {
+				$tag = substr($tag, 0, $pos);
+			}
 
-            $parent_lower = strtolower($this->parent->tag);
-            $tag_lower = strtolower($tag);
+			$parent_lower = strtolower($this->parent->tag);
+			$tag_lower = strtolower($tag);
 
-            // The end tag is supposed to close the parent tag. Handle situations
-            // when it doesn't
-            if ($parent_lower !== $tag_lower) {
-            // Parent tag does not have to be closed necessarily (optional closing tag)
-            // Current tag is a block tag, so it may close an ancestor
-            if (isset($this->optional_closing_tags[$parent_lower])
-            && isset($this->block_tags[$tag_lower])) {
+			// The end tag is supposed to close the parent tag. Handle situations
+			// when it doesn't
+			if ($parent_lower !== $tag_lower) {
+				// Parent tag does not have to be closed necessarily (optional closing tag)
+				// Current tag is a block tag, so it may close an ancestor
+				if (isset($this->optional_closing_tags[$parent_lower])
+					&& isset($this->block_tags[$tag_lower])) {
 
-            $this->parent->_[HDOM_INFO_END] = 0;
-            $org_parent = $this->parent;
+					$this->parent->_[HDOM_INFO_END] = 0;
+					$org_parent = $this->parent;
 
-            // Traverse ancestors to find a matching opening tag
-            // Stop at root node
-            while (($this->parent->parent)
-            && strtolower($this->parent->tag) !== $tag_lower
-            ){
-            $this->parent = $this->parent->parent;
-            }
+					// Traverse ancestors to find a matching opening tag
+					// Stop at root node
+					while (($this->parent->parent)
+						&& strtolower($this->parent->tag) !== $tag_lower
+					){
+						$this->parent = $this->parent->parent;
+					}
 
-            // If we don't have a match add current tag as text node
-            if (strtolower($this->parent->tag) !== $tag_lower) {
-            $this->parent = $org_parent; // restore origonal parent
+					// If we don't have a match add current tag as text node
+					if (strtolower($this->parent->tag) !== $tag_lower) {
+						$this->parent = $org_parent; // restore origonal parent
 
-            if ($this->parent->parent) {
-            $this->parent = $this->parent->parent;
-            }
+						if ($this->parent->parent) {
+							$this->parent = $this->parent->parent;
+						}
 
-            $this->parent->_[HDOM_INFO_END] = $this->cursor;
-            return $this->as_text_node($tag);
-            }
-            } elseif (($this->parent->parent)
-            && isset($this->block_tags[$tag_lower])
-            ) {
-            // Grandparent exists and current tag is a block tag, so our
-            // parent doesn't have an end tag
-            $this->parent->_[HDOM_INFO_END] = 0; // No end tag
-            $org_parent = $this->parent;
+						$this->parent->_[HDOM_INFO_END] = $this->cursor;
+						return $this->as_text_node($tag);
+					}
+				} elseif (($this->parent->parent)
+					&& isset($this->block_tags[$tag_lower])
+				) {
+					// Grandparent exists and current tag is a block tag, so our
+					// parent doesn't have an end tag
+					$this->parent->_[HDOM_INFO_END] = 0; // No end tag
+					$org_parent = $this->parent;
 
-            // Traverse ancestors to find a matching opening tag
-            // Stop at root node
-            while (($this->parent->parent)
-            && strtolower($this->parent->tag) !== $tag_lower
-            ) {
-            $this->parent = $this->parent->parent;
-            }
+					// Traverse ancestors to find a matching opening tag
+					// Stop at root node
+					while (($this->parent->parent)
+						&& strtolower($this->parent->tag) !== $tag_lower
+					) {
+						$this->parent = $this->parent->parent;
+					}
 
-            // If we don't have a match add current tag as text node
-            if (strtolower($this->parent->tag) !== $tag_lower) {
-            $this->parent = $org_parent; // restore origonal parent
-            $this->parent->_[HDOM_INFO_END] = $this->cursor;
-            return $this->as_text_node($tag);
-            }
-            } elseif (($this->parent->parent)
-            && strtolower($this->parent->parent->tag) === $tag_lower
-            ) { // Grandparent exists and current tag closes it
-            $this->parent->_[HDOM_INFO_END] = 0;
-            $this->parent = $this->parent->parent;
-            } else { // Random tag, add as text node
-            return $this->as_text_node($tag);
-            }
-            }
+					// If we don't have a match add current tag as text node
+					if (strtolower($this->parent->tag) !== $tag_lower) {
+						$this->parent = $org_parent; // restore origonal parent
+						$this->parent->_[HDOM_INFO_END] = $this->cursor;
+						return $this->as_text_node($tag);
+					}
+				} elseif (($this->parent->parent)
+					&& strtolower($this->parent->parent->tag) === $tag_lower
+				) { // Grandparent exists and current tag closes it
+					$this->parent->_[HDOM_INFO_END] = 0;
+					$this->parent = $this->parent->parent;
+				} else { // Random tag, add as text node
+					return $this->as_text_node($tag);
+				}
+			}
 
-            // Set end position of parent tag to current cursor position
-            $this->parent->_[HDOM_INFO_END] = $this->cursor;
+			// Set end position of parent tag to current cursor position
+			$this->parent->_[HDOM_INFO_END] = $this->cursor;
 
-            if ($this->parent->parent) {
-            $this->parent = $this->parent->parent;
-            }
+			if ($this->parent->parent) {
+				$this->parent = $this->parent->parent;
+			}
 
-            $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-                return true;
-                }
+			$this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
+			return true;
+		}
 
-                // start tag
-                $node = new simple_html_dom_node($this);
-                $node->_[HDOM_INFO_BEGIN] = $this->cursor;
-                ++$this->cursor;
-                $tag = $this->copy_until($this->token_slash); // Get tag name
-                $node->tag_start = $begin_tag_pos;
+		// start tag
+		$node = new simple_html_dom_node($this);
+		$node->_[HDOM_INFO_BEGIN] = $this->cursor;
+		++$this->cursor;
+		$tag = $this->copy_until($this->token_slash); // Get tag name
+		$node->tag_start = $begin_tag_pos;
 
-                // doctype, cdata & comments...
-                //
-                // <!DOCTYPE html>
-                //
-                // <![CDATA[ ... ]]>
-                //
-                // <!-- Comment -->
-                if (isset($tag[0]) && $tag[0] === '!') {
-                $node->_[HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until_char('>');
+		// doctype, cdata & comments...
+		// <!DOCTYPE html>
+		// <![CDATA[ ... ]]>
+		// <!-- Comment -->
+		if (isset($tag[0]) && $tag[0] === '!') {
+			$node->_[HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until_char('>');
 
-                    if (isset($tag[2]) && $tag[1] === '-' && $tag[2] === '-') { // Comment ("
-                    <!--")
+			if (isset($tag[2]) && $tag[1] === '-' && $tag[2] === '-') { // Comment ("<!--")
 				$node->nodetype = HDOM_TYPE_COMMENT;
 				$node->tag = 'comment';
 			} else { // Could be doctype or CDATA but we don't care
