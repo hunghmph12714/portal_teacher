@@ -35,7 +35,7 @@ class CareController extends Controller
         //     $mt = $request->method;
         // }
 
-        $mt=$request->method;
+        $mt = $request->method;
 
         // dd($mt);/
         $data_care = ['student_id' => $student_id, 'class_id' => $class_id, 'method' => $mt, 'user_id' => Auth::id()];
@@ -48,9 +48,22 @@ class CareController extends Controller
         }
         return back();
     }
-    public function list()
+    public function list(Request $request)
     {
-        CareServive::all();
+        $class_id=$request->class_id;
+        $care_services =   Care::query()->where('class_id', $class_id)->orderBy('id', 'desc')->get();
+        $care_services->load('care_service');
+        $care_services->load('student');gti
+        $care_services->load('user');
+        $cares = [];
+        foreach ($care_services as $c) {
+            $care = [];
+            $care['student'] = ['id' => $c->student_id, 'name' => $c->student->fullname];
+            $care['user'] = ['id' => $c->user_id, 'name' => $c->user->name];
+            $care['time']=['created_at'=>$c->created_at,'updated_at'=>$c->created_at];
+            array_push($cares,$care);
+        }
+        return  $cares;
     }
 
 

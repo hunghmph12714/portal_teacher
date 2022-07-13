@@ -16,16 +16,21 @@ class Care extends Model
    */
   public function care_service()
   {
-      return $this->hasMany(CareServive::class, 'care_id', 'id');
+      return $this->hasMany(CareService::class, 'care_id', 'id');
   }
   /**
    * Get the student that owns the Care
    *
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
+
   public function student()
   {
-      return $this->belongsTo(Student::class);
+      return $this->belongsTo(Student::class,'student_id','id');
+  }
+  public function user()
+  {
+      return $this->belongsTo(User::class,'user_id','id');
   }
 
 

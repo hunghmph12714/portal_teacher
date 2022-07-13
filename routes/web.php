@@ -619,6 +619,41 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     // Route::post('feedback/quan-tri', 'FeedbackController@editStatus');
     Route::get('feedback/chi-tiet/{id}', 'FeedbackController@detail')->name('feedback.chi-tiet');
     Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');
+
+
+
+
+
+// Chăm sóc chủ động
+
+
+Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
+
+Route::get('/azure-token', 'ClassController@pmt');
+Route::get('cham-soc-chu-dong/{class_id}/{student_id}','CareController@addCare')->name('care.add');
+Route::post('cham-soc-chu-dong/{class_id}/{student_id}','CareController@saveCare');
+Route::post('/proactive-service','CareController@saveCare')  ;
+Route::post('cham-soc-chu-dong/list','CareController@list')->name('care.list');
+
+Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
+    return view('cares.create_service');
+});
+Route::post('/service-criteria/get', 'ServiceController@getServiceCriteria');
+
+Route::post('tieu-tri-danh-gia-hoc-sinh/add','ServiceController@addService')->name('service.add');
+Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service.list');
+Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
+Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
+Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
+
+
+// Route::get('sendSMS','UserController@sendSMS');
+
+
+
+
+
+
 });
 //EVENT PUBLIC
 Route::get('/event-table/{event_code}', 'SessionController@getProductTable');
@@ -717,25 +752,5 @@ Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'chec
 //     return view('tra_cuu_entrances');
 // });
 
-Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
 
-Route::post('feedback/chi-tiet/{id}', 'FeedbackController@result');
-Route::get('/azure-token', 'ClassController@pmt');
-
-
-Route::get('cham-soc-chu-dong/{class_id}/{student_id}','CareController@addCare')->name('care.add');
-Route::post('cham-soc-chu-dong/{class_id}/{student_id}','CareController@saveCare');
-Route::post('/proactive-service','CareController@saveCare');
-
-Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
-    return view('cares.create_service');
-});
-Route::post('/service-criteria/get', 'ServiceController@getServiceCriteria');
-
-Route::post('tieu-tri-danh-gia-hoc-sinh/add','ServiceController@addService')->name('service.add');
-Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service.list');
-Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
-Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
-Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
-Route::get('sendSMS','UserController@sendSMS');
 
