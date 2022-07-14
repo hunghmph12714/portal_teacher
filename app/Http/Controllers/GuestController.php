@@ -411,7 +411,7 @@ class GuestController extends Controller
             // $student['school'] = $request->school;
             $student['relationship_id'] = 5;
             $student = Student::create($student);
-            $this->createEntrance($student, 1, NULL, $request->note, $query);
+            $this->createEntrance($student, 2, NULL, $request->note, $query);
         }
         return redirect('https://vietelite.edu.vn/dangkythanhcong/');
     }
