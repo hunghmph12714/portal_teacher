@@ -20,25 +20,25 @@ const ProactiveService = (props) => {
     const [refresh, setRefresh] = useState(false)
     const col = [
         {
-            title: "Thời gian",
-            field: "created_at",
+            title: "Học sinh",
+            field: "student",
             headerStyle: {
-                padding: '0px',
                 fontWeight: '600',
             },
-            cellStyle: {
-                padding: '0px',
+            
+        },
+        {
+            title: "Thời gian",
+            field: "time",
+            headerStyle: {
+                fontWeight: '600',
             },
         },
         {
-            title: "",
-            field: "code",
+            title: "Người chăm sóc",
+            field: "user",
             headerStyle: {
-                padding: '0px',
                 fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
             },
         },
     ]
@@ -121,6 +121,14 @@ const ProactiveService = (props) => {
         axios.post('/proactive-service/list', {class_id: props.class_id})
             .then(response => {
                 console.log(response.data)
+                let i = response.data.map(r => {
+                    return {
+                        student: r.student.name,
+                        time: r.time.created_at,
+                        user: r.user.name,
+                    }
+                })
+                setData(i)
             })
             .catch(err => {
 
@@ -167,7 +175,7 @@ const ProactiveService = (props) => {
             <Grid container spacing={2}>
                 <Grid item md={12}>
                     <h5>Tiêu chí chăm sóc</h5>
-                    <ImageList rowHeight={100} cols={3} gap={2}>
+                    <ImageList rowHeight={100} cols={3} gaps={2}>
                         {criteria.map((item) => (
                             <ImageListItem key={item.id}>
                                 <p style={{marginBottom: '0.2rem'}}>{item.name}</p>
@@ -181,6 +189,7 @@ const ProactiveService = (props) => {
                     <Button
                         color='primary' 
                         onClick={submitService}
+                        className='btn'
                     >Lưu phiên chăm sóc
                     </Button>
                 </Grid>
@@ -214,27 +223,27 @@ const ProactiveService = (props) => {
                 //         },
                 //      },
                 // ]}
-                localization={{
-                    body: {
-                        emptyDataSourceMessage: 'Không tìm thấy chăm sóc'
-                    },
-                    toolbar: {
-                        searchTooltip: 'Tìm kiếm',
-                        searchPlaceholder: 'Tìm kiếm',
-                        nRowsSelected: '{0} hàng được chọn'
-                    },
-                    pagination: {
-                        labelRowsSelect: 'dòng',
-                        labelDisplayedRows: ' {from}-{to} của {count}',
-                        firstTooltip: 'Trang đầu tiên',
-                        previousTooltip: 'Trang trước',
-                        nextTooltip: 'Trang tiếp theo',
-                        lastTooltip: 'Trang cuối cùng'
-                    },
-                    grouping: {
-                    placeholder: 'Kéo tên cột vào đây để nhóm'
-                    }
-                }}
+            localization={{
+                body: {
+                    emptyDataSourceMessage: 'Không tìm thấy chăm sóc'
+                },
+                toolbar: {
+                    searchTooltip: 'Tìm kiếm',
+                    searchPlaceholder: 'Tìm kiếm',
+                    nRowsSelected: '{0} hàng được chọn'
+                },
+                pagination: {
+                    labelRowsSelect: 'dòng',
+                    labelDisplayedRows: ' {from}-{to} của {count}',
+                    firstTooltip: 'Trang đầu tiên',
+                    previousTooltip: 'Trang trước',
+                    nextTooltip: 'Trang tiếp theo',
+                    lastTooltip: 'Trang cuối cùng'
+                },
+                grouping: {
+                placeholder: 'Kéo tên cột vào đây để nhóm'
+                }
+            }}
             columns={col}
             // detailPanel={rowData => {
             //   let configs = JSON.parse(rowData.config)

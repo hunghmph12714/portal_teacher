@@ -60,7 +60,7 @@ class CareController extends Controller
             $care = [];
             $care['student'] = ['id' => $c->student_id, 'name' => $c->student->fullname];
             $care['user'] = ['id' => $c->user_id, 'name' => $c->user->name];
-            $care['time']=['created_at'=>$c->created_at,'updated_at'=>$c->created_at];
+            $care['time']=['created_at'=> date('d/m/Y', strtotime($c->created_at)),'updated_at'=>$c->created_at];
             array_push($cares,$care);
         }
         return  response()->json($cares);
