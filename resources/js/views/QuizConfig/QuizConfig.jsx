@@ -222,13 +222,24 @@ const QuizConfig = (props) => {
         setQuizConfigs(qc)
     }
     function onSubmit() {
-        axios.post('/quiz-config/edit   ', { config: config, quiz_config: quiz_configs })
+        if (props.match.params.id){
+            axios.post('/quiz-config/edit   ', { config: config, quiz_config: quiz_configs })
             .then(response => {
 
             })
             .catch(err => {
 
             })
+        }else{
+            axios.post('/quiz-config   ', { config: config, quiz_config: quiz_configs })
+                .then(response => {
+                    enqueueSnackbar('Tạo cấu hình thành công', {variant: 'success'})
+                })
+                .catch(err => {
+
+                })
+        }
+        
     }
     return (
         <div className="quiz_config-root">

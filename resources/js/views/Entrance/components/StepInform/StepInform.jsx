@@ -108,7 +108,7 @@ const StepInform = (props) => {
                 (                              
                   <Typography variant="body2" component="p">
                       <b>{rowData.pname}</b> 
-                      {rowData.phone}                                 
+                      <br/>{rowData.phone}                                 
                       <br />{rowData.pemail}
                   </Typography>                              
                 ),

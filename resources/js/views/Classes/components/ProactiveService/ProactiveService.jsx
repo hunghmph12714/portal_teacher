@@ -8,11 +8,40 @@ import {
     ImageList,
     ImageListItem,
     TextField,
+    
 
 } from '@material-ui/core'
+import MaterialTable from "material-table";
 import {useSnackbar} from 'notistack'
 const ProactiveService = (props) => {
     const {enqueueSnackbar} = useSnackbar()
+    const [isLoading, setIsLoading] = useState(false)
+    const [data, setData] = useState([])
+    const [refresh, setRefresh] = useState(false)
+    const col = [
+        {
+            title: "Thời gian",
+            field: "created_at",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+        {
+            title: "",
+            field: "code",
+            headerStyle: {
+                padding: '0px',
+                fontWeight: '600',
+            },
+            cellStyle: {
+                padding: '0px',
+            },
+        },
+    ]
     const [students, setStudents] = useState([])
     const [selected_student, setSelectedStudent] = useState({value: null,})
     const [method, setMethod] = useState([
@@ -53,6 +82,7 @@ const ProactiveService = (props) => {
         axios.post('/proactive-service', data)
             .then(response => {
                 enqueueSnackbar('Lưu thành công', {variant: 'success'})
+                setRefresh(!refresh)
             })
             .catch(err => {
 
@@ -85,7 +115,17 @@ const ProactiveService = (props) => {
             .catch(err => {
 
             })
+        setRefresh(!refresh)
     }, [])
+    useEffect(() => {
+        axios.post('/proactive-service/list', {class_id: props.class_id})
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(err => {
+
+            })
+    },[refresh])
     return (
         <div className="root-service">
             <Grid container spacing={2}>
@@ -138,13 +178,134 @@ const ProactiveService = (props) => {
                             </ImageListItem>
                         ))}
                     </ImageList>
-                    <Button 
+                    <Button
+                        color='primary' 
                         onClick={submitService}
-                    >Lưu phiên chăm sóc</Button>
+                    >Lưu phiên chăm sóc
+                    </Button>
                 </Grid>
-                            
-                
             </Grid>
+            {/* LIST */}
+            <MaterialTable
+                isLoading ={isLoading}
+                title="Danh sách chăm sóc"
+                data={data}
+                options={{
+                    pageSize: 20,
+                    grouping: true,
+                    filtering: true,
+                    exportButton: false,
+                    rowStyle: {
+                    padding: '0px',
+                    },
+                    filterCellStyle: {
+                    paddingLeft: '0px'
+                    }
+                }}
+                    //   onRowClick={(event, rowData) => this.handleClassDetail(event, rowData)}
+                // actions={[   
+                //     {
+                //         icon: () => <GetAppIcon />,
+                //         tooltip: 'Xuất danh sách chăm sóc',
+                //         isFreeAction: true,
+                //         text: 'Xuất danh sách chăm sóc',
+                //         onClick: (event) => {
+                //             this.handleExportClasses()
+                //         },
+                //      },
+                // ]}
+                localization={{
+                    body: {
+                        emptyDataSourceMessage: 'Không tìm thấy chăm sóc'
+                    },
+                    toolbar: {
+                        searchTooltip: 'Tìm kiếm',
+                        searchPlaceholder: 'Tìm kiếm',
+                        nRowsSelected: '{0} hàng được chọn'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'dòng',
+                        labelDisplayedRows: ' {from}-{to} của {count}',
+                        firstTooltip: 'Trang đầu tiên',
+                        previousTooltip: 'Trang trước',
+                        nextTooltip: 'Trang tiếp theo',
+                        lastTooltip: 'Trang cuối cùng'
+                    },
+                    grouping: {
+                    placeholder: 'Kéo tên cột vào đây để nhóm'
+                    }
+                }}
+            columns={col}
+            // detailPanel={rowData => {
+            //   let configs = JSON.parse(rowData.config)
+            //   if(!configs){
+            //     return( <span> Chưa cài đặt lịch học </span>)
+            //   }
+            //   // console.log(configs)
+            //   let c = configs.map(config => {
+            //     let conf = {date: '', from: '', to: '', teacher: '',room: ''}
+            //     conf.date = config.date.label
+            //     conf.teacher = config.teacher.label
+            //     conf.room = (config.room) ? config.room.label : ''
+            //     conf.time = format(new Date(config.from*1000), 'H:mm') + " - " + format(new Date(config.to * 1000), 'H:mm')
+            //     return conf
+            //   })
+            //   return (
+            //     <Grid container  id="class-detail" spacing={3}>
+            //       <Grid item md={12} lg={4} id="timetable">
+            //         <MaterialTable 
+            //           title= {"Lịch học lớp " + rowData.code}
+            //           options = {{
+            //             paging: false,
+            //             search: false
+            //           }}
+                        
+            //           data= {c}
+            //           columns={[
+            //             {
+            //               title: "Ngày học",
+            //               field: "date",
+            //               headerStyle: {
+            //                 fontWeight: '600',                                    
+            //               },
+                            
+            //             },
+            //             {
+            //               title: "Giờ học",
+            //               field: "time",
+            //               headerStyle: {
+            //                 fontWeight: '600',                                    
+            //               },
+            //             },
+            //             {
+            //               title: "Giáo viên",
+            //               field: "teacher",
+            //               headerStyle: {
+            //                 fontWeight: '600',                                    
+            //               },
+            //             },
+            //             {
+            //               title: "Phòng học",
+            //               field: "room",
+            //               headerStyle: {
+            //                 fontWeight: '600',                                    
+            //               },
+            //             }
+
+            //           ]}
+            //         />
+            //       </Grid>
+            //       <Grid item md={12} lg={4} id="actions">
+                    
+            //       </Grid>
+                    
+            //     </Grid>
+                
+            //   )
+                
+            // }}
+                     
+                />
         </div>
         
     )

@@ -61,7 +61,7 @@ class Objective extends React.Component{
         this.state  = {
             columns: [
                 { title: 'Khối', field: 'grade' ,  
-                    lookup: { 5: 'Khối 5', 9: 'Khối 9' },
+                    lookup: { 3: 'Khối 3', 4: 'Khối 4' ,5: 'Khối 5', 6:'Khối 6', 7: 'Khối 7', 8: 'Khối 8', 9: 'Khối 9' },
                     headerStyle: {
                         fontWeight: '600',
                     },

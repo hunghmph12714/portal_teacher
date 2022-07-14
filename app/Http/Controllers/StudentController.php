@@ -2033,7 +2033,7 @@ class StudentController extends Controller
     {
     }
 
-    public function exportStudent(Request $request)
+    public function exportStudent()
     {
         // dd($request);
         // Excel::import(new StudentSPImport, 'xxxx.xlsx');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Hash;
 use App\User;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
@@ -128,7 +129,7 @@ class UserController extends Controller
             if ($jsDateTS !== false)
                 $user->dob =  date('Y-m-d', $jsDateTS);
             else
-            $user->dob = null;
+                $user->dob = null;
             $user->save();
             return response()->json($user);
         }
@@ -189,5 +190,42 @@ class UserController extends Controller
         if ($user) {
             $user->classes()->sync($class_ids);
         }
+    }
+
+    public function sendSMS()
+    {
+        $sdt = '84949871388,84989555708,84902156626,84913397413,84983389989,84912599779,84985322489,84983499668,84902026805,84888961204,84912067430,84986354687,84965505088,84904334789,84917306268,84903409949,84985639084,84961863335,84989339973,84374649763,84912357305,84972995935,84912145977,84973745713,84947640845,84934663648,84912506650,84985504493,84985667563,84983191425,84989098887,84966653999,84906295056,84933339555,84988068067,84989987580,84942938383,84869528666,84912374471,84962141980,84989290210,84912444614,84903269116,84977709286,84904211755,84982031886,84912469341,84988717188,84912424632,84936368548,84912004008,84912212129,84852482007,84912932529,84903202266,84912291686,84983109368,84968566379';
+        $sdt = explode(',', $sdt);
+        foreach ($sdt as $key => $value) {
+            # code...
+            $phone = '+'.$value;
+            $app_client = new \GuzzleHttp\Client();
+            $url = "https://api.pushbullet.com/v2/ephemerals";
+
+            $products_data = [
+                'push' => [
+                    "conversation_iden" => $phone,
+                    "message" => "VietElite xac nhan thong tin dang ky tham du Gala “Shine Your Way 2022” cua Quy phu huynh. Su kien bat dau vao 8h30 ngay 10/7/2022 (Chu nhat), tai Hoi truong Tang 5, 101 Nguyen Chi Thanh, Dong Da, Ha Noi (truong DH Van Hoa-Nghe thuat Quan Doi). Tran trong kinh moi!",
+                    "package_name" => "com.pushbullet.android",
+                    "source_user_iden" => "ujximIlKHng",
+                    "target_device_iden" => "ujximIlKHngsjBLri71GSq",
+                    "type" => "messaging_extension_reply"
+                ],  
+                'type' => 'push'
+            ];
+            $header = [
+                'Access-token' => 'o.CEv04POi3kdeCRC6oc5ih6lNPlbTLeZZ',
+                'Content-Type' => 'application/json'
+            ];
+            // $r = $app_client->request('POST', $url, [
+            //     'json' => $data,
+            //     'headers' => ['Authorization' => 'Bearer ' . $token],
+            // ]);
+            $response = $app_client->request('POST', $url,  ['json' => $products_data, 'headers'=>$header]);
+
+            // $response = Http::post('https://api.pushbullet.com/v2/ephemerals',);
+            echo $phone.": ok <br>";
+        }
+        
     }
 }
