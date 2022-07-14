@@ -12,4 +12,13 @@ class CareService extends Model
     {
         return $this->belongsTo(Care::class);
     }
+    /**
+     * Get the service associated with the CareService
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'id', 'service_id');
+    }
 }
