@@ -73,7 +73,7 @@ class CareController extends Controller
 
 
             // ];
-    $care['care_services']=[];
+        $care['care_services']=[];
             foreach ($c->care_service as $cs) {
                 // 
             
@@ -88,7 +88,6 @@ class CareController extends Controller
                 array_push($care['care_services'],$a);
             }
 
-            dd($care);
             array_push($cares, $care);
         }
         return  response()->json($cares);
