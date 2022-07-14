@@ -633,7 +633,8 @@ Route::get('/azure-token', 'ClassController@pmt');
 Route::get('proactive-service/{class_id}/{student_id}','CareController@addCare')->name('care.add');
 Route::post('proactive-service/{class_id}/{student_id}','CareController@saveCare');
 Route::post('/proactive-service','CareController@saveCare')  ;
-Route::post('proactive-service/list','CareController@list')->name('care.list');
+Route::post('proactive-service/list','CareController@list');
+// Route::get('cscd/list/{class_id}','CareController@list')->name('care.list');
 
 Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
     return view('cares.create_service');
@@ -739,7 +740,7 @@ Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'chec
 // Route::get('/tra-cuu', 'ClassController@tracuu');
 // Route::get('/tra-cuu-2', 'ClassController@tracuu2');
 // Route::get('/tra-cuu-3', 'ClassController@tracuu3');
-// Route::get('/tra-cuu-4', 'ClassController@tracuu4');
+Route::get('/tra-cuu-4', 'ClassController@tracuu4');
 // Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
 // Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);

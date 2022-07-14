@@ -37,14 +37,15 @@ use App\Role;
 class ClassController extends Controller
 {
     //Tra cuu diem
-    public function tracuu(){
+    public function tracuu()
+    {
         require_once('html_parser.php');
 
         $url = 'http://www.tracuu.hanoi.edu.vn/';
-        for ($i=0; $i < 9999; $i++) { 
+        for ($i = 0; $i < 9999; $i++) {
             # code...
             $data = array(
-                'ASPxTextBox1' => '19'.str_pad($i, 4, '0', STR_PAD_LEFT), 
+                'ASPxTextBox1' => '19' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'ASPxButton1' => 'Tìm+kiếm',
                 '__EVENTVALIDATION' => 'pZEFFX9vAWTa/ghw/ZJdmqE/vQu1FBrZVoqG265oeW2g3ce/ltOhxgwXxxYtiCgkXGB9ruoSBPVPhEuTeQtBZFKiS8rAdjkjFsQQHYdCMGVYHgHTeYoLYpgQo2H6mTCrZBgE0RAcjkKEE10tIcVy2Qkx+tDRW/Mj8HDD9ammmKY=',
                 '__VIEWSTATEENCRYPTED' => '',
@@ -53,20 +54,20 @@ class ClassController extends Controller
                 '__VIEWSTATE' => 'QxFS3Kwm0U8kEfB8kt7DUCqO30U0z+iyUBROKBzvR23EUyEffk3ArgR/YHT6RDsTmOxXmPdnv11Ulyb3gIkGMA9fHh9sNG0CCPdFfRG6yAAs3H3vpCyZXfOCwDjoyaRF1xqjQQsWuT108rNOPp492hCDx+UrvhpyWVXR13nbqVOHIcXgaUuxKrhxqSYRCZBc4GPDRnI3yQ0N7OSvTE5eEPMKIjMkTJ/r8IKmEx4gOl36W9ckI2v6Qeq8N67jxZ3LYyBNqBz4onN3dH/C19GFAdZ34z9qyhazeMI4DG1Xmb7e7sXCVnENs+4nBefxJyWRjCT04zkd3KnQKshGaG2P8v5c50RtSpyArdUlMR5xxMxRuv5Q8sICH/OVWUhjKLxghCAJHIhDmzxNCPfgL22ckI3YcQy4wV3pbmdfUKDcrqy3+jmnK5lDwsni/wHwVmtxBCSI8kh0GKTEN/In40RrcLigJHvHssv0q0nFUJKrMGw='
             );
             // use key 'http' even if you send the request to https://...
-    
+
             $client = new Client();
             $response = $client->request('POST', $url, [
                 'form_params' => $data
             ]);
             $response = $response->getBody()->getContents();
-            $content = explode('<td>' ,$response);
-            if(sizeof($content) < 5){
+            $content = explode('<td>', $response);
+            if (sizeof($content) < 5) {
                 continue;
             }
-            echo '19'.str_pad($i, 4, '0', STR_PAD_LEFT) . ": ".$content[4];
+            echo '19' . str_pad($i, 4, '0', STR_PAD_LEFT) . ": " . $content[4];
             echo "<br>";
         }
-        
+
         // print_r($response);
 
         // $content = str_get_html($response);
@@ -75,14 +76,15 @@ class ClassController extends Controller
         // }
         // print_r($content);
     }
-    public function tracuu3(){
+    public function tracuu3()
+    {
         require_once('html_parser.php');
 
         $url = 'http://www.tracuu.hanoi.edu.vn/';
-        for ($i=0; $i < 9999; $i++) { 
+        for ($i = 0; $i < 9999; $i++) {
             # code...
             $data = array(
-                'ASPxTextBox1' => '21'.str_pad($i, 4, '0', STR_PAD_LEFT), 
+                'ASPxTextBox1' => '21' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'ASPxButton1' => 'Tìm+kiếm',
                 '__EVENTVALIDATION' => 'pZEFFX9vAWTa/ghw/ZJdmqE/vQu1FBrZVoqG265oeW2g3ce/ltOhxgwXxxYtiCgkXGB9ruoSBPVPhEuTeQtBZFKiS8rAdjkjFsQQHYdCMGVYHgHTeYoLYpgQo2H6mTCrZBgE0RAcjkKEE10tIcVy2Qkx+tDRW/Mj8HDD9ammmKY=',
                 '__VIEWSTATEENCRYPTED' => '',
@@ -91,20 +93,20 @@ class ClassController extends Controller
                 '__VIEWSTATE' => 'QxFS3Kwm0U8kEfB8kt7DUCqO30U0z+iyUBROKBzvR23EUyEffk3ArgR/YHT6RDsTmOxXmPdnv11Ulyb3gIkGMA9fHh9sNG0CCPdFfRG6yAAs3H3vpCyZXfOCwDjoyaRF1xqjQQsWuT108rNOPp492hCDx+UrvhpyWVXR13nbqVOHIcXgaUuxKrhxqSYRCZBc4GPDRnI3yQ0N7OSvTE5eEPMKIjMkTJ/r8IKmEx4gOl36W9ckI2v6Qeq8N67jxZ3LYyBNqBz4onN3dH/C19GFAdZ34z9qyhazeMI4DG1Xmb7e7sXCVnENs+4nBefxJyWRjCT04zkd3KnQKshGaG2P8v5c50RtSpyArdUlMR5xxMxRuv5Q8sICH/OVWUhjKLxghCAJHIhDmzxNCPfgL22ckI3YcQy4wV3pbmdfUKDcrqy3+jmnK5lDwsni/wHwVmtxBCSI8kh0GKTEN/In40RrcLigJHvHssv0q0nFUJKrMGw='
             );
             // use key 'http' even if you send the request to https://...
-    
+
             $client = new Client();
             $response = $client->request('POST', $url, [
                 'form_params' => $data
             ]);
             $response = $response->getBody()->getContents();
-            $content = explode('<td>' ,$response);
-            if(sizeof($content) < 5){
+            $content = explode('<td>', $response);
+            if (sizeof($content) < 5) {
                 continue;
             }
-            echo '21'.str_pad($i, 4, '0', STR_PAD_LEFT) . ": ".$content[4];
+            echo '21' . str_pad($i, 4, '0', STR_PAD_LEFT) . ": " . $content[4];
             echo "<br>";
         }
-        
+
         // print_r($response);
 
         // $content = str_get_html($response);
@@ -113,14 +115,15 @@ class ClassController extends Controller
         // }
         // print_r($content);
     }
-    public function tracuu2(){
+    public function tracuu2()
+    {
         require_once('html_parser.php');
 
         $url = 'http://www.tracuu.hanoi.edu.vn/';
-        for ($i=0; $i < 9999; $i++) { 
+        for ($i = 0; $i < 9999; $i++) {
             # code...
             $data = array(
-                'ASPxTextBox1' => '22'.str_pad($i, 4, '0', STR_PAD_LEFT), 
+                'ASPxTextBox1' => '22' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'ASPxButton1' => 'Tìm+kiếm',
                 '__EVENTVALIDATION' => 'pZEFFX9vAWTa/ghw/ZJdmqE/vQu1FBrZVoqG265oeW2g3ce/ltOhxgwXxxYtiCgkXGB9ruoSBPVPhEuTeQtBZFKiS8rAdjkjFsQQHYdCMGVYHgHTeYoLYpgQo2H6mTCrZBgE0RAcjkKEE10tIcVy2Qkx+tDRW/Mj8HDD9ammmKY=',
                 '__VIEWSTATEENCRYPTED' => '',
@@ -129,20 +132,20 @@ class ClassController extends Controller
                 '__VIEWSTATE' => 'QxFS3Kwm0U8kEfB8kt7DUCqO30U0z+iyUBROKBzvR23EUyEffk3ArgR/YHT6RDsTmOxXmPdnv11Ulyb3gIkGMA9fHh9sNG0CCPdFfRG6yAAs3H3vpCyZXfOCwDjoyaRF1xqjQQsWuT108rNOPp492hCDx+UrvhpyWVXR13nbqVOHIcXgaUuxKrhxqSYRCZBc4GPDRnI3yQ0N7OSvTE5eEPMKIjMkTJ/r8IKmEx4gOl36W9ckI2v6Qeq8N67jxZ3LYyBNqBz4onN3dH/C19GFAdZ34z9qyhazeMI4DG1Xmb7e7sXCVnENs+4nBefxJyWRjCT04zkd3KnQKshGaG2P8v5c50RtSpyArdUlMR5xxMxRuv5Q8sICH/OVWUhjKLxghCAJHIhDmzxNCPfgL22ckI3YcQy4wV3pbmdfUKDcrqy3+jmnK5lDwsni/wHwVmtxBCSI8kh0GKTEN/In40RrcLigJHvHssv0q0nFUJKrMGw='
             );
             // use key 'http' even if you send the request to https://...
-    
+
             $client = new Client();
             $response = $client->request('POST', $url, [
                 'form_params' => $data
             ]);
             $response = $response->getBody()->getContents();
-            $content = explode('<td>' ,$response);
-            if(sizeof($content) < 5){
+            $content = explode('<td>', $response);
+            if (sizeof($content) < 5) {
                 continue;
             }
-            echo '22'.str_pad($i, 4, '0', STR_PAD_LEFT) . ": ".$content[4];
+            echo '22' . str_pad($i, 4, '0', STR_PAD_LEFT) . ": " . $content[4];
             echo "<br>";
         }
-        
+
         // print_r($response);
 
         // $content = str_get_html($response);
@@ -151,14 +154,15 @@ class ClassController extends Controller
         // }
         // print_r($content);
     }
-    public function tracuu4(){
+    public function tracuu4()
+    {
         require_once('html_parser.php');
 
         $url = 'http://www.tracuu.hanoi.edu.vn/';
-        for ($i=0; $i < 9999; $i++) { 
-            # code...
+        for ($i = 0; $i < 9999; $i++) {
+            # code...m,
             $data = array(
-                'ASPxTextBox1' => '17'.str_pad($i, 4, '0', STR_PAD_LEFT), 
+                'ASPxTextBox1' => '17' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'ASPxButton1' => 'Tìm+kiếm',
                 '__EVENTVALIDATION' => 'pZEFFX9vAWTa/ghw/ZJdmqE/vQu1FBrZVoqG265oeW2g3ce/ltOhxgwXxxYtiCgkXGB9ruoSBPVPhEuTeQtBZFKiS8rAdjkjFsQQHYdCMGVYHgHTeYoLYpgQo2H6mTCrZBgE0RAcjkKEE10tIcVy2Qkx+tDRW/Mj8HDD9ammmKY=',
                 '__VIEWSTATEENCRYPTED' => '',
@@ -167,20 +171,22 @@ class ClassController extends Controller
                 '__VIEWSTATE' => 'QxFS3Kwm0U8kEfB8kt7DUCqO30U0z+iyUBROKBzvR23EUyEffk3ArgR/YHT6RDsTmOxXmPdnv11Ulyb3gIkGMA9fHh9sNG0CCPdFfRG6yAAs3H3vpCyZXfOCwDjoyaRF1xqjQQsWuT108rNOPp492hCDx+UrvhpyWVXR13nbqVOHIcXgaUuxKrhxqSYRCZBc4GPDRnI3yQ0N7OSvTE5eEPMKIjMkTJ/r8IKmEx4gOl36W9ckI2v6Qeq8N67jxZ3LYyBNqBz4onN3dH/C19GFAdZ34z9qyhazeMI4DG1Xmb7e7sXCVnENs+4nBefxJyWRjCT04zkd3KnQKshGaG2P8v5c50RtSpyArdUlMR5xxMxRuv5Q8sICH/OVWUhjKLxghCAJHIhDmzxNCPfgL22ckI3YcQy4wV3pbmdfUKDcrqy3+jmnK5lDwsni/wHwVmtxBCSI8kh0GKTEN/In40RrcLigJHvHssv0q0nFUJKrMGw='
             );
             // use key 'http' even if you send the request to https://...
-    
+
             $client = new Client();
             $response = $client->request('POST', $url, [
                 'form_params' => $data
             ]);
+
             $response = $response->getBody()->getContents();
-            $content = explode('<td>' ,$response);
-            if(sizeof($content) < 5){
+            $content = explode('<td>', $response);
+            // dd($content[4]);
+            if (sizeof($content) < 5) {
                 continue;
             }
-            echo '17'.str_pad($i, 4, '0', STR_PAD_LEFT) . ": ".$content[4];
+            echo '17' . str_pad($i, 4, '0', STR_PAD_LEFT) . ": " . $content[4];
             echo "<br>";
         }
-        
+
         // print_r($response);
 
         // $content = str_get_html($response);
@@ -628,7 +634,7 @@ class ClassController extends Controller
             'droped_number',
             'waiting_number'
         )->leftJoin('center', 'classes.center_id', 'center.id')->leftJoin('courses', 'classes.course_id', 'courses.id')->get();
-        
+
         $classes = $result->toArray();
         foreach ($result as $key => $class) {
             //count student teams added
@@ -1225,11 +1231,11 @@ class ClassController extends Controller
                     if (!in_array($student->id, $arr_student)) {
                         $arr_student[] = $student->id;
                         $one++;
-                    }else{
+                    } else {
                         if (!in_array($student->id, $arr_student_2)) {
                             $arr_student_2[] = $student->id;
                             $two++;
-                        }else{
+                        } else {
                             $three++;
                         }
                     }
@@ -2161,26 +2167,24 @@ class ClassController extends Controller
             $students = $class->activeStudents()->whereNotNull('ms_id')->get();
             foreach ($students as $s) {
                 $sc = StudentClass::where('class_id', $class->id)->where('student_id', $s->id)->first();
-                if(!$sc->teams_added){
+                if (!$sc->teams_added) {
                     $team_url = "https://graph.microsoft.com/v1.0/teams/" . $class->ms_id . "/members";
                     $team_data =
                         [
                             "@odata.type" => "#microsoft.graph.aadUserConversationMember",
                             "roles" => ["member"],
-                            "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('".$s->ms_id."')"
+                            "user@odata.bind" => "https://graph.microsoft.com/v1.0/users('" . $s->ms_id . "')"
                         ];
                     $team_client = new Client();
                     $r = $team_client->request('POST', $team_url, [
                         'json' => $team_data,
                         'headers' => ['Authorization' => 'Bearer ' . $token],
                     ]);
-                    if($r->getStatusCode() == 200 || $r->getStatusCode() == 201){
-                        $sc->teams_added = 1; 
+                    if ($r->getStatusCode() == 200 || $r->getStatusCode() == 201) {
+                        $sc->teams_added = 1;
                         $sc->save();
                     }
                 }
-                
-                
             }
             return response()->json(200);
         }

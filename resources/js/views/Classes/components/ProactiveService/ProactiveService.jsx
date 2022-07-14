@@ -20,25 +20,25 @@ const ProactiveService = (props) => {
     const [refresh, setRefresh] = useState(false)
     const col = [
         {
-            title: "Thời gian",
-            field: "created_at",
+            title: "Học sinh",
+            field: "student",
             headerStyle: {
-                padding: '0px',
                 fontWeight: '600',
             },
-            cellStyle: {
-                padding: '0px',
+            
+        },
+        {
+            title: "Thời gian",
+            field: "time",
+            headerStyle: {
+                fontWeight: '600',
             },
         },
         {
-            title: "",
-            field: "code",
+            title: "Người chăm sóc",
+            field: "user",
             headerStyle: {
-                padding: '0px',
                 fontWeight: '600',
-            },
-            cellStyle: {
-                padding: '0px',
             },
         },
     ]
@@ -121,6 +121,15 @@ const ProactiveService = (props) => {
         axios.post('/proactive-service/list', {class_id: props.class_id})
             .then(response => {
                 console.log(response.data)
+                let i = response.data.map(r => {
+                    return {
+                        student: r.student.name,
+                        time: r.time.created_at,
+                        user: r.user.name,
+                        care_services: r.care_services,
+                    }
+                })
+                setData(i)
             })
             .catch(err => {
 
@@ -167,10 +176,10 @@ const ProactiveService = (props) => {
             <Grid container spacing={2}>
                 <Grid item md={12}>
                     <h5>Tiêu chí chăm sóc</h5>
-                    <ImageList rowHeight={100} cols={3} gap={2}>
+                    <ImageList rowHeight={150} cols={3}>
                         {criteria.map((item) => (
                             <ImageListItem key={item.id}>
-                                <p style={{marginBottom: '0.2rem'}}>{item.name}</p>
+                                <p style={{marginBottom: '0.2rem', height: '50px'}}>{item.name}</p>
                                 <TextField id="outlined-basic" variant="outlined" fullWidth size='small' 
                                     onChange={(event) => onCriteriaChange(event, item.id)}
                                     value={item.value}
@@ -179,8 +188,9 @@ const ProactiveService = (props) => {
                         ))}
                     </ImageList>
                     <Button
-                        color='primary' 
+                        color='primary'
                         onClick={submitService}
+                        className='btn'
                     >Lưu phiên chăm sóc
                     </Button>
                 </Grid>
@@ -214,96 +224,43 @@ const ProactiveService = (props) => {
                 //         },
                 //      },
                 // ]}
-                localization={{
-                    body: {
-                        emptyDataSourceMessage: 'Không tìm thấy chăm sóc'
-                    },
-                    toolbar: {
-                        searchTooltip: 'Tìm kiếm',
-                        searchPlaceholder: 'Tìm kiếm',
-                        nRowsSelected: '{0} hàng được chọn'
-                    },
-                    pagination: {
-                        labelRowsSelect: 'dòng',
-                        labelDisplayedRows: ' {from}-{to} của {count}',
-                        firstTooltip: 'Trang đầu tiên',
-                        previousTooltip: 'Trang trước',
-                        nextTooltip: 'Trang tiếp theo',
-                        lastTooltip: 'Trang cuối cùng'
-                    },
-                    grouping: {
-                    placeholder: 'Kéo tên cột vào đây để nhóm'
-                    }
-                }}
+            localization={{
+                body: {
+                    emptyDataSourceMessage: 'Không tìm thấy chăm sóc'
+                },
+                toolbar: {
+                    searchTooltip: 'Tìm kiếm',
+                    searchPlaceholder: 'Tìm kiếm',
+                    nRowsSelected: '{0} hàng được chọn'
+                },
+                pagination: {
+                    labelRowsSelect: 'dòng',
+                    labelDisplayedRows: ' {from}-{to} của {count}',
+                    firstTooltip: 'Trang đầu tiên',
+                    previousTooltip: 'Trang trước',
+                    nextTooltip: 'Trang tiếp theo',
+                    lastTooltip: 'Trang cuối cùng'
+                },
+                grouping: {
+                placeholder: 'Kéo tên cột vào đây để nhóm'
+                }
+            }}
             columns={col}
-            // detailPanel={rowData => {
-            //   let configs = JSON.parse(rowData.config)
-            //   if(!configs){
-            //     return( <span> Chưa cài đặt lịch học </span>)
-            //   }
-            //   // console.log(configs)
-            //   let c = configs.map(config => {
-            //     let conf = {date: '', from: '', to: '', teacher: '',room: ''}
-            //     conf.date = config.date.label
-            //     conf.teacher = config.teacher.label
-            //     conf.room = (config.room) ? config.room.label : ''
-            //     conf.time = format(new Date(config.from*1000), 'H:mm') + " - " + format(new Date(config.to * 1000), 'H:mm')
-            //     return conf
-            //   })
-            //   return (
-            //     <Grid container  id="class-detail" spacing={3}>
-            //       <Grid item md={12} lg={4} id="timetable">
-            //         <MaterialTable 
-            //           title= {"Lịch học lớp " + rowData.code}
-            //           options = {{
-            //             paging: false,
-            //             search: false
-            //           }}
-                        
-            //           data= {c}
-            //           columns={[
-            //             {
-            //               title: "Ngày học",
-            //               field: "date",
-            //               headerStyle: {
-            //                 fontWeight: '600',                                    
-            //               },
-                            
-            //             },
-            //             {
-            //               title: "Giờ học",
-            //               field: "time",
-            //               headerStyle: {
-            //                 fontWeight: '600',                                    
-            //               },
-            //             },
-            //             {
-            //               title: "Giáo viên",
-            //               field: "teacher",
-            //               headerStyle: {
-            //                 fontWeight: '600',                                    
-            //               },
-            //             },
-            //             {
-            //               title: "Phòng học",
-            //               field: "room",
-            //               headerStyle: {
-            //                 fontWeight: '600',                                    
-            //               },
-            //             }
-
-            //           ]}
-            //         />
-            //       </Grid>
-            //       <Grid item md={12} lg={4} id="actions">
-                    
-            //       </Grid>
-                    
-            //     </Grid>
+            detailPanel={rowData => {
+              // console.log(configs)
+             
+              return (
+                <ImageList rowHeight={100} cols={3} gaps={2}>
+                    {rowData.care_services.map((item) => (
+                        <ImageListItem key={item.id} className="detail">
+                            <b style={{marginBottom: '0.2rem'}}>{item.service_name}:</b>
+                            <p>{item.content}</p>
+                        </ImageListItem>
+                    ))}
+                </ImageList>
+              )
                 
-            //   )
-                
-            // }}
+            }}
                      
                 />
         </div>

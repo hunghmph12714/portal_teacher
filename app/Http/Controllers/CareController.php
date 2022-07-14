@@ -50,6 +50,7 @@ class CareController extends Controller
     }
     public function list(Request $request)
     {
+        // dd(1);
         $class_id=$request->class_id;
         $care_services =   Care::query()->where('class_id', $class_id)->orderBy('id', 'desc')->get();
         $care_services->load('care_service');
@@ -60,8 +61,34 @@ class CareController extends Controller
             $care = [];
             $care['student'] = ['id' => $c->student_id, 'name' => $c->student->fullname];
             $care['user'] = ['id' => $c->user_id, 'name' => $c->user->name];
-            $care['time']=['created_at'=>$c->created_at,'updated_at'=>$c->created_at];
-            array_push($cares,$care);
+            $care['time'] = ['created_at' => date('d/m/Y', strtotime($c->created_at)), 'updated_at' => $c->created_at];
+
+            // dd($care);
+
+            //  = [
+            //     'care_id' => $c->id,
+            //     'service_id' => $c->care_service->service_id,
+            //     'service_name' => $c->care_service->service->name,
+            //     'content' => $c->care_service->content,
+
+
+            // ];
+        $care['care_services']=[];
+            foreach ($c->care_service as $cs) {
+                // 
+            
+                $a = [
+                    // 'care_id' => $cs->care_id,
+                    'service_id' => $cs->service->id,
+                    'service_name' => $cs->service->name,
+                    'content' => $cs->content,
+
+
+                ];
+                array_push($care['care_services'],$a);
+            }
+
+            array_push($cares, $care);
         }
         return  response()->json($cares);
     }
