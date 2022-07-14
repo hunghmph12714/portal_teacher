@@ -630,10 +630,10 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
 Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
 
 Route::get('/azure-token', 'ClassController@pmt');
-Route::get('cham-soc-chu-dong/{class_id}/{student_id}','CareController@addCare')->name('care.add');
-Route::post('cham-soc-chu-dong/{class_id}/{student_id}','CareController@saveCare');
+Route::get('proactive-service/{class_id}/{student_id}','CareController@addCare')->name('care.add');
+Route::post('proactive-service/{class_id}/{student_id}','CareController@saveCare');
 Route::post('/proactive-service','CareController@saveCare')  ;
-Route::post('cham-soc-chu-dong/list','CareController@list')->name('care.list');
+Route::post('proactive-service/list','CareController@list')->name('care.list');
 
 Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
     return view('cares.create_service');

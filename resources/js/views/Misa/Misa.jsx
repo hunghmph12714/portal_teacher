@@ -203,6 +203,7 @@ const Misa = (props) => {
                         <MenuItem value={3}>Phạm Tuấn Tài</MenuItem>
                         <MenuItem value={4}>Đỗ Quang</MenuItem>
                         <MenuItem value={5}>Trung Yên</MenuItem>
+                        <MenuItem value={6}>Văn Quán</MenuItem>
                         
                     </Select>
                 </FormControl>
