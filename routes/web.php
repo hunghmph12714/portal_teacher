@@ -739,7 +739,7 @@ Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'chec
 // Route::get('/tra-cuu', 'ClassController@tracuu');
 // Route::get('/tra-cuu-2', 'ClassController@tracuu2');
 // Route::get('/tra-cuu-3', 'ClassController@tracuu3');
-// Route::get('/tra-cuu-4', 'ClassController@tracuu4');
+Route::get('/tra-cuu-4', 'ClassController@tracuu4');
 // Route::get('auto-add-user-class', [ClassController::class, 'autoAddUserClass']);
 // Route::get('delete-user-class', [ClassController::class, 'deleteUserClass']);
 // Route::get('auto-add-attempt/{session_id}', [AttemptDetailController::class, 'autoAddAttempt']);
