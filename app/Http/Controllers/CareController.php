@@ -53,7 +53,7 @@ class CareController extends Controller
         $class_id=$request->class_id;
         $care_services =   Care::query()->where('class_id', $class_id)->orderBy('id', 'desc')->get();
         $care_services->load('care_service');
-        $care_services->load('student');gti
+        $care_services->load('student');
         $care_services->load('user');
         $cares = [];
         foreach ($care_services as $c) {
