@@ -634,7 +634,7 @@ Route::get('proactive-service/{class_id}/{student_id}','CareController@addCare')
 Route::post('proactive-service/{class_id}/{student_id}','CareController@saveCare');
 Route::post('/proactive-service','CareController@saveCare')  ;
 Route::post('proactive-service/list','CareController@list');
-// Route::get('cscd/list/{class_id}','CareController@list')->name('care.list');
+Route::post('cscd/export/','CareController@exportCare');
 
 Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
     return view('cares.create_service');
