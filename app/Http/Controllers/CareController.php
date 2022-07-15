@@ -6,11 +6,13 @@ use App\Care;
 use App\CareService;
 // use App\CareServive;
 use App\Classes;
+use App\Exports\CareExport;
 use App\Service;
 // use App\CareServive;
 use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class CareController extends Controller
@@ -118,5 +120,43 @@ class CareController extends Controller
             $care->save();
         }
         return back();
+    }
+    public function exportCare(Request $request)
+    {
+        $class_id=$request->class_id;
+        $care_services =   Care::query()->where('class_id', $class_id)->orderBy('id', 'desc')->get();
+        $care_services->load('care_service');
+        $care_services->load('student');
+        $care_services->load('user');
+        $care_services->load('class');
+
+        $cares = [];
+        foreach ($care_services as $c) {
+            $care = [];
+            $care['student'] = ['id' => $c->student_id, 'name' => $c->student->fullname];
+            $care['user'] = ['id' => $c->user_id, 'name' => $c->user->name];
+            $care['time'] = ['created_at' => date('d/m/Y', strtotime($c->created_at)), 'updated_at' => $c->created_at];
+            $care['method']=$c->method;
+            $care['class']=['code'=>$c->class->code,'name'=>$c->class->name];
+        $care['care_services']=[];
+            foreach ($c->care_service as $cs) {
+                // 
+            
+                $a = [
+                    // 'care_id' => $cs->care_id,
+                    'service_id' => $cs->service->id,
+                    'service_name' => $cs->service->name,
+                    'content' => $cs->content,
+
+
+                ];
+                array_push($care['care_services'],$a);
+            }
+
+            array_push($cares, $care);
+        }
+        $data['cares']=$cares;
+        $data['services']=Service::where('active',1)->select('name')->get()->toArray();
+        return  Excel::download(new CareExport($data),'cares.xlsx');
     }
 }
