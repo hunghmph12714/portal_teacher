@@ -7,11 +7,17 @@
         padding-right: 15px !important;
     }
     .btn{
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        border: 1px solid #8bc34a;
     }
     .detail{
-        margin: 7px;
-        border: 1px solid black; 
-        border-radius: 5px;
+        padding: 10px;
+        
+        .MuiImageListItem-item{
+            overflow-y: scroll;
+            border: 1px solid black; 
+            border-radius: 5px;
+            padding: 5px;
+        }
     }
 }

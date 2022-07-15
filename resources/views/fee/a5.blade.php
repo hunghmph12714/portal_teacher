@@ -191,7 +191,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                             <b> Ngân hàng:</b> Sài Gòn Hà Nội SHB, CN Kinh Đô, PGD Kim Giang <br/>
                             <b> Số tài khoản:</b> 8818698888 <br/>
                             <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
-                            *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+                            *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
                         </div>
                         <div class="col-sm">
                             <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -209,7 +209,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                             Ngân hàng: <strong>VP Bank - CN Trung Hòa Nhân Chính </strong> <br/>
                             Chủ TK: Phan Việt Anh<br/>
                             Số TK: <a href="#"><strong>6873065565</strong> </a> <br/>
-                            *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+                            *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
                         </div>
                         <div class="col-sm">
                             <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>
@@ -219,10 +219,10 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                     </div>
                     @break
                 @case(3)
-                    Ngân hàng: <strong>TCB CN THĂNG LONG</strong> <br/>
-                    Chủ TK: Bùi Huyền Nga<br/>
-                    Số TK: <a href="#"><strong>19031311633868 </strong> </a> <br/>
-                    Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+                    Ngân hàng: <strong>VIB chi nhánh Ba Đình</strong> <br/>
+                    Chủ TK: Phan Việt Anh<br/>
+                    Số TK: <a href="#"><strong>385666888 </strong> </a> <br/>
+                    Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
                     <br/>
                     <br>
 
@@ -235,7 +235,7 @@ Mọi thắc mắc vui lòng gọi đến số Hotline: 024.73065565 nhánh 4 ho
                             <b> Số tài khoản:</b> 8818698888 <br/>
                             <b> Chủ tài khoản:</b> Phan Việt Anh <br/>
                             
-                    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP10,11</strong> </a> 
+                    *Nội dung chuyển khoản: <a href="#"><strong id="content-banking">{{$result['content']}}_HP{{$result['months']}}</strong> </a> 
                     <br/><br>
 
                     <strong>ĐỂ ĐƯỢC XÁC NHẬN ĐÃ CHUYỂN KHOẢN THÀNH CÔNG: </strong><br/>

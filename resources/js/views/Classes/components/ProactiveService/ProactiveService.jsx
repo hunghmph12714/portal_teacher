@@ -76,7 +76,7 @@ const ProactiveService = (props) => {
             method: selected_method.value,
             cares: criteria,
         }
-        if(!selected_method || !selected_student){
+        if(!selected_method || !selected_student.value){
             enqueueSnackbar('Vui lòng chọn phương thức', {variant: 'warning'})
         }
         axios.post('/proactive-service', data)
@@ -250,7 +250,7 @@ const ProactiveService = (props) => {
               // console.log(configs)
              
               return (
-                <ImageList rowHeight={100} cols={3} gaps={2}>
+                <ImageList rowHeight={130} cols={3} gaps={2}>
                     {rowData.care_services.map((item) => (
                         <ImageListItem key={item.id} className="detail">
                             <b style={{marginBottom: '0.2rem'}}>{item.service_name}:</b>
