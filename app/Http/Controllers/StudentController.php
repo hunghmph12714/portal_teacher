@@ -2030,7 +2030,7 @@ class StudentController extends Controller
 
 
     //Teams
-    protected function notifyNewAccount(Request $request)
+    protected function notifyNewAccount()
     {
     }
 
