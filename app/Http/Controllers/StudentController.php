@@ -452,6 +452,11 @@ class StudentController extends Controller
                     }
                 }
                 $result[$key]['parent'] = $p;
+                $today = date('Y-m-d H:i:s');
+                $weekago = date('Y-m-d H:i:s', strtotime('-1 week'));
+   
+                $note_count = StudentNote::where('student_id', $student->id)->whereBetween('created_at', [$weekago, $today])->get()->count();
+                $result[$key]['note_count'] = $note_count;
             }
         }
 

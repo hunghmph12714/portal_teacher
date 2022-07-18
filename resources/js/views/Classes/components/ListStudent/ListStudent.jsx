@@ -14,6 +14,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentIndOutlinedIcon from '@material-ui/icons/AssignmentIndOutlined';
 import SyncIcon from '@material-ui/icons/Sync';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Badge from '@material-ui/core/Badge';
 
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
@@ -279,11 +280,19 @@ const ListStudent = (props) => {
                                         handleOpenTeams(rowData)
                                         //  window.open('/login-portal-admin/'+rowData.parent_id)
                                     }}>
-                                    {rowData.sgd_id ? <AssignmentIndOutlinedIcon /> :  <AssignmentIndIcon fontSize='inherit' />}
+                                    {rowData.sgd_id || rowData.avatar ? 
+                                        <Badge badgeContent={rowData.note_count} color="primary">
+                                            <AssignmentIndOutlinedIcon />
+                                        </Badge>
+                                        :
+                                        <Badge badgeContent={rowData.note_count} color="primary">
+                                            <AssignmentIndIcon />
+                                        </Badge>  
+                                    }
                                    
                                     </IconButton>
                                 </Tooltip>     
-                                        
+                                             
                             </div>
                         )
                     },
