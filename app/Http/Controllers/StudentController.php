@@ -84,7 +84,7 @@ class StudentController extends Controller
 
             $result['notes'] = $student->notes()
                 ->select('student_notes.id as id','classes.code', 'users.name', 'users.avatar', 'content', 'student_notes.created_at', 
-                    DB::raw("DATE_FORMAT(student_notes.created_at, '%d/%m/%Y %h:%i %p') as created_at_formated"),
+                    DB::raw("DATE_FORMAT(student_notes.created_at, '%d/%m/%Y %h:%i %p') as created_at_formated")
                 )
                 ->join('users', 'student_notes.user_id', 'users.id')
                 ->join('classes', 'student_notes.class_id', 'classes.id')
