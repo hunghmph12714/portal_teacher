@@ -252,7 +252,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
         });
 
         // Route::post('entrance/export', [GuestController::class, 'export_list']);
-        Route::post('entrance/export', [GuestController::class, 'export_list_mkt']);
+        Route::post('entrance/export', [GuestController::class, 'export_list']);
         Route::get('entrance/export-mkt', [GuestController::class, 'export_list_mkt']);
 
         //Budgets
@@ -464,7 +464,7 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
 
     //Gala
     Route::get('/student-email', 'StudentController@getEmail');
-    
+
     //Teams
     Route::post('/teams/notify-new-account', 'StudentController@notifyNewAccount');
 
@@ -624,31 +624,38 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
 
 
 
-// Chăm sóc chủ động
+    // Chăm sóc chủ động
 
 
-Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
+    Route::post('kiem-tra-ghi-danh', 'EntranceController@searchEntrance');
 
-Route::get('/azure-token', 'ClassController@pmt');
-Route::get('proactive-service/{class_id}/{student_id}','CareController@addCare')->name('care.add');
-Route::post('proactive-service/{class_id}/{student_id}','CareController@saveCare');
-Route::post('/proactive-service','CareController@saveCare')  ;
-Route::post('proactive-service/list','CareController@list');
-// Route::get('cscd/list/{class_id}','CareController@list')->name('care.list');
+    Route::get('/azure-token', 'ClassController@pmt');
+    Route::get('proactive-service/{class_id}/{student_id}', 'CareController@addCare')->name('care.add');
+    Route::post('proactive-service/{class_id}/{student_id}', 'CareController@saveCare');
+    Route::post('/proactive-service', 'CareController@saveCare');
+    Route::post('proactive-service/list', 'CareController@list');
+    Route::post('cscd/export/', 'CareController@exportCare');
 
-Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
-    return view('cares.create_service');
-});
-Route::post('/service-criteria/get', 'ServiceController@getServiceCriteria');
+    Route::get('tieu-tri-danh-gia-hoc-sinh/add', function () {
+        return view('cares.create_service');
+    });
+    Route::post('/service-criteria/get', 'ServiceController@getServiceCriteria');
 
-Route::post('tieu-tri-danh-gia-hoc-sinh/add','ServiceController@addService')->name('service.add');
-Route::get('tieu-tri-danh-gia-hoc-sinh','ServiceController@list')->name('service.list');
-Route::post ('tieu-tri-danh-gia-hoc-sinh','ServiceController@editActive');
-Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@editForm')->name('service.edit');
-Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}','ServiceController@saveEdit');
+    Route::post('tieu-tri-danh-gia-hoc-sinh/add', 'ServiceController@addService')->name('service.add');
+    Route::get('tieu-tri-danh-gia-hoc-sinh', 'ServiceController@list')->name('service.list');
+    Route::post('tieu-tri-danh-gia-hoc-sinh', 'ServiceController@editActive');
+    Route::get('tieu-tri-danh-gia-hoc-sinh/edit/{id}', 'ServiceController@editForm')->name('service.edit');
+    Route::post('tieu-tri-danh-gia-hoc-sinh/edit/{id}', 'ServiceController@saveEdit');
 
+    Route::get('cscd/search', function () {
+        $users = User::query()->where('isVerified', 1)->get();
 
-// Route::get('sendSMS','UserController@sendSMS');
+        // $classes = Classes::where('active', 1)->where('year', Auth::user()->wp_year)->get();
+        // dd($classes);
+        return view('cares.search', compact('users'));
+    }); 
+    Route::post('cscd/search','CareController@StatisticByUsers');
+    // Route::get('sendSMS','UserController@sendSMS');
 
 
 
@@ -752,6 +759,3 @@ Route::get('/tra-cuu-4', 'ClassController@tracuu4');
 //     // $data=[];
 //     return view('tra_cuu_entrances');
 // });
-
-
-
