@@ -38,7 +38,7 @@ class ClassController extends Controller
 {
     //Export giao vien
     public function exportTeacher(){
-        $sessions = Session::whereBetween('date', ['2021-07-18', '2021-07-25'])->get();
+        $sessions = Session::whereBetween('date', ['2022-07-18', '2022-07-25'])->get();
         $result = [];
         $check_exist = [];
         foreach($sessions as $session){
@@ -47,7 +47,8 @@ class ClassController extends Controller
                 $teacher = Teacher::find($session->teacher_id);
                 $class = Classes::find($session->class_id);
                 $course = Course::find($class->course_id);
-                if(strpos($result[$session->teacher_id][3], $course->grade) !== false){
+                if($session->teacher_id == 0) continue;
+                if(strpos(strval($result[$session->teacher_id][3]), strval($course->grade)) == false){
                     $result[$session->teacher_id][3] = $result[$session->teacher_id][3].','.$course->grade;
                 }
             }else{
@@ -57,14 +58,19 @@ class ClassController extends Controller
                 $course = Course::find($class->course_id);
                 if($teacher){
                     $result[$session->teacher_id] = [
-                        $teacher->name, $teacher->email, $course->name, $course->grade
+                        $teacher->name, $teacher->email, $teacher->domain, strval($course->grade)
                     ];
                 }
                 
             }
         }
-        echo "<pre>";
-        print_r(array_values($result));
+        foreach($result as $r){
+            $r[3] = implode(',', array_unique(explode(',', $r[3])));
+            echo implode(';', $r);
+            echo "<br>";
+        }
+        // echo "<pre>";
+        // print_r(array_values($result));
     }
     //Tra cuu diem
     public function tracuu()
