@@ -4,7 +4,7 @@ namespace App\Exports;
 
 use App\Entrance;
 use Exportable;
-
+use DB;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -38,6 +38,7 @@ $centers_id=array_column($data['centers'],'value');
             ->join('steps', 'entrances.step_id', 'steps.id')
             ->join('status', 'entrances.status_id', 'status.id')->groupBy('entrances.id')
             ->join('center', 'entrances.center_id', 'center.id')
+            ->join('courses', 'entrances.course_id', 'courses.id')
             // ->join('status', 'entrances.status_id', 'status.id')
             ->select(
                 'entrances.id as id',
@@ -51,8 +52,10 @@ $centers_id=array_column($data['centers'],'value');
                 'step_id', 
                   'status_id',
                   'status.name as status_name',
-                  'steps.name as step_name','center_id'
-                  )
+                  'steps.name as step_name','center_id',
+                  DB::raw("CONCAT(courses.name,' ',courses.grade) AS course_name")
+                )
+                
 
             
             // ->whereIn('step_id',[3,4])
@@ -78,9 +81,10 @@ $centers_id=array_column($data['centers'],'value');
             'SDT',
             'Email',
             'Ngày đăng ký',
+            'Môn đăng ký',
             'Đang ở bước',
             'Trạng thái',
-
+            
 
 
         ];
@@ -95,6 +99,7 @@ $centers_id=array_column($data['centers'],'value');
 
             $entrances->email,
             $entrances->created_at,
+            $entrances->course_name,
             $entrances->step_name,
             $entrances->status_name,
             // $entrances->student_name,
