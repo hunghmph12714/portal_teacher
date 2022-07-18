@@ -419,7 +419,12 @@ class StudentController extends Controller
 
         $result = [];
         if ($class && $class->type == 'class') {
-            $students = $class->students()->orderBy('status')->get();
+            if($request->type == 'active'){
+                $students = $class->activeStudents()->get();
+            }else{
+                $students = $class->students()->orderBy('status')->get();
+
+            }
             $result = $students->toArray();
             foreach ($students as $key => $student) {
                 $parent = Parents::where('parents.id', $student->parent_id)

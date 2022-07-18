@@ -283,16 +283,7 @@ const ListStudent = (props) => {
                                    
                                     </IconButton>
                                 </Tooltip>     
-                                {
-                                    rowData.avatar ? "" : (
-                                        <Tooltip title="Up ảnh" arrow>
-                                            <IconButton
-                                                onClick={() => {handleOpenUpload(rowData)}}>
-                                            <CropOriginalIcon fontSize='inherit' />
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-                                }                                 
+                                        
                             </div>
                         )
                     },

@@ -89,15 +89,14 @@ const ProactiveService = (props) => {
             })
     }
     useEffect(() => {
-        axios.post('/student/get', {class_id: props.class_id})
+        axios.post('/student/get', {class_id: props.class_id, type: 'active'})
         .then(response => {
             let options = response.data.map(r => {
-                if(r.detail.status == 'active'){
-                    return {label: r.fullname, value: r.id, p_name: r.parent.pname, p_email: r.parent.pemail, p_phone: r.parent.pphone,
-                        aspiration: r.aspiration, entrance_date : r.detail.entrance_date
-                    }
+                return {label: r.fullname, value: r.id, p_name: r.parent.pname, p_email: r.parent.pemail, p_phone: r.parent.pphone,
+                    aspiration: r.aspiration, entrance_date : r.pivot.entrance_date
                 }
             })
+            console.log(options)
             setStudents(options)
         })
         .catch(err => {
@@ -141,9 +140,10 @@ const ProactiveService = (props) => {
                     <div className = "select-input">
                         <h5>Lựa chọn học sinh</h5>
                         <Select className = "select-box"                
-                            // value = {selected_student}
+                            value = {selected_student}
                             placeholder="Chọn học sinh"
                             options={students}
+                            onChange={handleStudentChange}
                         />                 
                     </div>
                 </Grid>

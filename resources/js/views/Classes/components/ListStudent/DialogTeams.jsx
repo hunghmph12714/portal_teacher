@@ -187,6 +187,7 @@ const DialogTeams = (props) => {
                         </Typography>
                         <span>Họ tên học sinh: <b>{props.selected_data.fullname}</b></span><br/>
                         <span>Ngày sinh: <b>{props.selected_data.dob}</b></span><br/>
+                        <span>Mục tiêu: <b>{props.selected_data.aspiration}</b></span><br/>
                        {ms_id ? (
                             <>
                             <span>Mã số Teams: <b>{ms_id}</b></span><br/>
