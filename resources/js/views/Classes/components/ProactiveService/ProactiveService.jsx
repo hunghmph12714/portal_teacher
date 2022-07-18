@@ -93,8 +93,7 @@ const ProactiveService = (props) => {
         .then(response => {
             let options = response.data.map(r => {
                 if(r.detail.status == 'active'){
-                    return {label: r.fullname, value: r.id, p_name: r.parent.pname, p_email: r.parent.pemail, p_phone: r.parent.pphone,
-                        aspiration: r.aspiration, entrance_date : r.detail.entrance_date
+                    return {label: r.fullname, value: r.id
                     }
                 }
             })
