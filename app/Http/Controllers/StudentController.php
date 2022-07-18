@@ -1185,6 +1185,7 @@ class StudentController extends Controller
         $center = Center::find($center_id);
         $result['center_address'] = ($center) ? $center->address : '';
         $result['center_phone'] = ($center) ? $center->phone : '';
+        $result['months'] = $months;
         // echo "<pre>";
         // print_r($result);
         foreach ($result['data'] as $key => $fees) {
