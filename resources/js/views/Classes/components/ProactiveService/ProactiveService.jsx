@@ -143,9 +143,8 @@ const ProactiveService = (props) => {
                         <h5>Lựa chọn học sinh</h5>
                         <Select className = "select-box"                
                             value = {selected_student}
-                            name = "selected_session"
                             placeholder="Chọn học sinh"
-                            options={methods}
+                            options={students}
                             onChange={handleStudentChange}
                         />                 
                     </div>
