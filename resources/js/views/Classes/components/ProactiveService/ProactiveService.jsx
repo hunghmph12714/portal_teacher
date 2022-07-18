@@ -43,7 +43,7 @@ const ProactiveService = (props) => {
         },
     ]
     const [students, setStudents] = useState([])
-    const [selected_student, setSelectedStudent] = useState()
+    const [selected_student, setSelectedStudent] = useState({})
     const [method, setMethod] = useState([
         {value: 'Điện thoại' , label: 'Điện thoại'},
         {value: 'Email' , label: 'Email'},
