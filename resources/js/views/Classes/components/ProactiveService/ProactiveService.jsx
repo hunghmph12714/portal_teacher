@@ -145,7 +145,7 @@ const ProactiveService = (props) => {
                             value = {selected_student}
                             name = "selected_session"
                             placeholder="Chọn học sinh"
-                            options={students}
+                            options={methods}
                             onChange={handleStudentChange}
                         />                 
                     </div>
