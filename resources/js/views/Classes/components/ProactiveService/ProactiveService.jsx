@@ -43,7 +43,7 @@ const ProactiveService = (props) => {
         },
     ]
     const [students, setStudents] = useState([])
-    const [selected_student, setSelectedStudent] = useState({})
+    const [selected_student, setSelectedStudent] = useState(null)
     const [method, setMethod] = useState([
         {value: 'Điện thoại' , label: 'Điện thoại'},
         {value: 'Email' , label: 'Email'},
@@ -98,7 +98,6 @@ const ProactiveService = (props) => {
                     }
                 }
             })
-            console.log(options)
             setStudents(options)
         })
         .catch(err => {
@@ -149,7 +148,7 @@ const ProactiveService = (props) => {
                         />                 
                     </div>
                 </Grid>
-                <Grid item md={4}>
+                {/* <Grid item md={4}>
                     <h5>Thông tin đào tạo</h5>
                     <span>Ngày nhập học: </span> {selected_student.entrance_date}<br></br>
                     <span>Mục tiêu: </span> {selected_student.aspiration}<br></br>
@@ -159,7 +158,7 @@ const ProactiveService = (props) => {
                     <span>Họ tên: </span> {selected_student.p_name}<br></br>
                     <span>Số điện thoại: </span> {selected_student.p_phone}<br></br>
                     <span>Email: </span> {selected_student.p_email}<br></br>
-                </Grid>
+                </Grid> */}
             </Grid>
             <Grid container spacing={2}>
                 <Grid item md={4}>
