@@ -686,7 +686,7 @@ Route::get('/event-form', function () {
 Route::get('/event-tra-cuu', function () {
     return view('welcome');
 });
-
+Route::get('/teacher-export', 'ClassController@exportTeacher');
 Route::post('/event-get-result', 'StudentController@getResult');
 // Route::post('/event-mail', )
 Route::get('/home', 'HomeController@index')->name('home');

@@ -36,6 +36,36 @@ use App\Role;
 
 class ClassController extends Controller
 {
+    //Export giao vien
+    public function exportTeacher(){
+        $sessions = Session::whereBetween('date', ['2021-07-18', '2021-07-25'])->get();
+        $result = [];
+        $check_exist = [];
+        foreach($sessions as $session){
+            if(in_array($session->teacher_id, $check_exist)){
+                // if
+                $teacher = Teacher::find($session->teacher_id);
+                $class = Classes::find($session->class_id);
+                $course = Course::find($class->course_id);
+                if(strpos($result[$session->teacher_id][3], $course->grade) !== false){
+                    $result[$session->teacher_id][3] = $result[$session->teacher_id][3].','.$course->grade;
+                }
+            }else{
+                $check_exist[] = $session->teacher_id;
+                $teacher = Teacher::find($session->teacher_id);
+                $class = Classes::find($session->class_id);
+                $course = Course::find($class->course_id);
+                if($teacher){
+                    $result[$session->teacher_id] = [
+                        $teacher->name, $teacher->email, $course->name, $course->grade
+                    ];
+                }
+                
+            }
+        }
+        echo "<pre>";
+        print_r(array_values($result));
+    }
     //Tra cuu diem
     public function tracuu()
     {
