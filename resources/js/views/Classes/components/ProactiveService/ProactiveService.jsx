@@ -43,7 +43,7 @@ const ProactiveService = (props) => {
         },
     ]
     const [students, setStudents] = useState([])
-    const [selected_student, setSelectedStudent] = useState(null)
+    const [selected_student, setSelectedStudent] = useState({})
     const [method, setMethod] = useState([
         {value: 'Điện thoại' , label: 'Điện thoại'},
         {value: 'Email' , label: 'Email'},
@@ -144,7 +144,6 @@ const ProactiveService = (props) => {
                             // value = {selected_student}
                             placeholder="Chọn học sinh"
                             options={students}
-                            // onChange={handleStudentChange}
                         />                 
                     </div>
                 </Grid>
