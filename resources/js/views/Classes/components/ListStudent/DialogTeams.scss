@@ -1,0 +1,38 @@
+#form-dialog-title{
+    background: green;
+    h2{
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+    }
+    padding-bottom: 15px !important;
+    margin-bottom: 15px; 
+}
+.root-notes{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    .notes-content{
+        background-color: #f0f2f5;
+        border-radius: 10px;
+        .user_name{
+            font-weight: bold;
+        }
+        .method{
+            font-size: 13px;
+        }
+        .content{
+            margin-bottom: 0px;
+        }
+        .time{
+            font-size: 11px;
+        }
+        .delete{
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .delete:hover{
+            text-decoration: underline;
+        }
+    }
+}

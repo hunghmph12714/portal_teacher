@@ -92,13 +92,13 @@ const ProactiveService = (props) => {
         axios.post('/student/get', {class_id: props.class_id})
         .then(response => {
             let options = response.data.map(r => {
-                console.log(r)
                 if(r.detail.status == 'active'){
                     return {label: r.fullname, value: r.id, p_name: r.parent.pname, p_email: r.parent.pemail, p_phone: r.parent.pphone,
                         aspiration: r.aspiration, entrance_date : r.detail.entrance_date
                     }
                 }
             })
+            console.log(options)
             setStudents(options)
         })
         .catch(err => {

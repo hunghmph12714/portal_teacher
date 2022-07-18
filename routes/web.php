@@ -458,6 +458,9 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     Route::post('/student/get-id', 'StudentController@getStudentById');
     Route::post('/student/save', 'StudentController@saveStudent');
     Route::post('/student/get-class', 'StudentController@getClass');
+    Route::post('/student/get-profile', 'StudentController@getProfile');
+    Route::post('/student/note/create', 'StudentController@createNote');
+    Route::post('/student/note/delete', 'StudentController@deleteNote');
     Route::post('/student/uploadAvatar', 'StudentController@uploadAvatar');
     Route::get('/student/remove/{id}', 'StudentController@removeStudent');
     Route::post('/student/save-sgd-id', 'StudentController@saveSgdId');

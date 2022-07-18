@@ -28,6 +28,7 @@ use App\Jobs\SendEventNotify;
 use App\Jobs\SendEventReminder;
 use GuzzleHttp\Client;
 use DB;
+use App\StudentNote;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
@@ -66,66 +67,52 @@ class StudentController extends Controller
         echo "Anh Văn: " . ($av) . "<br/>";
         echo "Toán Văn Anh: " . ($tva) . "<br/>";
     }
-    // protected function get9(){
-    //     $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
-    //     $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
-    //     $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%9.%')->where('year', '2021')->where('center_id', 2)->get();
-    //     $toan_student = [];
-    //     $van_student = [];
-    //     $anh_student = [];
-    //     foreach($toan as $t){
-    //         $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     foreach($van as $v){
-    //         $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     foreach($anh as $a){
-    //         $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
-    //     echo "<pre>";
-    //     print_r(array_intersect($toan_student, $anh_student));
-    //     echo "<pre>";
-    //     print_r(array_intersect($toan_student, $anh_student, $van_student));
-    //     $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
-    //     $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
-    //     $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
-    //     echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
-    //     echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
-    //     echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
-    //     echo "Toán Anh: ".($ta)."<br/>";
-    //     echo "Toán Văn: ".($tv)."<br/>";
-    //     echo "Anh Văn: ".($av)."<br/>";
-    //     echo "Toán Văn Anh: ".($tva)."<br/>";
-    // }
-    // protected function get5(){
-    //     $toan = Classes::where('code', 'LIKE', '%T%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
-    //     $van = Classes::where('code', 'LIKE', '%V%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
-    //     $anh = Classes::where('code', 'LIKE', '%A%')->where('code', 'LIKE', '%5.%')->where('year', '2021')->get();
-    //     $toan_student = [];
-    //     $van_student = [];
-    //     $anh_student = [];
-    //     foreach($toan as $t){
-    //         $toan_student =array_merge($toan_student, array_column($t->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     foreach($van as $v){
-    //         $van_student = array_merge($van_student, array_column($v->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     foreach($anh as $a){
-    //         $anh_student = array_merge($anh_student, array_column($a->activeStudents()->select('students.id')->get()->toArray(), 'id')) ;
-    //     }
-    //     $tva = sizeof(array_intersect($toan_student, $anh_student, $van_student));
-    //     $tv = sizeof(array_intersect($toan_student, $van_student))-$tva;
-    //     $ta = sizeof(array_intersect($toan_student, $anh_student))-$tva;
-    //     $av = sizeof(array_intersect($anh_student, $van_student))-$tva;
-    //     echo "Toán: ".(sizeof($toan_student)-$tva-$tv-$ta)."<br/>";
-    //     echo "Văn: ".(sizeof($van_student)-$tva-$tv-$av)."<br/>";
-    //     echo "Anh: ".(sizeof($anh_student)-$tva-$ta-$av)."<br/>";
-    //     echo "Toán Anh: ".($ta)."<br/>";
-    //     echo "Toán Văn: ".($tv)."<br/>";
-    //     echo "Anh Văn: ".($av)."<br/>";
-    //     echo "Toán Văn Anh: ".($tva)."<br/>";
-    // }
+    protected function getProfile(Request $request){
+        $rules = ['student_id' => 'required'];
+        $this->validate($request, $rules);
+
+        $student = Student::find($request->student_id);
+        $result = [
+            'entrances' => [],
+            'notes' => [],
+        ];
+        if($student){
+            $result['entrances'] = Entrance::where('student_id', $student->id)
+                ->select(DB::raw('CONCAT(courses.name," ",courses.grade)  AS course'), 'entrances.note', 'entrances.test_score',
+                    'entrances.test_note', 'entrances.test_results', 'entrances.created_at')
+                ->join('courses', 'entrances.course_id', 'courses.id')->get()->toArray();
+
+            $result['notes'] = $student->notes()
+                ->select('student_notes.id as id','classes.code', 'users.name', 'users.avatar', 'content', 'student_notes.created_at', 
+                    DB::raw("DATE_FORMAT(student_notes.created_at, '%d/%m/%Y %h:%i %p') as created_at_formated"),
+                )
+                ->join('users', 'student_notes.user_id', 'users.id')
+                ->join('classes', 'student_notes.class_id', 'classes.id')
+                ->orderBy('student_notes.created_at', 'DESC')
+                ->get()->toArray();
+        }
+        return response()->json($result);
+    }
+    protected function deleteNote(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $note = StudentNote::find($request->id);
+        if($note){
+            $note->forceDelete();
+        }
+    }
+    protected function createNote(Request $request){
+        $rules = ['id' => 'required'];
+        $this->validate($request, $rules);
+
+        $input['student_id'] = $request->id;
+        $input['user_id'] = auth()->user()->id;
+        $input['content'] = $request->note;
+        $input['class_id'] = $request->class_id;
+        StudentNote::create($input);
+
+    }
     protected function removeStudent($id)
     {
         $student = Student::find($id);

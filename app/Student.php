@@ -46,6 +46,9 @@ class Student extends Model
             ->where('class_id', $class_id);
         // ->withTimestamps();
     }
+    public function notes(){
+        return $this->hasMany('App\StudentNote', 'student_id');
+    }
    /**
     * Get all of the cares for the Student
     *

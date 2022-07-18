@@ -274,7 +274,7 @@ const ListStudent = (props) => {
                                     <DeleteForeverIcon fontSize='inherit' />
                                     </IconButton>
                                 </Tooltip>     
-                                <Tooltip title="Tài khoản Teams" arrow>
+                                <Tooltip title="Hồ sơ học sinh" arrow>
                                     <IconButton onClick={() => {
                                         handleOpenTeams(rowData)
                                         //  window.open('/login-portal-admin/'+rowData.parent_id)
@@ -486,12 +486,6 @@ const ListStudent = (props) => {
                 handleClose = {handleCloseDropout}
                 class_id = {class_id}
                 students = {selected_data}
-            />
-            <DialogUploadAvatar
-                open = {openUpload}
-                handleClose = {handleCloseUpload}
-                id = {selected_data.id}
-                avatar = {selected_data.avatar}
             />
             <DialogTeams
                 open = {openTeams}
