@@ -2682,4 +2682,21 @@ class ClassController extends Controller
 
         return back();
     }
+    public function autoAddRoleUserClass($user_id, $center_id)
+    {
+        $classes = Classes::where('center_id', $center_id)->where('year', 2021)->join('user_class', 'classes.id', 'user_class.class_id')
+            ->where('user_id', $user_id)->select('user_class.id as user_class_id', 'role')->groupBy('user_class.id')->get();
+
+
+
+        foreach ($classes as $c) {
+
+            $uc =   UserClass::find($c->user_class_id);
+            if ($uc) {
+                $uc->role = 2;
+                $uc->save();
+            }
+        }
+        dd('ok');
+    }
 }

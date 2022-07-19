@@ -415,18 +415,16 @@ Route::group(['middleware' => ['auth', 'cors']], function () {
     });
 
 
-
+        // Phân quyền lớp học
 
     Route::get('class/phan-quyen-lop-hoc/', function () {
-
         $users = User::query()->where('isVerified', 1)->get();
-
         $classes = Classes::where('active', 1)->where('year', Auth::user()->wp_year)->get();
-        // dd($classes);
         return view('classes.add_role_class_user', compact('users', 'classes'));
     });
     Route::post('class/phan-quyen-lop-hoc', [ClassController::class, 'addRoleUserClass']);
 
+Route::get('autoAddRoleUserClass/{user_id}/{center_id}',[ClassController::class,'autoAddRoleUserClass']);
 
 
 
