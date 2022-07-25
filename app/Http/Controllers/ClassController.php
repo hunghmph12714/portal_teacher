@@ -38,7 +38,7 @@ class ClassController extends Controller
 {
     //Export giao vien
     public function exportTeacher(){
-        $sessions = Session::whereBetween('date', ['2022-07-18', '2022-07-25'])->get();
+        $sessions = Session::whereBetween('date', ['2022-07-25', '2022-07-31'])->get();
         $result = [];
         $check_exist = [];
         foreach($sessions as $session){
