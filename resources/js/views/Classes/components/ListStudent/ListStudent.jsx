@@ -389,7 +389,7 @@ const ListStudent = (props) => {
                     //Quan hệ
                     {
                         title: "Ghi chú",
-                        field: "pnote",
+                        field: "snote",
                         headerStyle: {
                             padding: '0px',
                             fontWeight: '600',

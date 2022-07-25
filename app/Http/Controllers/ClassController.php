@@ -42,14 +42,15 @@ class ClassController extends Controller
         $result = [];
         $check_exist = [];
         foreach($sessions as $session){
+            
             if(in_array($session->teacher_id, $check_exist)){
                 // if
                 $teacher = Teacher::find($session->teacher_id);
                 $class = Classes::find($session->class_id);
                 $course = Course::find($class->course_id);
                 if($session->teacher_id == 0) continue;
-                if(strpos(strval($result[$session->teacher_id][3]), strval($course->grade)) == false){
-                    $result[$session->teacher_id][3] = $result[$session->teacher_id][3].','.$course->grade;
+                if(strpos(strval($result[$session->teacher_id][3]), strval($class->code)) == false){
+                    $result[$session->teacher_id][3] = $result[$session->teacher_id][3].','.$class->code;
                 }
             }else{
                 $check_exist[] = $session->teacher_id;
@@ -58,7 +59,7 @@ class ClassController extends Controller
                 $course = Course::find($class->course_id);
                 if($teacher){
                     $result[$session->teacher_id] = [
-                        $teacher->name, $teacher->email, $teacher->domain, strval($course->grade)
+                        $teacher->name, $teacher->email, $teacher->domain, strval($class->code)
                     ];
                 }
                 
