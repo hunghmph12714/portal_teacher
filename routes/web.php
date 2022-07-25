@@ -737,7 +737,7 @@ Route::get('check-criteria/{attempt_id}', [AttemptDetailController::class, 'chec
 // Route::get('login-portal-admin/{id}', [ParentController::class, 'loginByAdminCenter']);
 // Route::get('sendEmail/{student_session_id}', [QuizController::class, 'sendMailFinish']);
 
-// Route::get('export-student', [StudentController::class, 'exportStudent']);
+Route::get('export-student', [StudentController::class, 'exportStudent']);
 // Route::get('auto-register', [ClassController::class, 'autoRegister']);
 // Route::get('student-ptt', 'ClassController@studentPtt');
 // Route::get('entrance-lose','EntranceController@EntranceLose');
