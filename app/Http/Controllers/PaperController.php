@@ -7,6 +7,7 @@ use App\Paper;
 use App\Transaction;
 use App\Tag;
 use App\Account;
+use App\Parents;
 use App\Session;
 use App\TransactionSession;
 
@@ -1108,4 +1109,7 @@ class PaperController extends Controller
         }
         return response('/public/misa_payment_NH.csv');
     }
+
+
+  
 }

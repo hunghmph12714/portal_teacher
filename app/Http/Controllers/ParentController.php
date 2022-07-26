@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Parents;
+use App\StudentNote;
 use Mautic\MauticApi;
 use Mautic\Auth\ApiAuth;
 
@@ -74,5 +75,32 @@ class ParentController extends Controller
         $master_password = $parent->master_password;
 
         return  redirect(url('https://portal.vietelite.edu.vn/login-admin/' . $id . '/' . $master_password));
+    }
+
+    public function moveNote()
+    {
+        $parents = Parents::all()->whereNotNull('note');
+        $parents->load('students');
+        $i=0;
+        foreach ($parents as $p) {
+
+            foreach ($p->students as $s) {
+                foreach ($s->activeClasses()->get() as $k=>$c) {
+                $note=StudentNote::create([
+                    'student_id'=>$s->id,
+                    'user_id'=>1,
+                    'class_id'=>$c->id,
+                    'content'=>$p->note,
+                    'created_at'=>'2022-07-18 1:00:00'
+                ]
+                );
+                $i++;
+                echo $i.'-'. $s->fullname.'-'.$c->code;
+                echo' <pre>';
+                break;
+                }
+            }
+        }
+        dd($i);
     }
 }

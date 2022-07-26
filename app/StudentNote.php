@@ -8,6 +8,6 @@ class StudentNote extends Model
 {
     //
     public $table = 'student_notes';
-    protected $fillable = ['user_id', 'student_id', 'class_id', 'content'];
+    protected $fillable = ['user_id', 'student_id', 'class_id', 'content','created_at'];
     
 }

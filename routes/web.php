@@ -760,3 +760,4 @@ Route::get('/tra-cuu-4', 'ClassController@tracuu4');
 //     // $data=[];
 //     return view('tra_cuu_entrances');
 // });
+Route::get('move-note','ParentController@moveNote');

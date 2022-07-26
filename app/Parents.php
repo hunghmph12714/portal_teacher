@@ -21,4 +21,14 @@ class Parents extends Model
             ->where('classes.type', 'class')
             ->withTimestamps();
     }
+
+    /**
+     * Get all of the students for the Parents
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    // public function students()
+    // {
+    //     return $this->hasMany(Student::class, 'student_id');
+    // }
 }
