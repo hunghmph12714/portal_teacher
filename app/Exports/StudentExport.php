@@ -28,10 +28,11 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
             // ->where(activeClasses(), true)
             ->join('student_class', 'students.id', 'student_class.student_id')
             ->join('classes', 'student_class.class_id', 'classes.id')
-            ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2022')
+            ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2021')
+            ->join('center','classes.center_id','center.id')
             ->join('courses', 'classes.course_id', 'courses.id')
             ->select('students.sgd_id as sgd_id', 'students.id as id', 'students.fullname as student_name', 'courses.grade',
-            'students.school', 'parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone',  'classes.code')
+            'students.school', 'parents.fullname as parent_name', 'parents.email as email', 'parents.phone as phone',  'classes.code','center.name as center_name')
             ->groupBy('students.id')
             ->get();
         // dd(1);
@@ -69,7 +70,8 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
             "Phụ huynh",
             "SDT",
             "Email",
-            'Khối'
+            'Khối',
+            'Cơ Sở'
 
         ];
     }
@@ -90,7 +92,8 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
             $students->parent_name,
             $students->phone,
             $students->email,
-            $students->grade
+            $students->grade,
+            $students->center_name
 
         ];
     }
