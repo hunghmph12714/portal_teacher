@@ -31,6 +31,7 @@ class StudentExport implements FromCollection, WithHeadings, WithMapping
             ->where('status', 'active')->where('classes.type', 'class')->where('classes.year', '2021')
             ->join('center','classes.center_id','center.id')->whereIn('center_id',[3,5])
             ->join('courses', 'classes.course_id', 'courses.id')
+            ->where('courses.grade',5)
             ->select('students.sgd_id as sgd_id', 'students.id as id', 'students.fullname as student_name', 'courses.grade',
             'students.school', 'parents.fullname as parent_name', 'parents.email as email','dob' ,'parents.phone as phone',  'classes.code','center.name as center_name')
             ->groupBy('students.id')
