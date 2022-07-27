@@ -20,7 +20,8 @@
             <tr>
                 <th>STT</th>
                 <th>Lớp</th>
-                <th>Thời gian</th>
+                <th>Bắt đầu</th>
+                <th>Kết thúc</th>
                 <th>Cơ sở</th>
                 <th>Số hs</th>
                 {{-- <th>Thời gian</th> --}}
@@ -32,7 +33,9 @@
                    <tr>
                     <td scope="row">{{ $loop->iteration }}</td>
                     <td>{{ $item->class_code }}</td>
-                    <td>{{ date('H-i-s', strtotime($item->from)) }}</td>
+                    <td>{{ date('H:i:s', strtotime($item->from)) }}</td>
+                    <td>{{ date('H:i:s', strtotime($item->to)) }}</td>
+
                     <td>{{ $item->center_name }}</td>
                     <td>{{ $item->ss_number }}</td>
                 </tr>  
