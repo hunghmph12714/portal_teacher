@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttemptController;
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TeacherController;
@@ -57,6 +58,13 @@ Route::prefix('student')->group(function () {
        Route::post('attempt-detail/{attempt_id}', [AttemptController::class, 'editAttempt']);
 
 });
+
+
+Route::get('class-on-day',[TeacherController::class,'ClassOnDay']);
+Route::get('form-check-class-on-day',function(){
+    return view('classes.form_check_class');
+});
+Route::post('form-check-class-on-day',[TeacherController::class,'classOnDay']);
 
 Route::get('/', function () {
     if(!empty(Auth::user()->id)){   

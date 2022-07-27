@@ -203,7 +203,7 @@ class TeacherController extends Controller
         foreach ($listStr as $v) {
             if ($v !== end($listStr)) $name .= substr($v, 0, 1);
         }
-        return $name;
+        return response()->json($name);
     }
     public function studentAttempt($student_id)
     {
@@ -215,5 +215,26 @@ class TeacherController extends Controller
             ->get();
         // dd($attempts);   
         return view('attempts.attempt', compact('attempts', 'student'));
+    }
+    public function classOnDay(Request $request)
+    {
+        $teacher = Teacher::where('phone', $request->phone)->first();
+
+        if (!$teacher) {
+            return back();
+        }
+
+        $day = date('Y-m-d');
+        $sessions = Session::whereDate('from', $day)->where('teacher_id', $teacher->id)
+        ->join('classes', 'sessions.class_id', 'classes.id')
+        ->join('center','sessions.center_id','center.id')
+        ->select('classes.code as class_code','classes.id as class_id','center.name as center_name','from','to','sessions.id as id','ss_number')
+        ->get();
+        return view('classes.classonday',compact('sessions','teacher') );
+        // dd($sessions);
+
+        //  dd($sessions);
+
+
     }
 }// thử xem b

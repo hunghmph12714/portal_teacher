@@ -7,10 +7,10 @@
 <table class="table table-striped table-inverse ">
     <thead class="thead-inverse">
         <tr>
-            <th>STT</th>
+            <th style="width: 20px">STT</th>
             <th>Xem bài kiểm tra</th>
             <th>Name</th>
-            <th>Avata</th>
+            {{-- <th>Avata</th> --}}
             <th>Sdt</th>
         </tr>
     </thead>
@@ -29,7 +29,7 @@
 
             </td>
             <td>{{ $item->fullname }}</td>
-            <td><img src="{{ isset( $item->fullname ) }}" alt="Lỗi ảnh rồi"></td>
+            {{-- <td><img src="{{ isset( $item->avata ) }}" alt="Lỗi ảnh rồi"></td> --}}
 
             <td>{{ $item->phone }}</td>
         </tr>

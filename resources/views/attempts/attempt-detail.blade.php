@@ -172,11 +172,13 @@
                     <tr>
                         <td>
 
-                            <h5>TIêu chí đánh giá</h5>
+                            <h5>TIêu chí đánh giá q1</h5>
 
-                            <button type="button" onclick="add()">Thêm đánh giá</button>
+                            <button type="button" class="btn btn-success mb-1" onclick="add()">Thêm đánh giá</button>
 
-                            <div id="danh-gia">
+                            {{-- <input type="image" id="image" alt="Login" src="/media/examples/login-button.png"> --}}
+
+                            <div>
                                 @foreach ($result['criterias'] as $c)
                                 <div style="border-radius: 8px;
                                         margin-bottom: 10px;
@@ -185,11 +187,11 @@
                                     <div style="" class="mb-3">
                                         <input type="text" value="{{ $c['title'] }}"
                                             name="criteria_title[{{ $c['id'] }}]"
-                                            style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+                                            style="padding: 10.5px; border-radius: 8px;  border: 1px solid green;">
                                     </div>
                                     {{-- <input type="text" value="{{ $c['content'] }}"> --}}
                                     <textarea
-                                        style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
+                                        style="padding: 10.5px; border-radius: 8px;width: 100%;  border: 1px solid green;"
                                         name="criteria_content[{{ $c['id'] }}]" id="" cols="30"
                                         rows="3">{{ $c['content'] }}</textarea>
                                 </div>
@@ -197,6 +199,13 @@
 
 
                             </div>
+                            <div id="danh-gia" style="border-radius: 8px;
+                                        margin-bottom: 10px;
+                                        padding: 15px;
+                                        border: 1px solid rgb(12, 147, 231);">
+
+                            </div><button type="button" class="btn btn-success mb-1" onclick="add()">Thêm đánh
+                                giá</button>
                         </td>
                     </tr>
 
@@ -204,26 +213,28 @@
             </table>
         </div>
         <div class="d-flex right-0  " width="100px">
-            <button class="btn btn-success form-control kn plg " width="100px" type="submit">Lưu Đánh Giá</button>
+            <button class="btn btn-success form-control fixed-bottom " width="100px" type="submit">Lưu Nhận Xét</button>
         </div>
 
     </form>
+
     <div id="add-danh-gia"
-        style="border-radius: 8px; margin-bottom: 10px; padding: 15px; border: 1px solid green; display: none">
+        style="border-radius: 8px; margin-bottom: 10px; padding: 15px; border: 1px solid green; display: none;">
         <div style="" class="mb-3">
-            <input type="text" value="" disabled name="criteria_title[]"
-                style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid green;">
+            <input type="text" value="" name="criteria_title_add[]" autocomplete="on"
+                style="padding-top: 10.5px; border-radius: 8px;   padding-bottom: 10.5px;border: 1px solid rgb(12, 147, 231);">
         </div>
         {{-- <input type="text" value="{{ $c['content'] }}"> --}}
-        <textarea disabled
-            style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid green;"
-            name="criteria_content[]" id="" cols="30" rows="3"></textarea>
+        <textarea
+            style="padding-top: 10.5px; border-radius: 8px;width: 100%;  padding-bottom: 10.5px;border: 1px solid rgb(12, 147, 231); margin-bottom: 20px"
+            name="criteria_content_add[]" id="" cols="30" rows="3"></textarea>
     </div>
+
     <script>
         function add(){
         danhgia=document.getElementById('danh-gia');
         adddanhgia=document.getElementById('add-danh-gia');
-        adddanhgia.style='display:block'
+        adddanhgia.style='display:block;border-radius: 8px; margin-bottom: 10px; padding: 15px; border: 1px solid green;'
         danhgia.innerHTML+=adddanhgia.innerHTML
         adddanhgia.style='display:none'
    }
