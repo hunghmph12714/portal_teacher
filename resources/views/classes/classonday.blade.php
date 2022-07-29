@@ -32,7 +32,7 @@
                 @foreach ($sessions as $item)
                    <tr>
                     <td scope="row">{{ $loop->iteration }}</td>
-                    <td>{{ $item->class_code }}</td>
+                    <td><a href="{{ route('student.onSession', ['session_id'=>$item->id]) }}">{{ $item->class_code }}</a></td>
                     <td>{{ date('H:i:s', strtotime($item->from)) }}</td>
                     <td>{{ date('H:i:s', strtotime($item->to)) }}</td>
 

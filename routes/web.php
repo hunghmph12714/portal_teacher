@@ -61,10 +61,27 @@ Route::prefix('student')->group(function () {
 
 
 Route::get('class-on-day',[TeacherController::class,'ClassOnDay']);
-Route::get('form-check-class-on-day',function(){
+Route::get('check-class-on-day',function(){
     return view('classes.form_check_class');
 });
-Route::post('form-check-class-on-day',[TeacherController::class,'classOnDay']);
+Route::post('check-class-on-day',[TeacherController::class,'classOnDay']);
+
+Route::get('students-on-session/{session_id}',[TeacherController::class,'studentsOnSession'])->name('student.onSession');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::get('/', function () {
     if(!empty(Auth::user()->id)){   

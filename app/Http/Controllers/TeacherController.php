@@ -226,15 +226,31 @@ class TeacherController extends Controller
 
         $day = date('Y-m-d');
         $sessions = Session::whereDate('from', $day)->where('teacher_id', $teacher->id)
-        ->join('classes', 'sessions.class_id', 'classes.id')
-        ->join('center','sessions.center_id','center.id')
-        ->select('classes.code as class_code','classes.id as class_id','center.name as center_name','from','to','sessions.id as id','ss_number')
-        ->get();
-        return view('classes.classonday',compact('sessions','teacher') );
+            ->join('classes', 'sessions.class_id', 'classes.id')
+            ->join('center', 'sessions.center_id', 'center.id')
+            ->select('classes.code as class_code', 'classes.id as class_id', 'center.name as center_name', 'from', 'to', 'sessions.id as id', 'ss_number')
+            ->get();
+        return view('classes.classonday', compact('sessions', 'teacher'));
         // dd($sessions);
 
         //  dd($sessions);
 
 
+    }
+
+    public function studentsOnSession($session_id)
+    {
+        $session = Session::find($session_id)->load('classes');
+// dd($session->classes()->first()->code);
+        if ($session) {
+            $students = $session->students()->get();
+
+            // $students->load(['entrances' => function ($query, $class_id) {
+            //     return $query->where('class_id', $class_id);
+            // }]);
+            // dd($session,$students,$students[0]->entrance(44,3608)->toSql());
+            return view('classes.students_on_session',compact('students','session'));
+            
         }
+    }
 }// thử xem b
