@@ -13,7 +13,7 @@
 <body>
     <div class="container">
         <div>
-           <img width="20px"  onclick="history.back()" src="{{ asset('image_system/back.png') }}" alt="">
+            <img width="20px" onclick="history.back()" src="{{ asset('image_system/back.png') }}" alt="">
 
         </div>
         <div>
@@ -58,8 +58,9 @@
                         {{ KQEntrance($item->id,$session->class_id )->note}}
                         @endif</td>
                     <td>{{
-                        $item->join('student_class','students.id','student_class.student_id')->first()->entrance_date
-                        }}</td>
+                        $item->join('student_class','students.id','student_class.student_id')->where('class_id',$session->class_id)->first()->entrance_date
+                        }}
+                    </td>
                     <td>@if (KQEntrance($item->id,$session->class_id ))
                         {{ KQEntrance($item->id,$session->class_id )->test_score .' - '.
                         KQEntrance($item->id,$session->class_id )->test_note}}
