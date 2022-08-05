@@ -13,7 +13,7 @@
       <!-- Collapse -->
       <div class="collapse navbar-collapse" id="sidenav-collapse-main">
         <!-- Nav items -->
-        <ul class="navbar-nav">
+        {{-- <ul class="navbar-nav">
 
           <li class="nav-item">
             <a class="nav-link" href="{{ route('teacher.edit', ['id'=>Auth::user()->id]) }}">
@@ -29,11 +29,10 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/logout">
-              {{-- <i class="ni ni-send text-dark"></i> --}}
               <span class="nav-link-text">Đăng xuất</span>
             </a>
           </li>
-        </ul>
+        </ul> --}}
         <!-- Divider -->
         <hr class="my-3">
         <!-- Heading -->
@@ -48,13 +47,13 @@
               <span class="nav-link-text">Lớp giảng dạy</span>
             </a>
           </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard/docs/foundation/colors.html"
               target="_blank">
               <i class="ni ni-palette"></i>
               <span class="nav-link-text">Kỳ thi</span>
             </a>
-          </li>
+          </li> --}}
 
         </ul>
       </div>

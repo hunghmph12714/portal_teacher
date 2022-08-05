@@ -30,7 +30,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
     <meta name="author" content="Creative Tim">
-    <title>Argon Dashboard - Free Dashboard for Bootstrap 4</title>
+    <title>Đăng nhập</title>
     @include('layout.style')
   </head>
 
@@ -75,7 +75,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link nav-link-icon" href="https://vietelite.edu.vn/" target="_blank" data-toggle="tooltip"
-                data-original-title="Đi đến ebsite cuả VietElite">
+                data-original-title="Đi đến website cuả VietElite">
                 <i class="fab fa-internet-explorer"></i>
                 <span class="nav-link-inner--text d-lg-none">Website</span>
               </a>

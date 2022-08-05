@@ -1,7 +1,10 @@
 @extends('layout.main')
+@section('title')
+    Danh sách lớp dạy của giáo viên
+@endsection
 @section('content')
 <h3 style="text-align: center">DANH SÁCH LỚP DẠY CỦA GIÁO VIÊN:</h3>
-<h3> @isset($teacher->name)
+<h3>Giáo viên:  @isset($teacher->name)
     {{ $teacher->name }}
     @endisset
 </h3>
@@ -33,7 +36,7 @@
     </tbody>
 </table>
 @if (empty($sessions[0]))
-<p>Ui!!! May quá, tuần này bạn không phải dạy rồi!</p>
+<p>Tuần này bạn không có lớp dạy nào !</p>
 
 @endif
 

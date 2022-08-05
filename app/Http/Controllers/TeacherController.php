@@ -75,6 +75,9 @@ class TeacherController extends Controller
     }
     public function saveEdit($id, Request $request)
     {
+        if(!Auth::check()){
+            return redirect(route('login'));
+        }
         $request->validate(
             [
                 'name' => 'required',
@@ -105,7 +108,7 @@ class TeacherController extends Controller
 
             ]
         );
-        $model = Teacher::find($id);
+        $model = Teacher::find(Auth::id());
         // dd($model);
         $model->fill($request->all());
         $model->save();
@@ -120,7 +123,7 @@ class TeacherController extends Controller
     {
         // dd($_POST);
         // $user = auth()->user();
-        $model = User::find($id);
+        $model = Teacher::find($id);
         $request->validate([
             'password' => 'required',
             'newpass' => 'required',

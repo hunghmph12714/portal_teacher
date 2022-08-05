@@ -39,9 +39,15 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ], 'teacher' => [
+        ],
+        'teacher' => [
             'driver' => 'session',
             'provider' => 'teacher',
+        ], 
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'user',
+            'hash'=>false,
         ],
     ],
 
@@ -65,7 +71,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Teacher::class,
         ],
         'teacher' => [
             'driver' => 'eloquent',

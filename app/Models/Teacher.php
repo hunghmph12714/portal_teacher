@@ -8,7 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Teacher extends Authenticatable
+
+class Teacher extends Authenticatable implements MustVerifyEmail
 {
     protected $table = 'teacher';
     // public $fillable = [];
@@ -51,26 +52,4 @@ class Teacher extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function getAuthPassword()
-    {
-        return $this->passcode;
-    }
-    /**
-     * The classes that belong to the Teacher
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function classes()
-    {
-        return $this->belongsToMany('App\Models\Classes', 'sessions', 'teacher_id', 'class_id')->using('App\Models\Session');
-    }
-    /**
-     * Get all of the sessions for the Teacher
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sessions()
-    {
-        return $this->hasMany(Session::class, 'teacher_id');
-    }
 }

@@ -1,0 +1,183 @@
+[
+  {
+    "_id": "7127cbe3-ae35-422c-9c4f-c739409af5fc",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/demo-auth",
+    "url": "http://127.0.0.1:8000/api/getme",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-08-01T03:41:54.726Z",
+    "modified": "2022-08-04T02:13:25.762Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ff63ec71-25ad-4f5c-a4b1-f5ea78287f3a",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/api/demo-auth",
+    "url": "http://127.0.0.1:8000/api/demo-auth",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-08-01T03:43:42.964Z",
+    "modified": "2022-08-01T08:57:30.710Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "name",
+        "value": "we",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "password",
+        "value": "gew",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": ";"
+        },
+        {
+          "name": "password",
+          "value": ";;"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "9a4db7dc-0517-44e4-932b-5badcdccea78",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/api/demo-auth?name=hung&password=wsefwef",
+    "url": "http://127.0.0.1:8000/api/register",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-08-01T03:44:00.575Z",
+    "modified": "2022-08-04T02:25:53.739Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "phone",
+          "value": "0123"
+        },
+        {
+          "name": "name",
+          "value": "h"
+        },
+        {
+          "name": "password",
+          "value": "123"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "b63d7b77-a041-40ca-bc94-ce2b34f00fbc",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/api/demo-auth?name=we&password=gew",
+    "url": "http://127.0.0.1:8000/api/getme",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-08-01T04:04:55.129Z",
+    "modified": "2022-08-03T10:45:36.316Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "phone",
+          "value": "0399958701",
+          "isDisabled": true
+        },
+        {
+          "name": "password",
+          "value": "1234",
+          "isDisabled": true
+        },
+        {
+          "name": "name",
+          "value": "hhh",
+          "isDisabled": true
+        },
+        {
+          "name": "email",
+          "value": "hung@gmail.com",
+          "isDisabled": true
+        }
+      ]
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "d11c97d2d186eecf2ee0f832f54244ee19440274683188f71fea4e56bedf2d3b"
+    },
+    "tests": []
+  },
+  {
+    "_id": "63486704-2506-441b-88db-eb782b6419e2",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/api/demo-auth?name=we&password=gew",
+    "url": "http://127.0.0.1:8000/api/register",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2022-08-01T04:05:01.867Z",
+    "modified": "2022-08-02T08:36:50.629Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": "hung"
+        },
+        {
+          "name": "phone",
+          "value": "0399958700"
+        },
+        {
+          "name": "password",
+          "value": "123"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "24ff173a-4120-4cda-9ce7-4a5794e33b24",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://127.0.0.1:8000/api/demo-auth?name=we&password=gew",
+    "url": "http://127.0.0.1:8000/api/getme",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2022-08-01T04:05:05.181Z",
+    "modified": "2022-08-04T02:19:58.268Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "d11c97d2d186eecf2ee0f832f54244ee19440274683188f71fea4e56bedf2d3b"
+    },
+    "tests": []
+  }
+]

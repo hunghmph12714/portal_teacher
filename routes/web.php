@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\AttemptController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\LoginController;
@@ -67,7 +68,6 @@ Route::get('check-class-on-day',function(){
 Route::post('check-class-on-day',[TeacherController::class,'classOnDay']);
 
 Route::get('students-on-session/{session_id}',[TeacherController::class,'studentsOnSession'])->name('student.onSession');
-
 
 
 
